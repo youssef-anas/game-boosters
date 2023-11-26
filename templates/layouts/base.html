@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'base/css/master.css'%}" rel="stylesheet" />
     <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
-    <link href="{% static 'fontawesome/css/fontawesome.css' %}" rel="stylesheet">
-    <link href="{% static 'fontawesome/css/brands.css' %}" rel="stylesheet">
-    <link href="{% static 'fontawesome/css/solid.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
     
     <title>{% block title %}{% endblock %}</title>
     {% block style %}
@@ -41,7 +39,23 @@
 
     {% block container %}
     {% endblock %}
-    <script src="{% static  'base/js/script-1.js' %}"></script>
+
+    <!-- Start Footer -->
+    <div class="footer">
+      <div class="container">
+        <img src="{% static 'homepage/images/logo.png' %}" alt="Logo"/>
+        <p>We Are Social</p>
+        <div class="social-icons">
+          <i class="fa-brands fa-facebook-f"></i>
+          <i class="fa-brands fa-twitter"></i>
+          <i class="fa-solid fa-house"></i>
+          <i class="fa-brands fa-linkedin-in"></i>
+        </div>
+        <p class="copyright">&copy; 2023 <span>Game Booster</span> All Right Reserved</p>
+      </div>
+    </div>
+    <!-- End Footer -->
+    <script src="{% static  'base/js/scriptt.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
     <script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
     <script src="{% static 'fontawesomefree/js/solid.js' %}"></script>

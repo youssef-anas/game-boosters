@@ -16,4 +16,5 @@
 /wildRift/migrations/
 /wildRift/__pycache__/
 
-
+/accounts/migrations/
+/accounts/__pycache__/

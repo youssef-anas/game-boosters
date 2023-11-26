@@ -4,6 +4,9 @@
   --alternative-color: #4C4974;
   --background-color: #212529;
   --text-color: #fafafa;
+  --section-padding: 100px;
+  --main-transition: 0.5s;
+  --section-padding: 100px;
 }
 
 .navbar.navbar-dark.bg-dark {
@@ -40,10 +43,115 @@
     width: 100% !important;
   }
 }
-.text h1 {
-
-}
 .games {
   background-color: var(--main-color);
-  height: 1000px;
 }
+.games .games-card {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 60px;
+}
+
+.games .games-card .box {
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .games .games-card .box {
+    flex-basis: 50%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .games .games-card .box {
+    flex-basis: 25%;
+  }
+}
+
+.games .games-card .box img {
+  width: 450px;
+  height: 250px;
+  max-width: 100%;
+  transition: var(--main-transition);
+}
+
+.games .games-card .box:hover img {
+  transform: rotate(3deg) scale(1.1);
+}
+
+.games .games-card .box .caption {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0 0 0 / 40%);
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  transition: var(--main-transition);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.games .games-card .box:hover .caption {
+  bottom: 0;
+}
+
+.games .games-card .box .caption h3 {
+  font-weight: normal;
+  margin-bottom: 10px;
+  color: var(--text-color) !important;
+}
+/* Start Footer */
+.footer {
+  padding-top: calc(var(--section-padding) / 2 );
+  padding-bottom: calc(var(--section-padding) / 2 );
+  background-color: #1f2021;
+  background-image: url('./../../homepage/images/footerr.jpg');
+  background-size: cover;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.footer::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgb(0 0 0 / 70%);
+}
+
+.footer .container {
+  position: relative;
+}
+
+.footer .container img {
+  width: 70px;
+  margin-bottom: 20px;
+}
+
+.footer .container p:not(.copyright) {
+  width: fit-content;
+  font-size: 22px;
+  text-transform: uppercase;
+  padding: 20px;
+  margin: 20px auto;
+  border-bottom: 1px solid white;
+}
+
+.footer .container div.social-icons i {
+  padding: 10px 15px;
+}
+
+.footer .container .copyright {
+  margin-top: 60px;
+}
+
+.footer .container .copyright span {
+  font-weight: bold;
+  color: var(--alternative-color);
+}
+/* End Footer */
