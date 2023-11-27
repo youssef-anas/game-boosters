@@ -21,3 +21,17 @@ class Registeration(UserCreationForm):
             if BaseUser.objects.filter(email=email).exists():
                 raise forms.ValidationError("Email Already Exists.")
             return email
+
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(),
+        help_text=""
+    )
+    password2 = forms.CharField(
+        label="Password Confirmation",
+        widget=forms.PasswordInput(),
+        help_text=""
+    )
+    username = forms.CharField(
+        help_text=""
+    )

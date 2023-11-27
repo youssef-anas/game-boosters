@@ -21,7 +21,7 @@ def send_activation_email(user, request):
 
     # Build the activation URL
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    activation_url = reverse('activate_account', kwargs={'uidb64': uid, 'token': token})
+    activation_url = reverse('account.activate', kwargs={'uidb64': uid, 'token': token})
     activation_url = request.build_absolute_uri(activation_url)
 
     # Create the subject and message for the email
@@ -76,7 +76,7 @@ def activate_account(request, uidb64, token):
 class CustomLoginView(LoginView):
     template_name = 'accounts/login.html' 
     def get_success_url(self):
-        return reverse_lazy('profile')  
+        return reverse_lazy('accounts.profile')  
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
