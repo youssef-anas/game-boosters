@@ -2,25 +2,27 @@
 {% load static %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-    <link href="{% static 'accounts/css/accounts.css'%}" rel="stylesheet" />
+<link href="{% static 'accounts/css/accounts.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
 <div class="register p-5" style="padding-top: 6rem !important;">
-    <div class="container"  >
+    <div class="container">
         <div class="row align-items-center ">
             <div class="d-lg-block d-none col-6">
                 <img src="{% static 'accounts/images/register.png' %}" alt="" width="500" />
             </div>
             <div class="register-form col-lg-6 col-12 py-5">
-                 <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.username.label_tag }} {{ form.username }}
-            {{ form.password.label_tag }} {{ form.password }}
-            <button type="submit" class="btn text-white" style="background-color: var(--alternative-color)">Login</button>
-        </form>
-   </div>
-</div>
-</div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- {{ form.username.label_tag }} {{ form.username }}
+                    {{ form.password.label_tag }} {{ form.password }}
+                    <button type="submit" class="btn text-white" style="background-color: var(--alternative-color)">Login</button> -->
+                    {{ form.as_p }}
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 {% block script %}

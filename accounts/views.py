@@ -13,8 +13,11 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils import timezone
 from django.contrib.auth.views import LoginView
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login
 User = get_user_model()
 
+@csrf_exempt
 def send_activation_email(user, request):
     # Generate a token for the user
     token = default_token_generator.make_token(user)
@@ -35,7 +38,7 @@ def send_activation_email(user, request):
     send_mail(subject, message, 'your@example.com', [user.email])
 
 
-
+@csrf_exempt
 def register_view(request):
     if request.method == 'POST':
         form = Registeration(request.POST,request.FILES)
@@ -56,7 +59,7 @@ def register_view(request):
 def profile_view(request):
     return render(request, 'accounts/profile.html')
 
-
+@csrf_exempt
 def activate_account(request, uidb64, token):
     try:
         uid = force_bytes(urlsafe_base64_decode(uidb64))
@@ -72,16 +75,26 @@ def activate_account(request, uidb64, token):
     
     return HttpResponseBadRequest('Activation link is invalid or has expired.')
 
+@csrf_exempt
+def login_view(request):
+    template_name = 'accounts/login.html'
+    if request.method == 'POST':
+        username = request.POST.get('username','iti')
+        password = request.POST.get('password','iti')
 
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html' 
-    def get_success_url(self):
-        return reverse_lazy('accounts.profile')  
+        # Perform authentication
+        user = authenticate(request, username=username, password=password)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+        if user is not None:
+            login(request, user)
+            return redirect(reverse_lazy('accounts.profile'))
+        else:
+            # Authentication failed, handle it as needed
+            context = {'error_message': 'Invalid credentials'}
+            return render(request, template_name, context)
+    return render(request, template_name)
     
+
 
 
 

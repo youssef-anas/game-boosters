@@ -28,8 +28,6 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -45,7 +43,9 @@ INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
     'wildRift.apps.WildriftConfig',
     'django_cleanup.apps.CleanupConfig',
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
+    'paypal.standard.ipn',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'gameBoosterss.urls'
@@ -160,8 +161,9 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+ALLOWED_HOSTS = ['*']
+
+PAYPAL_EMAIL='sb-qsoz620578515@business.example.com'
+PAYPAL_TEST = True
