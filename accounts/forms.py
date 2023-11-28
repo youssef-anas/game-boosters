@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from accounts.models import BaseUser
 from phonenumber_field.formfields import PhoneNumberField
@@ -11,7 +10,7 @@ class Registeration(UserCreationForm):
 
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2","image")
+        fields = ("first_name","last_name","email","username","password1","password2","image",'country', 'about_you')
         # fields = '__all__'
 
     def clean_email(self):
