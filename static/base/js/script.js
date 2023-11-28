@@ -47,7 +47,6 @@ for (var i = 0; i < inputs.length; i++) {
 }
 
 var helpText = document.querySelectorAll('span.helptext');
-console.log(helpText)
 for (var i = 0; i < helpText.length; i++) {
     helpText[i].classList.add('text-danger');
     var helpLsit = helpText[i].querySelector("ul");
