@@ -39,9 +39,13 @@ from django.db import models
 
 class WildRiftRank(models.Model):
     rank_name = models.CharField(max_length=25)
+    rank_image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
 
     def __str__(self):
         return self.rank_name
+    
+    def get_image_url(self):
+        return f"/media/{self.rank_image}"
 
 class WildRiftTier(models.Model):
     rank = models.OneToOneField('WildRiftRank', related_name='tier', on_delete=models.CASCADE)
@@ -55,6 +59,7 @@ class WildRiftTier(models.Model):
 
 class WildRiftMark(models.Model):
     class MarkChoices(models.IntegerChoices):
+        MARK_2 = 2, '2 Marks'
         MARK_3 = 3, '3 Marks'
         MARK_4 = 4, '4 Marks'
         MARK_5 = 5, '5 Marks'

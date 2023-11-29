@@ -4,4 +4,5 @@
 
 .clicked {
   background-color: var(--alternative-color) !important;
+  color: white !important;
 }
