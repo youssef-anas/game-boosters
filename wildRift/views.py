@@ -8,15 +8,39 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark 
+import json
 
 # Create your views here.
 
-
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
+    ranks = WildRiftRank.objects.all()
+    divisions  = WildRiftTier.objects.all()
+    marks = WildRiftMark.objects.all()
+
+    divisions_data = [
+        {'id': division.id, 'name': division.rank.rank_name, 'IV': division.from_IV_to_III, 'III': division.from_III_to_II,
+         'II': division.from_II_to_II, 'I': division.from_I_to_IV_next}
+        for division in divisions
+    ]
+
+    marks_data = [
+        {'id': mark.id, 'rank': mark.rank.rank_name, 'mark_1': mark.mark_1, 'mark_2': mark.mark_2, 'mark_3': mark.mark_3, 'mark_4': mark.mark_4, 'mark_5': mark.mark_5}
+        for mark in marks
+    ]
+
+    with open('static/wildRift/data/divisions_data.json', 'w') as json_file:
+        json.dump(divisions_data, json_file)
+
+    with open('static/wildRift/data/marks_data.json', 'w') as json_file:
+        json.dump(marks_data, json_file)
+
+    print(divisions)
     if request.method == 'POST': 
+        
         return HttpResponse("hi")
-    return render(request, 'wildRift/GetBoosterByRank.html')
+    return render(request,'wildRift/GetBoosterByRank.html', context={"ranks": ranks})
 
 
 

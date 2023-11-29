@@ -1,15 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<link href="{% static 'wildRift/css/wildRift.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+<div class="container-fluid py-5 my-5">
+    <div class="container">
+        <div class="choices row justify-content-center ">
+            <div class="col-5">
+                <h5 class="mb-4">Cuurent Division</h5>
+                <div class="ranks d-flex justify-content-start align-items-center">
+                    {% for rank in ranks %}
+                    {% if not forloop.last %}
+                    {% with mark=rank.mark %}
+                    <a id="current{{rank.id}}"
+                        class="current current-{{rank.rank_name}} p-2 border border-1 bg-light text-light me-2 rounded-3"
+                        data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}">
+                        <img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" />
+                    </a>
+                    {% endwith %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="current-dcontainer d-flex flex-wrap justify-content-start align-items-center mt-3">
 
-        <button type="submit">Purchase</button>
-    </form>
-</body>
-</html>
+                </div>
+                <div class="current-marks d-flex flex-wrap justify-content-start align-items-center"></div>
+            </div>
+
+            <div class="col-5">
+                <h5 class="mb-4">Desired Division</h5>
+                <div class="ranks d-flex justify-content-start align-items-center">
+                    {% for rank in ranks %}
+                    {% with mark=rank.mark %}
+                    <a id="desired{{rank.id}}"
+                        class="desired desired-{{rank.rank_name}} p-2 border border-1 bg-light  text-light me-2 rounded-3"
+                        data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}">
+                        <img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" />
+                    </a>
+                    {% endwith %}
+                    {% endfor %}
+                </div>
+                <div class="desired-dcontainer d-flex flex-wrap justify-content-start align-items-center mt-3">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="price-container">
+        </div>
+        <!-- ------------------------------- -->
+        <!-- <form method="post">
+            {% csrf_token %}
+            <button type="submit">Purchase</button>
+        </form> -->
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'wildRift/js/wildRift.js' %}"></script>
+{% endblock %}

@@ -1,19 +1,23 @@
-spans = document.querySelectorAll('span');
-for (var j = 0; j < spans.length; j++) {
-    spans[j].classList.add('d-block');
-}
+// spans = document.querySelectorAll('span');
+// for (var j = 0; j < spans.length; j++) {
+//     spans[j].classList.add('d-block');
+// }
 
+paragraphs = document.querySelectorAll('p')
+
+for (var i = 0 ; i < paragraphs.length; i++) {
+    paragraphs[i].classList.add('input-container')
+}
 
 labels = document.querySelectorAll('label');
 
 for (var i = 0; i < labels.length; i++) {
-    labels[i].classList.add('form-label');
-    labels[i].classList.add('mt-3')
+    labels[i].classList.add('form__label');
 }
 
 inputs = document.querySelectorAll('input');
 for (var i = 0; i < inputs.length; i++) {
-    inputs[i].classList.add('form-control');
+    inputs[i].classList.add('form__field');
     inputs[i].removeAttribute('required');
 }
 
@@ -43,7 +47,6 @@ for (var i = 0; i < inputs.length; i++) {
 }
 
 var helpText = document.querySelectorAll('span.helptext');
-console.log(helpText)
 for (var i = 0; i < helpText.length; i++) {
     helpText[i].classList.add('text-danger');
     var helpLsit = helpText[i].querySelector("ul");

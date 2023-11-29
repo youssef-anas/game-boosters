@@ -1,0 +1,38 @@
+.register {
+  /* background-image: url('./../images/purple-background-registration.png');
+  background-size: cover; */
+  background-color: var(--main-color);
+}
+.input-container{
+	position:relative;
+	margin-bottom:2rem;
+}
+label{
+	/* position:absolute;
+	top:0px;
+	left:0px; */
+	font-size:16px;
+	color:#fff;
+	transition: all 0.5s ease-in-out;
+}
+input{ 
+  border:0;
+  border-bottom:1px solid #555;  
+  background:transparent;
+  width:100%;
+  padding:8px 0 5px 0;
+  font-size:16px;
+  color:#fff;
+  margin-bottom: 5px;
+}
+input:focus{ 
+ border:none;	
+ outline:none;
+ border-bottom:1px solid var(--secondary-color);	
+}
+/* input:focus + label,
+input:valid + label,
+input[value]:not(:placeholder-shown) + label {
+  top: -12px;
+  font-size: 15px;
+} */
