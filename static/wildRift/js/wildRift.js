@@ -193,8 +193,8 @@ $(document).ready(function () {
     $(".price-container").find("p").remove();
     $(".price-container").find("h4").remove();
     $('.price-container').append(`
-                <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${currentRank.name} ${currentDision} ${currentMark} Marks to ${desiredRank.name} ${desiredDivision}</span></p>
-                <h4>$${price}</h4>
-            `)
+    <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${currentRank.name} ${currentDision} ${currentMark} Marks to ${desiredRank.name} ${desiredDivision}</span></p>
+    <h4>$${price}</h4>
+`)
   })
 });

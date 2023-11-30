@@ -1,21 +1,23 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
-{% block title %}Game Boosters{% endblock %}
+{% block title %}Register{% endblock %}
 {% block style %}
     <link href="{% static 'accounts/css/accounts.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
-<div class="register p-5" style="padding-top: 6rem !important;">
-    <div class="container"  >
-        <div class="row align-items-center ">
-            <div class="d-lg-block d-none col-6">
-                <img src="{% static 'accounts/images/register.png' %}" alt="" width="500" />
-            </div>
-            <div class="register-form col-lg-6 col-12 py-5">
+<div class="register-container p-5 " style="padding-top: 6rem !important;">
+    <div class="container register"  >
+        <div class="d-lg-block d-none register-image">
+            <img src="{% static 'accounts/images/register-image.png' %}" alt="" width="500" />
+        </div> 
+        <div class="row">
+            <div class="offset-lg-5 offset-lg-0 col-lg-7 col-12 register-form px-lg-5 px-0" >
                  <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit" class="btn text-white" style="background-color: var(--alternative-color)">Submit</button>
+                    <div class="text-end">
+                        <button type="submit" class="btn fs-5 text-white rounded-5 px-4 py-2 mt-3" style="background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774)">Submit</button>
+                    </div>
                  </form>
             </div>
         </div>

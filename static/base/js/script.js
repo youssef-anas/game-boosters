@@ -3,22 +3,29 @@
 //     spans[j].classList.add('d-block');
 // }
 
-paragraphs = document.querySelectorAll('p')
-
-for (var i = 0 ; i < paragraphs.length; i++) {
-    paragraphs[i].classList.add('input-container')
-}
-
 labels = document.querySelectorAll('label');
 
 for (var i = 0; i < labels.length; i++) {
-    labels[i].classList.add('form__label');
+    labels[i].classList.add('form-label', 'custom-label');
+    labels[i].classList.add('mt-3')
+}
+
+textArea=document.querySelectorAll('textarea');
+for (var i = 0; i < textArea.length; i++) {
+    textArea[i].classList.add('form-control');
+    textArea[i].setAttribute('rows', '3');
 }
 
 inputs = document.querySelectorAll('input');
 for (var i = 0; i < inputs.length; i++) {
-    inputs[i].classList.add('form__field');
+    inputs[i].classList.add('form-control', 'custom-input');
     inputs[i].removeAttribute('required');
+}
+
+selects= document.querySelectorAll('select')
+  
+  for (var d =0; d < selects.length; d++){
+    selects[d].classList.add('form-control')
 }
 
 divs = document.getElementsByClassName("form_element")
@@ -44,19 +51,4 @@ for (var i = 0; i < inputs.length; i++) {
   if (errorList && errorList.classList.contains('errorlist')) {
     input.parentNode.insertBefore(errorList, input.nextSibling);
   }
-}
-
-var helpText = document.querySelectorAll('span.helptext');
-for (var i = 0; i < helpText.length; i++) {
-    helpText[i].classList.add('text-danger');
-    var helpLsit = helpText[i].querySelector("ul");
-    if (helpLsit) {
-       helpLsit.classList.add('list-group-item')
-       helpLsitLis = helpLsit.querySelectorAll('li')
-       console.log(helpLsitLis)
-       for(var j = 0; j < helpLsitLis.length; j++) {
-        console.log(helpLsitLis[j])
-            helpLsitLis[j].classList.add('list-group-item')
-       }
-    }  
 }

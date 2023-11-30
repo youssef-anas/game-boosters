@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    pls activate your email
-</body>
-</html>
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block style %}
+<link href="{% static 'accounts/css/accounts.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+    Pleace
+{% endblock %}
+{% block script %}
+<script src="{% static  'accounts/js/accounts.js' %}"></script>
+{% endblock %}
