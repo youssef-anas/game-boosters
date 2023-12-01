@@ -6,3 +6,24 @@
   background-color: var(--alternative-color) !important;
   color: white !important;
 }
+
+/* Hide the radio button */
+input[type="radio"] {
+  display: none;
+}
+
+/* Style the label to look like the radio button text */
+label {
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  border: 1px solid #ccc; /* Optional border for styling */
+  border-radius: 4px;
+}
+
+/* Change label style when radio button is checked */
+input[type="radio"]:checked + label {
+  background-color: #2196F3; /* Change the background color when checked */
+  color: white; /* Change the text color when checked */
+}
