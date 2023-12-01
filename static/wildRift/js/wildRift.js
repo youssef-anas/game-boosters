@@ -5,6 +5,8 @@ document.addEventListener("DOMContentLoaded", function() {
   let end = 29
   console.log('hi')
 
+  
+
 
   const radioButtonsCurrent = document.querySelectorAll('input[name="radio-group-current"]');
   const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-desired"]');
