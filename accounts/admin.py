@@ -8,13 +8,13 @@ from accounts.models import BaseUser
 
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
-    list_display = ('username', 'email', 'is_staff', 'is_active')
+    list_display = ('username', 'email', 'is_staff', 'is_booster', 'is_active')
     search_fields = ('email', 'username',)
     ordering = ('email',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'phone_number', 'email_verified_at', "image", 'country', 'about_you')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_booster', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 

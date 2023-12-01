@@ -28,4 +28,6 @@ class BaseUser(AbstractUser):
     image = models.ImageField(upload_to='media/accounts/',blank=True,null=True)
     country = CountryField(blank=True,null=True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
+    is_booster = models.BooleanField(default=False ,blank=True)
+
     

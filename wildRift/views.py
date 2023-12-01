@@ -36,11 +36,15 @@ def wildRiftGetBoosterByRank(request):
     with open('static/wildRift/data/marks_data.json', 'w') as json_file:
         json.dump(marks_data, json_file)
 
-    print(divisions)
+    divisions_list = list(divisions.values())
+    print(divisions_list)
+    context = {
+        "ranks": ranks,
+        "divisions": divisions_list,
+    }
     if request.method == 'POST': 
-        
         return HttpResponse("hi")
-    return render(request,'wildRift/GetBoosterByRank.html', context={"ranks": ranks})
+    return render(request,'wildRift/GetBoosterByRank.html', context)
 
 
 

@@ -6,3 +6,23 @@
   background-color: var(--alternative-color) !important;
   color: white !important;
 }
+
+
+.current-rank-checkbox, .custom-checkbox {
+  display: none; /* Hide the default checkbox */
+}
+
+
+
+#rank {
+  margin: 10px;
+  display: inline-block;
+  width: 30px; 
+  height: 30px;
+  background-size: cover;
+  cursor: pointer;
+}
+
+/* .custom-checkbox:checked + #rank{
+  border-color: #8e44ad;
+} */
