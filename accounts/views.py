@@ -14,7 +14,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils import timezone
 from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login , logout
+
 User = get_user_model()
 
 @csrf_exempt
@@ -73,28 +74,30 @@ def activate_account(request, uidb64, token):
         user.save()
         return render(request, 'accounts/activation_success.html')
     
-    return HttpResponseBadRequest('Activation link is invalid or has expired.')
+    return HttpResponseBadRequest('Activation Link is Invalid or Has Expired.')
 
 @csrf_exempt
 def login_view(request):
     template_name = 'accounts/login.html'
     if request.method == 'POST':
-        username = request.POST.get('username','iti')
-        password = request.POST.get('password','iti')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print("username", username)
+        print("password", password)
 
         # Perform authentication
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
+            context = {'error_message': ''}
             return redirect(reverse_lazy('accounts.profile'))
         else:
             # Authentication failed, handle it as needed
-            context = {'error_message': 'Invalid credentials'}
+            context = {'error_message': 'Invalid Credentials'}
             return render(request, template_name, context)
     return render(request, template_name)
     
-
-
-
-
+def logout_view(request):
+    logout(request)
+    return redirect(reverse_lazy('homepage.index'))

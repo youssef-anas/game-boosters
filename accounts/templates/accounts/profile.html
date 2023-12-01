@@ -1,13 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Profile</h1>
-    <h1>user: {{user}}</h1>
-    <h1>superUser: {{user.is_superuser}}</h1>
-</body>
-</html>
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Login{% endblock %}
+{% block style %}
+<link href="{% static 'accounts/css/accounts.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+    <div class="profile py-5">
+        <div class="container py-5">
+            <div class="personal-info row">
+                <div class="row col-6 align-items-end">
+                    <img src="{{ user.image.url }}" class="profile-image col-4" alt="profile" width="100"/>
+                    <div class="info col-8">
+                        <p class="fs-5 text-white fw-bold">{{user.first_name}} {{user.last_name}}</p>
+                        <p class="fs-5 text-white">{{user}}</p>
+                        <p class="fs-5 text-white">{{user.email}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+<script src="{% static  'accounts/js/accounts.js' %}"></script>
+{% endblock %}
