@@ -29,7 +29,7 @@ $(document).ready(function () {
   $(".current").click(function () {
     currentId = $(this).data("id");
     currentName = $(this).data("name");
-    currentMarks = $(this).data("mark");
+    currentMarks =currentMarks = $(this).data("mark");
     $(".current").removeClass("clicked");
     $(this).addClass("clicked");
 

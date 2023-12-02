@@ -20,8 +20,8 @@ def wildRiftGetBoosterByRank(request):
     marks = WildRiftMark.objects.all()
 
     divisions_data = [
-        {'id': division.id, 'name': division.rank.rank_name, 'IV': division.from_IV_to_III, 'III': division.from_III_to_II,
-         'II': division.from_II_to_II, 'I': division.from_I_to_IV_next}
+        [division.from_IV_to_III] if division.rank.rank_name == 'master' else
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_II, division.from_I_to_IV_next]
         for division in divisions
     ]
 

@@ -5,73 +5,102 @@
 <link href="{% static 'wildRift/css/wildRift.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
-<div class="container-fluid py-5 my-5">
-    <div class="container">
-        <div class="choices row justify-content-center ">
-            <div class="col-5">
+<div class="container-fluid py-5 wild-rift">
+    <div class="container py-5">
+        <div class="choices row justify-content-center flex-wrap py-5 rounded-3 shadow">
+            <div class="col-lg-5 col-12 mb-lg-0 mb-5">
                 <h5 class="mb-4">Cuurent Division</h5>
-                <div class="ranks d-flex justify-content-start align-items-center">
+                <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
                     {% for rank in ranks %}
                     {% if not forloop.last %}
                     {% with mark=rank.mark %}
-                    <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'Silver' %}checked{% endif %}>
-                    <label for="radio{{rank.id}}"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                    <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" 
+                    data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'silver' %} checked {% endif %}>
+                    <label for="radio{{rank.id}}" class="me-2 p-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
                     {% endwith %}
                     {% endif %}
                     {% endfor %}
                 </div>
-                <div class="current-dcontainer d-flex flex-wrap justify-content-start align-items-center mt-3">
-                    <input type="radio" id="current-division0" name="radio-group-current-division">
-                    <label for="current-division0">IV</label>
+                <div class="current-dcontainer d-flex flex-wrap justify-content-start align-items-center">
+                    <input type="radio" id="current-division0" name="radio-group-current-division" data-id="1" data-name="IV">
+                    <label for="current-division0" class="me-2 py-2 px-3">IV</label>
 
-                    <input type="radio" id="current-division1" name="radio-group-current-division">
-                    <label for="current-division1">III</label>
+                    <input type="radio" id="current-division1" name="radio-group-current-division" data-id="2" data-name="III">
+                    <label for="current-division1" class="me-2 py-2 px-3">III</label>
 
-                    <input type="radio" id="current-division2" name="radio-group-current-division" checked>
-                    <label for="current-division2">II</label>
+                    <input type="radio" id="current-division2" name="radio-group-current-division" data-id="3" data-name="II" checked>
+                    <label for="current-division2" class="me-2 py-2 px-3">II</label>
 
-                    <input type="radio" id="current-division3" name="radio-group-current-division" >
-                    <label for="current-division3">I</label>
+                    <input type="radio" id="current-division3" name="radio-group-current-division" data-id="4" data-name="I">
+                    <label for="current-division3" class="me-2 py-2 px-3">I</label>
                 </div>
-                <div class="current-marks d-flex flex-wrap justify-content-start align-items-center"></div>
+                <div class="current-marks d-flex flex-wrap justify-content-start align-items-center">
+                    <input type="radio" id="current-mark0" name="radio-group-current-mark"
+                        class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none"
+                        data-mark="0" checked>
+                    <label for="current-mark0" class="me-2 py-2 px-4">0 Mark</label>
+
+                    <input type="radio" id="current-mark1" name="radio-group-current-mark"
+                        class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none"
+                        data-mark="1">
+                    <label for="current-mark1" class="me-2 py-2 px-4">1 Mark</label>
+
+                    <input type="radio" id="current-mark2" name="radio-group-current-mark"
+                        class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none"
+                        data-mark="2">
+                    <label for="current-mark2" class="me-2 py-2 px-4">2 Mark</label>
+
+                    <input type="radio" id="current-mark3" name="radio-group-current-mark"
+                        class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none"
+                        data-mark="3">
+                    <label for="current-mark3" class="me-2 py-2 px-4">3 Mark</label>
+                </div>
             </div>
 
-            <div class="col-5">
+            <div class="col-lg-5 col-12">
                 <h5 class="mb-4">Desired Division</h5>
-                <div class="ranks d-flex justify-content-start align-items-center">
+                <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
                     {% for rank in ranks %}
                     {% with mark=rank.mark %}
-                    <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'Gold' %} checked {% endif %}>
-                    <label for="radio{{rank.id}}{{rank.id}}"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                    <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'gold' %} checked {% endif %}>
+                    <label for="radio{{rank.id}}{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
                     {% endwith %}
                     {% endfor %}
                 </div>
-                <div id="desired-division" class="desired-dcontainer flex-wrap justify-content-start align-items-center mt-3 d-flex">
-                    <input type="radio" id="desired-division0" name="radio-group-desired-division">
-                    <label for="desired-division0">IV</label>
+                <div id="desired-division" class="desired-dcontainer flex-wrap justify-content-start align-items-center d-flex">
+                    <input type="radio" id="desired-division0" name="radio-group-desired-division" data-id="1" data-name="IV">
+                    <label for="desired-division0" class="me-2 py-2 px-3">IV</label>
 
-                    <input type="radio" id="desired-division1" name="radio-group-desired-division" checked>
-                    <label for="desired-division1">III</label>
+                    <input type="radio" id="desired-division1" name="radio-group-desired-division" checked data-id="2" data-name="III">
+                    <label for="desired-division1" class="me-2 py-2 px-3">III</label>
 
-                    <input type="radio" id="desired-division2" name="radio-group-desired-division">
-                    <label for="desired-division2">II</label>
+                    <input type="radio" id="desired-division2" name="radio-group-desired-division" data-id="3" data-name="II">
+                    <label for="desired-division2" class="me-2 py-2 px-3">II</label>
 
-                    <input type="radio" id="desired-division3" name="radio-group-desired-division">
-                    <label for="desired-division3">I</label>
+                    <input type="radio" id="desired-division3" name="radio-group-desired-division" data-id="4" data-name="I">
+                    <label for="desired-division3" class="me-2 py-2 px-3">I</label>
 
                 </div>
             </div>
         </div>
-
-        <div class="price-container">
-            <h1  id="price"> 0 </h1>
-        </div>
-        <!-- ------------------------------- -->
-        <!-- <form method="post">
-            {% csrf_token %}
-            <button type="submit">Purchase</button>
-        </form> -->
     </div>
+</div>
+<div class="spikes"></div>
+<div class="container-fluid py-5 price">
+    <div class="container py-5">
+        <div class="price-container row justify-content-center flex-wrap py-5 rounded-3 shadow">
+            <h1 id="price"></h1>
+            <div class="price-data col-10 text-end"></div>
+            <div class="purchase col-10 text-center mt-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- ------------------------------- -->
+   
 </div>
 {% endblock %}
 {% block script %}
