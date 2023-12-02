@@ -4,45 +4,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
   const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
 
-  // Find the initially checked radio button and log its index
-  // Changesss -------- Check It Shehhhhhhhhhhabbbbbbbbbbb
-  const initiallyCheckedElementCurrent = Array.from(radioButtonsCurrent).find(radio => radio.checked);
-  const initiallyCheckedElementDesired = Array.from(radioButtonsDesired).find(radio => radio.checked);
+  const initiallyCheckedIndexCurrent = Array.from(radioButtonsCurrent).findIndex(radio => radio.checked)+1;
+  const initiallyCheckedIndexDesired  = Array.from(radioButtonsDesired).findIndex(radio => radio.checked)+1;
 
-  let initiallyCheckedNameCurrent = null;
-  let initiallyCheckedNameDesired = null;
-  let initiallyCheckedIndexCurrent = -1;
-  let initiallyCheckedIndexDesired = -1;
-
-  if (initiallyCheckedElementCurrent) {
-    initiallyCheckedNameCurrent = initiallyCheckedElementCurrent.getAttribute('data-name');
-    initiallyCheckedIndexCurrent = initiallyCheckedElementCurrent.getAttribute('data-id');
-  }
-  if (initiallyCheckedElementDesired) {
-    initiallyCheckedNameDesired = initiallyCheckedElementDesired.getAttribute('data-name');
-    initiallyCheckedIndexDesired = initiallyCheckedElementDesired.getAttribute('data-id');
-  }
-
-  // -----------------------------------------------
-  const initiallyCheckedElementCurrentDivision = Array.from(radioButtonsCurrentDivision).find(radio => radio.checked);
-  const initiallyCheckedElementDesiredDivision = Array.from(radioButtonsDesiredDivision).find(radio => radio.checked);
-
-  let initiallyCheckedNameCurrentDivision = null;
-  let initiallyCheckedNameDesiredDivision = null;
-  let initiallyCheckedIndexCurrentDivision = -1;
-  let initiallyCheckedIndexDesiredDivision = -1;
-
-  if (initiallyCheckedElementCurrentDivision) {
-    initiallyCheckedNameCurrentDivision = initiallyCheckedElementCurrentDivision.getAttribute('data-name');
-    console.log(initiallyCheckedNameCurrentDivision)
-    initiallyCheckedIndexCurrentDivision = initiallyCheckedElementCurrentDivision.getAttribute('data-id');
-  }
-  if (initiallyCheckedElementDesiredDivision) {
-    initiallyCheckedNameDesiredDivision = initiallyCheckedElementDesiredDivision.getAttribute('data-name');
-    initiallyCheckedIndexDesiredDivision = initiallyCheckedElementDesiredDivision.getAttribute('data-id');
-  }
-
-  // End Change Here
+  const initiallyCheckedIndexCurrentDivision  = Array.from(radioButtonsCurrentDivision).findIndex(radio => radio.checked)+1;
+  const initiallyCheckedIndexDesiredDivision  = Array.from(radioButtonsDesiredDivision).findIndex(radio => radio.checked)+1;
 
   if (initiallyCheckedIndexCurrent !== -1 && initiallyCheckedIndexDesired !== -1 && initiallyCheckedIndexCurrentDivision !== -1
     && initiallyCheckedIndexDesiredDivision !== -1) {
@@ -75,22 +41,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     getResult();
   });
+  const divisionRanks = [null,'iron','bronze','silver','gold','platinum','emerald','diamond','master'];
+
+  const divisionNames = [0, 'IV', 'III', 'II', 'I']
 
 
   var current_rank = initiallyCheckedIndexCurrent;
+  console.log('hi',initiallyCheckedIndexCurrent)
   var desired_rank = initiallyCheckedIndexDesired;
   var current_division = initiallyCheckedIndexCurrentDivision;
   var desired_division = initiallyCheckedIndexDesiredDivision;
-  var current_division_name = initiallyCheckedNameCurrentDivision;
-  var desired_division_name = initiallyCheckedNameDesiredDivision;
-  var current_rank_name = initiallyCheckedNameCurrent
-  var desired_rank_name = initiallyCheckedNameDesired
+  var current_rank_name = divisionRanks[initiallyCheckedIndexCurrent];
+  var desired_rank_name = divisionRanks[initiallyCheckedIndexDesired];
+  var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
+  var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
 
 
-  // Here Simple Change --- Shehhhhhhhhhab
   function getResult() {
-    const startt = ((Number(current_rank) - 1) * 4) + 1 + Number(current_division);
-    const endd = ((Number(desired_rank) - 1) * 4) + Number(desired_division);
+    const startt = ((current_rank-1)*4)+1 + current_division;
+    const endd = ((desired_rank-1)*4) + desired_division;
     const slicedArray = sliceArray(divisionPrices, startt, endd);
     console.log('Start', startt)
     console.log('End', endd)
@@ -99,44 +68,45 @@ document.addEventListener("DOMContentLoaded", function () {
     const summ = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     const pricee = document.getElementsByClassName('price-data')[0];
     console.log(pricee)
-    // !Imporrrrrrtant ---- Here I Want You Add Make Number That Choices Instead Of 0 (Mark 0)
     pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_division_name} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <h4>$${summ}</h4>
     `;
     console.log(summ);
   }
   getResult();
-
-  // Add change event listener to log the index when a radio button is changed
-  // Changesss -------- Check It Shehhhhhhhhhhabbbbbbbbbbb to End
   radioButtonsCurrent.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
-      if (selectedElement) {
-        const dataIdValue = selectedElement.getAttribute('data-id');
-        const dataNameValue = selectedElement.getAttribute('data-name');
-        console.log('Selected data-id value:', dataIdValue);
-
-        current_rank = dataIdValue;
-        current_rank_name = dataNameValue
-        getResult();
-      } else {
-        console.log('No radio button is selected.');
-      }
+      const selectedIndex = Array.from(radioButtonsCurrent).indexOf(radio);
+      console.log('Selected index:', selectedIndex+1);
+      current_rank = selectedIndex+1;
+      current_rank_name = divisionRanks[current_rank]
       console.log('current_rank', current_rank)
-      console.log('current_rank_name', current_rank_name)
 
-      const currentMarks = $(this).data("mark");
-      $('.current-marks').empty();
-      if (currentMarks) {
-        for (let i = 0; i <= currentMarks; i++) {
-          $(".current-marks").append(`
-          <input type="radio" id="current-mark${i}" name="radio-group-current-mark" class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none" data-mark="${i}">
-          <label for="current-mark${i}" class="me-2 mt-3 py-2 px-4">${i} Mark</label>
-        `);
+      const currentMarks = this.getAttribute('data-mark');
+      console.log('cu',currentMarks)
+      const current_marks_to_hide =  document.querySelectorAll('div.current-mark-container');
+      console.log('current_marks_to_hide',current_marks_to_hide)
+      current_marks_to_hide.forEach(function (currentMark, index) {
+        if(currentMarks) {
+          if (Number(currentMark.getAttribute('data-mark')) > Number(currentMarks)) {
+            currentMark.classList.add('d-none');
+          } else {
+            currentMark.classList.remove('d-none');
+          }
+        } else {
+          currentMark.classList.add('d-none');
         }
-      }
+      })
+      // $('.current-marks').empty();
+      // if (currentMarks) {
+      //   for (let i = 0; i <= currentMarks; i++) {
+      //     $(".current-marks").append(`
+      //     <input type="radio" id="current-mark${i}" name="radio-group-current-mark" class="current-mark px-3 py-2 mb-3 border border-1 bg-light text-dark me-2 rounded-3 text-decoration-none" data-mark="${i}">
+      //     <label for="current-mark${i}" class="me-2 mt-3 py-2 px-4">${i} Mark</label>
+      //   `);
+      //   }
+      // }
 
       getResult()
     });
@@ -144,21 +114,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   radioButtonsDesired.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
-      if (selectedElement) {
-        const dataIdValue = selectedElement.getAttribute('data-id');
-        const dataNameValue = selectedElement.getAttribute('data-name');
-        console.log('Selected data-id value:', dataIdValue);
-
-        desired_rank = dataIdValue;
-        desired_rank_name = dataNameValue
-        getResult();
-      } else {
-        console.log('No radio button is selected.');
-      }
-      console.log('desired_rank', desired_rank)
-      console.log('desired_rank_name', desired_rank_name)
-      const desired_division_to_hide = document.getElementById('desired-division');
+      const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
+      console.log('Selected index:', selectedIndex+1);
+      desired_rank = selectedIndex+1;
+      desired_rank_name = divisionRanks[desired_rank]
+      const desired_division_to_hide =  document.getElementById('desired-division');
       if (desired_rank == 8) {
         desired_division_to_hide.classList.add('d-none');
       }
@@ -171,39 +131,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
   radioButtonsCurrentDivision.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedElement = Array.from(radioButtonsCurrentDivision).find(radio => radio.checked);
-
-      if (selectedElement) {
-        const dataIdValue = selectedElement.getAttribute('data-id');
-        const dataNameValue = selectedElement.getAttribute('data-name');
-        console.log('Selected data-id value for Current Division:', dataIdValue);
-
-        current_division = dataIdValue;
-        current_division_name = dataNameValue
-        getResult();
-      } else {
-        console.log('No radio button for Current Division is selected.');
-      }
-
+      const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
+      console.log('Selected Division index:', selectedIndex+1);
+      current_division = selectedIndex+1;
+      current_division_name = divisionNames[current_division]
       getResult();
     });
   });
 
   radioButtonsDesiredDivision.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedElement = Array.from(radioButtonsDesiredDivision).find(radio => radio.checked);
-
-      if (selectedElement) {
-        const dataIdValue = selectedElement.getAttribute('data-id');
-        const dataNameValue = selectedElement.getAttribute('data-name');
-        console.log('Selected data-id value for Current Division:', dataIdValue);
-
-        desired_division = dataIdValue;
-        desired_division_name = dataNameValue
-        getResult();
-      } else {
-        console.log('No radio button for Current Division is selected.');
-      }
+      const selectedIndex = Array.from(radioButtonsDesiredDivision).indexOf(radio);
+      console.log('Selected Division index:', selectedIndex+1);
+      desired_division = selectedIndex+1;
+      desired_division_name = divisionNames[desired_division]
       getResult()
     });
   });

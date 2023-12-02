@@ -17,7 +17,7 @@ import json
 def wildRiftGetBoosterByRank(request):
     ranks = WildRiftRank.objects.all()
     divisions  = WildRiftTier.objects.all()
-    marks = WildRiftMark.objects.all()
+    marks = WildRiftMark.objects.all().order_by('id')
 
     divisions_data = [
         [division.from_IV_to_III] if division.rank.rank_name == 'master' else
