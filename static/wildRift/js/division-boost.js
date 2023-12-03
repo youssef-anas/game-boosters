@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
         result_with_mark = summ - number_of_mark;
       }
 
-      const pricee = document.getElementsByClassName('price-data')[0];
+      const pricee = document.querySelector('.price-data.division-boost')[0];
       pricee.innerHTML = `
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <h4>$${result_with_mark}</h4>
