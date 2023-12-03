@@ -15,7 +15,7 @@
                     {% if not forloop.last %}
                     {% with mark=rank.mark %}
                     <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" 
-                    data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'silver' %} checked {% endif %}>
+                    data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'Silver' %} checked {% endif %}>
                     <label for="radio{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
                     {% endwith %}
                     {% endif %}
@@ -86,7 +86,7 @@
                 <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
                     {% for rank in ranks %}
                     {% with mark=rank.mark %}
-                    <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'gold' %} checked {% endif %}>
+                    <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if rank.rank_name == 'Gold' %} checked {% endif %}>
                     <label for="radio{{rank.id}}{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
                     {% endwith %}
                     {% endfor %}

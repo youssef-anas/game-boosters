@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const divisionNames = [0, 'IV', 'III', 'II', 'I']
 
-  const marks_price= [[0,0,0,0,0,0],[0,1,1,0,0,0],[0,2,2,2,0,0], [0,3,3,3,0,0], [0,4,4,4,4,0], [0,5,5,5,5,0], [0,6,6,6,6,6],[0,0,0,0,0,0]]
+  const marks_price= [[0,0,0,0,0,0],[0,1,2,0,0,0],[0,2,4,6,0,0], [0,3,6,9,0,0], [0,4,8,12,16,0], [0,5,10,15,20,0], [0,6,12,18,24,30],[0,0,0,0,0,0]]
 
 
   var current_rank = initiallyCheckedIndexCurrent;
@@ -65,12 +65,18 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log('slicedArray', slicedArray);
     const summ = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
     
+    let result_with_mark = summ
+
+    if (summ !== 0){
+      result_with_mark = summ + number_of_mark ;
+    }
+    
     const pricee = document.getElementsByClassName('price-data')[0];
     pricee.innerHTML = `
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
-      <h4>$${summ}</h4>
+      <h4>$${result_with_mark}</h4>
     `;
-    console.log(summ);
+    console.log(result_with_mark);
   }
   getResult();
 
@@ -106,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
           element.classList.add('d-none'); 
       }
     });
+    
   }
   setMarkNumber();
 
@@ -172,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
     radio.addEventListener('change', function () {
       const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
       console.log('Selected Mark index:', selectedIndex);
+      number_of_mark = marks_price[current_rank][selectedIndex];
       getResult();
     });
   });
