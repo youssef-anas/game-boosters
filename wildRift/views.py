@@ -16,7 +16,7 @@ import json
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
     ranks = WildRiftRank.objects.all()
-    divisions  = WildRiftTier.objects.all()
+    divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
 
     divisions_data = [

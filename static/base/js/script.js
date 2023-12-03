@@ -12,7 +12,7 @@ for (var i = 0; i < labels.length; i++) {
 
 textArea=document.querySelectorAll('textarea');
 for (var i = 0; i < textArea.length; i++) {
-    textArea[i].classList.add('form-control');
+    textArea[i].classList.add('form-control', 'custom-textarea');
     textArea[i].setAttribute('rows', '3');
 }
 
@@ -25,7 +25,7 @@ for (var i = 0; i < inputs.length; i++) {
 selects= document.querySelectorAll('select')
   
   for (var d =0; d < selects.length; d++){
-    selects[d].classList.add('form-control')
+    selects[d].classList.add('form-control', 'custom-select');
 }
 
 divs = document.getElementsByClassName("form_element")

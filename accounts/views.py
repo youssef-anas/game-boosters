@@ -72,7 +72,7 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.email_verified_at = timezone.now()
         user.save()
-        return render(request, 'accounts/activation_success.html')
+        return render(request, 'accounts/.html')
     
     return HttpResponseBadRequest('Activation Link is Invalid or Has Expired.')
 
