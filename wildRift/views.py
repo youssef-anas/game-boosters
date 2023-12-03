@@ -28,7 +28,7 @@ def wildRiftGetBoosterByRank(request):
     ]
 
     marks_data = [
-        {'id': mark.id, 'rank': mark.rank.rank_name, 'mark_1': mark.mark_1, 'mark_2': mark.mark_2, 'mark_3': mark.mark_3, 'mark_4': mark.mark_4, 'mark_5': mark.mark_5}
+        [0,mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
         for mark in marks
     ]
 
@@ -39,7 +39,6 @@ def wildRiftGetBoosterByRank(request):
         json.dump(marks_data, json_file)
 
     divisions_list = list(divisions.values())
-    print(divisions_list)
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
