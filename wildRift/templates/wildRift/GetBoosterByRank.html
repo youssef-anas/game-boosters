@@ -7,7 +7,15 @@
 {% block container %}
 <div class="container-fluid py-5 wild-rift">
     <div class="container py-5">
-        <div class="choices row justify-content-center flex-wrap py-5 rounded-3 shadow">
+        <div class="choise text-center mb-3">
+            <input type="radio" id="division-boost" name="radio-group-type" checked>
+            <label for="division-boost" class="me-2">Division Boost</label>
+            <input type="radio" id="placements-boost" name="radio-group-type">
+            <label for="placements-boost" class="me-2">Placements Boost</label>
+        </div>
+
+        <!-- -------------------------------- Division Boost ----------------------------- -->
+        <div class="choices division-boost row justify-content-center flex-wrap py-5 rounded-3 shadow">
             <div class="col-lg-5 col-12 mb-lg-0 mb-5">
                 <h5 class="mb-4">Cuurent Division</h5>
                 <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
@@ -107,7 +115,46 @@
                 </div>
             </div>
         </div>
+
+        <!-- -------------------------- Placements Boost ------------------------- -->
+        <div class="choices placements-boost row justify-content-center flex-wrap py-5 rounded-3 shadow">
+            <!-- Previous Season Rank  -->
+            <div class="col-lg-5 col-12 mb-lg-0 mb-5">
+                <h5 class="mb-4">Previous Season Rank</h5>
+                <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
+                    {% for rank in placements %}
+                    <input type="radio" id="rank{{rank.id}}" name="radio-group-ranks" data-id="{{rank.id}}">
+                    <label for="rank{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Games Count -->
+            <div class="input_zone no_grow active col-lg-5 col-12 mb-lg-0 mb-5">
+                <p> Games Count </p>
+                <div class="input_number master  no_elo">
+                    <input value="5" data-onchange="calculate_buy_elo" step="1" min="1" max="5" type="number" name="buy[placement][games_number]" id="buy_placement_games_number">
+                <div class="input_scroll" data-step="1" data-min="1" data-max="5" data-value="5">
+                <div class="unselected"></div>
+                <div class="selected" style="width: 100%"></div>
+                <div class="scroll" style="left: 100%"></div>
+                <div class="scroll_helper"><div class="helper_val" data-value="1">1</div><div class="helper_val" data-value="2">2</div><div class="helper_val" data-value="3">3</div><div class="helper_val" data-value="4">4</div><div class="helper_val" data-value="5">5</div></div>
+                </div>
+                </div>
+            <!-- </div>
+            <div class="col-lg-5 col-12 mb-lg-0 mb-5">
+                <h5 class="mb-4">Games Count</h5>
+                <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
+                    {% for rank in ranks %}
+                    <input type="radio" id="radio{{rank.id}}" name="radio-group-ranks" data-id="{{rank.id}}">
+                    <label for="radio{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                    {% endfor %}
+                </div>
+            </div> -->
+        </div>
     </div>
+
+
 </div>
 <div class="spikes"></div>
 <div class="container-fluid py-5 price">
@@ -128,5 +175,7 @@
 </div>
 {% endblock %}
 {% block script %}
-<script src="{% static 'wildRift/js/wildRift.js' %}"></script>
+<script src="{% static 'wildRift/js/main.js' %}"></script>
+<script src="{% static 'wildRift/js/division-boost.js' %}"></script>
+<script src="{% static 'wildRift/js/placements-boost.js' %}"></script>
 {% endblock %}

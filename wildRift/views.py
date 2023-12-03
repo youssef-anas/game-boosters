@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark 
+from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement
 import json
 import uuid
 from django.forms.models import model_to_dict
@@ -20,6 +20,7 @@ def wildRiftGetBoosterByRank(request):
     ranks = WildRiftRank.objects.all()
     divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
+    placements = WildRiftPlacement.objects.all().order_by('id')
 
     divisions_data = [
         [division.from_IV_to_III] if division.rank.rank_name == 'master' else
@@ -42,6 +43,7 @@ def wildRiftGetBoosterByRank(request):
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
+        "placements": placements
     }
     if request.method == 'POST': 
         return HttpResponse("hi")
