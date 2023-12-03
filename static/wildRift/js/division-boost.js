@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     })
   ]).then(function () {
+    console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     const divisionRanks = [null, 'iron', 'bronze', 'silver', 'gold', 'platinum', 'emerald', 'diamond', 'master'];
 
     const divisionNames = [0, 'IV', 'III', 'II', 'I']
@@ -84,12 +85,12 @@ document.addEventListener("DOMContentLoaded", function () {
         result_with_mark = summ - number_of_mark;
       }
 
-      const pricee = document.querySelector('.price-data.division-boost')[0];
+      const pricee = document.querySelector('.price-data.division-boost');
+      console.log('priceeeeeeeeeeeeee', pricee)
       pricee.innerHTML = `
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <h4>$${result_with_mark}</h4>
     `;
-      console.log(result_with_mark);
     }
     getResult();
 
@@ -194,6 +195,84 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
+
+
+  
+  // ################################ Extra Charges Part #################################################
+  let total_price = 30
+  const buttons = {
+    duoBoosting: document.querySelector('#duoBoostingButton'),
+    selectBooster: document.querySelector('#selectBoosterButton'),
+    turboBoost: document.querySelector('#turboBoostButton'),
+    streaming: document.querySelector('#streamingButton'),
+  };
+
+  const contents = {
+    duoBoosting: document.querySelector('.duoBoostingContent'),
+    selectBooster: document.querySelector('.selectBoosterContent'),
+    turboBoost: document.querySelector('.turboBoostContent'),
+    streaming: document.querySelector('.streamingContent'),
+  };
+
+  const Applybuttons = {
+    duoBoosting: document.querySelector('#duoBoostingApplyButton'),
+    selectBooster: document.querySelector('#selectBoosterApplyButton'),
+    turboBoost: document.querySelector('#turboBoostApplyButton'),
+    streaming: document.querySelector('#streamingApplyButton'),
+  };
+
+  // Toggle Function
+  function toggleContent(content) {
+    for (const key in contents) {
+      // if (key === content && contents[key].style.display !== 'block') {
+      //   contents[key].style.display = 'block';
+      // } else {
+      //     contents[key].style.display = 'none';
+      // }
+      contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
+    }
+  }
+
+  function updateTotalPrice(price, add = true,button) {
+    buttonOldName = buttons[button].innerHTML
+    if (add) {
+      total_price += price;
+      buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
+      Applybuttons[button].innerHTML = 'Cancel'
+      Applybuttons[button].classList.remove('applyButton');
+      Applybuttons[button].classList.add('cancelButton');
+    } else {
+      total_price -= price;
+      buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
+      Applybuttons[button].innerHTML = 'Apply'
+      Applybuttons[button].classList.remove('cancelButton');
+      Applybuttons[button].classList.add('applyButton');
+    }
+    console.log('Total Price:', total_price);
+  }
+
+  // Toggle click event
+  function setupButtonClickEvent(button, content) {
+    button.addEventListener('click', function () {
+      toggleContent(content);
+    });
+  }
+
+  // Apply Button
+  function setupApplyButtonClickEvent(button, price) {
+    Applybuttons[button].addEventListener('click', function () {
+      updateTotalPrice(price, !Applybuttons[button].classList.contains('cancelButton'),button);
+    });
+  }
+
+  // Setup click events for each button
+  for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+  }
+  setupApplyButtonClickEvent('duoBoosting', 0.65 * total_price);
+  setupApplyButtonClickEvent('selectBooster', 0.05 * total_price);
+  setupApplyButtonClickEvent('turboBoost', 0.20 * total_price);
+  setupApplyButtonClickEvent('streaming', 0.15 * total_price);
 
 });
 
