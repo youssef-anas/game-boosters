@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark 
+from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement
 import json
 import uuid
 from django.forms.models import model_to_dict
@@ -18,8 +18,9 @@ from django.forms.models import model_to_dict
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
     ranks = WildRiftRank.objects.all()
-    divisions  = WildRiftTier.objects.all()
+    divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
+    placements = WildRiftPlacement.objects.all().order_by('id')
 
     divisions_data = [
         [division.from_IV_to_III] if division.rank.rank_name == 'master' else
@@ -28,7 +29,7 @@ def wildRiftGetBoosterByRank(request):
     ]
 
     marks_data = [
-        {'id': mark.id, 'rank': mark.rank.rank_name, 'mark_1': mark.mark_1, 'mark_2': mark.mark_2, 'mark_3': mark.mark_3, 'mark_4': mark.mark_4, 'mark_5': mark.mark_5}
+        [0,mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
         for mark in marks
     ]
 
@@ -39,10 +40,10 @@ def wildRiftGetBoosterByRank(request):
         json.dump(marks_data, json_file)
 
     divisions_list = list(divisions.values())
-    print(divisions_list)
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
+        "placements": placements
     }
     if request.method == 'POST': 
         return HttpResponse("hi")
