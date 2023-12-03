@@ -10,6 +10,8 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark 
 import json
+import uuid
+from django.forms.models import model_to_dict
 
 # Create your views here.
 
@@ -50,18 +52,42 @@ def wildRiftGetBoosterByRank(request):
 
 @csrf_exempt
 def view_that_asks_for_money(request):
-    # What you want the button to do.
+
+    ranks = WildRiftRank.objects.all()
+    ranks_map = {obj.id: model_to_dict(obj) for obj in ranks}
+
+    divisions  = WildRiftTier.objects.all()
+    divisions_map = {obj.id: model_to_dict(obj) for obj in divisions}
+
+    marks = WildRiftMark.objects.all()
+    marks_map = {obj.id: model_to_dict(obj) for obj in marks}
+
+    dynamic_invoice = str(uuid.uuid4())
+
+
+    print(ranks_map[1])
+    print(divisions_map[1])
+    print(marks_map[1])
+
+    print(dynamic_invoice)
+
+    
     paypal_dict = {
-        "business":settings.PAYPAL_EMAIL ,
+        "business": settings.PAYPAL_EMAIL,
         "amount": "120.00",
-        "item_name": "from Diamond to Master",
-        "invoice": "1",
+        "item_name": "FROM SILVER II MARKS 0 TO GOLD III",
+        "invoice": dynamic_invoice,
         "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(reverse('accounts.profile')),
-        "cancel_return": request.build_absolute_uri(reverse('accounts.register')),
-        # "custom": "premium_plan",  # Custom command to correlate to some function later (optional)
+        "return": request.build_absolute_uri(reverse('wildrift.payment.success')),
+        "cancel_return": request.build_absolute_uri(reverse('wildrift.payment.canceled')),
     }
     # Create the instance.
     form = PayPalPaymentsForm(initial=paypal_dict)
     context = {"form": form}
     return render(request, "wildRift/paypal.html", context)
+
+def payment_successed(request):
+    return HttpResponse('payment success')
+
+def payment_canceled(request):
+    return HttpResponse('payment success')
