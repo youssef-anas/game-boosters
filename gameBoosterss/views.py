@@ -6,52 +6,62 @@ def index(request):
     {
       "id" : 1,
       "name": "League of Legends",
-      "image": "League of legends.jpeg"
+      "image": "League of legends.jpeg",
+      "link": ""
     },
     {
       "id": 2,
       "name": "Valorant",
-      "image": "Valorant.jpg"
+      "image": "Valorant.jpg",
+      "link": ""
     },
     {
       "id": 3,
       "name": "TFT",
-      "image": "tft.jpg"
+      "image": "tft.jpg",
+      "link": ""
     },
     {
       "id": 4,
       "name": "Wild Rift",
-      "image": "League of legends wild rift.jpg"
+      "image": "League of legends wild rift.jpg",
+      "link": "wildrift"
     },
     {
       "id": 5,
       "name": "Dota 2",
-      "image": "Dota 2.jpg"
+      "image": "Dota 2.jpg",
+      "link": ""
     },
     {
       "id": 6,
       "name": "Hearthstone",
-      "image": "Hearthstone.jpg"
+      "image": "Hearthstone.jpg",
+      "link": ""
     },
     {
       "id": 7,
       "name": "World of Warcraft",
-      "image": "World of Warcraft.jpg"
+      "image": "World of Warcraft.jpg",
+      "link": ""
     },
     {
       "id": 8,
       "name": "Mobile Legends",
-      "image": "Mobile Legends.webp"
+      "image": "Mobile Legends.webp",
+      "link": ""
     },
     {
       "id": 9,
       "name": "Pubg Mobile",
-      "image": "Pubg Mobile.avif"
+      "image": "Pubg Mobile.avif",
+      "link": ""
     },
     {
       "id": 10,
       "name": "Rocket League",
-      "image": "Rocket League.webp"
+      "image": "Rocket League.webp",
+      "link": ""
     },
   ]
 

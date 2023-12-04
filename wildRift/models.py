@@ -1,4 +1,7 @@
+from django.shortcuts import reverse
 from django.db import models
+from accounts.models import BaseUser
+from django.core.validators import MinValueValidator, MaxLengthValidator
 
 # # Create your models here.
 
@@ -91,3 +94,64 @@ class WildRiftPlacement(models.Model):
     
     def get_image_url(self):
         return f"/media/{self.image}"
+    
+class WildRiftDivisionOrder(models.Model):
+    DIVISION_CHOISES = [
+        (1 , 'IV'),
+        (2 , 'III'),
+        (3 , 'II'),
+        (4 , 'I'),
+    ]
+    MARKS_CHOISES = [
+        (0 , '0 Marks'),
+        (1 , '1 Marks'),
+        (2 , '2 Marks'),
+        (3 , '3 Marks'),
+        (4 , '4 Marks'),
+        (5 , '5 Marks'),
+    ]
+    current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank')
+    desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank')
+    current_division = models.IntegerField(choices=DIVISION_CHOISES)
+    desired_division = models.IntegerField(choices=DIVISION_CHOISES)
+    mark = models.IntegerField(choices=MARKS_CHOISES)
+    price = models.FloatField(default=0)
+    invoice = models.FloatField(default=0)
+    booster_percent1 = models.IntegerField(default=50)
+    booster_percent2 = models.IntegerField(default=60)
+    booster_percent3 = models.IntegerField(default=70)
+    booster_percent4 = models.IntegerField(default=80)
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+    duo_boosting = models.BooleanField(default=False ,blank=True)
+    select_booster = models.BooleanField(default=False ,blank=True)
+    turbo_boost = models.BooleanField(default=False ,blank=True)
+    streaming = models.BooleanField(default=False ,blank=True)
+    is_done = models.BooleanField(default=False ,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Boosting From {self.current_rank} {self.current_division} Marks {self.mark} To {self.desired_rank} {self.desired_division}"
+    
+class WildRiftPlacementOrder(models.Model):
+    last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
+    number_of_match = models.IntegerField(default=5)
+    price = models.FloatField(default=0)
+    invoice = models.FloatField(default=0)
+    booster_percent1 = models.IntegerField(default=50)
+    booster_percent2 = models.IntegerField(default=60)
+    booster_percent3 = models.IntegerField(default=70)
+    booster_percent4 = models.IntegerField(default=80)
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
+    duo_boosting = models.BooleanField(default=False ,blank=True)
+    select_booster = models.BooleanField(default=False ,blank=True)
+    turbo_boost = models.BooleanField(default=False ,blank=True)
+    streaming = models.BooleanField(default=False ,blank=True)
+    is_done = models.BooleanField(default=False ,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"
