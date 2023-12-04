@@ -1,39 +1,51 @@
-.current, .desired {
+.current,
+.desired {
   cursor: pointer;
 }
+
 .clicked {
   background-color: var(--alternative-color) !important;
   color: white !important;
 }
+
 /* Hide the radio button */
 input[type="radio"] {
   display: none;
 }
+
 /* Style the label to look like the radio button text */
 label {
   display: inline-block;
   padding: 8px 12px;
   cursor: pointer;
   font-size: 16px;
-  border: 1px solid #ccc; /* Optional border for styling */
+  border: 1px solid #ccc;
+  /* Optional border for styling */
   border-radius: 4px;
 }
+
 /* Change label style when radio button is checked */
-input[type="radio"]:checked + label {
-  background-color: var(--secondary-color); /* Change the background color when checked */
-  color: white; /* Change the text color when checked */
+input[type="radio"]:checked+label {
+  background-color: var(--secondary-color);
+  /* Change the background color when checked */
+  color: white;
+  /* Change the text color when checked */
 }
+
 .wild-rift {
   background-color: var(--main-color);
   color: white !important;
   position: relative;
 }
+
 .choices {
   background-color: var(--alternative-color);
 }
+
 .spikes {
   position: relative;
 }
+
 .spikes::after {
   content: "";
   position: absolute;
@@ -45,14 +57,17 @@ input[type="radio"]:checked + label {
     linear-gradient(225deg, var(--main-color) 25%, transparent 25%);
   background-size: 30px 30px;
 }
+
 .price {
   color: white !important;
   position: relative;
   background-color: var(--alternative-color);
 }
+
 .price-container {
   background-color: var(--main-color);
 }
+
 .purchase-btn {
   background-color: var(--secondary-color);
   color: white;
@@ -60,31 +75,35 @@ input[type="radio"]:checked + label {
   padding: 0.5rem 3rem;
   transition: var(--main-transition);
 }
+
 .purchase-btn:hover {
   border: 1px solid var(--secondary-color);
   transform: scale(0.9);
 }
 
 /* Extra Charges */
-.extraChargesSection{
+.extraChargesSection {
 
   width: 100%;
   padding: 0 5rem;
 
-  .duoBoostingContent{
-    display: none;
-  }
-  .selectBoosterContent{
-    display: none;
-  }
-  .turboBoostContent{
-    display: none;
-  }
-  .streamingContent{
+  .duoBoostingContent {
     display: none;
   }
 
-  .extraChargesButton{
+  .selectBoosterContent {
+    display: none;
+  }
+
+  .turboBoostContent {
+    display: none;
+  }
+
+  .streamingContent {
+    display: none;
+  }
+
+  .extraChargesButton {
     text-align: start;
     margin-right: 3rem;
     padding: 0;
@@ -93,15 +112,17 @@ input[type="radio"]:checked + label {
     color: white;
     font-weight: 500;
   }
-  .title{
+
+  .title {
     margin-top: 1rem;
     font-size: large;
     font-weight: 700;
   }
-  .body{
+
+  .body {
     font-size: medium;
 
-    .button{
+    .button {
       margin-top: 1rem;
       padding: 0 3rem;
       border: none;
@@ -110,10 +131,11 @@ input[type="radio"]:checked + label {
       font-weight: 500;
     }
 
-    .applyButton{
+    .applyButton {
       background-color: red;
     }
-    .cancelButton{
+
+    .cancelButton {
       background-color: green;
     }
   }

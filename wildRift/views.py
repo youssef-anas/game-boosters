@@ -1,14 +1,13 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, redirect,reverse, get_object_or_404
+from django.http import HttpResponseBadRequest
 from django.urls import reverse
-from django.shortcuts import render
 from paypal.standard.forms import PayPalPaymentsForm
 from django.http import JsonResponse
 import requests
 from django.http import HttpResponse
-from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement
+from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement, WildRiftDivisionOrder, WildRiftPlacementOrder
 import json
 import uuid
 from django.forms.models import model_to_dict
@@ -92,3 +91,41 @@ def payment_successed(request):
 
 def payment_canceled(request):
     return HttpResponse('payment success')
+
+def wildRiftOrders(request):
+    divisions_order = WildRiftDivisionOrder.objects.filter(booster__isnull=True)
+    placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
+
+    context = {
+        "divisions_order": divisions_order,
+        "placements_order": placements_order
+    }
+    return render(request,'wildRift/Orders.html', context)
+
+def wildRiftOrderChat(request, order_type, id):
+    if order_type == 'division':
+        order = get_object_or_404(WildRiftDivisionOrder, id=id)
+        if order.is_taken:
+            pass
+
+    elif order_type == 'placement':
+        order = get_object_or_404(WildRiftPlacementOrder, id=id)
+        order = get_object_or_404(WildRiftDivisionOrder, id=id)
+        if order.is_taken:
+            pass
+    else:
+        return HttpResponseBadRequest("Invalid Order Type")
+    
+    try:
+        order.booster = request.user
+        order.save()
+    except Exception as e:
+        print(f"Error updating order: {e}")
+        return HttpResponseBadRequest("Error updating order")
+    
+    context = {
+        'order_type': order_type,
+        'order': order
+    }
+
+    return render(request, 'wildRift/Chat.html', context)

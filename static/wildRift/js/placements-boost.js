@@ -1,5 +1,4 @@
 $(document).ready(function () {
-  console.log('I Am Here ^^')
   const radioButtonsRank = $('input[name="radio-group-ranks"]');
   const sliderEl = $("#game-count");
   const sliderValue = $(".value");
