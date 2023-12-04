@@ -69,6 +69,80 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("initail mark price = ", number_of_mark)
 
 
+    let total_Percentage = 0;
+
+    // ################################ Extra Charges Part #################################################
+    const buttons = {
+      duoBoosting: document.querySelector('#duoBoostingButton'),
+      selectBooster: document.querySelector('#selectBoosterButton'),
+      turboBoost: document.querySelector('#turboBoostButton'),
+      streaming: document.querySelector('#streamingButton'),
+    };
+
+    const contents = {
+      duoBoosting: document.querySelector('.duoBoostingContent'),
+      selectBooster: document.querySelector('.selectBoosterContent'),
+      turboBoost: document.querySelector('.turboBoostContent'),
+      streaming: document.querySelector('.streamingContent'),
+    };
+
+    const Applybuttons = {
+      duoBoosting: document.querySelector('#duoBoostingApplyButton'),
+      selectBooster: document.querySelector('#selectBoosterApplyButton'),
+      turboBoost: document.querySelector('#turboBoostApplyButton'),
+      streaming: document.querySelector('#streamingApplyButton'),
+    };
+
+    // Toggle Function
+    function toggleContent(content) {
+      for (const key in contents) {
+        contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
+      }
+    }
+
+    // Toggle click event
+    function setupButtonClickEvent(button, content) {
+      button.addEventListener('click', function () {
+        toggleContent(content);
+      });
+    }
+
+    function updateTotalPercentage(percentage, add = true, button) {
+      buttonOldName = buttons[button].innerHTML
+      if (add) {
+        total_Percentage += percentage;
+        buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
+        Applybuttons[button].innerHTML = 'Cancel'
+        Applybuttons[button].classList.remove('applyButton');
+        Applybuttons[button].classList.add('cancelButton');
+      } else {
+        total_Percentage -= percentage;
+        buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
+        Applybuttons[button].innerHTML = 'Apply'
+        Applybuttons[button].classList.remove('cancelButton');
+        Applybuttons[button].classList.add('applyButton');
+      }
+
+      console.log(total_Percentage)
+    }
+
+    // Apply Button
+    function setupApplyButtonClickEvent(button, percentage) {
+      Applybuttons[button].addEventListener('click', function () {
+        updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+        getResult();
+      });
+    }
+
+    // Setup click events for each button
+    for (const key in buttons) {
+      setupButtonClickEvent(buttons[key], key);
+    }
+    setupApplyButtonClickEvent('duoBoosting', 0.65);
+    setupApplyButtonClickEvent('selectBooster', 0.05);
+    setupApplyButtonClickEvent('turboBoost', 0.20);
+    setupApplyButtonClickEvent('streaming', 0.15);
+
     function getResult() {
       const startt = ((current_rank - 1) * 4) + 1 + current_division;
       const endd = ((desired_rank - 1) * 4) + desired_division;
@@ -84,6 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
       if (summ !== 0) {
         result_with_mark = summ - number_of_mark;
       }
+
+      // Apply extra charges to the result
+      result_with_mark += result_with_mark * total_Percentage;
+      result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
       const pricee = document.querySelector('.price-data.division-boost');
       console.log('priceeeeeeeeeeeeee', pricee)
@@ -195,84 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
   });
-
-
-  
-  // ################################ Extra Charges Part #################################################
-  let total_price = 30
-  const buttons = {
-    duoBoosting: document.querySelector('#duoBoostingButton'),
-    selectBooster: document.querySelector('#selectBoosterButton'),
-    turboBoost: document.querySelector('#turboBoostButton'),
-    streaming: document.querySelector('#streamingButton'),
-  };
-
-  const contents = {
-    duoBoosting: document.querySelector('.duoBoostingContent'),
-    selectBooster: document.querySelector('.selectBoosterContent'),
-    turboBoost: document.querySelector('.turboBoostContent'),
-    streaming: document.querySelector('.streamingContent'),
-  };
-
-  const Applybuttons = {
-    duoBoosting: document.querySelector('#duoBoostingApplyButton'),
-    selectBooster: document.querySelector('#selectBoosterApplyButton'),
-    turboBoost: document.querySelector('#turboBoostApplyButton'),
-    streaming: document.querySelector('#streamingApplyButton'),
-  };
-
-  // Toggle Function
-  function toggleContent(content) {
-    for (const key in contents) {
-      // if (key === content && contents[key].style.display !== 'block') {
-      //   contents[key].style.display = 'block';
-      // } else {
-      //     contents[key].style.display = 'none';
-      // }
-      contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
-    }
-  }
-
-  function updateTotalPrice(price, add = true,button) {
-    buttonOldName = buttons[button].innerHTML
-    if (add) {
-      total_price += price;
-      buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
-      Applybuttons[button].innerHTML = 'Cancel'
-      Applybuttons[button].classList.remove('applyButton');
-      Applybuttons[button].classList.add('cancelButton');
-    } else {
-      total_price -= price;
-      buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
-      Applybuttons[button].innerHTML = 'Apply'
-      Applybuttons[button].classList.remove('cancelButton');
-      Applybuttons[button].classList.add('applyButton');
-    }
-    console.log('Total Price:', total_price);
-  }
-
-  // Toggle click event
-  function setupButtonClickEvent(button, content) {
-    button.addEventListener('click', function () {
-      toggleContent(content);
-    });
-  }
-
-  // Apply Button
-  function setupApplyButtonClickEvent(button, price) {
-    Applybuttons[button].addEventListener('click', function () {
-      updateTotalPrice(price, !Applybuttons[button].classList.contains('cancelButton'),button);
-    });
-  }
-
-  // Setup click events for each button
-  for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-  }
-  setupApplyButtonClickEvent('duoBoosting', 0.65 * total_price);
-  setupApplyButtonClickEvent('selectBooster', 0.05 * total_price);
-  setupApplyButtonClickEvent('turboBoost', 0.20 * total_price);
-  setupApplyButtonClickEvent('streaming', 0.15 * total_price);
 
 });
 
