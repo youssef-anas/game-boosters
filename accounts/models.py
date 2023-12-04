@@ -7,7 +7,7 @@ from django_countries.fields import CountryField
 class UserManager(UserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError('The Email field Must Be Set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -19,8 +19,6 @@ class UserManager(UserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self.create_user(email, password, **extra_fields)
-
-
 
 class BaseUser(AbstractUser):
     phone_number = PhoneNumberField(null=True,blank=True)

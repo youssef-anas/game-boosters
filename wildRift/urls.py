@@ -7,4 +7,5 @@ urlpatterns = [
     path('paypal/', view_that_asks_for_money ,name='paypal'),
     path('payment-successed/', payment_successed ,name='wildrift.payment.success'),
     path('payment-canceled/', payment_canceled ,name='wildrift.payment.canceled'),
+    path('payment-canceled/', payment_canceled ,name='wildrift.confirm.order'),
 ]

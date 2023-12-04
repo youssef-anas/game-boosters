@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import BaseUser
 
 # # Create your models here.
 
@@ -91,3 +92,36 @@ class WildRiftPlacement(models.Model):
     
     def get_image_url(self):
         return f"/media/{self.image}"
+    
+class WildRiftDivisionOrder(models.Model):
+    current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank')
+    desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank')
+    current_division = models.IntegerField()
+    desired_division = models.IntegerField()
+    mark = models.IntegerField()
+    price = models.FloatField()
+    invoice = models.FloatField()
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} )
+    is_taken = models.BooleanField(default=False ,blank=True)
+    is_done = models.BooleanField(default=False ,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Boosting From {self.current_rank} {self.current_division} Marks {self.mark} To {self.desired_rank} {self.desired_division}"
+    
+class WildRiftPlacementOrder(models.Model):
+    last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
+    number_of_match = models.IntegerField()
+    price = models.FloatField()
+    invoice = models.FloatField()
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
+    is_taken = models.BooleanField(default=False ,blank=True)
+    is_done = models.BooleanField(default=False ,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"
