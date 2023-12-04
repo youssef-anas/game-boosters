@@ -7,6 +7,8 @@
   --section-padding: 100px;
   --main-transition: 0.5s;
   --section-padding: 100px;
+  --alternative-color-rgba: 76, 73, 116;
+  --main-color-rgba: 61, 34, 98;
 }
 .navbar.bg-transparent {
   position: fixed;
@@ -44,12 +46,28 @@
   }
 }
 .games {
-  background-color: var(--main-color);
+  position: relative;
+  background-image: url('../images/bg7.jpg');
+  background-size: cover;
+  background-position: center bottom;
+  z-index: 0;
+}
+
+.games::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: -1;
 }
 .games .games-card {
   display: flex;
   flex-wrap: wrap;
   margin-top: 60px;
+  opacity: 80%;
 }
 .games .games-card .box {
   position: relative;
@@ -103,6 +121,7 @@
   color: white;
   text-align: center;
   position: relative;
+  height: 20%;
 }
 .footer::before {
   content: "";

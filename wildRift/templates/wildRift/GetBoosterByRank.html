@@ -6,8 +6,9 @@
 <link href="{% static 'wildRift/css/placement.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
-<div class="container-fluid py-5 wild-rift">
-    <div class="container py-5">
+<div class='body py-5'>
+<div class="container-fluid wild-rift">
+    <div class="container">
         <div class="choise text-center mb-3">
             <input type="radio" id="division-boost" name="radio-group-type" checked>
             <label for="division-boost" class="me-2">Division Boost</label>
@@ -115,7 +116,7 @@
 
                 </div>
             </div>
-            <hr class="border border-3 mt-4 mx-2" >
+            <hr class="hr border border-3 mt-4 mx-2">
             <div class='extraChargesSection'>
                 <div>
                     <button class='extraChargesButton' id='duoBoostingButton'>Duo Boosting</button>
@@ -125,7 +126,7 @@
                 </div>
                 <div class='duoBoostingContent'>
                     <p class='title'>Duo Boosting (+65%) </p>
-                    <div class='body'>
+                    <div class='extraChargesBody'>
                         <p class='p-0 m-0'>Are you willing to play on your own account with our booster as a partner? Then select this option!</p>
                         <p class='p-0 m-0'>"Duo Boost" option is not available in a combination with "Choose Champions" option, "Choose Champions" option and will be ignored.</p>
                         <div class='d-flex justify-content-end'>
@@ -135,7 +136,7 @@
                 </div>
                 <div class='selectBoosterContent'>
                     <p class='title'>Select Booster (+5%) </p>
-                    <div class='body'>
+                    <div class='extraChargesBody'>
                         <p class='p-0 m-0'>Did you like your previous Booster or you are looking forward to select a specific person to work on your account? Use this option to select the right booster!</p>
                         <div class='d-flex justify-content-end'>
                             <button class='button applyButton' id='selectBoosterApplyButton'>Apply</button>
@@ -144,7 +145,7 @@
                 </div>
                 <div class='turboBoostContent'>
                     <p class='title'>Turbo Boost (+20%) </p>
-                    <div class='body'>
+                    <div class='extraChargesBody'>
                         <p class='p-0 m-0'>We will increase the payout for your order and will stick it to the top of our pending queue.</p>
                         <div class='d-flex justify-content-end'>
                             <button class='button applyButton' id='turboBoostApplyButton'>Apply</button>
@@ -153,13 +154,30 @@
                 </div>
                 <div class='streamingContent'>
                     <p class='title'>Streaming (+15%) </p>
-                    <div class='body'>
+                    <div class='extraChargesBody'>
                         <p class='p-0 m-0'>With this option turned on you will be able to watch everything your booster sees during the boosting process.</p>
                         <div class='d-flex justify-content-end'>
                             <button class='button applyButton' id='streamingApplyButton'>Apply</button>
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- -------------------------- Purchase Section ------------------------- -->
+            <br/>
+            <br/>
+            <hr class="hr border border-3 mt-5 mb-0" style='width:100% !important'>
+            <div class="row py-5 rounded-3 purchase-Section">
+                <div class="price-data division-boost col-10 text-start">
+                </div>
+                {% comment %} <div class="price-data placements-boost col-10 text-end"></div> {% endcomment %}
+                <center>
+                    <div class="purchase col-10 mt-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                        </form>
+                    </div>
+                </center>
             </div>
 
         </div>
@@ -187,14 +205,12 @@
             </div>
         </div>
     </div>
-
-
 </div>
-<div class="spikes"></div>
-<div class="container-fluid py-5 price">
+{% comment %} <div class="spikes"></div> {% endcomment %}
+{% comment %} <div class="container-fluid py-5 price">
     <div class="container py-5">
         <div class="price-container row justify-content-center flex-wrap py-5 rounded-3 shadow">
-            <div class="price-data division-boost col-10 text-end">
+            <div class="price-data division-boost col-10 text-start">
             </div>
 
             <div class="price-data placements-boost col-10 text-end"></div>
@@ -207,7 +223,7 @@
         </div>
     </div>
     <!-- ------------------------------- -->
-   
+</div> {% endcomment %}
 </div>
 {% endblock %}
 {% block script %}

@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log('priceeeeeeeeeeeeee', pricee)
       pricee.innerHTML = `
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
-      <h4>$${result_with_mark}</h4>
+      <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
     `;
     }
     getResult();
