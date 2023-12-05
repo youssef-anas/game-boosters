@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'paypal.standard.ipn',
     'corsheaders',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -165,5 +166,5 @@ AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = ['*']
 
-PAYPAL_EMAIL='sb-qsoz620578515@business.example.com'
+PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
 PAYPAL_TEST = True

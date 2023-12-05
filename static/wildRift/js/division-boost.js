@@ -34,18 +34,19 @@ document.addEventListener("DOMContentLoaded", function () {
       $.getJSON('/static/wildRift/data/divisions_data.json', function (data) {
         divisionPrices = divisionPrices.concat(...data);
         resolve();
+        console.log('List',divisionPrices)
       });
     }),
     new Promise(function (resolve, reject) {
       $.getJSON('/static/wildRift/data/marks_data.json', function (data) {
-        marks_price = marks_price.concat(data.slice(1));
-        console.log('hi', marks_price);
+        marks_price = marks_price.concat(data.slice(0));
+        console.log('mark price', marks_price);
         resolve();
       });
     })
   ]).then(function () {
     console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
-    const divisionRanks = [null, 'iron', 'bronze', 'silver', 'gold', 'platinum', 'emerald', 'diamond', 'master'];
+    const divisionRanks = ['', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'emerald', 'diamond', 'master'];
 
     const divisionNames = [0, 'IV', 'III', 'II', 'I']
 
@@ -144,8 +145,8 @@ document.addEventListener("DOMContentLoaded", function () {
     setupApplyButtonClickEvent('streaming', 0.15);
 
     function getResult() {
-      const startt = ((current_rank - 1) * 4) + 1 + current_division;
-      const endd = ((desired_rank - 1) * 4) + desired_division;
+      const startt = ((current_rank - 1) * 4) + current_division;
+      const endd = ((desired_rank - 1) * 4) + desired_division-1;
       const slicedArray = sliceArray(divisionPrices, startt, endd);
       console.log('Start', startt)
       console.log('End', endd)

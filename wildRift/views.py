@@ -3,7 +3,6 @@ from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from paypal.standard.forms import PayPalPaymentsForm
 from django.http import JsonResponse
-import requests
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
@@ -11,8 +10,39 @@ from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPl
 import json
 import uuid
 from django.forms.models import model_to_dict
+from .serializers import RankSerializer
 
-# Create your views here.
+
+division_names = ['','IV','III','II','I']  
+rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
+
+def get_order_result_by_rank(data):
+    current_rank = data['current_rank']
+    current_division = data['current_division']
+    marks = data['marks']
+    desired_rank = data['desired_rank']
+    desired_division = data['desired_division']
+    # Read data from JSON file
+    with open('static/wildRift/data/divisions_data.json', 'r') as file:
+        division_price = json.load(file)
+        flattened_data = [item for sublist in division_price for item in sublist]
+        flattened_data.insert(0,0)
+    ##
+    with open('static/wildRift/data/marks_data.json', 'r') as file:
+        marks_data = json.load(file)
+        marks_data.insert(0,[0,0,0,0,0,0,0])
+    ##    
+    start_division = ((current_rank-1)*4) + current_division
+    end_division = ((desired_rank-1)*4)+ desired_division
+    marks_price = marks_data[current_rank][marks]
+    sublist = flattened_data[start_division:end_division ]
+    total_sum = sum(sublist)
+    price = total_sum - marks_price
+
+    name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_division]} {division_names[desired_division]}'
+
+    return({'name':name,'price':price})
+
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
@@ -47,44 +77,6 @@ def wildRiftGetBoosterByRank(request):
     if request.method == 'POST': 
         return HttpResponse("hi")
     return render(request,'wildRift/GetBoosterByRank.html', context)
-
-
-
-@csrf_exempt
-def view_that_asks_for_money(request):
-
-    ranks = WildRiftRank.objects.all()
-    ranks_map = {obj.id: model_to_dict(obj) for obj in ranks}
-
-    divisions  = WildRiftTier.objects.all()
-    divisions_map = {obj.id: model_to_dict(obj) for obj in divisions}
-
-    marks = WildRiftMark.objects.all()
-    marks_map = {obj.id: model_to_dict(obj) for obj in marks}
-
-    dynamic_invoice = str(uuid.uuid4())
-
-
-    print(ranks_map[1])
-    print(divisions_map[1])
-    print(marks_map[1])
-
-    print(dynamic_invoice)
-
-    
-    paypal_dict = {
-        "business": settings.PAYPAL_EMAIL,
-        "amount": "120.00",
-        "item_name": "FROM SILVER II MARKS 0 TO GOLD III",
-        "invoice": dynamic_invoice,
-        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(reverse('wildrift.payment.success')),
-        "cancel_return": request.build_absolute_uri(reverse('wildrift.payment.canceled')),
-    }
-    # Create the instance.
-    form = PayPalPaymentsForm(initial=paypal_dict)
-    context = {"form": form}
-    return render(request, "wildRift/paypal.html", context)
 
 def payment_successed(request):
     return HttpResponse('payment success')
@@ -123,3 +115,33 @@ def wildRiftOrderChat(request, order_type, id):
     }
 
     return render(request, 'wildRift/Chat.html', context)
+
+
+
+@csrf_exempt
+def view_that_asks_for_money(request):
+    if request.method == 'POST':
+        try:
+            serializer = RankSerializer(data=request.POST)
+            if serializer.is_valid():
+                data = serializer.validated_data
+                order_info = get_order_result_by_rank(data)
+                dynamic_invoice = str(uuid.uuid4())
+                paypal_dict = {
+                    "business": settings.PAYPAL_EMAIL,
+                    "amount": order_info['price'],
+                    "item_name": order_info['name'],
+                    "invoice": dynamic_invoice,
+                    "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+                    "return": request.build_absolute_uri(reverse('wildrift.payment.success')),
+                    "cancel_return": request.build_absolute_uri(reverse('wildrift.payment.canceled')),
+                }
+                # Create the instance.
+                form = PayPalPaymentsForm(initial=paypal_dict)
+                context = {"form": form}
+                return render(request, "wildRift/paypal.html", context,status=200)
+            return JsonResponse({'error': serializer.errors}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

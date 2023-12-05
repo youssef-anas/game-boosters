@@ -66,7 +66,6 @@ class WildRiftMark(models.Model):
         MARK_3 = 3, '3 Marks'
         MARK_4 = 4, '4 Marks'
         MARK_5 = 5, '5 Marks'
-        MARK_6 = 6, '6 Marks'
 
     rank = models.OneToOneField('WildRiftRank', related_name='mark', on_delete=models.CASCADE)
     tier = models.OneToOneField(WildRiftTier, related_name='tier_mark', on_delete=models.CASCADE)
