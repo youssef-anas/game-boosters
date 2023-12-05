@@ -13,7 +13,6 @@ label {
   /* Optional border for styling */
   border-radius: 4px;
 }
-
 /* Change label style when radio button is checked */
 input[type="radio"]:checked+label {
   background-color: var(--secondary-color);
@@ -21,6 +20,9 @@ input[type="radio"]:checked+label {
   color: white;
   /* Change the text color when checked */
 }
-.orders {
+.orders-container {
   background-image: linear-gradient(to top, #37175E 0%, #582984 50%, #4A0774) !important;
+}
+.orders:nth-child(odd) {
+  border-left: 0.25rem solid var(--secondary-color)!important;
 }

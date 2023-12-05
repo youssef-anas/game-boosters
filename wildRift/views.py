@@ -105,14 +105,8 @@ def wildRiftOrders(request):
 def wildRiftOrderChat(request, order_type, id):
     if order_type == 'division':
         order = get_object_or_404(WildRiftDivisionOrder, id=id)
-        if order.is_taken:
-            pass
-
     elif order_type == 'placement':
         order = get_object_or_404(WildRiftPlacementOrder, id=id)
-        order = get_object_or_404(WildRiftDivisionOrder, id=id)
-        if order.is_taken:
-            pass
     else:
         return HttpResponseBadRequest("Invalid Order Type")
     
