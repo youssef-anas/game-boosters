@@ -74,8 +74,6 @@ def wildRiftGetBoosterByRank(request):
         "divisions": divisions_list,
         "placements": placements
     }
-    if request.method == 'POST': 
-        return HttpResponse("hi")
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
 def payment_successed(request):

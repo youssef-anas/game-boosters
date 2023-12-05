@@ -172,10 +172,7 @@
                 {% comment %} <div class="price-data placements-boost col-10 text-end"></div> {% endcomment %}
                 <center>
                     <div class="purchase col-10 mt-4">
-                        <form method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
-                        </form>
+                        <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
                     </div>
                 </center>
             </div>
@@ -215,10 +212,7 @@
 
             <div class="price-data placements-boost col-10 text-end"></div>
             <div class="purchase col-10 text-center mt-4">
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
-                </form>
+            <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
             </div>
         </div>
     </div>
