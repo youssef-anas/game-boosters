@@ -4,8 +4,52 @@
 {% block style %}
 <link rel="stylesheet" href="{% static 'wildRift/css/orders.css'%}">
 {% endblock %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
+    <div class="container position-relative align-items-center ">
+      <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav align-items-center ">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="">Contact Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">FAQ</a>
+          </li>
+          {% if user.id %}
+          <div class="dropdown">
+            <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{user.first_name}} {{user.last_name}}
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
+              </li>
+            </ul>
+          </div>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+</nav>
+{% endblock %}
 {% block container %}
-<div class="orders-container container-fluid p-5 text-white">
+<div class="orders-container container-fluid p-5 text-white" style="min-height: 1000vh;">
   <div class="container py-5">
 
     <div class="choise text-center mb-3">
@@ -15,51 +59,59 @@
       <label for="placements-boost-order" class="me-2">Placements Boost Orders</label>
     </div>
 
-    <!-- --------------- Division Boost Orders --------------- -->
-    <div class="division-boost-order">
-      <h4 class="my-4">Division Boost Orders</h4>
-      <div class="row">
-        {% for order in divisions_order %}
-        <div class="col-xl-3 col-md-6 mb-4 text-dark">
-          <div class="card shadow h-100 py-2 orders">
-            <div class="card-body">
-              <h5 class="card-title">{{order}}</h5>
-              <div class="d-flex justify-content-between align-items-center my-2">
-                <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
-                <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
-                <a href="{% url 'order.chat' order_type='division' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--secondary-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+    <div class="row">
+      <div class="col-lg-8 col-12">
+        <!-- --------------- Division Boost Orders --------------- -->
+        <div class="division-boost-order">
+          <h4 class="my-4">Division Boost Orders</h4>
+          <div class="row">
+            {% for order in divisions_order %}
+            <div class="col-xl-6 col-md-12 mb-4 text-dark">
+              <div class="card shadow h-100 py-2 orders">
+                <div class="card-body">
+                  <h5 class="card-title">{{order}}</h5>
+                  <div class="d-flex justify-content-between align-items-center my-2">
+                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
+                    <a href="{% url 'order.chat' order_type='division' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--secondary-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                  </div>
+                </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
-        {% endfor %}
-      </div>
-    </div>
 
-    <!-- --------------- Placements Boost Orders --------------- -->
-    <div class="placements-boost-order">
-      <h4 class="mb-3">Placements Boost Orders</h4>
-      <div class="row">
-        {% for order in placements_order %}
-        <div class="col-xl-3 col-md-6 mb-4 text-dark">
-          <div class="card shadow h-100 py-2 orders">
-            <div class="card-body">
-              <h5 class="card-title">{{order}}</h5>
-              <div class="d-flex justify-content-between align-items-center my-2">
-                <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
-                <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
-              </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="h5 mb-0 placement-price placement-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
-                <a href="{% url 'order.chat' order_type='placement' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--secondary-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+        <!-- --------------- Placements Boost Orders --------------- -->
+        <div class="placements-boost-order">
+          <h4 class="mb-3">Placements Boost Orders</h4>
+          <div class="row">
+            {% for order in placements_order %}
+            <div class="col-xl-6 col-md-12 mb-4 text-dark">
+              <div class="card shadow h-100 py-2 orders">
+                <div class="card-body">
+                  <h5 class="card-title">{{order}}</h5>
+                  <div class="d-flex justify-content-between align-items-center my-2">
+                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="h5 mb-0 placement-price placement-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
+                    <a href="{% url 'order.chat' order_type='placement' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--secondary-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                  </div>
+                </div>
               </div>
             </div>
+            {% endfor %}
           </div>
         </div>
-        {% endfor %}
+      </div>
+
+      <div class="col-lg-4 d-lg-block d-none">
+        <img class="wild-rift-image" src="{% static 'wildRift/images/wild-rift.webp' %}" />
       </div>
     </div>
 

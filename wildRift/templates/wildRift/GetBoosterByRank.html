@@ -5,6 +5,50 @@
 <link href="{% static 'wildRift/css/wildRift.css'%}" rel="stylesheet" />
 <link href="{% static 'wildRift/css/placement.css'%}" rel="stylesheet" />
 {% endblock %}
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
+    <div class="container position-relative align-items-center ">
+      <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav align-items-center ">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="">Contact Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">FAQ</a>
+          </li>
+          {% if user.id %}
+          <div class="dropdown">
+            <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{user.first_name}} {{user.last_name}}
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
+              </li>
+            </ul>
+          </div>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+</nav>
+{% endblock %}
 {% block container %}
 <div class='body py-5'>
 <div class="container-fluid wild-rift">
@@ -197,7 +241,7 @@
                 <div class="price-data placements-boost col-10 text-start"></div>
                 <center>
                     <div class="purchase col-10 mt-4">
-                        <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                        <!-- <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button> -->
                     </div>
                 </center>
             </div>
@@ -214,13 +258,30 @@
 
             <div class="price-data placements-boost col-10 text-end"></div>
             <div class="purchase col-10 text-center mt-4">
-            <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                <button type="button" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
             </div>
         </div>
     </div>
     <!-- ------------------------------- -->
 </div> {% endcomment %}
 </div>
+{% endblock %}
+{% block footer %}
+<!-- Start Footer -->
+<div class="footer">
+  <div class="container">
+    <img src="{% static 'homepage/images/logo.png' %}" alt="Logo" />
+    <p>We Are Social</p>
+    <div class="social-icons">
+      <i class="fa-brands fa-facebook-f"></i>
+      <i class="fa-brands fa-twitter"></i>
+      <i class="fa-solid fa-house"></i>
+      <i class="fa-brands fa-linkedin-in"></i>
+    </div>
+    <div class="copyright text-center">&copy; 2023 <span>Game Booster</span> All Right Reserved</div>
+  </div>
+</div>
+<!-- End Footer -->
 {% endblock %}
 {% block script %}
 <script src="{% static 'wildRift/js/main.js' %}"></script>
