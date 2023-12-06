@@ -59,6 +59,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
     var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
     var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
+    var mark = 0
 
     $.getJSON('/static/wildRift/data/marks_data.json', function (data) {
       marks_price = marks_price.concat(data.slice(1));
@@ -167,7 +168,7 @@ console.log("initail mark price = ", number_of_mark)
       const pricee = document.querySelector('.price-data.division-boost');
       console.log('priceeeeeeeeeeeeee', pricee)
       pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
     `;
     }
@@ -222,8 +223,6 @@ console.log("initail mark price = ", number_of_mark)
       });
     });
 
-
-
     radioButtonsDesired.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
@@ -241,8 +240,6 @@ console.log("initail mark price = ", number_of_mark)
       });
     });
 
-
-
     radioButtonsCurrentDivision.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
@@ -252,8 +249,6 @@ console.log("initail mark price = ", number_of_mark)
         getResult();
       });
     });
-
-
 
     radioButtonsDesiredDivision.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
@@ -268,16 +263,12 @@ console.log("initail mark price = ", number_of_mark)
     makrs_on_current_rank_checked.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
-        console.log('Selected Mark index:', selectedIndex);
         number_of_mark = marks_price[current_rank][selectedIndex];
+        mark = selectedIndex
+        console.log('Selected Mark:', number_of_mark);
         getResult();
       });
     });
   });
-
-
-
-
-
 
 });
