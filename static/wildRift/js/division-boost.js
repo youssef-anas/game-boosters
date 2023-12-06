@@ -275,37 +275,9 @@ console.log("initail mark price = ", number_of_mark)
     });
   });
 
-  function postData() {
-    // Create your data object
-    const dataObject = {
-      current_rank:1,
-      current_division:1,
-      marks:1,
-      desired_rank:1,
-      desired_division:2,
-      price:120,
-      // Add other properties as needed
-    };
 
-    // Make a POST request using fetch
-    fetch('http://127.0.0.1:8000/wildRift/paypal/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json', // Set the content type based on your API requirements
-      },
-      body: JSON.stringify(dataObject), // Convert data object to JSON
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Success:', data);
-      // Handle the response data as needed
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-      // Handle errors
-    });
-  }
+
+
+
 
 });
-
-

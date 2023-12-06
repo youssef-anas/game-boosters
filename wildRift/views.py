@@ -137,6 +137,7 @@ def view_that_asks_for_money(request):
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
+                print('done')
                 return render(request, "wildRift/paypal.html", context,status=200)
             return JsonResponse({'error': serializer.errors}, status=400)
         except Exception as e:
