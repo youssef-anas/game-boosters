@@ -293,8 +293,8 @@ let gameCounter = gameCounterInitial
 console.log('total_Percentage total_Percentage total_Percentage',total_Percentage)
 
 const getPrices = () => {
-  let price = parseFloat((rank_price * gameCounter).toFixed(2));
-  price = price + (price * total_Percentage)
+  let price = (rank_price * gameCounter).toFixed(2);
+  price = parseFloat(price + (price * total_Percentage))
   console.log("Final Price", price, 'total percentage',total_Percentage)
   const pricee = $('.price-data.placements-boost').eq(0);
   pricee.html(`
