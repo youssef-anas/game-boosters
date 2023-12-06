@@ -1,4 +1,3 @@
-$(document).ready(function () {
   const radioButtonsRank = $('input[name="radio-group-ranks"]');
   const sliderEl = $("#game-count");
   const sliderValue = $(".value");
@@ -12,9 +11,13 @@ $(document).ready(function () {
   let rank_price = initiallyCheckedIndexRankPrice
   let gameCounter = gameCounterInitial
 
+  console.log('total_Percentage total_Percentage total_Percentage',total_Percentage)
+
   const getPrices = () => {
     const price = parseFloat((rank_price * gameCounter).toFixed(2));
-    console.log("Final Price", price)
+    price = price + (price * total_Percentage)
+
+    console.log("Final Price", price, 'total percentage',total_Percentage)
     const pricee = $('.price-data.placements-boost').eq(0);
     pricee.html(`
     <p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
@@ -49,4 +52,3 @@ $(document).ready(function () {
 
     getPrices()
   });
-});
