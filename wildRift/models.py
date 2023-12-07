@@ -95,11 +95,11 @@ class WildRiftPlacement(models.Model):
         return f"/media/{self.image}"
     
 class WildRiftDivisionOrder(models.Model):
-    DIVISION_CHOISES = [
-        (1 , 'IV'),
-        (2 , 'III'),
-        (3 , 'II'),
-        (4 , 'I'),
+    DIVISION_CHOICES = [
+        (1, 'IV'),
+        (2, 'III'),
+        (3, 'II'),
+        (4, 'I'),
     ]
     MARKS_CHOISES = [
         (0 , '0 Marks'),
@@ -109,13 +109,14 @@ class WildRiftDivisionOrder(models.Model):
         (4 , '4 Marks'),
         (5 , '5 Marks'),
     ]
-    current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank')
-    desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank')
-    current_division = models.IntegerField(choices=DIVISION_CHOISES)
-    desired_division = models.IntegerField(choices=DIVISION_CHOISES)
-    mark = models.IntegerField(choices=MARKS_CHOISES)
-    price = models.FloatField(default=0)
-    invoice = models.FloatField(default=0)
+    name = models.CharField(max_length=300)
+    current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
+    desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
+    current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+    desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+    mark = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+    price = models.FloatField(default=0,blank=True, null=True)
+    invoice = models.CharField(max_length=300,blank=True, null=True)
     booster_percent1 = models.IntegerField(default=50)
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
@@ -129,6 +130,41 @@ class WildRiftDivisionOrder(models.Model):
     is_done = models.BooleanField(default=False ,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        parts = self.name.split(' ')
+
+        current_rank_name = parts[4].lower()
+        current_division_str = parts[5]
+        marks = int(parts[7])
+        desired_rank_name = parts[9].lower()
+        desired_division_str = parts[10]
+
+        try:
+            current_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
+            desired_rank = WildRiftRank.objects.get(rank_name__iexact=desired_rank_name)
+        except WildRiftRank.DoesNotExist:
+            print(f"Rank not found: {current_rank_name} or {desired_rank_name}")
+            return
+
+        current_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
+        desired_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == desired_division_str.lower()), None)
+        self.current_rank = current_rank
+        self.current_division = current_division
+        self.mark = marks
+        self.desired_rank = desired_rank
+        self.desired_division = desired_division
+
+        if "WITH" in self.name:
+            boost_part = self.name.split("WITH")[1].strip()
+            boost_options = [boost.strip() for boost in boost_part.split("AND")]
+            
+            self.duo_boosting = 'DUO BOOSTING' in boost_options
+            self.select_booster = 'SELECT BOOSTING' in boost_options
+            self.turbo_boost = 'TURBO BOOST' in boost_options
+            self.streaming = 'STREAMING' in boost_options
+
+        super().save(*args, **kwargs) 
 
     def __str__(self):
         return f"Boosting From {self.current_rank} {self.current_division} Marks {self.mark} To {self.desired_rank} {self.desired_division}"

@@ -73,7 +73,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
 
 
 
-    // ################################ Extra Charges Part #################################################
+  // ################################# Extra Charges Part #################################
     const buttons = {
       duoBoosting: document.querySelector('#duoBoostingButton'),
       selectBooster: document.querySelector('#selectBoosterButton'),
@@ -113,11 +113,13 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       let buttonOldName = buttons[button].innerHTML
       if (add) {
         total_Percentage += percentage;
+        $(`#${button}`).val(true);
         buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
         Applybuttons[button].innerHTML = 'Cancel'
         Applybuttons[button].classList.remove('applyButton');
         Applybuttons[button].classList.add('cancelButton');
       } else {
+        $(`#${button}`).val(false);
         total_Percentage -= percentage;
         buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
         Applybuttons[button].innerHTML = 'Apply'
@@ -132,6 +134,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     function setupApplyButtonClickEvent(button, percentage) {
       Applybuttons[button].addEventListener('click', function () {
         updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+        console.log('btn', button)
         getResult();
         getPrices();
       });
@@ -172,6 +175,14 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
     `;
+
+      // From Value
+      $('input[name="current_rank"]').val(current_rank);
+      $('input[name="current_division"]').val(current_division);
+      $('input[name="marks"]').val(mark);
+      $('input[name="desired_rank"]').val(desired_rank);
+      $('input[name="desired_division"]').val(desired_division);
+      $('input[name="price"]').val(result_with_mark);
     }
     getResult();
 
