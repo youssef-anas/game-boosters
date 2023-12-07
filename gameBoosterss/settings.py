@@ -29,9 +29,18 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 
-# Application definition
+ASGI_APPLICATION = 'gameBoosterss.asgi.application'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+# Application definition
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +56,7 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'corsheaders',
     'rest_framework',
+    'chat',
 ]
 
 MIDDLEWARE = [
