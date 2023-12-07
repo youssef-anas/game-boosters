@@ -1,0 +1,175 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Chat with *******{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
+  <div class="container position-relative align-items-center ">
+    <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav align-items-center ">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="">Contact Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">FAQ</a>
+        </li>
+        {% if request.user.id %}
+        <div class="dropdown">
+          <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {{request.user.first_name}} {{request.user.last_name}}
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
+            </li>
+          </ul>
+        </div>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block container %}
+<div class="container mt-5 pt-5">
+  <div class="row d-flex justify-content-center">
+    <div class="col-12">
+      <div class="alert alert-info d-flex justify-content-between" role="alert">
+        <h5>ROOM :- {{room_name}}</h5>
+      </div>
+      <form>
+        <div class="form-group">
+          {% if messages %}
+          <div class="jumbotron" id="chatbox" style="padding: 4px 2px;max-height: 300px; overflow-y: scroll;">
+            {% for message in messages %}
+            <div class='text-dark'>eeeee  {{message.user}} {{user}}</div>
+            <div class="chat-message {% if message.user == request.user %} text-right {% else %} text-left {% endif %}">
+              <b>{{ message.user.username }}</b> : {{ message.content }}<br>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="jumbotron" id="chatbox" style="padding: 4px 2px;"></div>
+          <b>No Messages in this Room.</b>
+          {% endif %}
+
+        </div>
+        <br />
+        <div class="form-group" style="width: 100%;">
+          <input class="form-control" placeholder="Enter text here" id="my_input" type="text" required></br>
+        </div>
+        <br />
+        <input class="btn btn-primary btn-lg btn-block" id="submit_button" type="button" value="Send">
+      </form>
+    </div>
+  </div>
+</div>
+{{slug|json_script:"room_slug"}}
+{% endblock %}
+
+
+
+{% block footer %}
+<!-- Start Footer -->
+<div class="footer">
+  <div class="container">
+    <img src="{% static 'homepage/images/logo.png' %}" alt="Logo" />
+    <p>We Are Social</p>
+    <div class="social-icons">
+      <i class="fa-brands fa-facebook-f"></i>
+      <i class="fa-brands fa-twitter"></i>
+      <i class="fa-solid fa-house"></i>
+      <i class="fa-brands fa-linkedin-in"></i>
+    </div>
+    <div class="copyright text-center">&copy; 2023 <span>Game Booster</span> All Right Reserved</div>
+  </div>
+</div>
+<!-- End Footer -->
+{% endblock %}
+
+{% block script %}
+<script>
+
+  const chatbox = document.querySelector("#chatbox");
+
+  // Function to scroll to the bottom of the chatbox
+  function scrollToBottom() {
+    chatbox.scrollTop = chatbox.scrollHeight;
+  }
+
+  // Scroll to bottom when the page is loaded
+  scrollToBottom();
+
+
+  const roomName = JSON.parse(document.getElementById('room_slug').textContent);
+  const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
+  // const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/"+ roomName +"/");
+  // alert(chatSocket);
+  chatSocket.onopen = function (e) {
+    console.log("The connection was setup successfully !");
+  };
+  chatSocket.onclose = function (e) {
+    console.log("Something unexpected happened !");
+  };
+
+  document.querySelector("#my_input").focus();
+  document.querySelector("#my_input").onkeyup = function (e) {
+    if (e.keyCode == 13) {
+      e.preventDefault();
+      document.querySelector("#submit_button").click();
+    }
+  };
+  document.querySelector("#submit_button").onclick = function (e) {
+    var messageInput = document.querySelector(
+      "#my_input"
+    ).value;
+
+    if (messageInput.length == 0) {
+      alert("Add some Input First Or Press Send Button!")
+    }
+    else {
+      chatSocket.send(JSON.stringify({ message: messageInput, username: "{{request.user.username}}", room_name: "{{room_name}}" }));
+
+
+    }
+
+  };
+
+  chatSocket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    var div = document.createElement("div");
+    div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
+
+    // Add class based on user authentication
+    if (data.username === "{{ request.user.username }}") {
+      div.classList.add("chat-message", "text-right");
+    } else {
+      div.classList.add("chat-message", "text-left");
+    }
+
+    document.querySelector("#my_input").value = "";
+    document.querySelector("#chatbox").appendChild(div);
+    scrollToBottom();
+  };
+</script>
+{% endblock %}

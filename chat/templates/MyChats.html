@@ -1,6 +1,12 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
-{% block title %}Game Boosters{% endblock %}
+{% block title %}My Messages{% endblock %}
+
+{% block style %}
+<link href="{% static 'base/css/master.css'%}" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'chat/css/master.css'%}">
+{% endblock %}
+
 {% block nav %}
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
     <div class="container position-relative align-items-center ">
@@ -17,11 +23,11 @@
           <li class="nav-item">
             <a class="nav-link" href="">FAQ</a>
           </li>
-          {% if user.id %}
+          {% if request.user %}
           <div class="dropdown">
             <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
               aria-expanded="false">
-              {{user.first_name}} {{user.last_name}}
+              {{request.user.first_name}} {{request.user.last_name}}
             </button>
             <ul class="dropdown-menu">
               <li>
@@ -48,32 +54,41 @@
     </div>
 </nav>
 {% endblock %}
+
 {% block container %}
 <div class='body'>
-  <div class="landing  d-flex align-items-center">
-    <div class="container text text-start position-relative">
-      <h2 class="text-uppercase w-50 text-white ">REACH YOUR RANKING GOALS EFFORTLESSLY AND QUICKLY WITH PREMIUM BOOSTING SERVICES!</h2>
-      <p class="fs-5 mt-2 text-light">Transform Your Gaming Experience with the Best Multi-Boosting Project - Boosteria!</p>
+<div class="container messages-section">
+    <div class="btn messages-Header">
+        <h5 class=''>My Messages</h5>
     </div>
-  </div>
-  
-  <div class="games"> 
-    <div class="container py-5">
-      <h3 class="text-uppercase text-white ">CHOOSE YOUR GAME TO GET DESIRED RANK</h3>
-      <div class="games-card">
-        {% for game in games %}
-        <div class="box p-2" >
-          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}} style='border-radius: 1rem;'>
-          <div class="caption">
-            <h3>{{game.name}}</h3>
-          </div>
-        </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+    {% if rooms %}
+    <table class="table table-borderless">
+        <tbody>
+          {% for room_name, room in last_messages.items %}
+              <tr class='row d-flex tr'>
+                  <td class='col-9'>
+                      <div class='room_name'>{{ room_name }}</div>
+                      {% if room.last_message.content %}
+                          <p class='p'>{{ room.last_message.user }}: {{ room.last_message.content }} <small class='p opacity-75 px-3'>{{ room.last_message.created_on }}</small></p>
+                      {% else %}
+                          <p>No Messages yet</p>
+                      {% endif %}
+                  </td>
+                  <td class='col-3'>
+                      <a href="/chats/{{ room.slug }}" class="btn btn-light">Go to Chat</a>
+                  </td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+            No Messages Yet!
+    {% endif %}
+</div>
 </div>
 {% endblock %}
+
+
 {% block footer %}
 <!-- Start Footer -->
 <div class="footer">
@@ -90,4 +105,7 @@
   </div>
 </div>
 <!-- End Footer -->
+{% endblock %}
+
+{% block script %}
 {% endblock %}

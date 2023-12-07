@@ -13,8 +13,7 @@ urlpatterns = [
     path('wildRift/', include('wildRift.urls')),
     path('accounts/', include('accounts.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
-    
-    
+    path('chats/', include('chat.urls'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
