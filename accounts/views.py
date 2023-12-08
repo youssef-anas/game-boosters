@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
+from wildRift.models import WildRiftDivisionOrder
 
 User = get_user_model()
 
@@ -41,18 +42,23 @@ def send_activation_email(user, request):
 
 @csrf_exempt
 def register_view(request):
+    payer_id = request.GET.get('PayerID')
+    order_id = request.GET.get('order_id')
     if request.method == 'POST':
         form = Registeration(request.POST,request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             print(user.email_verified_at)
-            user.is_active = False  # Mark the user as inactive until they activate their account
+            user.is_active = True  # change if user have no order # Mark the user as inactive until they activate their account
             user.save()
+            order = WildRiftDivisionOrder.objects.get(id=order_id)
+            order.customer = user
+            order.save()
             # Send activation email
-            send_activation_email(user, request)
-            return render(request, 'accounts/activation_sent.html')
-    else:
-        form = Registeration()
+            # send_activation_email(user, request)
+            # return render(request, 'accounts/activation_sent.html')
+            return render(request, 'accounts/customer_side.html')
+    form = Registeration()
     return render(request, 'accounts/register.html', {'form': form})
 
 

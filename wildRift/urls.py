@@ -9,5 +9,5 @@ urlpatterns = [
     path('payment-canceled/', payment_canceled ,name='wildrift.payment.canceled'),
     path('orders/', wildRiftOrders ,name='wildrift.confirm.order'),
     path('<order_type>/<int:id>/', wildRiftOrderChat, name='order.chat'),
-    path('paypal-ipn/', paypal_ipn_listener, name='paypal-ipn'),
+    # path('paypal-ipn/', paypal_ipn_listener, name='paypal-ipn'),
 ]

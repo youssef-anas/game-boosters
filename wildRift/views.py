@@ -19,6 +19,29 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 # from .models import Buyer 
 
+def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name):
+    # Check if a user with the same payer_id already exists
+    user = User.objects.filter(username=payer_id).first()
+
+    # If not, create a new user account
+    if not user:
+        user = User.objects.create_user(username=payer_id, email=payer_email, password='iti123456', first_name=buyer_first_name,
+        last_name=buyer_last_name,)
+        print(f'user created with, {user}')
+        return user
+    return user
+
+    # return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
+
+def create_division_order(name, price, invoice):
+    try:
+        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice)
+        print(f'Order: {order}')
+        return order
+    except Exception as e:
+        print(f'Error creating order: {e}')
+        return None
+
 
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
@@ -30,7 +53,6 @@ def get_order_result_by_rank(data):
     marks = data['marks']
     desired_rank = data['desired_rank']
     desired_division = data['desired_division']
-
     total_percent = 0
     duo_boosting = data['duo_boosting']
     select_booster = data['select_booster']
@@ -156,26 +178,22 @@ def view_that_asks_for_money(request):
                 data = serializer.validated_data
                 order_info = get_order_result_by_rank(data)
                 dynamic_invoice = str(uuid.uuid4())
+                
+                create_order = create_division_order( order_info['name'], order_info['price'], dynamic_invoice)
+                order_id = create_order.id
                 paypal_dict = {
                     "business": settings.PAYPAL_EMAIL,
                     "amount": order_info['price'],
                     "item_name": order_info['name'],
                     "invoice": dynamic_invoice,
                     "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                    "return": request.build_absolute_uri(reverse('wildrift.payment.success')),
-                    "cancel_return": request.build_absolute_uri(reverse('wildrift.payment.canceled')),
+                    "return": request.build_absolute_uri(f"/accounts/register/?order_id={order_id}"),
+                    "cancel_return": request.build_absolute_uri(f"/wildRift/payment-canceled/?order_id={order_id}"),
                 }
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
                 print(f'order {dynamic_invoice} : {order_info}')
-
-                # buyer = Buyer.objects.create(
-                #     invoice=dynamic_invoice,
-                #     name=order_info['name'],  # Replace with actual field names
-                #     price=order_info['price'],  # Replace with actual field names
-                #     # Add other fields as needed...
-                # )
                 return render(request, "wildRift/paypal.html", context,status=200)
             return JsonResponse({'error': serializer.errors}, status=400)
         except Exception as e:
@@ -187,69 +205,58 @@ def view_that_asks_for_money(request):
 
 def payment_successed(request):
     payer_id = request.GET.get('PayerID')
-    print(payer_id)
-    return HttpResponse(f'payment Success with payer ID : {payer_id}')
-    # return redirect(reverse('accounts.register'))
+    order_id = request.GET.get('order_id')
+    # Use the parameters as needed
+    print(f'Payment success with payer ID: {payer_id}')
+    
+    # Perform additional actions, such as updating the order status, generating an invoice, etc.
+
+    # Redirect to a relevant page, e.g., the account registration page
+    return redirect(reverse('accounts.register'))
+    return HttpResponse(f'order id: {order_id} ---- payer_id {payer_id}')
 
 def payment_canceled(request):
+    order_id = request.GET.get('order_id')
+    order = WildRiftDivisionOrder.objects.get(id = order_id).delete()
     return HttpResponse('payment canceled')
 
 
-def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name):
-    # Check if a user with the same payer_id already exists
-    user = User.objects.filter(username=payer_id).first()
-
-    # If not, create a new user account
-    if not user:
-        user = User.objects.create_user(username=payer_id, email=payer_email, password='iti123456', first_name=buyer_first_name,
-        last_name=buyer_last_name,)
-        print(f'user created with, {user}')
-        return user
-    return user
-
-    # return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
-
-def create_division_order(name, price, invoice, customer):
-    try:
-        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice, customer=customer)
-        print(f'Order: {order}')
-        return order
-    except Exception as e:
-        print(f'Error creating order: {e}')
-        return None
 
 
-@csrf_exempt
-def paypal_ipn_listener(sender, **kwargs):
-    ipn_obj = sender
 
-    # Check if the payment is completed
-    if ipn_obj.payment_status == "Completed":
+# @csrf_exempt
+# def paypal_ipn_listener(sender, **kwargs):
+#     ipn_obj = sender
 
-        payer_id = ipn_obj.payer_id
-        payer_email = ipn_obj.payer_email
-        order_name = ipn_obj.item_name
-        order_price = ipn_obj.mc_gross
-        order_invoice = ipn_obj.invoice
+#     # Check if the payment is completed
+#     if ipn_obj.payment_status == "Completed":
+
+#         payer_id = ipn_obj.payer_id
+#         payer_email = ipn_obj.payer_email
+#         order_name = ipn_obj.item_name
+#         order_price = ipn_obj.mc_gross
+#         order_invoice = ipn_obj.invoice
         
-        print(f"Transaction ID: {ipn_obj.txn_id}")
-        print(f"Payer ID: {ipn_obj.payer_id}")
-        print(f"Payer Email: {ipn_obj.payer_email}")
-        print(f"Payment Status: {ipn_obj.payment_status}")
-        print(f"Gross Amount: {ipn_obj.mc_gross}")
-        print(f"Currency: {ipn_obj.mc_currency}")
-        print(f"Item Name: {ipn_obj.item_name}")
-        print(f"Invoice ID: {ipn_obj.invoice}")
-        print(f"Custom Field: {ipn_obj.custom}")
-        print(f"Receiver Email: {ipn_obj.receiver_email}")
-        print(f"Is Test IPN: {ipn_obj.test_ipn}")
+#         # print(f"Transaction ID: {ipn_obj.txn_id}")
+#         # print(f"Payer ID: {ipn_obj.payer_id}")
+#         # print(f"Payer Email: {ipn_obj.payer_email}")
+#         # print(f"Payment Status: {ipn_obj.payment_status}")
+#         # print(f"Gross Amount: {ipn_obj.mc_gross}")
+#         # print(f"Currency: {ipn_obj.mc_currency}")
+#         # print(f"Item Name: {ipn_obj.item_name}")
+#         # print(f"Invoice ID: {ipn_obj.invoice}")
+#         # print(f"Custom Field: {ipn_obj.custom}")
+#         # print(f"Receiver Email: {ipn_obj.receiver_email}")
+#         # print(f"Is Test IPN: {ipn_obj.test_ipn}")
 
-        buyer_first_name = ipn_obj.first_name
-        buyer_last_name = ipn_obj.last_name
+#         buyer_first_name = ipn_obj.first_name
+#         buyer_last_name = ipn_obj.last_name
 
-        # create a user account
-        user = create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name)
-        create_division_order(order_name,order_price,order_invoice,user)
+#         # create a user account
+#         user = create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name)
+#         create_division_order(order_name,order_price,order_invoice,user)
 
-# Connect the signal to your IPN listener
-valid_ipn_received.connect(paypal_ipn_listener)
+# # Connect the signal to your IPN listener
+# valid_ipn_received.connect(paypal_ipn_listener)
+
+
