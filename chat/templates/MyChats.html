@@ -71,7 +71,7 @@
                       {% if room.last_message.content %}
                           <p class='p'>{{ room.last_message.user }}: {{ room.last_message.content }} <small class='p opacity-75 px-3'>{{ room.last_message.created_on }}</small></p>
                       {% else %}
-                          <p>No Messages yet</p>
+                          <p class='p'>No Messages yet</p>
                       {% endif %}
                   </td>
                   <td class='col-3'>

@@ -7,6 +7,7 @@ class Room(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return "Room : "+ self.name + " | Id : " + self.slug
@@ -24,6 +25,18 @@ class Room(models.Model):
     @classmethod
     def get_specific_room(cls,user,booster):
         return cls.objects.filter(name=f'{user}-{booster}').first()
+    
+    def close_the_room(self, slug):
+        room = Room.objects.filter(slug=slug).first()
+        if room:
+            room.active = False
+            room.save()
+    
+    def reOpen_the_room(self, slug):
+        room = Room.objects.filter(slug=slug).first()
+        if room:
+            room.active = True
+            room.save()
         
     
 
