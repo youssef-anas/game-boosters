@@ -3,74 +3,107 @@
 {% block title %}Game Boosters{% endblock %}
 {% block nav %}
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
-    <div class="container position-relative align-items-center ">
-      <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav align-items-center ">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="">Contact Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="">FAQ</a>
-          </li>
-          {% if user.id %}
-          <div class="dropdown">
-            <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              {{user.first_name}} {{user.last_name}}
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
-              </li>
-            </ul>
-          </div>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'rooms' %}">Messages</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div>
+  <div class="container position-relative align-items-center ">
+    <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav align-items-center ">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="">Contact Us</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">FAQ</a>
+        </li>
+        {% if user.id %}
+        <div class="dropdown">
+          <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            {{user.first_name}} {{user.last_name}}
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
+            </li>
+          </ul>
+        </div>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'rooms' %}">Messages</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
+  </div>
 </nav>
 {% endblock %}
 {% block container %}
-<div class='body'>
-  <div class="landing  d-flex align-items-center">
-    <div class="container text text-start position-relative">
-      <h2 class="text-uppercase w-50 text-white ">REACH YOUR RANKING GOALS EFFORTLESSLY AND QUICKLY WITH PREMIUM BOOSTING SERVICES!</h2>
-      <p class="fs-5 mt-2 text-light">Transform Your Gaming Experience with the Best Multi-Boosting Project - Boosteria!</p>
+<div class='body py-5'>
+  <div class="landing container shadow-lg border-1 my-5 p-5 position-relative ">
+    <h1 class="text-uppercase text-white mb-5">Game Boosters</h1>
+    <div class="container text position-relative w-75 pt-4">
+      <h3 class="text-uppercase text-white text-center">REACH YOUR RANKING GOALS EFFORTLESSLY AND QUICKLY WITH PREMIUM BOOSTING SERVICES!</h3>
+      <p class="fs-5 mt-4 text-light text-center">Transform Your Gaming Experience with the Best Multi-Boosting Project - Boosteria!</p>
+      <!-- <img src="{% static 'homepage/images/Daco.png' %}" width="500" class="text-end" /> -->
     </div>
   </div>
   
-  <div class="games"> 
-    <div class="container py-5">
+  <div class="games container-fluid px-0">
+
+    <div class="my-5 container px-0">
       <h3 class="text-uppercase text-white ">CHOOSE YOUR GAME TO GET DESIRED RANK</h3>
+    </div>
+
+    <div class="group-one" data-aos="fade-up">
       <div class="games-card">
-        {% for game in games %}
-        <div class="box p-2" >
-          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}} style='border-radius: 1rem;'>
+        {% for game in games|slice:":4" %}
+        <div class="box" data-aos="fade-right">
+          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
           <div class="caption">
             <h3>{{game.name}}</h3>
           </div>
         </div>
-        {% endfor %}
+          {% endfor %}
       </div>
     </div>
+
+    <div class="group-two" data-aos="fade-down">
+      <div class="games-card">
+        {% for game in games|slice:"4:8" %}
+        <div class="box" data-aos="fade-right">
+          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
+          <div class="caption">
+            <h3>{{game.name}}</h3>
+          </div>
+        </div>
+          {% endfor %}
+      </div>
+    </div>
+
+    <div class="group-three" data-aos="fade-up">
+      <div class="games-card">
+        {% for game in games|slice:"8:10" %}
+        <div class="box" data-aos="fade-right">
+          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
+          <div class="caption">
+            <h3>{{game.name}}</h3>
+          </div>
+        </div>
+          {% endfor %}
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}
