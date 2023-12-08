@@ -59,6 +59,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
     var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
     var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
+    var mark = 0
 
     $.getJSON('/static/wildRift/data/marks_data.json', function (data) {
       marks_price = marks_price.concat(data.slice(1));
@@ -72,7 +73,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
 
 
 
-    // ################################ Extra Charges Part #################################################
+  // ################################# Extra Charges Part #################################
     const buttons = {
       duoBoosting: document.querySelector('#duoBoostingButton'),
       selectBooster: document.querySelector('#selectBoosterButton'),
@@ -112,11 +113,13 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       let buttonOldName = buttons[button].innerHTML
       if (add) {
         total_Percentage += percentage;
+        $(`#${button}`).val(true);
         buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
         Applybuttons[button].innerHTML = 'Cancel'
         Applybuttons[button].classList.remove('applyButton');
         Applybuttons[button].classList.add('cancelButton');
       } else {
+        $(`#${button}`).val(false);
         total_Percentage -= percentage;
         buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
         Applybuttons[button].innerHTML = 'Apply'
@@ -131,6 +134,7 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     function setupApplyButtonClickEvent(button, percentage) {
       Applybuttons[button].addEventListener('click', function () {
         updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+        console.log('btn', button)
         getResult();
         getPrices();
       });
@@ -168,9 +172,17 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       const pricee = document.querySelector('.price-data.division-boost');
       console.log('priceeeeeeeeeeeeee', pricee)
       pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks 0 to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
       <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
     `;
+
+      // From Value
+      $('input[name="current_rank"]').val(current_rank);
+      $('input[name="current_division"]').val(current_division);
+      $('input[name="marks"]').val(mark);
+      $('input[name="desired_rank"]').val(desired_rank);
+      $('input[name="desired_division"]').val(desired_division);
+      $('input[name="price"]').val(result_with_mark);
     }
     getResult();
 
@@ -223,8 +235,6 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       });
     });
 
-
-
     radioButtonsDesired.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
@@ -242,8 +252,6 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
       });
     });
 
-
-
     radioButtonsCurrentDivision.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
@@ -253,8 +261,6 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
         getResult();
       });
     });
-
-
 
     radioButtonsDesiredDivision.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
@@ -269,8 +275,9 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     makrs_on_current_rank_checked.forEach(function (radio, index) {
       radio.addEventListener('change', function () {
         const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
-        console.log('Selected Mark index:', selectedIndex);
         number_of_mark = marks_price[current_rank][selectedIndex];
+        mark = selectedIndex
+        console.log('Selected Mark:', number_of_mark);
         getResult();
       });
     });

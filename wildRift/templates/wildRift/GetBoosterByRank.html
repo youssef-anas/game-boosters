@@ -60,7 +60,7 @@
             <label for="placements-boost" class="me-2">Placements Boost</label>
         </div>
 
-        <div class="choices py-5 rounded-3 shadow">
+        <div class="choices py-5 rounded-3 shadow px-lg-0 px-5">
             <!-- ------------------------------ Division Boost --------------------------- -->
             <div class="division-boost row justify-content-center flex-wrap">
                 <div class="col-lg-5 col-12 mb-lg-0 mb-5">
@@ -240,12 +240,17 @@
                 <div class="price-data division-boost col-10 text-start"></div>
                 <div class="price-data placements-boost col-10 text-start"></div>
                 <center>
-                    <form action="http://127.0.0.1:8000/wildRift/paypal/" method="post">
+                    <form action= "https://547c-197-41-139-136.ngrok-free.app/wildRift/paypal/" method="post" id="purchaseForm">
                         <input type="hidden" name="current_rank" value="1">
                         <input type="hidden" name="current_division" value="1">
                         <input type="hidden" name="marks" value="1">
                         <input type="hidden" name="desired_rank" value="3">
                         <input type="hidden" name="desired_division" value="1">
+                        <input type="hidden" name="try" value="try">
+                        <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
+                        <input type="hidden" name="select_booster" id="selectBooster" value=false>
+                        <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                        <input type="hidden" name="streaming" id="streaming" value=false>
                         <input type="hidden" name="price" value="120">
                     
                         <div class="purchase col-10 mt-4">

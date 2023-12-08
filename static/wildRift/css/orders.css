@@ -15,7 +15,7 @@ label {
 }
 /* Change label style when radio button is checked */
 input[type="radio"]:checked+label {
-  background-color: var(--secondary-color);
+  background-color: var(--main-color);
   /* Change the background color when checked */
   color: white;
   /* Change the text color when checked */
@@ -47,7 +47,7 @@ input[type="radio"]:checked+label {
 }
 
 .orders:nth-child(odd) {
-  border-left: 0.25rem solid var(--secondary-color)!important;
+  border-left: 0.26rem solid var(--main-color)!important;
 }
 .wild-rift-image {
   position: fixed;

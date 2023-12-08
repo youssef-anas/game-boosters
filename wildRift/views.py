@@ -24,11 +24,37 @@ division_names = ['','IV','III','II','I']
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
 def get_order_result_by_rank(data):
+    print('Data: ', data)
     current_rank = data['current_rank']
     current_division = data['current_division']
     marks = data['marks']
     desired_rank = data['desired_rank']
     desired_division = data['desired_division']
+
+    total_percent = 0
+    duo_boosting = data['duo_boosting']
+    select_booster = data['select_booster']
+    turbo_boost = data['turbo_boost']
+    streaming = data['streaming']
+
+    boost_options = []
+
+    if duo_boosting:
+        total_percent += 0.65
+        boost_options.append('DUO BOOSTING')
+
+    if select_booster:
+        total_percent += 0.05
+        boost_options.append('SELECT BOOSTING')
+
+    if turbo_boost:
+        total_percent += 0.20
+        boost_options.append('TURBO BOOSTING')
+
+    if streaming:
+        total_percent += 0.15
+        boost_options.append('STREAMING')
+
     # Read data from JSON file
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
         division_price = json.load(file)
@@ -45,8 +71,10 @@ def get_order_result_by_rank(data):
     sublist = flattened_data[start_division:end_division ]
     total_sum = sum(sublist)
     price = total_sum - marks_price
+    price += (price * total_percent)
 
-    name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}'
+    boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
+    name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
     return({'name':name,'price':price})
 
@@ -176,8 +204,19 @@ def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name
         user = User.objects.create_user(username=payer_id, email=payer_email, password='iti123456', first_name=buyer_first_name,
         last_name=buyer_last_name,)
         print(f'user created with, {user}')
+        return user
+    return user
 
-    return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
+    # return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
+
+def create_division_order(name, price, invoice, customer):
+    try:
+        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice, customer=customer)
+        print(f'Order: {order}')
+        return order
+    except Exception as e:
+        print(f'Error creating order: {e}')
+        return None
 
 
 @csrf_exempt
@@ -189,6 +228,9 @@ def paypal_ipn_listener(sender, **kwargs):
 
         payer_id = ipn_obj.payer_id
         payer_email = ipn_obj.payer_email
+        order_name = ipn_obj.item_name
+        order_price = ipn_obj.mc_gross
+        order_invoice = ipn_obj.invoice
         
         print(f"Transaction ID: {ipn_obj.txn_id}")
         print(f"Payer ID: {ipn_obj.payer_id}")
@@ -201,11 +243,13 @@ def paypal_ipn_listener(sender, **kwargs):
         print(f"Custom Field: {ipn_obj.custom}")
         print(f"Receiver Email: {ipn_obj.receiver_email}")
         print(f"Is Test IPN: {ipn_obj.test_ipn}")
+
         buyer_first_name = ipn_obj.first_name
         buyer_last_name = ipn_obj.last_name
 
         # create a user account
-        create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name)
+        user = create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name)
+        create_division_order(order_name,order_price,order_invoice,user)
 
 # Connect the signal to your IPN listener
 valid_ipn_received.connect(paypal_ipn_listener)
