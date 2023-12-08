@@ -21,14 +21,16 @@ def rooms(request):
     })
 
 def room(request,slug):
-    room_name=Room.objects.get(slug=slug).name
+    room = Room.objects.get(slug=slug)
+    room_name=Room.objects.get(slug=slug)
     messages=Message.objects.filter(room=Room.objects.get(slug=slug))
     
     return render(request, "Chat.html",{
         'room_name':room_name,
         "slug":slug,
         'messages':messages,
-        'user':user
+        'user':user,
+        'room':room,
     })
     
 
