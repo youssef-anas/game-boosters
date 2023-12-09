@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
@@ -107,3 +107,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect(reverse_lazy('homepage.index'))
+
+def order_view(request, id):
+    if request.user.is_authenticated:
+        try:
+            order = WildRiftDivisionOrder.objects.get(id=id, customer=request.user, )
+            return render(request, 'accounts/customer_side.html', context={'order': order})
+        except WildRiftDivisionOrder.DoesNotExist:
+            return HttpResponse("Order Not Found For The Current User And Order ID.")
+    else:
+        return HttpResponse("User Not Authenticated.")
