@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +11,116 @@
     {{user}}
     <h1>Chose booster</h1>
     <h1>chat with booster</h1>
+    <div>
+        <div class='body' id='chatPart'>
+            <div class="container mt-5 pt-5 messages-section">
+              <div class="row d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="btn messages-Header">
+                    <h5>ROOM :- {{room_name}}</h5>
+                  </div>
+                  <form>
+                    <div class="form-group px-4 py-2">
+                      {% if messages %}
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;max-height: 300px; overflow-y: scroll;">
+                        {% for message in messages %}
+                        <div class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
+                          <b>{{ message.user.username }}</b> : {{ message.content }}<br>
+                        </div>
+                        {% endfor %}
+                      </div>
+                      {% else %}
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                      <b>No Messages in this Room.</b>
+                      {% endif %}
+                    </div>
+                    {% if room.active %}
+                    <div class="form-group d-flex justify-content-center mx-4 mt-2">
+                      <input class="form-control"  style="width: 80%;" placeholder="Enter text here" id="my_input" type="text" required>
+                      <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                    </div>
+                    {% else %}
+                    <div class="chatbox fw-bold" id="chatbox" style="margin-top: 2rem;">
+                      <div class="chat-message text-center">
+                        Closed Chat
+                      </div>
+                    </div>
+                    {% endif %}
+                  </form>
+                </div>
+              </div>
+            </div>
+            </div>
+            {{slug|json_script:"room_slug"}}
+    </div>
     <h1>chat with admin</h1>
     <h1>edit account data</h1>
     <h1>view profile</h1>
+
+
+      <script>
+      
+        const chatbox = document.querySelector("#chatbox");
+      
+        // Function to scroll to the bottom of the chatbox
+        function scrollToBottom() {
+          chatbox.scrollTop = chatbox.scrollHeight;
+        }
+      
+        // Scroll to bottom when the page is loaded
+        scrollToBottom();
+      
+      
+        const roomName = JSON.parse(document.getElementById('room_slug').textContent);
+        const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
+        // const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/"+ roomName +"/");
+        // alert(chatSocket);
+        chatSocket.onopen = function (e) {
+          console.log("The connection was setup successfully !");
+        };
+        chatSocket.onclose = function (e) {
+          console.log("Something unexpected happened !");
+        };
+      
+        document.querySelector("#my_input").focus();
+        document.querySelector("#my_input").onkeyup = function (e) {
+          if (e.keyCode == 13) {
+            e.preventDefault();
+            document.querySelector("#submit_button").click();
+          }
+        };
+        document.querySelector("#submit_button").onclick = function (e) {
+          var messageInput = document.querySelector(
+            "#my_input"
+          ).value;
+      
+          if (messageInput.length == 0) {
+            alert("Add some Input First Or Press Send Button!")
+          }
+          else {
+            chatSocket.send(JSON.stringify({ message: messageInput, username: "{{request.user.username}}", room_name: "{{room.name}}" }));
+      
+      
+          }
+      
+        };
+      
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          var div = document.createElement("div");
+          div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
+      
+          // Add class based on user authentication
+          if (data.username === "{{ request.user.username }}") {
+            div.classList.add("chat-message", "userMessage");
+          } else {
+            div.classList.add("chat-message", "otherMessage");
+          }
+      
+          document.querySelector("#my_input").value = "";
+          document.querySelector("#chatbox").appendChild(div);
+          scrollToBottom();
+        };
+      </script>
 </body>
 </html>

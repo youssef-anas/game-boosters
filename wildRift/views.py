@@ -203,17 +203,17 @@ def view_that_asks_for_money(request):
 
 
 
-def payment_successed(request):
-    payer_id = request.GET.get('PayerID')
-    order_id = request.GET.get('order_id')
-    # Use the parameters as needed
-    print(f'Payment success with payer ID: {payer_id}')
+# def payment_successed(request):
+#     payer_id = request.GET.get('PayerID')
+#     order_id = request.GET.get('order_id')
+#     # Use the parameters as needed
+#     print(f'Payment success with payer ID: {payer_id}')
     
-    # Perform additional actions, such as updating the order status, generating an invoice, etc.
+#     # Perform additional actions, such as updating the order status, generating an invoice, etc.
 
-    # Redirect to a relevant page, e.g., the account registration page
-    return redirect(reverse('accounts.register'))
-    return HttpResponse(f'order id: {order_id} ---- payer_id {payer_id}')
+#     # Redirect to a relevant page, e.g., the account registration page
+#     return redirect(reverse('accounts.register'))
+#     return HttpResponse(f'order id: {order_id} ---- payer_id {payer_id}')
 
 def payment_canceled(request):
     order_id = request.GET.get('order_id')

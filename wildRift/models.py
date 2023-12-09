@@ -109,7 +109,7 @@ class WildRiftDivisionOrder(models.Model):
         (4 , '4 Marks'),
         (5 , '5 Marks'),
     ]
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, default='name')
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
     current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)

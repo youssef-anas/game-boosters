@@ -27,5 +27,6 @@ class BaseUser(AbstractUser):
     country = CountryField(blank=True,null=True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     is_booster = models.BooleanField(default=False ,blank=True)
+    # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     
