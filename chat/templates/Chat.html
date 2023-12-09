@@ -159,7 +159,7 @@
       alert("Add some Input First Or Press Send Button!")
     }
     else {
-      chatSocket.send(JSON.stringify({ message: messageInput, username: "{{request.user.username}}", room_name: "{{room_name}}" }));
+      chatSocket.send(JSON.stringify({ message: messageInput, username: "{{request.user.username}}", room_name: "{{room.name}}" }));
 
 
     }

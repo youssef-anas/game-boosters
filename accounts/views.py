@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from accounts.forms import  Registeration
-from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_decode
@@ -44,21 +43,27 @@ def send_activation_email(user, request):
 def register_view(request):
     payer_id = request.GET.get('PayerID')
     order_id = request.GET.get('order_id')
+    order = get_object_or_404(WildRiftDivisionOrder, id=order_id)
+    if order.customer:
+        return HttpResponse('this order with another user, create order again or connect to admin')
+    if request.user.is_authenticated:   
+        order.customer = request.user
+        order.save()
+        return render(request, 'accounts/customer_side.html')
     if request.method == 'POST':
         form = Registeration(request.POST,request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
-            print(user.email_verified_at)
-            user.is_active = True  # change if user have no order # Mark the user as inactive until they activate their account
             user.save()
-            order = WildRiftDivisionOrder.objects.get(id=order_id)
             order.customer = user
             order.save()
+            login(request, user)
             # Send activation email
             # send_activation_email(user, request)
             # return render(request, 'accounts/activation_sent.html')
             return render(request, 'accounts/customer_side.html')
     form = Registeration()
+
     return render(request, 'accounts/register.html', {'form': form})
 
 
