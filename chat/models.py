@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from accounts.models import BaseUser
 
 User = get_user_model()
 
@@ -8,13 +9,21 @@ class Room(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_room')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_room', limit_choices_to={'is_booster': True} ) 
 
     def __str__(self):
         return "Room : "+ self.name + " | Id : " + self.slug
     
     @classmethod
-    def create_room(cls,user,booster):
+    def create_room_with_booster(cls,user,booster):
         room = cls(name=f'{user}-{booster}', slug=f'roomFor_{user}_{booster}')
+        room.save()
+        return room
+    
+    @classmethod
+    def create_room_with_admin(cls,user,admin):
+        room = cls(name=f'{user}-{admin}', slug=f'roomFor_{user}_{admin}')
         room.save()
         return room
     

@@ -56,7 +56,7 @@
 {% endblock %}
 
 {% block container %}
-<div class='body'>
+<div class='body' id='chatPart'>
 <div class="container mt-5 pt-5 messages-section">
   <div class="row d-flex justify-content-center">
     <div class="col-12">
@@ -173,9 +173,9 @@
 
     // Add class based on user authentication
     if (data.username === "{{ request.user.username }}") {
-      div.classList.add("chat-message", "text-right");
+      div.classList.add("chat-message", "userMessage");
     } else {
-      div.classList.add("chat-message", "text-left");
+      div.classList.add("chat-message", "otherMessage");
     }
 
     document.querySelector("#my_input").value = "";

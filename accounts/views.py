@@ -15,6 +15,7 @@ from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
+from chat.models import Room, Message
 
 User = get_user_model()
 
@@ -38,30 +39,40 @@ def send_activation_email(user, request):
     # Send the email
     send_mail(subject, message, 'your@example.com', [user.email])
 
+def create_chat_with_booster(user):
+    booster_user = User.objects.get(username='booster')
+    isRoomExist = Room.get_specific_room(user,booster_user)
+    if not isRoomExist:
+        return Room.create_room_with_booster(user, booster_user)
+    else:
+        return isRoomExist
 
 @csrf_exempt
 def register_view(request):
     payer_id = request.GET.get('PayerID')
     order_id = request.GET.get('order_id')
     order = get_object_or_404(WildRiftDivisionOrder, id=order_id)
-    if order.customer:
-        return HttpResponse('this order with another user, create order again or connect to admin')
+    # if order.customer:
+    #     return HttpResponse('this order with another user, create order again or connect to admin')
     if request.user.is_authenticated:   
         order.customer = request.user
         order.save()
-        return render(request, 'accounts/customer_side.html')
+        new_chat = create_chat_with_booster(request.user)
+        redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
+        return redirect(redirect_url)
     if request.method == 'POST':
         form = Registeration(request.POST,request.FILES)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
+            user = form.save()
             order.customer = user
             order.save()
             login(request, user)
             # Send activation email
             # send_activation_email(user, request)
             # return render(request, 'accounts/activation_sent.html')
-            return render(request, 'accounts/customer_side.html')
+            new_chat = create_chat_with_booster(user)
+            redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
+            return redirect(redirect_url)
     form = Registeration()
 
     return render(request, 'accounts/register.html', {'form': form})
@@ -174,3 +185,18 @@ def set_customer_data(request):
             return redirect(reverse_lazy('customer.order', kwargs={'id': order.id}))
 
     return JsonResponse({'success': False})
+
+def customer_side(request):
+    slug = request.GET.get('slug')
+    room = Room.objects.get(slug=slug)
+    messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
+
+    context = {
+            'room_name':room,
+            "slug":slug,
+            'messages':messages,
+            'user':User,
+            'room':room,
+    }    
+    
+    return render(request, 'accounts/customer_side.html',context)

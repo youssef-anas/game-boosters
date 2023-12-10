@@ -116,7 +116,7 @@ class WildRiftDivisionOrder(models.Model):
         (4, 'Africa'),
         (5, 'Australia')
     ]
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, default='name')
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
     reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
