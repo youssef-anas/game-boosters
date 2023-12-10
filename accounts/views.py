@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
 from chat.models import Room, Message
-
+from django.http import JsonResponse
 User = get_user_model()
 
 @csrf_exempt
@@ -58,8 +58,7 @@ def register_view(request):
         order.customer = request.user
         order.save()
         new_chat = create_chat_with_booster(request.user)
-        redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
-        return redirect(redirect_url)
+        return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id}))
     if request.method == 'POST':
         form = Registeration(request.POST,request.FILES)
         if form.is_valid():
@@ -71,8 +70,8 @@ def register_view(request):
             # send_activation_email(user, request)
             # return render(request, 'accounts/activation_sent.html')
             new_chat = create_chat_with_booster(user)
-            redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
-            return redirect(redirect_url)
+            # redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id}))
     form = Registeration()
 
     return render(request, 'accounts/register.html', {'form': form})
@@ -124,84 +123,51 @@ def logout_view(request):
     logout(request)
     return redirect(reverse_lazy('homepage.index'))
 
-def order_view(request, id):
-    if request.user.is_authenticated:
-        try:
-            order = WildRiftDivisionOrder.objects.get(id=id, customer=request.user)
-            boosters = User.objects.filter(is_booster=True)
-            context = {
-                'order': order, 
-                'boosters': boosters
-                }
-            return render(request, 'accounts/customer_side.html', context=context)
-        except WildRiftDivisionOrder.DoesNotExist:
-            return HttpResponse("Order Not Found For The Current User And Order ID.")
-    else:
-        return HttpResponse("User Not Authenticated.")
 
-from django.http import HttpResponse
-
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
 def choose_booster(request):
     if request.method == 'POST':
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
+        slug = request.POST.get('slug')
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             booster = get_object_or_404(User, pk=chosen_booster_id)
-
             order.booster = booster
             order.save()
-
-            return redirect(reverse_lazy('customer.order', kwargs={'id': order.id}))
-
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': slug, 'id':order.id}))
     return JsonResponse({'success': False})
 
 def set_customer_data(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-        print('order_id', order_id)
         customer_gamename = request.POST.get('gamename')
-        print('customer_gamename', customer_gamename)
         customer_server = request.POST.get('server')
-        print('customer_server', customer_server)
         customer_password = request.POST.get('password')
-        print('customer_password', customer_password)
-
+        slug = request.POST.get('slug')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
-
             order.customer_gamename = customer_gamename
             order.customer_server = customer_server 
-
             if customer_password :
                 order.customer_password = customer_password
-
             order.save()
-
-            return redirect(reverse_lazy('customer.order', kwargs={'id': order.id}))
-
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': slug, 'id':order.id}))
     return JsonResponse({'success': False})
 
-def customer_side(request):
-    slug = request.GET.get('slug')
-    try:
-        room = Room.objects.get(slug=slug)
-    except Room.DoesNotExist:
-        slug = 'roomFor_iti_booster'
-        room = Room.objects.get(slug)
-        pass
+def customer_side(request,slug,id):
+    room = Room.objects.get(slug=slug)
+    boosters = User.objects.filter(is_booster=True)
     messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
-
+    order = WildRiftDivisionOrder.objects.get(id=id)
     context = {
             'room_name':room,
             "slug":slug,
             'messages':messages,
             'user':User,
             'room':room,
+            'boosters':boosters,
+            'order':order
     }    
-    
     return render(request, 'accounts/customer_side.html',context)

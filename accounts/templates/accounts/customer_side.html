@@ -102,6 +102,7 @@
             {% csrf_token %}
             {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
             <input type="hidden" name="order_id" value="{{ order.id }}">
+            <input type="hidden" name="slug" value="{{ slug }}">
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">@</span>
               <input type="text" required name="gamename" class="form-control" placeholder="Username"
@@ -154,6 +155,7 @@
               {% csrf_token %}
               <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
               <input type="hidden" name="order_id" value="{{ order.id }}">
+              <input type="hidden" name="slug" value="{{ slug }}">
               <button type="submit" class="btn submit-btn">Choose</button>
             </form>
           </div>
@@ -165,7 +167,47 @@
         {% endif %}
         {% else %}
         <h4 id="chat-booster">Chat With Booster</h4>
-        <div class="chat-booster mb-5"></div>
+        <div class="chat-booster mb-5">
+          <div class="container mt-5 pt-5 messages-section">
+            <div class="row d-flex justify-content-center">
+              <div class="col-12">
+                <div class="btn messages-Header">
+                  <h5>ROOM :- {{room_name}}</h5>
+                </div>
+                <form>
+                  <div class="form-group px-4 py-2">
+                    {% if messages %}
+                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;max-height: 300px; overflow-y: scroll;">
+                      {% for message in messages %}
+                      <div
+                        class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
+                        <b>{{ message.user.username }}</b> : {{ message.content }}<br>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                    <b>No Messages in this Room.</b>
+                    {% endif %}
+                  </div>
+                  {% if room.active %}
+                  <div class="form-group d-flex justify-content-center mx-4 mt-2">
+                    <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input" type="text"
+                      required>
+                    <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                  </div>
+                  {% else %}
+                  <div class="chatbox fw-bold" id="chatbox" style="margin-top: 2rem;">
+                    <div class="chat-message text-center">
+                      Closed Chat
+                    </div>
+                  </div>
+                  {% endif %}
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
         {% endif %}
         <h4 id="chat-admin">Chat With Admin</h4>
         <div class="chat-admin"></div>
@@ -173,57 +215,9 @@
     </div>
   </div>
 </div>
-<h1> customer page </h1>
-{{user}}
-<h1>Chose booster</h1>
-<h1>chat with booster</h1>
 <div>
-  <div class='body' id='chatPart'>
-    <div class="container mt-5 pt-5 messages-section">
-      <div class="row d-flex justify-content-center">
-        <div class="col-12">
-          <div class="btn messages-Header">
-            <h5>ROOM :- {{room_name}}</h5>
-          </div>
-          <form>
-            <div class="form-group px-4 py-2">
-              {% if messages %}
-              <div class="chatbox" id="chatbox" style="padding: 4px 2px;max-height: 300px; overflow-y: scroll;">
-                {% for message in messages %}
-                <div
-                  class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
-                  <b>{{ message.user.username }}</b> : {{ message.content }}<br>
-                </div>
-                {% endfor %}
-              </div>
-              {% else %}
-              <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
-              <b>No Messages in this Room.</b>
-              {% endif %}
-            </div>
-            {% if room.active %}
-            <div class="form-group d-flex justify-content-center mx-4 mt-2">
-              <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input" type="text"
-                required>
-              <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
-            </div>
-            {% else %}
-            <div class="chatbox fw-bold" id="chatbox" style="margin-top: 2rem;">
-              <div class="chat-message text-center">
-                Closed Chat
-              </div>
-            </div>
-            {% endif %}
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
   {{slug|json_script:"room_slug"}}
 </div>
-<h1>chat with admin</h1>
-<h1>edit account data</h1>
-<h1>view profile</h1>
 {% endblock %}
 {% block footer %}
 <!-- Start Footer -->

@@ -240,7 +240,8 @@
                 <div class="price-data division-boost col-10 text-start"></div>
                 <div class="price-data placements-boost col-10 text-start"></div>
                 <center>
-                    <form action= "https://d62b-156-201-49-156.ngrok-free.app/wildRift/paypal/" method="post" id="purchaseForm">
+                    <form action= "http://127.0.0.1:8000/wildRift/paypal/" method="post" id="purchaseForm">
+                        <input type="hidden" name="game_id" value="0">
                         <input type="hidden" name="current_rank" value="1">
                         <input type="hidden" name="current_division" value="1">
                         <input type="hidden" name="marks" value="1">
