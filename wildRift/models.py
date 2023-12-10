@@ -136,10 +136,12 @@ class WildRiftDivisionOrder(models.Model):
     select_booster = models.BooleanField(default=False ,blank=True)
     turbo_boost = models.BooleanField(default=False ,blank=True)
     streaming = models.BooleanField(default=False ,blank=True)
-    is_done = models.BooleanField(default=False ,blank=True)
+    finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
     customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)
+    data_correct = models.BooleanField(default=False ,blank=True)
+    message = models.CharField(max_length=300, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

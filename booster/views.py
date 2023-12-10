@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse
 from .forms import Registeration_Booster
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from wildRift.models import WildRiftDivisionOrder
 
 # Create your views here.
 
@@ -24,3 +25,10 @@ def register_booster_view(request):
 @login_required
 def profile_booster_view(request):
     return render(request, 'booster/booster_profile.html')
+
+def booster_orders(request):
+    orders = WildRiftDivisionOrder.objects.filter(booster=request.user)
+    context = {
+        'orders': orders
+    }
+    return render('booster/booster-order.html', context=context)
