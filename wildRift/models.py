@@ -2,6 +2,8 @@ from django.shortcuts import reverse
 from django.db import models
 from accounts.models import BaseUser
 from django.core.validators import MinValueValidator, MaxLengthValidator
+from django.db.models.signals import post_migrate
+from django.dispatch import receiver
 
 # # Create your models here.
 
@@ -49,6 +51,12 @@ class WildRiftRank(models.Model):
     
     def get_image_url(self):
         return f"/media/{self.rank_image}"
+    
+# @receiver(post_migrate)
+# def create_default_ranks(sender, **kwargs):
+#     if sender.name == 'your_app_name':  # Replace 'your_app_name' with the actual name of your app
+#         WildRiftRank.objects.get_or_create(rank_name='Default Rank 1', rank_image='path/to/default_image_1.jpg')
+#         WildRiftRank.objects.get_or_create(rank_name='Default Rank 2', rank_image='path/to/default_image_2.jpg')
 
 class WildRiftTier(models.Model):
     rank = models.OneToOneField('WildRiftRank', related_name='tier', on_delete=models.CASCADE)

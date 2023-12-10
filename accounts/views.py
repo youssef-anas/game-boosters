@@ -127,7 +127,12 @@ def logout_view(request):
 
 def customer_side(request):
     slug = request.GET.get('slug')
-    room = Room.objects.get(slug=slug)
+    try:
+        room = Room.objects.get(slug=slug)
+    except Room.DoesNotExist:
+        slug = 'roomFor_iti_booster'
+        room = Room.objects.get(slug)
+        pass
     messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
 
     context = {
