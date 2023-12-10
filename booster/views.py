@@ -31,4 +31,4 @@ def booster_orders(request):
     context = {
         'orders': orders
     }
-    return render('booster/booster-order.html', context=context)
+    return render(request, 'booster/booster-order.html', context=context)

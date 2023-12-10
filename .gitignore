@@ -19,6 +19,8 @@
 /accounts/migrations/
 /accounts/__pycache__/
 
+/chat/migrations/
+/chat/__pycache__/
 
 /static/wildRift/data/
 

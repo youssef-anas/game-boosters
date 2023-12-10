@@ -5,57 +5,7 @@
 {% block style %}
 <link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
 {% endblock %}
-{% block nav %}
 {% block container %}
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
-  <div class="container position-relative align-items-center px-0">
-    <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav align-items-center ">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="">Contact Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="">FAQ</a>
-        </li>
-        {% if user.id %}
-        <div class="dropdown">
-          <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            {{user.first_name}} {{user.last_name}}
-          </button>
-          <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
-            </li>
-          </ul>
-        </div>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
-        </li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
-{% endblock %}
-<!-- <h1> customer page 1 </h1>
-{{user}}
-<h1>Chose booster</h1>
-<h1>chat with booster</h1> ^/
-<h1>chat with admin</h1> ^/
-<h1>view profile</h1> ^/ -->
 <div class="containter-fluid customer-order-body py-5">
   <div class="container py-5 customer-order text-white">
     <div class="row justify-content-between ">
@@ -63,8 +13,8 @@
       <div class="col-3 information shadow p-5 text-center">
 
         <div class="user-info">
-          <img src="{{ user.image.url }}" class="profile-image col-4" alt="profile" />
-          <h4 class="my-3">{{user.first_name}} {{user.last_name}}</h4>
+          <img src="{{ request.user.image.url }}" class="profile-image col-4" alt="profile" />
+          <h4 class="my-3">{{request.user.first_name}} {{request.user.last_name}}</h4>
           <a href="{% url 'accounts.profile' %}" class="fs-5" style="color: var(--secondary-color)">My Profile
             &rarr;</a>
         </div>
@@ -140,7 +90,7 @@
 
       <div class="col-8">
         {% if order.booster is null %}
-        {% if order.duo_boosting %}
+        {% if order.select_booster %}
         <h4 id="choose-booster">Choose Booster</h4>
         <div class="choose-booster p-5 mb-5">
           {% for booster in boosters %}
@@ -218,23 +168,6 @@
 <div>
   {{slug|json_script:"room_slug"}}
 </div>
-{% endblock %}
-{% block footer %}
-<!-- Start Footer -->
-<div class="footer">
-  <div class="container">
-    <img src="{% static 'homepage/images/logo.png' %}" alt="Logo" />
-    <p>We Are Social</p>
-    <div class="social-icons">
-      <i class="fa-brands fa-facebook-f"></i>
-      <i class="fa-brands fa-twitter"></i>
-      <i class="fa-solid fa-house"></i>
-      <i class="fa-brands fa-linkedin-in"></i>
-    </div>
-    <div class="copyright text-center">&copy; 2023 <span>Game Booster</span> All Right Reserved</div>
-  </div>
-</div>
-<!-- End Footer -->
 {% endblock %}
 {% block script %}
 <script>

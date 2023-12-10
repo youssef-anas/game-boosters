@@ -16,15 +16,79 @@
 </head>
 
 <body>
-  <!-- Header -->
-  {% block nav %}
-  {% endblock %}
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
+    <div class="container position-relative align-items-center ">
+      <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav align-items-center ">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="">Contact Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="">FAQ</a>
+          </li>
+          {% if request.user %}
+          <div class="dropdown">
+            <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
+              aria-expanded="false">
+              {{request.user.first_name}} {{request.user.last_name}}
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
+              </li>
+              {% if request.user.is_booster %}
+              <li>
+                <a class="dropdown-item" href="{% url 'booster.orders' %}">My Orders</a>
+              </li>
+              {% else %}
+              <li>
+                <a class="dropdown-item" href="{% url 'accounts.customer_side' %}">My Orders</a>
+              </li>
+              {% endif %}
+              <li>
+                <a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a>
+              </li>
+            </ul>
+          </div>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'rooms' %}">Messages</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account.login' %}">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+</nav>
 
   {% block container %}
   {% endblock %}
 
-  {% block footer %}
-  {% endblock %}
+  <!-- Start Footer -->
+  <div class="footer">
+    <div class="container">
+      <img src="{% static 'homepage/images/logo.png' %}" alt="Logo" />
+      <p>We Are Social</p>
+      <div class="social-icons">
+        <i class="fa-brands fa-facebook-f"></i>
+        <i class="fa-brands fa-twitter"></i>
+        <i class="fa-solid fa-house"></i>
+        <i class="fa-brands fa-linkedin-in"></i>
+      </div>
+      <div class="copyright text-center">&copy; 2023 <span>Game Booster</span> All Right Reserved</div>
+    </div>
+  </div>
+  <!-- End Footer -->
   <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
   <script src="{% static  'base/js/base.js' %}"></script>
   <script src="{% static  'base/js/script.js' %}"></script>
