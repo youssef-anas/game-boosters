@@ -109,10 +109,19 @@ class WildRiftDivisionOrder(models.Model):
         (4 , '4 Marks'),
         (5 , '5 Marks'),
     ]
+    SERVER_CHOISES = [
+        (1, 'Europa'),
+        (2, 'America'),
+        (3, 'Asia'),
+        (4, 'Africa'),
+        (5, 'Australia')
+    ]
     name = models.CharField(max_length=300)
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
+    reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
     current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+    reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     mark = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     price = models.FloatField(default=0,blank=True, null=True)
@@ -128,10 +137,9 @@ class WildRiftDivisionOrder(models.Model):
     turbo_boost = models.BooleanField(default=False ,blank=True)
     streaming = models.BooleanField(default=False ,blank=True)
     is_done = models.BooleanField(default=False ,blank=True)
-    customer_email = models.CharField(max_length=300, blank=True, null=True)
-    customer_username = models.CharField(max_length=300, blank=True, null=True)
+    customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
-    customer_server = models.CharField(max_length=300, blank=True, null=True)
+    customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -146,12 +154,14 @@ class WildRiftDivisionOrder(models.Model):
 
         try:
             current_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
+            reached_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
             desired_rank = WildRiftRank.objects.get(rank_name__iexact=desired_rank_name)
         except WildRiftRank.DoesNotExist:
             print(f"Rank not found: {current_rank_name} or {desired_rank_name}")
             return
 
         current_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
+        reached_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
         desired_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == desired_division_str.lower()), None)
         self.current_rank = current_rank
         self.current_division = current_division

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'chat',
+    'django.contrib.humanize',
 ]
 
 MIDDLEWARE = [

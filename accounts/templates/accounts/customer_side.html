@@ -1,13 +1,14 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-    <!-- Style -->
+<link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
 {% endblock %}
 {% block nav %}
 {% block container %}
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-transparent">
-    <div class="container position-relative align-items-center ">
+    <div class="container position-relative align-items-center px-0">
       <a class="navbar-brand" href="{% url 'homepage.index' %}">Game Boosters</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,13 +50,125 @@
     </div>
 </nav>
 {% endblock %}
-    <h1> customer page 1 </h1>
-    {{user}}
-    <h1>Chose booster</h1>
-    <h1>chat with booster</h1>
-    <h1>chat with admin</h1>
-    <h1>edit account data</h1>
-    <h1>view profile</h1>
+<!-- <h1> customer page 1 </h1>
+{{user}}
+<h1>Chose booster</h1>
+<h1>chat with booster</h1> ^/
+<h1>chat with admin</h1> ^/
+<h1>view profile</h1> ^/ -->
+<div class="containter-fluid customer-order-body py-5">
+    <div class="container py-5 customer-order text-white">
+        <div class="row justify-content-between ">
+
+            <div class="col-3 information shadow p-5 text-center">
+
+                <div class="user-info">
+                    <img src="{{ user.image.url }}" class="profile-image col-4" alt="profile" />
+                    <h4 class="my-3">{{user.first_name}} {{user.last_name}}</h4>
+                    <a href="{% url 'accounts.profile' %}" class="fs-5" style="color: var(--secondary-color)">My Profile &rarr;</a>
+                </div>
+                <hr>
+
+                <div class="order-info my-4">
+                    <div class="from row">
+                        <p class="my-3 text-uppercase col-4 px-0">From</p>
+                        <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" height="70" />
+                        <p class="my-3 text-uppercase col-4 px-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
+                    </div>
+
+                    <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
+
+                    <div class="current row">
+                        <p class="my-3 text-uppercase col-4 px-0">Current</p>
+                        <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" height="70" />
+                        <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+                    </div>
+
+                    <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
+
+                    <div class="to row">
+                        <p class="my-3 text-uppercase col-4 px-0">TO</p>
+                        <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" width="70" height="70" />
+                        <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+                    </div>
+                </div>
+
+                {% if not order.customer_gamename and not order.customer_password and not order.customer_server %}
+                <hr>
+
+                <div class="game-data">
+                    <form action="{% url 'set.customer.data' %}" method="POST">
+                        {% csrf_token %}
+                        {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">@</span>
+                            <input type="text" required name="gamename" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                            <label class="input-group-text my-0" for="inputGroupSelect01" style="margin: 0 !important;">Servers</label>
+                            <select class="form-select" required name="server" id="inputGroupSelect01">
+                              <option value="1" selected>Europa</option>
+                              <option value="2">America</option>
+                              <option value="3">Asia</option>
+                              <option value="4">Africa</option>
+                              <option value="5">Australia</option>
+                            </select>
+                        </div>
+
+                        {% if not order.duo_boosting %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">*</span>
+                            <input type="password" required name="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+                        </div>
+                        {% endif %}
+
+                        <div class="text-end">
+                            <button type="submit" class="btn submit-btn">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div class="col-8">
+                {% if order.booster is null %}
+                    {% if order.duo_boosting %}
+                    <h4 id="choose-booster">Choose Booster</h4>
+                    <div class="choose-booster p-5 mb-5">
+                        {% for booster in boosters %}
+                        {% if booster != user %}
+                        <div class="booster mb-4 d-flex justify-content-between align-items-center ">
+                            <div class="data">
+                                <img src="{{ booster.image.url }}" alt="profile" width="50" style="border-radius: 50%;" />
+                                <span class="ms-4">{{booster.first_name}} {{booster.last_name}}</span>
+                            </div>
+
+                            <form action="{% url 'choose.booster' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
+                                <input type="hidden" name="order_id" value="{{ order.id }}">
+                                <button type="submit" class="btn submit-btn">Choose</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p><i class="fa-regular fa-clock"></i> Wait For Booster ...</p>
+                    {% endif %}
+                {% else %}
+                <h4 id="chat-booster">Chat With Booster</h4>
+                <div class="chat-booster mb-5"></div>
+                {% endif %}
+                <h4 id="chat-admin">Chat With Admin</h4>
+                <div class="chat-admin"></div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block footer %}
 <!-- Start Footer -->

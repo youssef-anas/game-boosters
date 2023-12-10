@@ -116,9 +116,61 @@ def logout_view(request):
 def order_view(request, id):
     if request.user.is_authenticated:
         try:
-            order = WildRiftDivisionOrder.objects.get(id=id, customer=request.user, )
-            return render(request, 'accounts/customer_side.html', context={'order': order})
+            order = WildRiftDivisionOrder.objects.get(id=id, customer=request.user)
+            boosters = User.objects.filter(is_booster=True)
+            context = {
+                'order': order, 
+                'boosters': boosters
+                }
+            return render(request, 'accounts/customer_side.html', context=context)
         except WildRiftDivisionOrder.DoesNotExist:
             return HttpResponse("Order Not Found For The Current User And Order ID.")
     else:
         return HttpResponse("User Not Authenticated.")
+
+from django.http import HttpResponse
+
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+def choose_booster(request):
+    if request.method == 'POST':
+        chosen_booster_id = request.POST.get('chosen_booster_id')
+        order_id = request.POST.get('order_id')
+
+        if chosen_booster_id and order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            booster = get_object_or_404(User, pk=chosen_booster_id)
+
+            order.booster = booster
+            order.save()
+
+            return redirect(reverse_lazy('customer.order', kwargs={'id': order.id}))
+
+    return JsonResponse({'success': False})
+
+def set_customer_data(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        print('order_id', order_id)
+        customer_gamename = request.POST.get('gamename')
+        print('customer_gamename', customer_gamename)
+        customer_server = request.POST.get('server')
+        print('customer_server', customer_server)
+        customer_password = request.POST.get('password')
+        print('customer_password', customer_password)
+
+        if customer_gamename and order_id and customer_server:
+            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+
+            order.customer_gamename = customer_gamename
+            order.customer_server = customer_server 
+
+            if customer_password :
+                order.customer_password = customer_password
+
+            order.save()
+
+            return redirect(reverse_lazy('customer.order', kwargs={'id': order.id}))
+
+    return JsonResponse({'success': False})
