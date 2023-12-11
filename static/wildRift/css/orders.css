@@ -1,24 +1,17 @@
-/* Hide the radio button */
 input[type="radio"] {
   display: none;
 }
-
-/* Style the label to look like the radio button text */
 label {
   display: inline-block;
   padding: 8px 12px;
   cursor: pointer;
   font-size: 16px;
   border: 1px solid #ccc;
-  /* Optional border for styling */
   border-radius: 4px;
 }
-/* Change label style when radio button is checked */
 input[type="radio"]:checked+label {
   background-color: var(--main-color);
-  /* Change the background color when checked */
   color: white;
-  /* Change the text color when checked */
 }
 .orders-container {
   /* background-image: linear-gradient(to top, #37175E 0%, #582984 50%, #4A0774) !important; */

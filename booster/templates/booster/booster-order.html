@@ -1,0 +1,198 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'booster/css/booster-order.css' %}">
+{% endblock %}
+{% block container %}
+<div class="containter-fluid booster-order-body text-white">
+  <div class="overlay py-5 ">
+    <div class="container py-5 booster-order text-white">
+  
+      <div class="orders-switch d-flex justify-content-between align-items-center p-4">
+        {% for order in orders %}
+          <input type="radio" id="order-{{order.id}}" data-order="order-{{order.id}}" name="radio-order" {% if forloop.counter0 == 0 %} checked {% endif %}>
+          <label for="order-{{order.id}}" class="me-2">Order {{order.id}}</label>
+        {% endfor %}
+        <a class="btn orders-list-btn" href="{% url 'wildrift.confirm.order' %}"><i class="fa-solid fa-plus"></i></a>
+      </div>
+  
+      {% for order in orders %}
+      <div class="row justify-content-between my-5 order order-{{order.id}}" data-order="order-{{order.id}}">
+        
+        <div class="col-3 information text-center">
+  
+          <div class="user-info shadow p-5 ">
+            <img src="{{ order.customer.image.url }}" class="profile-image col-4" alt="profile" />
+            <h4 class="my-3">{{order.customer.first_name}} {{order.customer.last_name}}</h4>
+            <hr>
+  
+            <p class="text-start">Order Information</p>
+            <div class="d-flex justify-content-between align-item-center">
+              <p class="text-secondary">Order ID</p>
+              <p>{{order.id}}</p>
+            </div>
+  
+            <div class="d-flex justify-content-between align-item-center">
+              <p class="text-secondary">Server</p>
+              <p>{{order.customer_server|server_name}}</p>
+            </div>
+  
+            <div class="d-flex justify-content-between align-item-center">
+              <p class="text-secondary">In-Game</p>
+              <p>{{order.customer_gamename}}</p>
+            </div>
+          </div>
+  
+          <div class="order-info my-4 shadow p-5 ">
+  
+            <h4 class="mb-5">Boost Progression</h4>
+            <div class="from row">
+              <p class="my-3 text-uppercase col-4 px-0">From</p>
+              <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" height="70" />
+              <div class="col-4 px-0">
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
+                <span class="text-secondary" style="font-size: 12px;">{{order.current_marks}} Marks</span>
+              </div>
+            </div>
+  
+            <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
+  
+            <div class="now row">
+              <p class="my-3 text-uppercase col-4 px-0">Now</p>
+              <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" height="70" />
+              <div class="col-4 px-0">
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+                <span class="text-secondary" style="font-size: 12px;">{{order.reached_marks}} Marks</span>
+              </div>
+            </div>
+  
+            <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
+  
+            <div class="to row">
+              <p class="my-3 text-uppercase col-4 px-0">TO</p>
+              <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" width="70" height="70" />
+              <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+            </div>
+  
+            <hr>
+  
+            <div class="updata-now">
+              <h5 class="my-4">Now Rank</h5>
+              <form action="{% url 'order.update.rating' %}" method="POST">
+                {% csrf_token %}
+                {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <div class="input-group mb-3">
+                  <label class="input-group-text my-0" for="reached_rank"
+                    style="margin: 0 !important;">Rank</label>
+                  <select class="form-select custom-input" required name="reached_rank" id="reached_rank">
+                    {% for rank in ranks %}
+                    {% with mark=rank.mark %}
+                    <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
+                    {% endwith %}
+                    {% endfor %}
+                  </select>
+                </div>
+  
+                <div class="input-group mb-3">
+                  <label class="input-group-text my-0" for="reached_division"
+                    style="margin: 0 !important;">Division</label>
+                  <select class="form-select custom-input" required name="reached_division" id="reached_division">
+                    <option value="1">IV</option>
+                    <option value="2">III</option>
+                    <option value="3">II</option>
+                    <option value="4">I</option>
+                  </select>
+                </div>
+  
+                <div class="input-group mb-3">
+                  <label class="input-group-text my-0" for="reached_marks"
+                    style="margin: 0 !important;">Marks</label>
+                  <select class="form-select custom-input" required name="reached_marks" id="reached_marks">
+                    <option value="0">0 Mark</option>
+                    <option value="1">1 Marks</option>
+                    <option value="2">2 Marks</option>
+                    <option value="3">3 Marks</option>
+                    <option value="4">4 Marks</option>
+                    <option value="5">5 Marks</option>
+                    <option value="6">6 Marks</option>
+                  </select>
+                </div>
+  
+                <div class="text-end">
+                  <button type="submit" class="btn submit-btn">Update Rating</button>
+                </div>
+              </form>
+  
+              {% if order.reached_rank == order.desired_rank and order.reached_division == order.desired_division %}
+              <div class="my-3">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                  <i class="fa-regular fa-circle-check"></i> Complete Order
+                </button>
+  
+                <!-- Modal -->
+                <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog bg-dark">
+                    <div class="modal-content  bg-dark">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Upload Complete Image</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: var(--secondary-color); !important"></button>
+                      </div>
+                      <div class="modal-body">
+
+                        <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+                          <input type="hidden" name="order_id" value="{{ order.id }}">
+
+                          <!-- Image preview -->
+                          <div class="d-flex justify-content-center align-items-center">
+                            <img src="#" alt="Preview" id="image-preview" style="max-width: 100%; max-height: 400px; display: none; margin-bottom: 3rem;">
+                          </div>
+
+                          <label for="images" class="drop-container" id="dropcontainer">
+                            <span class="drop-title">Drop files here</span>
+                            or
+                            <input type="file" name="finish_image" id="finish_image" required>
+                          </label>
+
+                          <div class="text-end">
+                            <button type="submit" class="btn submit-btn my-3">Submit</button>
+                          </div>
+                        </form>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+  
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-8">
+  
+          <div class="chat-customer p-4">
+  
+            <div class="chat-header active">
+              Chat With Customer
+            </div>
+  
+            <div class="chat m-4"></div>
+          </div>
+  
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'booster/js/booster-order.js' %}"></script>
+{% endblock %}

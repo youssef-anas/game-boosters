@@ -36,6 +36,7 @@ def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name
 def create_division_order(name, price, invoice):
     try:
         order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice)
+        order.save_with_processing()
         print(f'Order: {order}')
         return order
     except Exception as e:

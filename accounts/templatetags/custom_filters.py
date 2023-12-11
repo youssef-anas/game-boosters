@@ -13,4 +13,19 @@ def romanize_division(value):
   elif value == 4:
     return 'I'
   else:
-    return value  # return the original value if it doesn't match any condition
+    return value
+  
+@register.filter(name='server_name')
+def server_name(value):
+  if value == 1:
+    return 'Europa'
+  elif value == 2:
+    return 'America'
+  elif value == 3:
+    return 'Asia'
+  elif value == 4:
+    return 'Africa'
+  elif value == 5:
+    return 'Australia'
+  else:
+    return value
