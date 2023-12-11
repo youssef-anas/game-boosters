@@ -152,6 +152,7 @@ class WildRiftDivisionOrder(models.Model):
     streaming = models.BooleanField(default=False ,blank=True)
     finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
     is_done = models.BooleanField(default=False ,blank=True)
+    is_drop = models.BooleanField(default=False ,blank=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
     customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)

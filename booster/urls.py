@@ -10,4 +10,7 @@ urlpatterns = [
     path('orders/',booster_orders,name='booster.orders'),
     path('update-rating/',update_rating,name='order.update.rating'),
     path('upload-image/',upload_finish_image,name='order.upload.image'),
+    path('drop-order/',drop_order,name='drop.order'),
+    path('confirm_details/',confirm_details,name='confirm.details'),
+    path('ask_customer/',ask_customer,name='ask.customer'),
 ]

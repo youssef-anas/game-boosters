@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
+import json
 
 
 def register_booster_view(request):
@@ -59,17 +60,63 @@ def get_rate(request, order_id):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
-
         
 # this for only test and will remove it        
 def form_test(request):
     order = WildRiftDivisionOrder.objects.get(id=6)
     return render(request,'booster/rating_page.html', context={'order':order})
+
 def booster_orders(request):
     orders = WildRiftDivisionOrder.objects.filter(booster=request.user).order_by('id')
     ranks = WildRiftRank.objects.all()
+
+    with open('static/wildRift/data/divisions_data.json', 'r') as file:
+        division_data = json.load(file)
+        division_price = [item for sublist in division_data for item in sublist]
+        division_price.insert(0,0)
+    
+    with open('static/wildRift/data/marks_data.json', 'r') as file:
+        marks_data = json.load(file)
+        marks_price = [item for sublist in marks_data for item in sublist]
+        marks_price.insert(0,0)
+
+    orders_with_percentege = []
+    for order in orders:
+
+        current_rank = order.current_rank.id
+        current_division = order.current_division
+        current_marks = order.current_marks
+
+        reached_rank = order.reached_rank.id
+        reached_division = order.reached_division
+        reached_marks = order.reached_marks
+
+        start_division = ((current_rank-1)*4) + current_division
+        now_division = ((reached_rank-1)*4)+ reached_division
+        sublist_div = division_price[start_division:now_division]
+
+        start_marks = (((current_rank-1)*4) + current_marks + 1) + 1
+        now_marks = (((reached_rank-1)*4) + reached_marks + 1) + 1
+        sublist_marks = marks_price[start_marks:now_marks]
+
+        done_sum_div = sum(sublist_div)
+        done_sum_marks = sum(sublist_marks)
+
+        done_sum = done_sum_div + done_sum_marks
+
+        percentege = round((done_sum / order.price) * 100 , 2)
+
+        now_price = round(order.actual_price * (percentege / 100) , 2)
+
+        order_data = {
+            'order': order,
+            'percentege': percentege,
+            'now_price': now_price
+        }
+        orders_with_percentege.append(order_data)
+
     context = {
-        'orders': orders,
+        'orders': orders_with_percentege,
         'ranks': ranks
     }
     return render(request, 'booster/booster-order.html', context=context)
@@ -102,5 +149,42 @@ def upload_finish_image(request):
                 order.finish_image = finish_image
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
+
+    return JsonResponse({'success': False})
+
+def drop_order(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order.booster = None
+            order.is_drop = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+
+    return JsonResponse({'success': False})
+
+def confirm_details(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order.data_correct = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+
+    return JsonResponse({'success': False})
+
+def ask_customer(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order.message = 'Pleace Specify Your Details'
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
 
     return JsonResponse({'success': False})
