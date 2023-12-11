@@ -4,6 +4,7 @@ from accounts.models import BaseUser
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
+from django.utils import timezone
 
 # # Create your models here.
 
@@ -137,6 +138,7 @@ class WildRiftDivisionOrder(models.Model):
     current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     price = models.FloatField(default=0,blank=True, null=True)
+    actual_price = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300 ,blank=True, null=True)
     booster_percent1 = models.IntegerField(default=50)
     booster_percent2 = models.IntegerField(default=60)
@@ -192,11 +194,30 @@ class WildRiftDivisionOrder(models.Model):
             
             self.duo_boosting = 'DUO BOOSTING' in boost_options
             self.select_booster = 'SELECT BOOSTING' in boost_options
-            self.turbo_boost = 'TURBO BOOST' in boost_options
+            self.turbo_boost = 'TURBO BOOSTING' in boost_options
             self.streaming = 'STREAMING' in boost_options
+    
+    def update_actual_price(self):
+        current_time = timezone.now()
+
+        if not self.created_at:
+            self.actual_price = self.price * (self.booster_percent1 / 100)
+        else:
+            time_difference = (current_time - self.created_at).total_seconds() / 60
+
+            if time_difference <= 1:
+                self.actual_price = self.price * (self.booster_percent2 / 100)
+            elif time_difference <= 2:
+                self.actual_price = self.price * (self.booster_percent3 / 100)
+            elif time_difference <= 3:
+                self.actual_price = self.price * (self.booster_percent4 / 100)
+            else:
+                self.actual_price = self.price * (self.booster_percent4 / 100)
+
 
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
+        self.update_actual_price()
         super().save(*args, **kwargs)
 
     def __str__(self):

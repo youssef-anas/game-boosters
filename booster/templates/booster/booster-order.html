@@ -21,7 +21,7 @@
       {% for order in orders %}
       <div class="row justify-content-between my-5 order order-{{order.id}}" data-order="order-{{order.id}}">
         
-        <div class="col-3 information text-center">
+        <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center">
   
           <div class="user-info shadow p-5 ">
             <img src="{{ order.customer.image.url }}" class="profile-image col-4" alt="profile" />
@@ -50,7 +50,7 @@
             <h4 class="mb-5">Boost Progression</h4>
             <div class="from row">
               <p class="my-3 text-uppercase col-4 px-0">From</p>
-              <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" height="70" />
+              <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
                 <span class="text-secondary" style="font-size: 12px;">{{order.current_marks}} Marks</span>
@@ -61,7 +61,7 @@
   
             <div class="now row">
               <p class="my-3 text-uppercase col-4 px-0">Now</p>
-              <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" height="70" />
+              <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
                 <span class="text-secondary" style="font-size: 12px;">{{order.reached_marks}} Marks</span>
@@ -72,7 +72,7 @@
   
             <div class="to row">
               <p class="my-3 text-uppercase col-4 px-0">TO</p>
-              <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" width="70" height="70" />
+              <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" width="70" />
               <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
             </div>
   
@@ -175,7 +175,7 @@
           </div>
         </div>
   
-        <div class="col-8">
+        <div class="col-lg-8 col-12">
   
           <div class="chat-customer p-4">
   
