@@ -1,4 +1,4 @@
-from django.shortcuts import reverse
+from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.db import models
 from accounts.models import BaseUser
 from django.core.validators import MinValueValidator, MaxLengthValidator
@@ -74,6 +74,7 @@ class WildRiftMark(models.Model):
         MARK_3 = 3, '3 Marks'
         MARK_4 = 4, '4 Marks'
         MARK_5 = 5, '5 Marks'
+        MARK_6 = 6, '6 Marks'
 
     rank = models.OneToOneField('WildRiftRank', related_name='mark', on_delete=models.CASCADE)
     tier = models.OneToOneField(WildRiftTier, related_name='tier_mark', on_delete=models.CASCADE)
@@ -83,6 +84,7 @@ class WildRiftMark(models.Model):
     mark_3 = models.FloatField(default=0)
     mark_4 = models.FloatField(default=0)
     mark_5 = models.FloatField(default=0)
+    mark_6 = models.FloatField(default=0)
 
 
 
@@ -116,6 +118,7 @@ class WildRiftDivisionOrder(models.Model):
         (3 , '3 Marks'),
         (4 , '4 Marks'),
         (5 , '5 Marks'),
+        (6 , '6 Marks'),
     ]
     SERVER_CHOISES = [
         (1, 'Europa'),
@@ -131,7 +134,8 @@ class WildRiftDivisionOrder(models.Model):
     current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-    mark = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+    current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+    reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     price = models.FloatField(default=0,blank=True, null=True)
     invoice = models.CharField(max_length=300 ,blank=True, null=True)
     booster_percent1 = models.IntegerField(default=50)
@@ -145,6 +149,7 @@ class WildRiftDivisionOrder(models.Model):
     turbo_boost = models.BooleanField(default=False ,blank=True)
     streaming = models.BooleanField(default=False ,blank=True)
     finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
+    is_done = models.BooleanField(default=False ,blank=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
     customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)
@@ -153,7 +158,7 @@ class WildRiftDivisionOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
+    def process_name(self):
         parts = self.name.split(' ')
 
         current_rank_name = parts[4].lower()
@@ -164,18 +169,20 @@ class WildRiftDivisionOrder(models.Model):
 
         try:
             current_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
-            reached_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
             desired_rank = WildRiftRank.objects.get(rank_name__iexact=desired_rank_name)
         except WildRiftRank.DoesNotExist:
             print(f"Rank not found: {current_rank_name} or {desired_rank_name}")
             return
 
         current_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
-        reached_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
         desired_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == desired_division_str.lower()), None)
+        
         self.current_rank = current_rank
         self.current_division = current_division
-        self.mark = marks
+        self.current_marks = marks
+        self.reached_rank = current_rank
+        self.reached_division = current_division
+        self.reached_marks = marks
         self.desired_rank = desired_rank
         self.desired_division = desired_division
 
@@ -188,10 +195,12 @@ class WildRiftDivisionOrder(models.Model):
             self.turbo_boost = 'TURBO BOOST' in boost_options
             self.streaming = 'STREAMING' in boost_options
 
-        super().save(*args, **kwargs) 
+    def save_with_processing(self, *args, **kwargs):
+        self.process_name()
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Boosting From {self.current_rank} {self.current_division} Marks {self.mark} To {self.desired_rank} {self.desired_division}"
+        return f"Boosting From {self.current_rank} {self.current_division} Marks {self.current_marks} To {self.desired_rank} {self.desired_division}"
     
 class WildRiftPlacementOrder(models.Model):
     last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')

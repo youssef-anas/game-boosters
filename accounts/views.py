@@ -40,7 +40,7 @@ def send_activation_email(user, request):
     send_mail(subject, message, 'your@example.com', [user.email])
 
 def create_chat_with_booster(user):
-    booster_user = User.objects.get(username='booster')
+    booster_user = get_object_or_404(User, username='booster')
     isRoomExist = Room.get_specific_room(user,booster_user)
     if not isRoomExist:
         return Room.create_room_with_booster(user, booster_user)

@@ -31,7 +31,7 @@
           <li class="nav-item">
             <a class="nav-link" href="">FAQ</a>
           </li>
-          {% if request.user %}
+          {% if request.user.id %}
           <div class="dropdown">
             <button class="btn text-white dropdown-toggle border-0" type="button" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -44,10 +44,6 @@
               {% if request.user.is_booster %}
               <li>
                 <a class="dropdown-item" href="{% url 'booster.orders' %}">My Orders</a>
-              </li>
-              {% else %}
-              <li>
-                <a class="dropdown-item" href="{% url 'accounts.customer_side' %}">My Orders</a>
               </li>
               {% endif %}
               <li>
