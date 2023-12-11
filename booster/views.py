@@ -46,8 +46,6 @@ def get_rate(request, order_id):
     customer =order_obj.customer
     booster =order_obj.booster
     if not (customer and booster):
-        print(order_obj.customer)
-        print(order_obj.booster)
         return HttpResponse(f'cant set rate to order {order_id}, with customer {customer} and booster {booster}')
     if order_obj.is_done:
         if request.method == 'POST':
@@ -56,7 +54,7 @@ def get_rate(request, order_id):
                 existing_rating = Rating.objects.filter(order=order_obj).first()
                 if existing_rating:
                     return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
-                serializer.save(order=order_obj,customer=customer, booster=booster)
+                serializer.save(order=order_obj)
                 return HttpResponse('Thank You, Wanna to create New order ?')
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
