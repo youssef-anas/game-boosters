@@ -1,3 +1,16 @@
+from django.shortcuts import render, HttpResponse, get_object_or_404
+from .forms import Registeration_Booster
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from booster.models import Rating
+from django.contrib.auth import get_user_model
+from wildRift.models import WildRiftDivisionOrder
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from booster.serializers import RatingSerializer
+User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from .forms import Registeration_Booster
@@ -6,9 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
 
-# Create your views here.
 
-@csrf_exempt
 def register_booster_view(request):
     form = Registeration_Booster()
     if request.method == 'POST':
@@ -28,6 +39,32 @@ def register_booster_view(request):
 def profile_booster_view(request):
     return render(request, 'booster/booster_profile.html')
 
+
+@login_required
+def get_rate(request, order_id):
+    order_obj = get_object_or_404(WildRiftDivisionOrder, id=order_id)
+    customer =order_obj.customer
+    booster =order_obj.booster
+    if not (customer and booster):
+        return HttpResponse(f'cant set rate to order {order_id}, with customer {customer} and booster {booster}')
+    if order_obj.is_done:
+        if request.method == 'POST':
+            serializer = RatingSerializer(data=request.POST)
+            if serializer.is_valid():
+                existing_rating = Rating.objects.filter(order=order_obj).first()
+                if existing_rating:
+                    return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
+                serializer.save(order=order_obj)
+                return HttpResponse('Thank You, Wanna to create New order ?')
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
+    return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
+
+        
+# this for only test and will remove it        
+def form_test(request):
+    order = WildRiftDivisionOrder.objects.get(id=6)
+    return render(request,'booster/rating_page.html', context={'order':order})
 def booster_orders(request):
     orders = WildRiftDivisionOrder.objects.filter(booster=request.user).order_by('id')
     ranks = WildRiftRank.objects.all()
