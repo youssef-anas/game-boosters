@@ -17,6 +17,7 @@ from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
 from chat.models import Room, Message
 from django.http import JsonResponse
+from accounts.order_creator import  create_order
 User = get_user_model()
 
 @csrf_exempt
@@ -56,34 +57,36 @@ def create_chat_with_admins(user):
 
 @csrf_exempt
 def register_view(request):
+    invoice = request.session.get('invoice')
     payer_id = request.GET.get('PayerID')
-    order_id = request.GET.get('order_id')
-    order = get_object_or_404(WildRiftDivisionOrder, id=order_id)
-    # if order.customer:
-    #     return HttpResponse('this order with another user, create order again or connect to admin')
-    if request.user.is_authenticated:   
-        order.customer = request.user
-        order.save()
-        new_chat = create_chat_with_booster(request.user)
-        admins_chat = create_chat_with_admins(request.user)
-        return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id, 'admins_chat_slug':admins_chat.slug}))
-    if request.method == 'POST':
-        form = Registeration(request.POST,request.FILES)
-        if form.is_valid():
-            user = form.save()
-            order.customer = user
+    
+    if invoice:
+        order = create_order(invoice, payer_id)
+        # if order.customer:
+        #     return HttpResponse('this order with another user, create order again or connect to admin')
+        if request.user.is_authenticated:   
+            order.customer = request.user
             order.save()
-            login(request, user)
-            # Send activation email
-            # send_activation_email(user, request)
-            # return render(request, 'accounts/activation_sent.html')
-            new_chat = create_chat_with_booster(user)
+            new_chat = create_chat_with_booster(request.user)
             admins_chat = create_chat_with_admins(request.user)
-            # redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
             return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id, 'admins_chat_slug':admins_chat.slug}))
-    form = Registeration()
+        if request.method == 'POST':
+            form = Registeration(request.POST,request.FILES)
+            if form.is_valid():
+                user = form.save()
+                order.customer = user
+                order.save()
+                login(request, user)
+                # Send activation email
+                # send_activation_email(user, request)
+                # return render(request, 'accounts/activation_sent.html')
+                new_chat = create_chat_with_booster(user)
+                admins_chat = create_chat_with_admins(request.user)
+                # redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
+                return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id, 'admins_chat_slug':admins_chat.slug}))
+        form = Registeration()
 
-    return render(request, 'accounts/register.html', {'form': form})
+        return render(request, 'accounts/register.html', {'form': form})
 
 
 @login_required

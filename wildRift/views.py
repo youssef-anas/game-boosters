@@ -16,36 +16,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 User = get_user_model()
-# from .models import Buyer 
-
-def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name):
-    # Check if a user with the same payer_id already exists
-    user = User.objects.filter(username=payer_id).first()
-
-    # If not, create a new user account
-    if not user:
-        user = User.objects.create_user(username=payer_id, email=payer_email, password='iti123456', first_name=buyer_first_name,
-        last_name=buyer_last_name,)
-        print(f'user created with, {user}')
-        return user
-    return user
-
-    # return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
-
-def create_division_order(name, price, invoice, booster):
-    try:
-        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice, booster=booster)
-        order.save_with_processing()
-        print(f'Order: {order}')
-        return order
-    except Exception as e:
-        print(f'Error creating order: {e}')
-        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice)
-        order.save_with_processing()
-        print(f'Order: {order}')
-        return order
-
 
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
@@ -63,23 +35,31 @@ def get_order_result_by_rank(data):
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
 
+    duo_boosting_value = 0
+    select_booster_value = 0
+    turbo_boost_value = 0
+    streaming_value = 0
+
     boost_options = []
 
     if duo_boosting:
         total_percent += 0.65
         boost_options.append('DUO BOOSTING')
+        duo_boosting_value = 1
 
     if select_booster:
         total_percent += 0.05
         boost_options.append('SELECT BOOSTING')
+        select_booster_value = 1
 
     if turbo_boost:
         total_percent += 0.20
         boost_options.append('TURBO BOOSTING')
-
+        turbo_boost_value = 1
     if streaming:
         total_percent += 0.15
         boost_options.append('STREAMING')
+        streaming_value = 1
 
     # Read data from JSON file
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
@@ -99,15 +79,25 @@ def get_order_result_by_rank(data):
     price = total_sum - marks_price
     price += (price * total_percent)
 
+
+    booster_id = data['choose_booster']
+    if booster_id > 0 :
+        booster = get_object_or_404(User,id=booster_id,is_booster=True)
+        booster_id = booster.id
+    else:
+        booster_id = 0
+    #####################################
+    invoice = f'wr-1-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{timezone.now()}'
+    invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
-    return({'name':name,'price':price})
+    return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
-    ranks = WildRiftRank.objects.all()
+    ranks = WildRiftRank.objects.all().order_by('id')
     divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
     placements = WildRiftPlacement.objects.all().order_by('id')
@@ -179,30 +169,23 @@ def view_that_asks_for_money(request):
         try:
             serializer = RankSerializer(data=request.POST)
             if serializer.is_valid():
-                data = serializer.validated_data
-                booster_id = data['choose_booster']
-                booster = None
-                if booster_id > 0 :
-                    booster = get_object_or_404(User,id=booster_id,is_booster=True)
-                print('booster')    
-                order_info = get_order_result_by_rank(data)
-                dynamic_invoice = str(uuid.uuid4())
-                print(data['choose_booster'])
-                create_order = create_division_order( order_info['name'], order_info['price'], dynamic_invoice, booster)
-                order_id = create_order.id
+
+                order_info = get_order_result_by_rank(serializer.validated_data)
+                request.session['invoice'] = order_info['invoice']
+
                 paypal_dict = {
                     "business": settings.PAYPAL_EMAIL,
                     "amount": order_info['price'],
                     "item_name": order_info['name'],
-                    "invoice": dynamic_invoice,
+                    "invoice": order_info['invoice'],
                     "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                    "return": request.build_absolute_uri(f"/accounts/register/?order_id={order_id}"),
-                    "cancel_return": request.build_absolute_uri(f"/wildRift/payment-canceled/?order_id={order_id}"),
+                    "return": request.build_absolute_uri(f"/accounts/register/"),
+                    "cancel_return": request.build_absolute_uri(f"/wildRift/payment-canceled/"),
                 }
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
-                print(f'order {dynamic_invoice} : {order_info}')
+                print(f'order {order_info['invoice']} : {order_info}')
                 return render(request, "wildRift/paypal.html", context,status=200)
             return JsonResponse({'error': serializer.errors}, status=400)
         except Exception as e:
@@ -269,3 +252,16 @@ def payment_canceled(request):
 # valid_ipn_received.connect(paypal_ipn_listener)
 
 
+
+def registration_view(request):
+    # Check if there's a purchase identifier in the session
+    purchase_id = request.session.get('purchase_id')
+
+    if purchase_id:
+        # The user has made a purchase before registering
+        request.session.pop('purchase_id')
+        return HttpResponse(f'purchase_id  {purchase_id}')
+    else:
+        # The user is registering without making a purchase
+        request.session.pop('purchase_id')
+        return HttpResponse(f'purchase_id  {purchase_id}')

@@ -139,7 +139,7 @@ class WildRiftDivisionOrder(models.Model):
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     price = models.FloatField(default=0,blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
-    invoice = models.CharField(max_length=300 ,blank=True, null=True)
+    invoice = models.CharField(max_length=300,)
     booster_percent1 = models.IntegerField(default=50)
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
@@ -158,45 +158,33 @@ class WildRiftDivisionOrder(models.Model):
     customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)
     data_correct = models.BooleanField(default=False ,blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
+    payer_id = models.CharField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def process_name(self):
-        parts = self.name.split(' ')
+        # Split the invoice string by the hyphen ("-") delimiter
+        invoice_values = self.invoice.split('-')
 
-        current_rank_name = parts[4].lower()
-        current_division_str = parts[5]
-        marks = int(parts[7])
-        desired_rank_name = parts[9].lower()
-        desired_division_str = parts[10]
 
-        try:
-            current_rank = WildRiftRank.objects.get(rank_name__iexact=current_rank_name)
-            desired_rank = WildRiftRank.objects.get(rank_name__iexact=desired_rank_name)
-        except WildRiftRank.DoesNotExist:
-            print(f"Rank not found: {current_rank_name} or {desired_rank_name}")
-            return
+        # Extract specific values
+        self.current_division = int(invoice_values[3])
+        self.current_marks = int(invoice_values[4])
+        self.desired_division = int(invoice_values[6])
+        self.price = float(invoice_values[12]) 
 
-        current_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == current_division_str.lower()), None)
-        desired_division = next((div for div, div_str in self.DIVISION_CHOICES if div_str.lower() == desired_division_str.lower()), None)
+        # 0 orr 1 to true or false
+        self.duo_boosting = bool(invoice_values[7])
+        self.select_booster = bool(invoice_values[8])
+        self.turbo_boost = bool(invoice_values[9])
+        self.streaming = bool(invoice_values[10])
+
+        current_rank_id = int(invoice_values[2])
+        desired_rank_id = int(invoice_values[5])
         
-        self.current_rank = current_rank
-        self.current_division = current_division
-        self.current_marks = marks
-        self.reached_rank = current_rank
-        self.reached_division = current_division
-        self.reached_marks = marks
-        self.desired_rank = desired_rank
-        self.desired_division = desired_division
+        self.current_rank = WildRiftRank.objects.get(pk=current_rank_id)
+        self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
 
-        if "WITH" in self.name:
-            boost_part = self.name.split("WITH")[1].strip()
-            boost_options = [boost.strip() for boost in boost_part.split("AND")]
-            
-            self.duo_boosting = 'DUO BOOSTING' in boost_options
-            self.select_booster = 'SELECT BOOSTING' in boost_options
-            self.turbo_boost = 'TURBO BOOSTING' in boost_options
-            self.streaming = 'STREAMING' in boost_options
     
     def update_actual_price(self):
         current_time = timezone.now()
