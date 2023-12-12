@@ -62,38 +62,9 @@
   <div class="games container-fluid px-0">
 
     <div class="my-5 container px-0">
-      <h3 class="text-uppercase text-white ">CHOOSE YOUR GAME TO GET DESIRED RANK</h3>
-    </div>
-
-    <div class="group-one" data-aos="fade-up">
+      <h3 class="text-uppercase text-white mb-5">CHOOSE YOUR GAME TO GET DESIRED RANK</h3>
       <div class="games-card">
-        {% for game in games|slice:":4" %}
-        <div class="box" data-aos="fade-right">
-          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
-          <div class="caption">
-            <h3>{{game.name}}</h3>
-          </div>
-        </div>
-          {% endfor %}
-      </div>
-    </div>
-
-    <div class="group-two" data-aos="fade-down">
-      <div class="games-card">
-        {% for game in games|slice:"4:8" %}
-        <div class="box" data-aos="fade-right">
-          <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
-          <div class="caption">
-            <h3>{{game.name}}</h3>
-          </div>
-        </div>
-          {% endfor %}
-      </div>
-    </div>
-
-    <div class="group-three" data-aos="fade-up">
-      <div class="games-card">
-        {% for game in games|slice:"8:10" %}
+        {% for game in games %}
         <div class="box" data-aos="fade-right">
           <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}}>
           <div class="caption">
