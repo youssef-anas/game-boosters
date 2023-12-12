@@ -1,8 +1,46 @@
+// ######################################### Toggle Function #########################################
+const buttons = {
+    AdminsChat: document.querySelector('#AdminsChatButton'),
+    BoosterChat: document.querySelector('#BoosterChatButton'),
+};
+const contents = {
+    AdminsChat: document.querySelector('#AdminsChatContent'),
+    BoosterChat: document.querySelector('#BoosterChatContent'),
+};
+
+function toggleContent(content) {
+    for (const key in contents) {
+        contents[key].style.display = key === content ? contents[key].style.display = 'block' : contents[key].style.display = 'none'
+    }
+}
+
+// Toggle click event
+function setupButtonClickEvent(button, content) {
+    button.addEventListener('click', function () {
+        toggleContent(content);
+        scrollToBottom();
+        admins_scrollToBottom();
+
+        for (const key in buttons) {
+            buttons[key].classList.remove('clicked_button');
+        }
+        button.classList.add('clicked_button');
+        console.log('click')
+    });
+}
+
+// Setup click events for each button
+for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+}
+
+
+// ######################################### Chats #########################################
 const user = JSON.parse(document.getElementById('user').textContent);
 const admin_room = JSON.parse(document.getElementById('admin_room').textContent);
 const booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
 
-// ######################################### Admins Chat #########################################
+// ################ Admins Chat 
 const admins_chatbox = document.querySelector("#chat-admin-box");
 // Function to scroll to the bottom of the admins_chatbox
 function admins_scrollToBottom() {
@@ -58,7 +96,7 @@ adminsChatSocket.onmessage = function (e) {
     admins_scrollToBottom();
 };
 
-// ######################################### Booster Chat #########################################
+// ################ Booster Chat 
 const chatbox = document.querySelector("#chat-box");
 // Function to scroll to the bottom of the chatbox
 function scrollToBottom() {
@@ -115,42 +153,3 @@ chatSocket.onmessage = function (e) {
     document.querySelector("#chatbox").appendChild(div);
     scrollToBottom();
 };
-
-
-
-// ######################################### Toggle Function #########################################
-const buttons = {
-    AdminsChat: document.querySelector('#AdminsChatButton'),
-    BoosterChat: document.querySelector('#BoosterChatButton'),
-
-};
-const contents = {
-    AdminsChat: document.querySelector('#AdminsChatContent'),
-    BoosterChat: document.querySelector('#BoosterChatContent'),
-};
-
-function toggleContent(content) {
-    for (const key in contents) {
-        contents[key].style.display = key === content ? contents[key].style.display = 'block' : contents[key].style.display = 'none'
-    }
-}
-
-// Toggle click event
-function setupButtonClickEvent(button, content) {
-    button.addEventListener('click', function () {
-        toggleContent(content);
-        scrollToBottom();
-        admins_scrollToBottom();
-
-        for (const key in buttons) {
-            buttons[key].classList.remove('clicked_button');
-        }
-        button.classList.add('clicked_button');
-        console.log('click')
-    });
-}
-
-// Setup click events for each button
-for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-}
