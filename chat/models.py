@@ -22,8 +22,8 @@ class Room(models.Model):
         return room
     
     @classmethod
-    def create_room_with_admin(cls,user,admin):
-        room = cls(name=f'{user}-{admin}', slug=f'roomFor_{user}_{admin}')
+    def create_room_with_admins(cls,user):
+        room = cls(name=f'{user}-admins', slug=f'roomFor_{user}_admins')
         room.save()
         return room
     
@@ -34,6 +34,10 @@ class Room(models.Model):
     @classmethod
     def get_specific_room(cls,user,booster):
         return cls.objects.filter(name=f'{user}-{booster}').first()
+    
+    @classmethod
+    def get_specific_admins_room(cls,user):
+        return cls.objects.filter(name=f'{user}-admins').first()
     
     def close_the_room(self, slug):
         room = Room.objects.filter(slug=slug).first()
