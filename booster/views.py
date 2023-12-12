@@ -40,7 +40,7 @@ def register_booster_view(request):
 
 @login_required
 def profile_booster_view(request, booster_id):
-    booster = User.objects.get(id=booster_id)
+    booster = get_object_or_404(User, id=booster_id,is_booster = True)
     ratings = Rating.objects.filter(booster=booster_id).order_by('-created_at')
     total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
     rate_count = ratings.count()
@@ -72,20 +72,21 @@ def get_rate(request, order_id):
                 if existing_rating:
                     return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
                 serializer.save(order=order_obj)
-                return HttpResponse('Thank You, Wanna to create New order ?')
+                return redirect('wildrift')
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
 # this for only test and will remove it        
 def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(id=6)
+    order = WildRiftDivisionOrder.objects.get(id=9)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    orders = WildRiftDivisionOrder.objects.filter(booster=request.user).order_by('id')
+    if not request.user.is_booster:
+        return HttpResponse('you are not booster')
+    orders = WildRiftDivisionOrder.objects.filter(booster=request.user,is_done=False).order_by('id')
     ranks = WildRiftRank.objects.all()
-
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
         division_data = json.load(file)
         division_price = [item for sublist in division_data for item in sublist]
@@ -156,51 +157,42 @@ def update_rating(request):
 def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
-
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
-
     return JsonResponse({'success': False})
 
 def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.booster = None
             order.is_drop = True
             order.save()
             return redirect(reverse_lazy('booster.orders'))
-
     return JsonResponse({'success': False})
 
 def confirm_details(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.data_correct = True
             order.save()
             return redirect(reverse_lazy('booster.orders'))
-
     return JsonResponse({'success': False})
 
 def ask_customer(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.message = 'Pleace Specify Your Details'
             order.save()
             return redirect(reverse_lazy('booster.orders'))
-
     return JsonResponse({'success': False})
