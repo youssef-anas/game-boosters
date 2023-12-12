@@ -38,7 +38,6 @@ def register_booster_view(request):
     return render(request, 'booster/registeration_booster.html', {'form': form})
 
 
-@login_required
 def profile_booster_view(request, booster_id):
     booster = get_object_or_404(User, id=booster_id,is_booster = True)
     ratings = Rating.objects.filter(booster=booster_id).order_by('-created_at')

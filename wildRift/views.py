@@ -33,15 +33,18 @@ def create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name
 
     # return HttpResponse(f'you have account with you trnaction id username {payer_id} and name {buyer_first_name}')
 
-def create_division_order(name, price, invoice):
+def create_division_order(name, price, invoice, booster):
     try:
-        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice)
+        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice, booster=booster)
         order.save_with_processing()
         print(f'Order: {order}')
         return order
     except Exception as e:
         print(f'Error creating order: {e}')
-        return None
+        order = WildRiftDivisionOrder.objects.create(name=name, price=price, invoice=invoice)
+        order.save_with_processing()
+        print(f'Order: {order}')
+        return order
 
 
 division_names = ['','IV','III','II','I']  
@@ -177,10 +180,15 @@ def view_that_asks_for_money(request):
             serializer = RankSerializer(data=request.POST)
             if serializer.is_valid():
                 data = serializer.validated_data
+                booster_id = data['choose_booster']
+                booster = None
+                if booster_id > 0 :
+                    booster = get_object_or_404(User,id=booster_id,is_booster=True)
+                print('booster')    
                 order_info = get_order_result_by_rank(data)
                 dynamic_invoice = str(uuid.uuid4())
-                
-                create_order = create_division_order( order_info['name'], order_info['price'], dynamic_invoice)
+                print(data['choose_booster'])
+                create_order = create_division_order( order_info['name'], order_info['price'], dynamic_invoice, booster)
                 order_id = create_order.id
                 paypal_dict = {
                     "business": settings.PAYPAL_EMAIL,

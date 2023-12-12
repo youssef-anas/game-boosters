@@ -23,6 +23,22 @@ var total_Percentage = 0;
   //   console.log('No radio buttons is initially checked.');
   // }
 
+    // Get the 'choose-booster' query parameter value from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const chooseBoosterValue = urlParams.get('choose_booster');
+    let chooseBoosterInt = 0
+    if (chooseBoosterValue != null){
+      chooseBoosterInt = parseInt(chooseBoosterValue, 10);
+    }
+
+    console.log('_____________________________________________________________')
+ 
+    console.log(chooseBoosterInt)
+
+    // Set the value of the input field to the obtained 'choose-booster' value
+    document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
+  
+
   function sliceArray(array, start, end) {
     return array.slice(start, end + 1);
   }

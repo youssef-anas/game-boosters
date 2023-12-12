@@ -107,6 +107,7 @@
                 <td>{{ customer_reviews|default:0 }}/5</td>
             </tr>
         </table>
+        <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
     </div>
     <div class="reviews">
         <h1>{{booster.username}} Customer Feedback</h1>

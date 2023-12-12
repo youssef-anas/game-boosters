@@ -16,6 +16,8 @@ class RankSerializer(serializers.Serializer):
 
     price = serializers.FloatField(min_value=10)
 
+    choose_booster = serializers.IntegerField()
+
 
 class PlacementSerializer(serializers.Serializer):
     Previous_Season_Rank = serializers.IntegerField()
