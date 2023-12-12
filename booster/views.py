@@ -18,6 +18,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
+from django.db.models import Sum
+
 
 
 def register_booster_view(request):
@@ -36,8 +38,22 @@ def register_booster_view(request):
 
 
 @login_required
-def profile_booster_view(request):
-    return render(request, 'booster/booster_profile.html')
+def profile_booster_view(request, booster_id):
+    booster = User.objects.get(id=booster_id)
+    ratings = Rating.objects.filter(booster=booster_id).order_by('-created_at')
+    total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
+    rate_count = ratings.count()
+    customer_reviews = total_ratings / rate_count if rate_count > 0 else 0
+    completed_orders = WildRiftDivisionOrder.objects.filter(is_done = True, booster=booster)
+    completed_boosts_count = completed_orders.count()
+    context = {
+        "ratings":ratings,
+        'booster':booster,
+        'completed_boosts_count':completed_boosts_count,
+        'customer_reviews':customer_reviews,
+        'completed_orders':completed_orders,
+        }
+    return render(request, 'booster/booster_profile.html', context)
 
 
 @login_required

@@ -11,6 +11,7 @@ class Rating(models.Model):
     game = models.IntegerField(default=1)
     anonymous = models.BooleanField(default=False)
     order = models.OneToOneField(WildRiftDivisionOrder, on_delete=models.CASCADE, related_name='order_rated')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         # Set customer and booster based on the associated order

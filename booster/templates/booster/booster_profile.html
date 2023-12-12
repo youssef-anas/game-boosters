@@ -1,13 +1,130 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        *{
+            color: #ffffff;
+            padding: 0px;
+            margin: 0px;
+        }
+        body {
+            margin: 0px;
+            padding: 0px;
+            background-image: url("./../../../media/wildRift/images/backgrounds/profile.jpg");
+            background-size:auto;
+            background-position: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .content{
+            padding-left: 15%;
+            padding-right: 15%;
+            text-align: center;
+            padding-bottom: 80px;
+        }
+        .profile-view img{
+            width: 170px; 
+            height: 170px;
+            padding: 20px;
+        }
+        .profile-view{
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: rgba(126, 4, 4, 0.2);
+        }
+        .reviews{
+            background-color: #ffffff;
+            padding: 30px;        
+        }
+        .reviews p,
+        .reviews,
+        .reviews h1,
+        .reviews h2,
+        .reviews h3,
+        .reviews h4,
+        .reviews h5,
+        .reviews h6 {
+            color: black;
+            text-align: center;
+        } 
+        hr {
+            margin: auto;
+        }
+
+    </style>
     <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Profile</h1>
-    <h1>user: {{user}}</h1>
-    <h1>superUser: {{user.is_superuser}}</h1>
+    <div class="content">
+        <!-- Profile picture -->
+        <div class="profile-view">
+            <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.get_image_url }}"  />
+            <h1><strong>{{booster.username}}</strong></h1>
+            <div class="container">
+                <div class="row d-flex align-items-center text-center m-2 pb-3">
+                    <div class="col-6 px-4" >
+                    <div style="align-items: end; display:flex; justify-content:end">
+                        <img style="width: 100px; height: 100px;" src="https://static.wikia.nocookie.net/leagueoflegends/images/5/5f/Season_2019_-_Challenger_1.png/revision/latest/scale-to-width-down/250?cb=20181229234913" alt="rank" class="align-self-end">
+                    </div>
+                    </div>
+                    <div class="col-6 px-2" >
+                        <h3 style="align-items: start; display:flex; justify-content:start">Challenger</h3>
+                    </div> 
+                </div>
+            </div>
+            <div class="container text-center d-flex align-items-center pt-1">
+                <p>{{booster.about_you}}</p>
+            </div>
+            <hr style="border-color: white; border-width: 1px; border-style: solid; width:60%;"/>
+        </div>
+        <!-- Boosters stats -->
+        <table>
+            <tr>
+                <th>Completed Wild Rift Boosts:</th>
+                <th>Last Wild Rift Boost:</th>
+                <th>On Rift Boost:</th>
+                <th>Customer Reviews:</th>
+            </tr>
+            <tr>
+                <td>{{ completed_boosts_count }}</td>
+                <td>less than a minute ago</td>
+                <td>over 2 years</td>
+                <td>{{ customer_reviews|default:0 }}/5</td>
+            </tr>
+        </table>
+    </div>
+    <div class="reviews">
+        <h1>{{booster.username}} Customer Feedback</h1>
+        <div class="row m-5 p-5">
+        {% for rate in ratings %}
+            <div class="col-6 ">
+                <h4>{{rate.customer.username}} ***** {{rate.rate}}</h4>
+                <h6 class="text-black">{{rate.text}}</h6>
+                <h4>{{ rate.order }}</h4>
+            </div>
+        {% endfor %}
+        
+    </div>
+        <h1>Order Completed By {{booster.username}}</h1>
+        {% for order in completed_orders%}
+            <h4>{{order}}</h4>
+        {% endfor %}
+    </div>
 </body>
 </html>
+

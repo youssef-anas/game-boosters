@@ -29,4 +29,7 @@ class BaseUser(AbstractUser):
     is_booster = models.BooleanField(default=False ,blank=True)
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
-    
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        return None
