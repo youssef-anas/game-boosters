@@ -53,3 +53,6 @@ class Wallet(models.Model):
     available_balance = models.FloatField(default=0, null=True, blank=True)
     pendding_balance = models.FloatField(default=0, null=True, blank=True)
     withdrawal = models.FloatField(default=0, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.user.username} Has {self.available_balance}$'

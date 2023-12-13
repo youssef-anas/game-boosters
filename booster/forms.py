@@ -22,6 +22,20 @@ class Registeration_Booster(UserCreationForm):
                 raise forms.ValidationError("Email Already Exists.")
             return email
     
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(),
+        help_text=""
+    )
+    password2 = forms.CharField(
+        label="Password Confirmation",
+        widget=forms.PasswordInput(),
+        help_text=""
+    )
+    username = forms.CharField(
+        help_text=""
+    )
+    
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_active = False

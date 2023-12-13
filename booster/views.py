@@ -31,6 +31,7 @@ def register_booster_view(request):
             user = form.save(commit=False)
             print(user.email_verified_at)
             user.is_active = False  # Mark the user as inactive until they activate their account
+            user.is_booster = True
             user.save()
             # Send activation email
             return HttpResponse(f'account created with username {user.username}')
