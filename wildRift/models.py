@@ -205,6 +205,16 @@ class WildRiftDivisionOrder(models.Model):
             else:
                 self.actual_price = self.price * (self.booster_percent4 / 100)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_booster_wallet()
+
+    def update_booster_wallet(self):
+        if self.is_done and self.booster and self.actual_price > 0:
+            booster_wallet = self.booster.wallet
+            booster_wallet.available_balance += self.actual_price
+            booster_wallet.save()
+
 
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
