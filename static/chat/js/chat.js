@@ -59,6 +59,9 @@ adminsChatSocket.onclose = function (e) {
 };
 
 document.querySelector("#admins_my_input").focus();
+document.querySelector("#admin_chat_form").addEventListener("submit", function (e) {
+    e.preventDefault();
+});
 document.querySelector("#admins_my_input").onkeyup = function (e) {
     if (e.keyCode == 13) {
         e.preventDefault();
@@ -117,6 +120,9 @@ chatSocket.onclose = function (e) {
 };
 
 document.querySelector("#my_input").focus();
+document.querySelector("#booster_chat_form").addEventListener("submit", function (e) {
+    e.preventDefault();
+});
 document.querySelector("#my_input").onkeyup = function (e) {
     if (e.keyCode == 13) {
         e.preventDefault();
