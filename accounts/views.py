@@ -40,11 +40,10 @@ def send_activation_email(user, request):
     # Send the email
     send_mail(subject, message, 'your@example.com', [user.email])
 
-def create_chat_with_booster(user):
-    booster_user = get_object_or_404(User, username='booster')
-    isRoomExist = Room.get_specific_room(user,booster_user)
+def create_chat_with_booster(user,booster):
+    isRoomExist = Room.get_specific_room(user,booster)
     if not isRoomExist:
-        return Room.create_room_with_booster(user, booster_user)
+        return Room.create_room_with_booster(user,booster)
     else:
         return isRoomExist
     
@@ -67,9 +66,8 @@ def register_view(request):
         if request.user.is_authenticated:   
             order.customer = request.user
             order.save()
-            new_chat = create_chat_with_booster(request.user)
             admins_chat = create_chat_with_admins(request.user)
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id, 'admins_chat_slug':admins_chat.slug}))
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id, 'admins_chat_slug':admins_chat.slug}))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
             if form.is_valid():
@@ -80,10 +78,8 @@ def register_view(request):
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
-                new_chat = create_chat_with_booster(user)
                 admins_chat = create_chat_with_admins(request.user)
-                # redirect_url = reverse('accounts.customer_side') + f'?slug={new_chat.slug}'
-                return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': new_chat.slug, 'id':order.id, 'admins_chat_slug':admins_chat.slug}))
+                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id, 'admins_chat_slug':admins_chat.slug}))
         form = Registeration()
 
         return render(request, 'accounts/register.html', {'form': form})
@@ -141,14 +137,15 @@ def choose_booster(request):
     if request.method == 'POST':
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
-        slug = request.POST.get('slug')
+        admins_chat_slug = request.POST.get('admins_chat_slug')
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             booster = get_object_or_404(User, pk=chosen_booster_id)
             order.booster = booster
             order.save()
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': slug, 'id':order.id}))
+            room_with_booster = create_chat_with_booster(request.user,booster)
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id,'admins_chat_slug': admins_chat_slug}) + f'?booster_slug={room_with_booster.slug}')
     return JsonResponse({'success': False})
 
 def set_customer_data(request):
@@ -157,7 +154,7 @@ def set_customer_data(request):
         customer_gamename = request.POST.get('gamename')
         customer_server = request.POST.get('server')
         customer_password = request.POST.get('password')
-        slug = request.POST.get('slug')
+        booster = request.POST.get('chosen_booster_id')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.customer_gamename = customer_gamename
@@ -165,22 +162,27 @@ def set_customer_data(request):
             if customer_password :
                 order.customer_password = customer_password
             order.save()
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'slug': slug, 'id':order.id}))
+            if booster:
+                room = create_chat_with_booster(User,booster)
+                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id}) + f'?booster_slug={room.slug}')
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id}))
     return JsonResponse({'success': False})
 
-def customer_side(request,slug,id,admins_chat_slug):
-    # Chat with booster
-    room = Room.objects.get(slug=slug)
-    boosters = User.objects.filter(is_booster=True)
-    messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
+def customer_side(request,id,admins_chat_slug):
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
     order = WildRiftDivisionOrder.objects.get(id=id)
-    context = {
+    boosters = User.objects.filter(is_booster=True)
+    # Chat with booster
+    slug = request.GET.get('booster_slug')
+    if slug:
+        room = Room.objects.get(slug=slug)
+        messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
+        context = {
+            'user':User,
             "slug":slug,
             'messages':messages,
-            'user':User,
             'room':room,
             'boosters':boosters,
             'order':order,
@@ -188,5 +190,19 @@ def customer_side(request,slug,id,admins_chat_slug):
             'admins_room_name':admins_room,
             'admins_messages':admins_messages,
             'admins_chat_slug':admins_chat_slug
-    }    
-    return render(request, 'accounts/customer_side.html',context)
+        }    
+    else:
+        context = {
+            'user':User,
+            "slug":None,
+            'messages':None,
+            'room':None,
+            'boosters':boosters,
+            'order':order,
+            'admins_room':admins_room,
+            'admins_room_name':admins_room,
+            'admins_messages':admins_messages,
+            'admins_chat_slug':admins_chat_slug
+        } 
+    template_name = 'accounts/customer_side.html'
+    return render(request, template_name, context)
