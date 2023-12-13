@@ -78,7 +78,7 @@ def get_rate(request, order_id):
         
 # this for only test and will remove it        
 def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(id=9)
+    order = WildRiftDivisionOrder.objects.get(id=7)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
