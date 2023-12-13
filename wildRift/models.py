@@ -181,9 +181,11 @@ class WildRiftDivisionOrder(models.Model):
 
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
-        
+
         self.current_rank = WildRiftRank.objects.get(pk=current_rank_id)
         self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
+        self.reached_rank = self.current_rank
+        self.reached_division = self.current_division
 
     
     def update_actual_price(self):

@@ -23,20 +23,7 @@ var total_Percentage = 0;
   //   console.log('No radio buttons is initially checked.');
   // }
 
-    // Get the 'choose-booster' query parameter value from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const chooseBoosterValue = urlParams.get('choose_booster');
-    let chooseBoosterInt = 0
-    if (chooseBoosterValue != null){
-      chooseBoosterInt = parseInt(chooseBoosterValue, 10);
-    }
 
-    console.log('_____________________________________________________________')
- 
-    console.log(chooseBoosterInt)
-
-    // Set the value of the input field to the obtained 'choose-booster' value
-    document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
   
 
   function sliceArray(array, start, end) {
@@ -164,6 +151,20 @@ console.log('sara is hereeeeeeeeeeeeeeeeeeeee')
     setupApplyButtonClickEvent('selectBooster', 0.05);
     setupApplyButtonClickEvent('turboBoost', 0.20);
     setupApplyButtonClickEvent('streaming', 0.15);
+
+        // Get the 'choose-booster' query parameter value from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const chooseBoosterValue = urlParams.get('choose_booster');
+        let chooseBoosterInt = 0
+        if (chooseBoosterValue != null){
+          chooseBoosterInt = parseInt(chooseBoosterValue, 10);
+          var autoSelectBooster = document.getElementById('selectBoosterApplyButton')
+          console.log(autoSelectBooster)
+          autoSelectBooster.click()
+          console.log('clicked')
+        }
+        // Set the value of the input field to the obtained 'choose-booster' value
+        document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
     function getResult() {
       const startt = ((current_rank - 1) * 4) + current_division;
