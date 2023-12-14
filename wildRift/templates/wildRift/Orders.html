@@ -1,0 +1,81 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Wild Rift Orders{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'wildRift/css/orders.css'%}">
+{% endblock %}
+{% block container %}
+<div class="orders-container container-fluid p-5 text-white" style="min-height: 1000vh;">
+  <div class="container py-5">
+
+    <div class="choise text-center mb-3">
+      <input type="radio" id="division-boost-order" name="radio-group-order-type" checked>
+      <label for="division-boost-order" class="me-2">Division Boost Orders</label>
+      <input type="radio" id="placements-boost-order" name="radio-group-order-type">
+      <label for="placements-boost-order" class="me-2">Placements Boost Orders</label>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-8 col-12">
+        <!-- --------------- Division Boost Orders --------------- -->
+        <div class="division-boost-order">
+          <h4 class="my-4">Division Boost Orders</h4>
+          <div class="row">
+            {% for order in divisions_order %}
+            <div class="col-xl-6 col-md-12 mb-4 text-dark">
+              <div class="card shadow h-100 py-2 orders">
+                <div class="card-body">
+                  <h5 class="card-title">{{order}}</h5>
+                  <div class="d-flex justify-content-between align-items-center my-2">
+                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
+                    <a href="{% url 'order.chat' order_type='division' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- --------------- Placements Boost Orders --------------- -->
+        <div class="placements-boost-order">
+          <h4 class="mb-3">Placements Boost Orders</h4>
+          <div class="row">
+            {% for order in placements_order %}
+            <div class="col-xl-6 col-md-12 mb-4 text-dark">
+              <div class="card shadow h-100 py-2 orders">
+                <div class="card-body">
+                  <h5 class="card-title">{{order}}</h5>
+                  <div class="d-flex justify-content-between align-items-center my-2">
+                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <p class="h5 mb-0 placement-price placement-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
+                    <a href="{% url 'order.chat' order_type='placement' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4 d-lg-block d-none">
+        <img class="wild-rift-image" src="{% static 'wildRift/images/wild-rift.webp' %}" />
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+{% for order in orders %}
+{% endfor %}
+<script src="{% static 'wildRift/js/orders.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,126 @@
+input[type="radio"] {
+  display: none;
+}
+label {
+  display: inline-block;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: var(--secondary-color);
+  color: white;
+  border-radius: 4px;
+}
+input[type="radio"]:checked+label {
+  transform: scale(0.9);
+}
+.booster-order-body {
+  background-image: url('./../images/bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
+}
+.overlay {
+  background-color: rgb(0 0 0 / 70%);
+}
+.orders-switch {
+  background-color: #3d22625e;
+}
+.information .user-info, .information .order-info {
+  background-color: #3d22625e;
+}
+.user-info .profile-image {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+}
+.chat-customer {
+  background-color: #3d22625e;
+  height: 500px;
+  overflow: auto;
+}
+.chat-customer .chat-header {
+  padding: 0 20px 20px;
+  position: relative;
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+.chat-customer .chat-header.active {
+  font-weight: bold;
+}
+.chat-customer .chat-header::after {
+  content: '';
+  width: 25%;
+  height: 3px;
+  border-radius: 1px;
+  background-color: #55acee;
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: width ease-in 0.4s, left ease-in 0.4s;
+}
+.submit-btn, .switch-btn, .orders-list-btn {
+  background-color: var(--secondary-color);
+  color: white;
+}
+.submit-btn:hover, .switch-btn:hover, .orders-list-btn:hover {
+  background-color: var(--secondary-color);
+  color: white;
+  transform: scale(0.9);
+}
+.custom-input {
+  background-color: transparent;
+  border: 1px solid var(--alternative-color);
+  color: white;
+}
+.drop-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed #555;
+  color: #444;
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
+  background-color: transparent;
+}
+
+.drop-container:hover {
+  background: #353535;
+  border-color: #111;
+}
+
+.drop-container:hover .drop-title {
+  color: #222;
+}
+.drop-title {
+  color: #444;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color .2s ease-in-out;
+}
+.drop-container.drag-active {
+  background: #eee;
+  border-color: #111;
+}
+
+.drop-container.drag-active .drop-title {
+  color: #222;
+}
+input[type=file] {
+  border-color: var(--secondary-color);
+}
