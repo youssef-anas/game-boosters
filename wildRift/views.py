@@ -185,7 +185,7 @@ def view_that_asks_for_money(request):
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
-                print(f'order {order_info['invoice']} : {order_info}')
+                print(f'order {order_info["invoice"]} : {order_info}')
                 return render(request, "wildRift/paypal.html", context,status=200)
             return JsonResponse({'error': serializer.errors}, status=400)
         except Exception as e:
@@ -251,17 +251,3 @@ def payment_canceled(request):
 # # Connect the signal to your IPN listener
 # valid_ipn_received.connect(paypal_ipn_listener)
 
-
-
-def registration_view(request):
-    # Check if there's a purchase identifier in the session
-    purchase_id = request.session.get('purchase_id')
-
-    if purchase_id:
-        # The user has made a purchase before registering
-        request.session.pop('purchase_id')
-        return HttpResponse(f'purchase_id  {purchase_id}')
-    else:
-        # The user is registering without making a purchase
-        request.session.pop('purchase_id')
-        return HttpResponse(f'purchase_id  {purchase_id}')

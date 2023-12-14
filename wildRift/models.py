@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.db import models
-from accounts.models import BaseUser
+from django.conf import settings
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
 
+User = settings.AUTH_USER_MODEL
 # # Create your models here.
 
 # class Wild_rift_rc(models.Model):
@@ -144,8 +145,8 @@ class WildRiftDivisionOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
+    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False ,blank=True)
     select_booster = models.BooleanField(default=False ,blank=True)
     turbo_boost = models.BooleanField(default=False ,blank=True)
@@ -206,6 +207,16 @@ class WildRiftDivisionOrder(models.Model):
             else:
                 self.actual_price = self.price * (self.booster_percent4 / 100)
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_booster_wallet()
+
+    def update_booster_wallet(self):
+        if self.is_done and self.booster and self.actual_price > 0:
+            booster_wallet = self.booster.wallet
+            booster_wallet.available_balance += self.actual_price
+            booster_wallet.save()
+
 
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
@@ -224,8 +235,8 @@ class WildRiftPlacementOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
+    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
+    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
     duo_boosting = models.BooleanField(default=False ,blank=True)
     select_booster = models.BooleanField(default=False ,blank=True)
     turbo_boost = models.BooleanField(default=False ,blank=True)

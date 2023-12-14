@@ -1,7 +1,10 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from accounts.models import BaseUser
 from phonenumber_field.formfields import PhoneNumberField
+from django.contrib.auth import get_user_model
+
+BaseUser = get_user_model()
 
 
 class Registeration(UserCreationForm):
