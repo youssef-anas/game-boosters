@@ -174,10 +174,11 @@ class WildRiftDivisionOrder(models.Model):
         self.price = float(invoice_values[12]) 
 
         # 0 orr 1 to true or false
-        self.duo_boosting = bool(invoice_values[7])
-        self.select_booster = bool(invoice_values[8])
-        self.turbo_boost = bool(invoice_values[9])
-        self.streaming = bool(invoice_values[10])
+        self.duo_boosting = bool(int(invoice_values[7]))
+        self.select_booster = bool(int(invoice_values[8]))
+        self.turbo_boost = bool(int(invoice_values[9]))
+        self.streaming = bool(int(invoice_values[10]))
+
 
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
