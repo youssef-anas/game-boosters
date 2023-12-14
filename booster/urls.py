@@ -4,6 +4,7 @@ from booster.views import *
 
 urlpatterns = [
     path('register/',register_booster_view,name='booster.register'),
+    path('edit_profile/', edit_booster_profile, name='edit.booster.profile'),
     path('profile/<booster_id>/',profile_booster_view,name='booster.profile'),
     path('rate/<int:order_id>/',get_rate,name='booster.rate'), # form to get rate if order done
     path('form_test/', form_test, name='form_test'), # test page , only for test

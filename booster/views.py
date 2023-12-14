@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from .forms import Registeration_Booster
+from .forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from booster.models import Rating
@@ -37,6 +38,28 @@ def register_booster_view(request):
             return HttpResponse(f'account created with username {user.username}')
         return render(request, 'booster/registeration_booster.html', {'form': form}) # return error 
     return render(request, 'booster/registeration_booster.html', {'form': form})
+
+@login_required
+def edit_booster_profile(request):
+    profile_form = ProfileEditForm(instance=request.user)
+    password_form = PasswordEditForm(user=request.user)
+
+    if request.method == 'POST':
+        if 'profile_submit' in request.POST:
+            profile_form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile updated successfully.')
+                return redirect('edit.booster.profile')
+
+        elif 'password_submit' in request.POST:
+            password_form = PasswordEditForm(request.user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                messages.success(request, 'Password changed successfully.')
+                return redirect('edit.booster.profile')
+
+    return render(request, 'booster/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
 
 
 def profile_booster_view(request, booster_id):
@@ -83,8 +106,8 @@ def form_test(request):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    if not request.user.is_booster:
-        return HttpResponse('you are not booster')
+    # if not request.user.is_booster:
+    #     return HttpResponse('you are not booster')
     orders = WildRiftDivisionOrder.objects.filter(booster=request.user,is_done=False).order_by('id')
     ranks = WildRiftRank.objects.all()
     with open('static/wildRift/data/divisions_data.json', 'r') as file:

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from accounts.forms import  Registeration
+from accounts.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from django.contrib import messages
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.encoding import force_bytes
@@ -83,8 +84,8 @@ def register_view(request):
         form = Registeration()
 
         return render(request, 'accounts/register.html', {'form': form})
-
-
+    
+    
 @login_required
 def profile_view(request):
     return render(request, 'accounts/profile.html')
@@ -206,3 +207,25 @@ def customer_side(request,id,admins_chat_slug):
         } 
     template_name = 'accounts/customer_side.html'
     return render(request, template_name, context)
+
+@login_required
+def edit_customer_profile(request):
+    profile_form = ProfileEditForm(instance=request.user)
+    password_form = PasswordEditForm(user=request.user)
+
+    if request.method == 'POST':
+        if 'profile_submit' in request.POST:
+            profile_form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
+            if profile_form.is_valid():
+                profile_form.save()
+                messages.success(request, 'Profile Updated Successfully.')
+                return redirect('edit.customer.profile')
+
+        elif 'password_submit' in request.POST:
+            password_form = PasswordEditForm(request.user, request.POST)
+            if password_form.is_valid():
+                password_form.save()
+                messages.success(request, 'Password Changed Successfully.')
+                return redirect('edit.customer.profile')
+
+    return render(request, 'accounts/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})

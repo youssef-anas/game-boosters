@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.db import models
-from accounts.models import BaseUser
+from django.conf import settings
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from django.utils import timezone
 
+User = settings.AUTH_USER_MODEL
 # # Create your models here.
 
 # class Wild_rift_rc(models.Model):
@@ -46,6 +47,8 @@ from django.utils import timezone
 class WildRiftRank(models.Model):
     rank_name = models.CharField(max_length=25)
     rank_image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
+    customer_show = models.BooleanField(default=False ,blank=True)
+    booster_show = models.BooleanField(default=False ,blank=True)
 
     def __str__(self):
         return self.rank_name
@@ -144,8 +147,8 @@ class WildRiftDivisionOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
+    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False ,blank=True)
     select_booster = models.BooleanField(default=False ,blank=True)
     turbo_boost = models.BooleanField(default=False ,blank=True)
@@ -174,10 +177,11 @@ class WildRiftDivisionOrder(models.Model):
         self.price = float(invoice_values[12]) 
 
         # 0 orr 1 to true or false
-        self.duo_boosting = bool(invoice_values[7])
-        self.select_booster = bool(invoice_values[8])
-        self.turbo_boost = bool(invoice_values[9])
-        self.streaming = bool(invoice_values[10])
+        self.duo_boosting = bool(int(invoice_values[7]))
+        self.select_booster = bool(int(invoice_values[8]))
+        self.turbo_boost = bool(int(invoice_values[9]))
+        self.streaming = bool(int(invoice_values[10]))
+
 
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
@@ -186,6 +190,7 @@ class WildRiftDivisionOrder(models.Model):
         self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
         self.reached_rank = self.current_rank
         self.reached_division = self.current_division
+        self.reached_marks = self.current_marks
 
     
     def update_actual_price(self):
@@ -233,8 +238,8 @@ class WildRiftPlacementOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
+    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
+    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
     duo_boosting = models.BooleanField(default=False ,blank=True)
     select_booster = models.BooleanField(default=False ,blank=True)
     turbo_boost = models.BooleanField(default=False ,blank=True)

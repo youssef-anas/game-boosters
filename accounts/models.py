@@ -1,10 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-from phonenumber_field.modelfields import PhoneNumberField
 from django_countries.fields import CountryField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-# models.py
+from wildRift.models import WildRiftRank
 
 class UserManager(UserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -23,12 +22,12 @@ class UserManager(UserManager):
         return self.create_user(email, password, **extra_fields)
 
 class BaseUser(AbstractUser):
-    phone_number = PhoneNumberField(null=True,blank=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
     image = models.ImageField(upload_to='media/accounts/',blank=True,null=True)
     country = CountryField(blank=True,null=True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     is_booster = models.BooleanField(default=False ,blank=True)
+    achived_rank = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='booster')
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):

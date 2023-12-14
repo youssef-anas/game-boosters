@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseBadRequest
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from paypal.standard.forms import PayPalPaymentsForm
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -97,7 +97,7 @@ def get_order_result_by_rank(data):
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
-    ranks = WildRiftRank.objects.all().order_by('id')
+    ranks = WildRiftRank.objects.filter(customer_show=True).order_by('id')
     divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
     placements = WildRiftPlacement.objects.all().order_by('id')
@@ -140,6 +140,7 @@ def wildRiftOrders(request):
     return render(request,'wildRift/Orders.html', context)
 
 def wildRiftOrderChat(request, order_type, id):
+    # Check if Booster Have Less Than 3 Orders ?  -----
     if order_type == 'division':
         order = get_object_or_404(WildRiftDivisionOrder, id=id)
     elif order_type == 'placement':
@@ -153,13 +154,8 @@ def wildRiftOrderChat(request, order_type, id):
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest("Error updating order")
-    
-    context = {
-        'order_type': order_type,
-        'order': order
-    }
 
-    return render(request, 'wildRift/Chat.html', context)
+    return redirect(reverse_lazy('booster.orders'))
 
 
 

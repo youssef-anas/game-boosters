@@ -38,12 +38,16 @@
               {{request.user.first_name}} {{request.user.last_name}}
             </button>
             <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="{% url 'accounts.profile' %}">My Porfile </a>
-              </li>
               {% if request.user.is_booster %}
               <li>
+                <a class="dropdown-item" href="{% url 'edit.booster.profile' %}">Porfile</a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="{% url 'booster.orders' %}">My Orders</a>
+              </li>
+              {% else %}
+              <li>
+                <a class="dropdown-item" href="{% url 'edit.customer.profile' %}">Porfile</a>
               </li>
               {% endif %}
               <li>

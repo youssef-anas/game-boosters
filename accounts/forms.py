@@ -1,16 +1,18 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 from accounts.models import BaseUser
 from phonenumber_field.formfields import PhoneNumberField
+from django.contrib.auth import get_user_model
+
+BaseUser = get_user_model()
 
 
 class Registeration(UserCreationForm):
-    phone_number = PhoneNumberField(label='Phone name', required=False)
     image = forms.ImageField(label='Profile Picture',  required=False)
 
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2","image",'country', 'about_you')
+        fields = ("first_name","last_name","email","username","password1","password2",'country',)
         # fields = '__all__'
 
     def clean_email(self):
@@ -34,3 +36,36 @@ class Registeration(UserCreationForm):
     username = forms.CharField(
         help_text=""
     )
+
+class ProfileEditForm(UserChangeForm):
+    image = forms.ImageField(label='Profile Picture', required=False)
+
+    class Meta:
+        model = BaseUser
+        fields = ("email", "username", "image", 'country', 'about_you')
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if BaseUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("Email already exists.")
+        return email
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if commit:
+            user.save()
+        return user
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields.pop('password', None)
+        self.fields['username'].help_text = ''
+    
+
+class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
+    class Meta:
+        model = BaseUser
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['new_password1'].help_text = '' 
