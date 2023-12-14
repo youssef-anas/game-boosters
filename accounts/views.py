@@ -87,8 +87,8 @@ def register_view(request):
         form = Registeration()
 
         return render(request, 'accounts/register.html', {'form': form})
-
-
+    
+    
 @login_required
 def profile_view(request):
     return render(request, 'accounts/profile.html')

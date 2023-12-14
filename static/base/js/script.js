@@ -10,6 +10,9 @@ for (var i = 0; i < labels.length; i++) {
     labels[i].classList.add('mt-3')
 }
 
+$('.custom-label[for="image-clear_id"]').removeClass('form-label')
+$('.custom-label[for="image-clear_id"]').removeClass('mt-3')
+
 textArea=document.querySelectorAll('textarea');
 for (var i = 0; i < textArea.length; i++) {
     textArea[i].classList.add('form-control', 'custom-textarea');
