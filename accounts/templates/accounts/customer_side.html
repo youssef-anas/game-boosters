@@ -99,16 +99,16 @@
         <!-- Chat With Booster -->
         <div class="BoosterChatContent " id='BoosterChatContent'>
           <h4 id="chat-booster">Chat With Booster</h4>
-          <div class="chat-booster pb-5 " id='chat-box'>
+          <div class="chat-booster  p-4" id='chat-box'>
             {% if order.booster is null %}
             {% if order.select_booster %}
             <h4 id="choose-booster">Choose Booster</h4>
-            <div class="choose-booster p-5 mb-5">
+            <div class="">
               {% for booster in boosters %}
               {% if booster != user %}
-              <div class="booster mb-4 d-flex justify-content-between align-items-center ">
-                <div class="data">
-                  <img src="{{ booster.image.url }}" alt="profile" width="50" style="border-radius: 50%;" />
+              <div class="booster d-flex justify-content-between align-items-center">
+                <div class="data mb-3">
+                  <img src="{{ booster.image.url }}" alt="profile" width="50" height='50' style="border-radius: 50%;" />
                   <span class="ms-4">{{booster.first_name}} {{booster.last_name}}</span>
                 </div>
 
@@ -116,7 +116,7 @@
                   {% csrf_token %}
                   <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
                   <input type="hidden" name="order_id" value="{{ order.id }}">
-                  <input type="hidden" name="slug" value="{{ slug }}">
+                  <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
                   <button type="submit" class="btn submit-btn">Choose</button>
                 </form>
               </div>
@@ -132,7 +132,7 @@
             <div class="container mt-3 messages-section">
               <div class="row">
                 <div class="col-12">
-                  <form>
+                  <form id='booster_chat_form'>
                     <div class="form-group px-4 py-2">
                       {% if messages %}
                       <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
@@ -176,7 +176,7 @@
             <div class="container mt-3 messages-section">
               <div class="row d-flex justify-content-center">
                 <div class="col-12">
-                  <form>
+                  <form id='admin_chat_form'>
                     <div class="form-group px-4 py-2">
                       {% if admins_messages %}
                       <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;">
