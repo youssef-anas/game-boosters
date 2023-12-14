@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
-from phonenumber_field.modelfields import PhoneNumberField
 from django_countries.fields import CountryField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -23,7 +22,6 @@ class UserManager(UserManager):
         return self.create_user(email, password, **extra_fields)
 
 class BaseUser(AbstractUser):
-    phone_number = PhoneNumberField(null=True,blank=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
     image = models.ImageField(upload_to='media/accounts/',blank=True,null=True)
     country = CountryField(blank=True,null=True)

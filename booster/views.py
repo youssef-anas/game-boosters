@@ -106,8 +106,8 @@ def form_test(request):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    if not request.user.is_booster:
-        return HttpResponse('you are not booster')
+    # if not request.user.is_booster:
+    #     return HttpResponse('you are not booster')
     orders = WildRiftDivisionOrder.objects.filter(booster=request.user,is_done=False).order_by('id')
     ranks = WildRiftRank.objects.all()
     with open('static/wildRift/data/divisions_data.json', 'r') as file:

@@ -1,19 +1,17 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from accounts.models import BaseUser
-from phonenumber_field.formfields import PhoneNumberField
 from django.contrib.auth import get_user_model
 
 BaseUser = get_user_model()
 
 
 class Registeration(UserCreationForm):
-    phone_number = PhoneNumberField(label='Phone name', required=False)
     image = forms.ImageField(label='Profile Picture',  required=False)
 
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2","image",'country', 'about_you')
+        fields = ("first_name","last_name","email","username","password1","password2",'country',)
         # fields = '__all__'
 
     def clean_email(self):
