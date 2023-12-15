@@ -84,6 +84,7 @@ document.querySelector("#admins_submit_button").onclick = function (e) {
 
 adminsChatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
+    $('.noMessageAdmin').html('')
     var div = document.createElement("div");
     console.log(e.data);
     div.innerHTML = `
@@ -150,6 +151,7 @@ document.querySelector("#submit_button").onclick = function (e) {
 
 chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
+    $('.noMessageBooster').html('')
     var div = document.createElement("div");
     div.innerHTML = `
     <div class="message p-3 rounded-3 ">
