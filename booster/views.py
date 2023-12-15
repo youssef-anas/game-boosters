@@ -156,6 +156,8 @@ def booster_orders(request):
         done_sum = done_sum_div + done_sum_marks
 
         percentege = round((done_sum / order.price) * 100 , 2)
+        if percentege >= 100 :
+            percentege = 100
 
         now_price = round(order.actual_price * (percentege / 100) , 2)
         
@@ -216,6 +218,7 @@ def upload_finish_image(request):
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
+                order.is_done = True
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
