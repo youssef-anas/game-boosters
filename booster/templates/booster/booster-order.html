@@ -166,52 +166,55 @@
                   <button type="submit" class="btn submit-btn">Update Rating</button>
                 </div>
               </form>
-  
-              {% if order.order.reached_rank.id >= order.order.desired_rank.id and order.order.reached_division == order.order.desired_division %}
+
               <div class="my-3">
+              {% if order.order.reached_rank.id > order.order.desired_rank.id %}
                 <!-- Button trigger modal -->
                 <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                   <i class="fa-regular fa-circle-check"></i> Complete Order
                 </button>
-  
-                <!-- Modal -->
-                <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                  <div class="modal-dialog bg-dark">
-                    <div class="modal-content  bg-dark">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Upload Complete Image</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: var(--secondary-color); !important"></button>
-                      </div>
-                      <div class="modal-body">
+              {% elif order.order.reached_rank.id == order.order.desired_rank.id   and order.order.reached_division >= order.order.desired_division %}
+              <!-- Button trigger modal -->
+              <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="fa-regular fa-circle-check"></i> Complete Order
+              </button>
+              {% endif %}
+              <!-- Modal -->
+              <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog bg-dark">
+                  <div class="modal-content  bg-dark">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="staticBackdropLabel">Upload Complete Image</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: var(--secondary-color); !important"></button>
+                    </div>
+                    <div class="modal-body">
 
-                        <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data">
-                          {% csrf_token %}
-                          {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
-                          <input type="hidden" name="order_id" value="{{ order.order.id }}">
+                      <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+                        <input type="hidden" name="order_id" value="{{ order.order.id }}">
 
-                          <!-- Image preview -->
-                          <div class="d-flex justify-content-center align-items-center">
-                            <img src="#" alt="Preview" id="image-preview" style="max-width: 100%; max-height: 400px; display: none; margin-bottom: 3rem;">
-                          </div>
+                        <!-- Image preview -->
+                        <div class="d-flex justify-content-center align-items-center">
+                          <img src="#" alt="Preview" id="image-preview" style="max-width: 100%; max-height: 400px; display: none; margin-bottom: 3rem;">
+                        </div>
 
-                          <label for="images" class="drop-container" id="dropcontainer">
-                            <span class="drop-title">Drop files here</span>
-                            or
-                            <input type="file" name="finish_image" id="finish_image" required>
-                          </label>
+                        <label for="images" class="drop-container" id="dropcontainer">
+                          <span class="drop-title">Drop files here</span>
+                          or
+                          <input type="file" name="finish_image" id="finish_image" required>
+                        </label>
 
-                          <div class="text-end">
-                            <button type="submit" class="btn submit-btn my-3">Submit</button>
-                          </div>
-                        </form>
+                        <div class="text-end">
+                          <button type="submit" class="btn submit-btn my-3">Submit</button>
+                        </div>
+                      </form>
 
-                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-              {% endif %}
-  
+            </div>
             </div>
           </div>
         </div>
