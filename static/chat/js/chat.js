@@ -41,7 +41,7 @@ const admin_room = JSON.parse(document.getElementById('admin_room').textContent)
 const booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
 
 // ################ Admins Chat 
-const admins_chatbox = document.querySelector("#chat-admin-box");
+const admins_chatbox = document.querySelector("#chat-admin-container");
 // Function to scroll to the bottom of the admins_chatbox
 function admins_scrollToBottom() {
     admins_chatbox.scrollTop = admins_chatbox.scrollHeight;
@@ -84,6 +84,7 @@ document.querySelector("#admins_submit_button").onclick = function (e) {
 
 adminsChatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
+    $('.noMessage').html('');
     var div = document.createElement("div");
     console.log(e.data);
     div.innerHTML = `
@@ -105,7 +106,7 @@ adminsChatSocket.onmessage = function (e) {
 };
 
 // ################ Booster Chat 
-const chatbox = document.querySelector("#chat-box");
+const chatbox = document.querySelector(".chat-customer-container");
 // Function to scroll to the bottom of the chatbox
 function scrollToBottom() {
     chatbox.scrollTop = chatbox.scrollHeight;
@@ -150,6 +151,7 @@ document.querySelector("#submit_button").onclick = function (e) {
 
 chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
+    $('.noMessage').html('');
     var div = document.createElement("div");
     div.innerHTML = `
     <div class="message p-3 rounded-3 ">

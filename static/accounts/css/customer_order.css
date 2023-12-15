@@ -28,8 +28,6 @@
 }
 .chat-booster, .chat-admin, .choose-booster {
   background-color: #3d22625e;
-  height: 500px;
-  overflow: auto;
 }
 .submit-btn {
   background-color: var(--secondary-color);
