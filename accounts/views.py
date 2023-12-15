@@ -177,7 +177,10 @@ def customer_side(request,id,admins_chat_slug):
     order = WildRiftDivisionOrder.objects.get(id=id)
     boosters = User.objects.filter(is_booster=True)
     # Chat with booster
-    slug = request.GET.get('booster_slug')
+    slug = request.GET.get('booster_slug') or None
+    if not slug:
+        specific_room = Room.get_specific_room(request.user, order.booster)
+        slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)
         messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
