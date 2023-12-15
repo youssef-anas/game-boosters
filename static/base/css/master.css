@@ -84,6 +84,7 @@
   display: flex;
   flex-wrap: wrap;
   opacity: 80%;
+  gap: 26px;
 }
 .games .games-card .box {
   position: relative;
@@ -91,12 +92,12 @@
 }
 @media (min-width: 768px) {
   .games .games-card .box {
-    flex-basis: 50%;
+    flex-basis: calc(50% - 20px);
   }
 }
 @media (min-width: 1200px) {
   .games .games-card .box {
-    flex-basis: 25%;
+    flex-basis: calc(25% - 20px);
   }
 }
 .games .games-card .box img {

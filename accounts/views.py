@@ -156,6 +156,7 @@ def set_customer_data(request):
         customer_server = request.POST.get('server')
         customer_password = request.POST.get('password')
         booster = request.POST.get('chosen_booster_id')
+        admins_chat_slug = request.POST.get('admins_chat_slug')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.customer_gamename = customer_gamename
@@ -166,7 +167,7 @@ def set_customer_data(request):
             if booster:
                 room = create_chat_with_booster(User,booster)
                 return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id}) + f'?booster_slug={room.slug}')
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id}))
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id,'admins_chat_slug': admins_chat_slug}))
     return JsonResponse({'success': False})
 
 def customer_side(request,id,admins_chat_slug):

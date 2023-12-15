@@ -162,8 +162,10 @@ def wildRiftOrderChat(request, order_type, id):
 @csrf_exempt
 def view_that_asks_for_money(request):
     if request.method == 'POST':
+        print('request POST:  ', request.POST)
         try:
             serializer = RankSerializer(data=request.POST)
+            print('request POST', request.POST)
             if serializer.is_valid():
 
                 order_info = get_order_result_by_rank(serializer.validated_data)

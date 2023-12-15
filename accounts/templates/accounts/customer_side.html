@@ -12,10 +12,14 @@
   <div class="container py-5 customer-order text-white">
     <div class="row justify-content-between ">
 
-      <div class="col-3 information shadow p-5 text-center">
+      <div class="col-lg-3 col-12 mb-lg-0 mb-5 information shadow p-5 text-center">
 
         <div class="user-info">
+          {% if request.user.image %}
           <img src="{{ request.user.image.url }}" class="profile-image col-4" alt="profile" />
+          {% else %}
+          <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
+          {% endif %}
           <h4 class="my-3">{{request.user.first_name}} {{request.user.last_name}}</h4>
           <a href="{% url 'accounts.profile' %}" class="fs-5" style="color: var(--secondary-color)">My Profile
             &rarr;</a>
@@ -46,15 +50,17 @@
           </div>
         </div>
 
-        {% if not order.customer_gamename and not order.customer_password and not order.customer_server %}
         <hr>
+        {% if order.message %}
+        <p class="text-danger">{{order.message}}</p>
+        {% endif %}
 
         <div class="game-data">
           <form action="{% url 'set.customer.data' %}" method="POST">
             {% csrf_token %}
             {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
             <input type="hidden" name="order_id" value="{{ order.id }}">
-            <input type="hidden" name="slug" value="{{ slug }}">
+            <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">@</span>
               <input type="text" required name="gamename" class="form-control" placeholder="Username"
@@ -86,11 +92,9 @@
             </div>
           </form>
         </div>
-        {% endif %}
-
       </div>
 
-      <div class="col-9">
+      <div class="col-lg-9 col-12 px-lg-4 px-0">
         <center>
           <button class='BoosterChatButton clicked_button' id='BoosterChatButton'>Booster Chat</button>
           <button class='AdminsChatButton' id='AdminsChatButton'>Admins Chat</button>
@@ -99,7 +103,7 @@
         <!-- Chat With Booster -->
         <div class="BoosterChatContent " id='BoosterChatContent'>
           <h4 id="chat-booster">Chat With Booster</h4>
-          <div class="chat-booster  p-4" id='chat-box'>
+          <div class="chat-booster p-4" id='chat-box'>
             {% if order.booster is null %}
             {% if order.select_booster %}
             <h4 id="choose-booster">Choose Booster</h4>
@@ -108,7 +112,11 @@
               {% if booster != user %}
               <div class="booster d-flex justify-content-between align-items-center">
                 <div class="data mb-3">
+                  {% if booster.image %}
                   <img src="{{ booster.image.url }}" alt="profile" width="50" height='50' style="border-radius: 50%;" />
+                  {% else %}
+                  <img src="{% static 'base/images/no_profile_image.png' %}"  width="50" height='50' style="border-radius: 50%;" alt="No Profile Photo">
+                  {% endif %}
                   <span class="ms-4">{{booster.first_name}} {{booster.last_name}}</span>
                 </div>
 
@@ -129,25 +137,42 @@
             </div>
             {% endif %}
             {% else %}
-            <div class="container mt-3 messages-section">
+            <div class="container messages-section">
               <div class="row">
-                <div class="col-12">
-                  <form id='booster_chat_form'>
-                    <div class="form-group px-4 py-2">
-                      {% if messages %}
-                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
-                        {% for message in messages %}
-                        <div
-                          class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
-                          <b>{{ message.user.username }}</b> : {{ message.content }}<br>
+                <div class="col-12 row-cols-1 align-content-between h-100">
+                  <div class="form-group px-4 py-2">
+                    {% if messages %}
+                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
+                      {% for message in messages %}
+                      <div
+                        class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
+                        {% if request.user != message.user %}
+                        <div class="image">
+                          {% if message.user.image %}
+                          <img src="{{message.user.image.url}}" alt="" width="50">
+                          {% else %}
+                          <img src="{% static 'base/images/no_profile_image.png' %}" alt="" width="50">
+                          {% endif %}
                         </div>
-                        {% endfor %}
+                        {% endif %}
+                        <div class="message p-3 rounded-3 ">
+                          {% if message.user.username != request.user.username  %}
+                          <p class="username mb-1">
+                            {{ message.user.first_name }} {{ message.user.last_name }}
+                          </p>
+                          {% endif %}
+                          <p class="content mb-1">{{ message.content }}</p>
+                          <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf"> {{message.created_on}} </p>
+                        </div>
                       </div>
-                      {% else %}
-                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
-                      <b>No Messages in this Room.</b>
-                      {% endif %}
+                      {% endfor %}
                     </div>
+                    {% else %}
+                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                    <b>No Messages in this Room.</b>
+                    {% endif %}
+                  </div>
+                  <form id='booster_chat_form'>
                     {% if room.active %}
                     <div class="form-group d-flex justify-content-center mx-4 mt-2">
                       <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
@@ -155,7 +180,7 @@
                       <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
                     </div>
                     {% else %}
-                    <div class="chatbox fw-bold" id="chatbox" style="margin-top: 2rem;">
+                    <div class="chatbox fw-bold" id="chatbox">
                       <div class="chat-message text-center">
                         Closed Chat
                       </div>
@@ -172,26 +197,43 @@
         <!-- Chat With Admin -->
         <div class="AdminsChatContent" id='AdminsChatContent'>
           <h4 id="chat-admin">Chat With Admin</h4>
-          <div class="chat-admin pb-5" id='chat-admin-box'>
-            <div class="container mt-3 messages-section">
-              <div class="row d-flex justify-content-center">
-                <div class="col-12">
-                  <form id='admin_chat_form'>
-                    <div class="form-group px-4 py-2">
-                      {% if admins_messages %}
-                      <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;">
-                        {% for message in admins_messages %}
-                        <div
-                          class="admins_chat_message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
-                          <b>{{ message.user.username }}</b> : {{ message.content }}<br>
+          <div class="chat-admin p-4" id='chat-admin-box'>
+            <div class="container messages-section">
+              <div class="row justify-content-center">
+                <div class="col-12 row-cols-1 align-content-between">
+                  <div class="form-group px-4 py-2 chat-message">
+                    {% if admins_messages %}
+                    <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;">
+                      {% for message in admins_messages %}
+                      <div
+                        class="admins_chat_message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
+                        {% if request.user != message.user %}
+                        <div class="image">
+                          {% if message.user.image %}
+                          <img src="{{message.user.image.url}}" alt="" width="50">
+                          {% else %}
+                          <img src="{% static 'base/images/no_profile_image.png' %}" alt="" width="50">
+                          {% endif %}
                         </div>
-                        {% endfor %}
+                        {% endif %}
+                        <div class="message p-3 rounded-3 ">
+                          {% if message.user.username != request.user.username  %}
+                          <p class="username mb-1">
+                            {{ message.user.first_name }} {{ message.user.last_name }}
+                          </p>
+                          {% endif %}
+                          <p class="content mb-1">{{ message.content }}</p>
+                          <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf"> {{message.created_on}} </p>
+                        </div>
                       </div>
-                      {% else %}
-                      <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;"></div>
-                      <b>No Messages in this Room.</b>
-                      {% endif %}
+                      {% endfor %}
                     </div>
+                    {% else %}
+                    <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;"></div>
+                    <b>No Messages in this Room.</b>
+                    {% endif %}
+                  </div>
+                  <form id='admin_chat_form'>
                     {% if admins_room.active %}
                     <div class="form-group d-flex justify-content-center mx-4 mt-2">
                       <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="admins_my_input"
@@ -214,6 +256,7 @@
       </div>
     </div>
   </div>
+</div>
   <div>
     {{slug|json_script:"room_slug"}}
     {{admins_chat_slug|json_script:"admins_chat_slug"}}

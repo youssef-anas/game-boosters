@@ -10,7 +10,7 @@ urlpatterns = [
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('wildRift/', include('wildRift.urls')),
+    path('wildRift/', include('wildRift.urls'), name='wildRift'),
     path('accounts/', include('accounts.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
     path('chats/', include('chat.urls'))

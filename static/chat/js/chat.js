@@ -85,8 +85,13 @@ document.querySelector("#admins_submit_button").onclick = function (e) {
 adminsChatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     var div = document.createElement("div");
-    div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
-
+    console.log(e.data);
+    div.innerHTML = `
+    <div class="message p-3 rounded-3 ">
+        <p class="content mb-1">${data.message}</p>
+        <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+    </div>
+    `
     // Add class based on user authentication
     if (data.username === user) {
         div.classList.add("admins_chat_message", "userMessage");
@@ -146,7 +151,12 @@ document.querySelector("#submit_button").onclick = function (e) {
 chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     var div = document.createElement("div");
-    div.innerHTML = "<b>" + data.username + "</b> : " + data.message;
+    div.innerHTML = `
+    <div class="message p-3 rounded-3 ">
+        <p class="content mb-1">${data.message}</p>
+        <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+    </div>
+    `
 
     // Add class based on user authentication
     if (data.username === user) {

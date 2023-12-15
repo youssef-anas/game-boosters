@@ -52,7 +52,7 @@
           </div>
         </div>
 
-        <div class="design-image">
+        <div class="design-image d-lg-block d-none">
           <img src="{% static 'booster/images/char.png' %}" alt="">
         </div>
       </div>
@@ -81,4 +81,10 @@
 
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+  var oldPasswordInput = document.getElementById('id_old_password');
+  oldPasswordInput.blur();
+</script>
 {% endblock %}

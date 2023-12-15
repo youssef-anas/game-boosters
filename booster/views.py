@@ -102,7 +102,7 @@ def get_rate(request, order_id):
         
 # this for only test and will remove it        
 def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(id=7)
+    order = WildRiftDivisionOrder.objects.get(id=1)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
@@ -205,6 +205,7 @@ def confirm_details(request):
         order_id = request.POST.get('order_id')
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order.message = None
             order.data_correct = True
             order.save()
             return redirect(reverse_lazy('booster.orders'))
@@ -216,6 +217,7 @@ def ask_customer(request):
         if order_id:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
             order.message = 'Pleace Specify Your Details'
+            order.data_correct = False
             order.save()
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})

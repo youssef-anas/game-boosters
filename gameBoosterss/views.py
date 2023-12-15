@@ -25,7 +25,7 @@ def index(request):
       "id": 4,
       "name": "Wild Rift",
       "image": "League of legends wild rift.jpg",
-      "link": "wildrift"
+      "link": "wildRift"
     },
     {
       "id": 5,
