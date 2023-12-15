@@ -139,8 +139,8 @@
             {% else %}
             <div class="container messages-section">
               <div class="row">
-                <div class="col-12 row-cols-1 align-content-between h-100">
-                  <div class="form-group px-4 py-2">
+                <div class="col-12 row-cols-1 align-content-between">
+                  <div class="form-group px-4 py-2 chat-customer-container">
                     {% if messages %}
                     <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
                       {% for message in messages %}
@@ -201,7 +201,7 @@
             <div class="container messages-section">
               <div class="row justify-content-center">
                 <div class="col-12 row-cols-1 align-content-between">
-                  <div class="form-group px-4 py-2 chat-message">
+                  <div class="form-group px-4 py-2 chat-message chat-customer-container">
                     {% if admins_messages %}
                     <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;">
                       {% for message in admins_messages %}
