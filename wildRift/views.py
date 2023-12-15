@@ -17,6 +17,8 @@ from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from chat.models import Room, Message
+
 User = get_user_model()
 
 division_names = ['','IV','III','II','I']  
@@ -128,7 +130,14 @@ def wildRiftGetBoosterByRank(request):
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
 
-
+# Chat with user
+def create_chat_with_user(user,booster):
+    isRoomExist = Room.get_specific_room(user,booster)
+    if not isRoomExist:
+        return Room.create_room_with_booster(user,booster)
+    else:
+        return isRoomExist
+    
 def wildRiftOrders(request):
     divisions_order = WildRiftDivisionOrder.objects.filter(booster__isnull=True)
     placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
@@ -151,6 +160,7 @@ def wildRiftOrderChat(request, order_type, id):
     try:
         order.booster = request.user
         order.save()
+        create_chat_with_user(order.customer,request.user)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest("Error updating order")
