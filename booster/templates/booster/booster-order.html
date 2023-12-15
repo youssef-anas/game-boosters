@@ -231,7 +231,7 @@
                   <div class="col-12 row-cols-1 flex-grow-1 chat-customer-container">
                     <div class="form-group px-4 py-2">
                       {% if order.messages %}
-                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
+                      <div class="chatbox" id="chatbox-order-{{order.order.id}}" style="padding: 4px 2px;">
                         {% for message in order.messages %}
                         {{message.created_on|json_script:"message_time"}}
                         <div
@@ -258,19 +258,19 @@
                         {% endfor %}
                       </div>
                       {% else %}
-                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                      <div class="chatbox" id="chatbox-order-{{order.order.id}}" style="padding: 4px 2px;"></div>
                       <b class="noMessage">No Messages in this Room.</b>
                       {% endif %}
                     </div>
                   </div>
                   <form id='booster_chat_form' class="col-12">
-                      {% if order.room.active %}
-                      <div class="row justify-content-between">
+                    {% if order.room.active %}
+                    <div class="row justify-content-between">
                       <input class="form-control col-8" placeholder="Enter text here" id="my_input_order-{{order.order.id}}" type="text" required>
                       <input class="btn sendButton col-3" id="submit_button_order-{{order.order.id}}" type="button" value="Send">
                     </div>
                     {% else %}
-                    <div class="chatbox fw-bold" id="chatbox">
+                    <div class="chatbox fw-bold" id="chatbox-order-{{order.order.id}}">
                       <div class="chat-message text-center">
                         Closed Chat
                       </div>

@@ -84,7 +84,7 @@ document.querySelector("#admins_submit_button").onclick = function (e) {
 
 adminsChatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    $('.noMessageAdmin').html('')
+    $('.noMessageAdmin').html('');
     var div = document.createElement("div");
     console.log(e.data);
     div.innerHTML = `
