@@ -1,8 +1,8 @@
 $('document').ready(function () {
   let ordersDivs = $('.order');
   let ordersRadio = $('input[name="radio-order"]')
-  let booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
-  let roomName = JSON.parse(document.getElementById('room_slug').textContent);
+  // let booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
+  // let roomName = JSON.parse(document.getElementById('room_slug').textContent);
 
   // Intial 
   let intialOrderId = $('input[name="radio-order"]:checked').data('order');
@@ -12,6 +12,8 @@ $('document').ready(function () {
     console.log('currentOrderId: ', currentOrderId)
     if (currentOrderId == intialOrderId) {
       $(this).show();
+      let booster_room_name = $(this).data('room');
+      let roomName = $(this).data('slug');
       chat(booster_room_name,roomName)
     } else {
       $(this).hide();
@@ -25,8 +27,8 @@ $('document').ready(function () {
         let currentOrderId = $(this).data('order');
         if (currentOrderId == orderId) {
           $(this).show();
-          booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
-          roomName = JSON.parse(document.getElementById('room_slug').textContent);
+          let booster_room_name = $(this).data('room');
+          let roomName = $(this).data('slug');
           chat(booster_room_name,roomName)
           console.log(booster_room_name)
         } else {
@@ -119,8 +121,10 @@ $('document').ready(function () {
   // ######################################### Chats #########################################
   function chat(booster_room_name,roomName){
     const user = JSON.parse(document.getElementById('user').textContent);
+    console.log('user: ', user)
     
     const chatbox = document.querySelector("#chat-box");
+
     // Function to scroll to the bottom of the chatbox
     function scrollToBottom() {
       chatbox.scrollTop = chatbox.scrollHeight;
@@ -163,12 +167,14 @@ $('document').ready(function () {
     };
   
     chatSocket.onmessage = function (e) {
+      console.log('I Am')
       const data = JSON.parse(e.data);
       var div = document.createElement("div");
+      var time = JSON.parse(document.getElementById('message_time').textContent)
       div.innerHTML = `
       <div class="message p-3 rounded-3 ">
           <p class="content mb-1">${data.message}</p>
-          <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+          <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">${time}</p>
       </div>
       `
   
