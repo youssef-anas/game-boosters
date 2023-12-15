@@ -20,7 +20,6 @@
       </div>
   
       {% for order in orders %}
-      {{order.slug}}
       {{order.slug|json_script:"room_slug"}}
       {{order.room.name|json_script:'booster_room_name'}}
       {{request.user.username|json_script:"user"}}
@@ -221,14 +220,14 @@
 
         
         <div class="col-lg-8 col-12">
-          <div class="chat-customer p-4" id='chat-box'>
+          <div class="chat-customer p-4">
             <div class="chat-header active">
               Chat With Customer
             </div>
             <div class="chat">
               <div class="container messages-section">
                 <div class="row align-content-between">
-                  <div class="col-12 row-cols-1 flex-grow-1 chat-customer-container">
+                  <div class="col-12 row-cols-1 flex-grow-1 chat-customer-container" id='chat-box'>
                     <div class="form-group px-4 py-2">
                       {% if order.messages %}
                       <div class="chatbox" id="chatbox-order-{{order.order.id}}" style="padding: 4px 2px;">
@@ -264,10 +263,12 @@
                     </div>
                   </div>
                   <form id='booster_chat_form' class="col-12">
-                    {% if order.room.active %}
-                    <div class="row justify-content-between">
-                      <input class="form-control col-8" placeholder="Enter text here" id="my_input_order-{{order.order.id}}" type="text" required>
-                      <input class="btn sendButton col-3" id="submit_button_order-{{order.order.id}}" type="button" value="Send">
+                      {% if order.room.active %}
+                      <div class="d-flex justify-content-center">
+                      <input class="form-control" style="width: 80%;"  placeholder="Enter text here" id="my_input_order-{{order.order.id}}" type="text" required>
+                      <button class="btn sendButton mx-3" id="submit_button_order-{{order.order.id}}" type="button" value="Send">
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </button>
                     </div>
                     {% else %}
                     <div class="chatbox fw-bold" id="chatbox-order-{{order.order.id}}">

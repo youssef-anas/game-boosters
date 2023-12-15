@@ -177,7 +177,9 @@
                     <div class="form-group d-flex justify-content-center mx-4 mt-2">
                       <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
                         type="text" required>
-                      <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                        <button class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                          <i class="fa-solid fa-paper-plane"></i>
+                        </button>
                     </div>
                     {% else %}
                     <div class="chatbox fw-bold" id="chatbox">
@@ -201,7 +203,7 @@
             <div class="container messages-section">
               <div class="row justify-content-center">
                 <div class="col-12 row-cols-1 align-content-between">
-                  <div class="form-group px-4 py-2 chat-message chat-customer-container">
+                  <div class="form-group px-4 py-2 chat-message chat-customer-container" id='chat-admin-container'>
                     {% if admins_messages %}
                     <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;">
                       {% for message in admins_messages %}
@@ -238,7 +240,9 @@
                     <div class="form-group d-flex justify-content-center mx-4 mt-2">
                       <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="admins_my_input"
                         type="text" required>
-                      <input class="btn sendButton mx-3" id="admins_submit_button" type="button" value="Send">
+                        <button class="btn sendButton mx-3" id="admins_submit_button" type="button" value="Send">
+                          <i class="fa-solid fa-paper-plane"></i>
+                        </button>
                     </div>
                     {% else %}
                     <div class="admins_chatbox fw-bold" id="admins_chatbox" style="margin-top: 2rem;">
