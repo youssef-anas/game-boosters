@@ -12,7 +12,7 @@
   <div class="container py-5 customer-order text-white">
     <div class="row justify-content-between ">
 
-      <div class="col-lg-3 col-12 mb-lg-0 mb-5 information shadow p-5 text-center">
+      <div class="col-lg-3 col-12 mb-lg-0 my-5 information shadow p-5 text-center">
 
         <div class="user-info">
           {% if request.user.image %}
@@ -169,7 +169,7 @@
                     </div>
                     {% else %}
                     <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
-                    <b class='noMessage'>No Messages in this Room.</b>
+                    <b class="noMessageBooster">No Messages in this Room.</b>
                     {% endif %}
                   </div>
                   <form id='booster_chat_form'>
@@ -232,7 +232,7 @@
                     </div>
                     {% else %}
                     <div class="admins_chatbox" id="admins_chatbox" style="padding: 4px 2px;"></div>
-                    <b class='noMessage'>No Messages in this Room.</b>
+                    <b class="noMessageAdmin">No Messages in this Room.</b>
                     {% endif %}
                   </div>
                   <form id='admin_chat_form'>
