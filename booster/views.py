@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
 from django.db.models import Sum
-
+from chat.models import Room, Message
 import json
 
 
@@ -105,6 +105,14 @@ def form_test(request):
     order = WildRiftDivisionOrder.objects.get(id=1)
     return render(request,'booster/rating_page.html', context={'order':order})
 
+# Chat with user
+def create_chat_with_user(user,booster):
+    isRoomExist = Room.get_specific_room(user,booster)
+    if not isRoomExist:
+        return Room.create_room_with_booster(user,booster)
+    else:
+        return isRoomExist
+
 def booster_orders(request):
     # if not request.user.is_booster:
     #     return HttpResponse('you are not booster')
@@ -121,6 +129,9 @@ def booster_orders(request):
         marks_price.insert(0,0)
 
     orders_with_percentege = []
+    rooms =[]
+    messages=[]
+    slugs=[]
     for order in orders:
 
         current_rank = order.current_rank.id
@@ -147,17 +158,37 @@ def booster_orders(request):
         percentege = round((done_sum / order.price) * 100 , 2)
 
         now_price = round(order.actual_price * (percentege / 100) , 2)
-
-        order_data = {
+        
+        current_room = Room.get_specific_room(order.customer, request.user)
+        if current_room is not None:
+            messages=Message.objects.filter(room=current_room) 
+            slug = current_room.slug
+            order_data = {
+                'order': order,
+                'percentege': percentege,
+                'now_price': now_price,
+                'user': request.user,
+                'room': current_room,
+                'messages': messages,
+                'slug': slug,
+            }
+            orders_with_percentege.append(order_data)
+        else:
+            order_data = {
             'order': order,
             'percentege': percentege,
-            'now_price': now_price
-        }
-        orders_with_percentege.append(order_data)
-
+            'now_price': now_price,
+            'user': request.user,
+            'room': None,
+            'messages': None,
+            'slug': None,
+            }
+            orders_with_percentege.append(order_data)
+            
+ 
     context = {
         'orders': orders_with_percentege,
-        'ranks': ranks
+        'ranks': ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 

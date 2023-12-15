@@ -4,6 +4,7 @@
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/booster-order.css' %}">
+<link rel="stylesheet" href="{% static 'chat/css/master.css'%}">
 {% endblock %}
 {% block container %}
 <div class="containter-fluid booster-order-body text-white">
@@ -19,6 +20,10 @@
       </div>
   
       {% for order in orders %}
+      {{order.slug}}
+      {{order.slug|json_script:"room_slug"}}
+      {{order.room.name|json_script:'booster_room_name'}}
+      {{request.user.username|json_script:"user"}}
       <div class="row justify-content-between my-5 order order-{{order.order.id}}" data-order="order-{{order.order.id}}">
         
         <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center">
@@ -210,18 +215,69 @@
             </div>
           </div>
         </div>
-  
+
+        
         <div class="col-lg-8 col-12">
-  
-          <div class="chat-customer p-4">
-  
+          <div class="chat-customer p-4" id='chat-box'>
             <div class="chat-header active">
               Chat With Customer
             </div>
-  
-            <div class="chat m-4"></div>
+            <div class="chat">
+              <div class="container messages-section">
+                <div class="row">
+                  <div class="col-12 row-cols-1 align-content-between h-100">
+                    <div class="form-group px-4 py-2">
+                      {% if order.messages %}
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
+                        {% for message in order.messages %}
+                        <div
+                          class="chat-message {% if message.user == request.user %} userMessage {% else %} otherMessage {% endif %}">
+                          {% if request.user != message.user %}
+                          <div class="image">
+                            {% if message.user.image %}
+                            <img src="{{message.user.image.url}}" alt="" width="50">
+                            {% else %}
+                            <img src="{% static 'base/images/no_profile_image.png' %}" alt="" width="50">
+                            {% endif %}
+                          </div>
+                          {% endif %}
+                          <div class="message p-3 rounded-3 ">
+                            {% if message.user.username != request.user.username  %}
+                            <p class="username mb-1">
+                              {{ message.user.first_name }} {{ message.user.last_name }}
+                            </p>
+                            {% endif %}
+                            <p class="content mb-1">{{ message.content }}</p>
+                            <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf"> {{message.created_on}} </p>
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                      {% else %}
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                      <b>No Messages in this Room.</b>
+                      {% endif %}
+                    </div>
+                    <form id='booster_chat_form'>
+                      {% if order.room.active %}
+                      <div class="form-group d-flex justify-content-center mx-4 mt-2">
+                        <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
+                          type="text" required>
+                        <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                      </div>
+                      {% else %}
+                      <div class="chatbox fw-bold" id="chatbox">
+                        <div class="chat-message text-center">
+                          Closed Chat
+                        </div>
+                      </div>
+                      {% endif %}
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-  
         </div>
       </div>
       {% endfor %}
