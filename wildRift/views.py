@@ -97,7 +97,7 @@ def get_order_result_by_rank(data):
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
-    ranks = WildRiftRank.objects.filter(customer_show=True).order_by('id')
+    ranks = WildRiftRank.objects.all().order_by('id')
     divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
     placements = WildRiftPlacement.objects.all().order_by('id')

@@ -22,7 +22,7 @@
                 <div class="col-lg-5 col-12 mb-lg-0 mb-5">
                     <h5 class="mb-4">Cuurent Division</h5>
                     <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
-                        {% for rank in ranks %}
+                        {% for rank in ranks|slice:":8" %}
                         {% if not forloop.last %}
                         {% with mark=rank.mark %}
                         <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" 
@@ -95,7 +95,7 @@
                 <div class="col-lg-5 col-12">
                     <h5 class="mb-4">Desired Division</h5>
                     <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
-                        {% for rank in ranks %}
+                        {% for rank in ranks|slice:":8" %}
                         {% with mark=rank.mark %}
                         <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" {% if forloop.counter0 == 3 %} checked {% endif %}>
                         <label for="radio{{rank.id}}{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>

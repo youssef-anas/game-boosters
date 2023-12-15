@@ -256,15 +256,15 @@
                       </div>
                       {% else %}
                       <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
-                      <b>No Messages in this Room.</b>
+                      <b class="noMessage">No Messages in this Room.</b>
                       {% endif %}
                     </div>
                     <form id='booster_chat_form'>
                       {% if order.room.active %}
                       <div class="form-group d-flex justify-content-center mx-4 mt-2">
-                        <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
+                        <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input_order-{{order.order.id}}"
                           type="text" required>
-                        <input class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                        <input class="btn sendButton mx-3" id="submit_button_order-{{order.order.id}}" type="button" value="Send">
                       </div>
                       {% else %}
                       <div class="chatbox fw-bold" id="chatbox">
