@@ -13,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('email',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password', 'achived_rank')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'email_verified_at', "image", 'country', 'about_you')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email_verified_at', "image", 'country', 'about_you', 'can_choose_me')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'is_booster', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )

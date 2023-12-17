@@ -64,7 +64,7 @@ def register_view(request):
         order = create_order(invoice, payer_id)
         # if order.customer:
         #     return HttpResponse('this order with another user, create order again or connect to admin')
-        if request.user.is_authenticated:   
+        if request.user.is_authenticated:
             order.customer = request.user
             order.save()
             admins_chat = create_chat_with_admins(request.user)
@@ -175,7 +175,7 @@ def customer_side(request,id,admins_chat_slug):
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
     order = WildRiftDivisionOrder.objects.get(id=id)
-    boosters = User.objects.filter(is_booster=True)
+    boosters = User.objects.filter(is_booster=True, can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:

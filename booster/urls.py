@@ -14,4 +14,5 @@ urlpatterns = [
     path('drop-order/',drop_order,name='drop.order'),
     path('confirm_details/',confirm_details,name='confirm.details'),
     path('ask_customer/',ask_customer,name='ask.customer'),
+    path('can_choose_me/', CanChooseMe.as_view(), name='can_choose_me'),
 ]

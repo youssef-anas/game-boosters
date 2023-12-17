@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 from paypal.standard.forms import PayPalPaymentsForm
 from django.http import JsonResponse
 from django.http import HttpResponse
@@ -172,6 +173,9 @@ def wildRiftOrderChat(request, order_type, id):
 @csrf_exempt
 def view_that_asks_for_money(request):
     if request.method == 'POST':
+        if request.user.is_booster:
+            messages.error(request, "You are a booster!, You can't make order.")
+            return redirect(reverse_lazy('wildrift'))
         print('request POST:  ', request.POST)
         try:
             serializer = RankSerializer(data=request.POST)
@@ -195,7 +199,9 @@ def view_that_asks_for_money(request):
                 context = {"form": form}
                 print(f'order {order_info["invoice"]} : {order_info}')
                 return render(request, "wildRift/paypal.html", context,status=200)
-            return JsonResponse({'error': serializer.errors}, status=400)
+            # return JsonResponse({'error': serializer.errors}, status=400)
+            messages.error(request, 'Ensure this value is greater than or equal to 10')
+            return redirect(reverse_lazy('wildrift'))
         except Exception as e:
             return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

@@ -28,12 +28,20 @@ class BaseUser(AbstractUser):
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     is_booster = models.BooleanField(default=False ,blank=True)
     achived_rank = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='booster')
+    can_choose_me = models.BooleanField(default=True ,blank=True)
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
         if self.image:
             return self.image.url
         return None
+    
+    def save(self, *args, **kwargs):
+        if self.is_booster:
+            super().save(*args, **kwargs)
+        else:
+            self.can_choose_me = False
+            super().save(*args, **kwargs)
     
 # @receiver(post_save, sender=BaseUser)
 # def create_wallet(sender, instance, created, **kwargs):

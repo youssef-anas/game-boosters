@@ -4,9 +4,10 @@
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/edit-profile.css' %}">
+<link rel="stylesheet" href="{% static 'booster/css/can-choose-me.css' %}">
 {% endblock %}
 {% block container %}
-<div class="edit-container p-5 text-white" style="padding-top: 6rem !important;">
+<div class="edit-container p-lg-5 p-0 text-white" style="padding-top: 6rem !important;">
   {% if messages %}
     {% for message in messages %}
       <div class="py-3 mx-auto" style="width: 550px;">
@@ -24,7 +25,7 @@
     <div class="row justify-content-between my-5">
 
       <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center p-5">
-        <div class="image">
+        <div class="image mx-auto ">
           {% if request.user.image %}
           <img src="{{ request.user.image.url }}" class="image"  alt="Profile Photo"/>
           {% else %}
@@ -33,11 +34,19 @@
         </div>
 
         <div class="name">
-          <p class="my-4">{{request.user.first_name}} {{request.user.last_name}}</p>
+          <p class="my-3">{{request.user.first_name}} {{request.user.last_name}}</p>
         </div>
 
         <div class="links">
           <a href="{% url 'booster.profile' request.user.id %}" class="text-decoration-none my-3 d-block" style="color: var(--secondary-color);">View Profile</a>
+        </div>
+
+        <div class="can-choose-me d-flex justify-content-center align-items-center flex-wrap gap-2">
+          <form id="edit-profile-form" method="post" action="{% url 'edit.booster.profile' %}">
+            {% csrf_token %}
+            <span>Customer Can Choose Me</span>
+            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
+          </form>
         </div>
 
         <hr>
@@ -46,6 +55,7 @@
           <p>{{request.user.username}}</p>
           
           <p>{{request.user.email}}</p>
+          <p>{{request.user.about_you}}</p>
           <div class="d-flex justify-content-center align-items-center ">
             <img src="{{ request.user.achived_rank.get_image_url }}" width="30" alt="">
             <p class="ms-3">{{request.user.achived_rank.rank_name}}</p>
@@ -83,8 +93,23 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="{% static 'booster/js/can-choose-me.js' %}"></script>
 <script>
   var oldPasswordInput = document.getElementById('id_old_password');
   oldPasswordInput.blur();
+
+  $('#id_can_choose_me').change(function () {
+    $.ajax({
+      type: 'POST',
+      url: '{% url "can_choose_me" %}', 
+      data: $('#edit-profile-form').serialize(),
+      success: function (data) {
+        console.log(data);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  });
 </script>
 {% endblock %}

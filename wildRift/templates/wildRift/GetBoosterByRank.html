@@ -9,6 +9,15 @@
 <div class='body py-5'>
 <div class="container-fluid wild-rift">
     <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+            <div class="py-3 mx-auto" style="width: 550px;">
+                <div class="alert {{ message.tags }} alert-dismissible mb-0 message" role="alert" >
+                {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
         <div class="choise text-center mb-3">
             <input type="radio" id="division-boost" name="radio-group-type" checked>
             <label for="division-boost" class="me-2">Division Boost</label>

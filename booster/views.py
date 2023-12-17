@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from booster.serializers import RatingSerializer
+from rest_framework.views import APIView
+from booster.serializers import RatingSerializer, CanChooseMeSerializer
 User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
@@ -255,3 +256,15 @@ def ask_customer(request):
             order.save()
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
+
+class CanChooseMe(APIView):
+    def post(self, request, *args, **kwargs):
+        user = request.user 
+
+        instance = user
+
+        instance.can_choose_me = not instance.can_choose_me
+        instance.save()
+
+        serializer = CanChooseMeSerializer(instance)
+        return JsonResponse(serializer.data)

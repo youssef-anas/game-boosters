@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'booster/css/edit-profile.css' %}">
 {% endblock %}
 {% block container %}
-<div class="edit-container p-5 text-white" style="padding-top: 6rem !important;">
+<div class="edit-container p-lg-5 p-0 text-white" style="padding-top: 6rem !important;">
   {% if messages %}
     {% for message in messages %}
       <div class="py-3 mx-auto" style="width: 550px;">
@@ -24,7 +24,7 @@
     <div class="row justify-content-between my-5">
 
       <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center p-5">
-        <div class="image">
+        <div class="image mx-auto">
           {% if request.user.image %}
           <img src="{{ request.user.image.url }}" class="image"  alt="Profile Photo"/>
           {% else %}
@@ -62,7 +62,7 @@
 
     </div>
     
-    <div class="change-password p-5 mx-auto">
+    <div class="row change-password p-5 mx-lg-auto mx-0">
       <div class="content">
         <h2>Change Password</h2>
           <form method="post">
