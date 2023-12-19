@@ -6,7 +6,7 @@ BaseUser = get_user_model()
 
 
 class Registeration_Booster(UserCreationForm):
-    phone_number = PhoneNumberField(label='Phone name', required=False)
+    # phone_number = PhoneNumberField(label='Phone name', required=False)
     image = forms.ImageField(label='Profile Picture',  required=False)
 
     class Meta:
