@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'homepage/css/homepage.css' %}">
+{% endblock %}
+{% block container %}
+<div class='body py-5'>
+  <div class="landing container shadow-lg border-1 my-5 p-5 position-relative ">
+    <h1 class="text-uppercase text-white mb-5">Game Boosters</h1>
+    <div class="container text position-relative pt-4">
+      <h3 class="text-uppercase text-white text-center">REACH YOUR RANKING GOALS EFFORTLESSLY AND QUICKLY WITH PREMIUM BOOSTING SERVICES!</h3>
+      <p class="fs-5 mt-4 text-light text-center">Transform Your Gaming Experience with the Best Multi-Boosting Project - Boosteria!</p>
+      <!-- <img src="{% static 'homepage/images/Daco.png' %}" width="500" class="text-end" /> -->
+    </div>
+  </div>
+  
+  
+    <!-- <div class="box" onclick="redirectToGame('{{ game.link }}')"> -->
+
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  function redirectToGame(link) {
+    window.location.href = link;
+  }
+</script>
+{% endblock %}

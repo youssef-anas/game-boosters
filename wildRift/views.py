@@ -173,9 +173,16 @@ def wildRiftOrderChat(request, order_type, id):
 @csrf_exempt
 def view_that_asks_for_money(request):
     if request.method == 'POST':
-        if request.user.is_booster:
-            messages.error(request, "You are a booster!, You can't make order.")
-            return redirect(reverse_lazy('wildrift'))
+        if request.user.is_authenticated :
+            if request.user.is_booster:
+                messages.error(request, "You are a booster!, You can't make order.")
+                return redirect(reverse_lazy('wildrift'))
+        
+            user_has_uncompleted_order = WildRiftDivisionOrder.objects.filter(customer=request.user, is_done=False).exists()
+            if user_has_uncompleted_order:
+                messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
+                return redirect(reverse_lazy('wildrift'))
+        
         print('request POST:  ', request.POST)
         try:
             serializer = RankSerializer(data=request.POST)
