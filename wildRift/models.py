@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from django.utils import timezone
+from accounts.models import BaseOrder
 
 User = settings.AUTH_USER_MODEL
 # # Create your models here.
@@ -124,14 +124,7 @@ class WildRiftDivisionOrder(models.Model):
         (5 , '5 Marks'),
         (6 , '6 Marks'),
     ]
-    SERVER_CHOISES = [
-        (1, 'Europa'),
-        (2, 'America'),
-        (3, 'Asia'),
-        (4, 'Africa'),
-        (5, 'Australia')
-    ]
-    name = models.CharField(max_length=300, default='name')
+    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None)
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
     reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
@@ -140,48 +133,22 @@ class WildRiftDivisionOrder(models.Model):
     desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
-    price = models.FloatField(default=0,blank=True, null=True)
-    actual_price = models.FloatField(default=0, blank=True, null=True)
-    invoice = models.CharField(max_length=300,)
-    booster_percent1 = models.IntegerField(default=50)
-    booster_percent2 = models.IntegerField(default=60)
-    booster_percent3 = models.IntegerField(default=70)
-    booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_division')
-    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
-    duo_boosting = models.BooleanField(default=False ,blank=True)
-    select_booster = models.BooleanField(default=False ,blank=True)
-    turbo_boost = models.BooleanField(default=False ,blank=True)
-    streaming = models.BooleanField(default=False ,blank=True)
-    finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
-    is_done = models.BooleanField(default=False ,blank=True)
-    is_drop = models.BooleanField(default=False ,blank=True)
-    customer_gamename = models.CharField(max_length=300, blank=True, null=True)
-    customer_password = models.CharField(max_length=300, blank=True, null=True)
-    customer_server = models.IntegerField(choices=SERVER_CHOISES, blank=True, null=True)
-    data_correct = models.BooleanField(default=False ,blank=True)
-    message = models.CharField(max_length=300, null=True, blank=True)
-    payer_id = models.CharField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def process_name(self):
         # Split the invoice string by the hyphen ("-") delimiter
-        invoice_values = self.invoice.split('-')
-
+        invoice_values = self.order.invoice.split('-')
 
         # Extract specific values
         self.current_division = int(invoice_values[3])
         self.current_marks = int(invoice_values[4])
         self.desired_division = int(invoice_values[6])
-        self.price = float(invoice_values[12]) 
-
-        # 0 orr 1 to true or false
-        self.duo_boosting = bool(int(invoice_values[7]))
-        self.select_booster = bool(int(invoice_values[8]))
-        self.turbo_boost = bool(int(invoice_values[9]))
-        self.streaming = bool(int(invoice_values[10]))
-
+        self.order.price = float(invoice_values[12])
+        
+        # Update the BaseOrder fields based on invoice_values
+        self.order.duo_boosting = bool(int(invoice_values[7]))
+        self.order.select_booster = bool(int(invoice_values[8]))
+        self.order.turbo_boost = bool(int(invoice_values[9]))
+        self.order.streaming = bool(int(invoice_values[10]))
 
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
@@ -192,38 +159,12 @@ class WildRiftDivisionOrder(models.Model):
         self.reached_division = self.current_division
         self.reached_marks = self.current_marks
 
-    
-    def update_actual_price(self):
-        current_time = timezone.now()
-
-        if not self.created_at:
-            self.actual_price = self.price * (self.booster_percent1 / 100)
-        else:
-            time_difference = (current_time - self.created_at).total_seconds() / 60
-
-            if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
-            elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
-            elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
-            else:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.update_booster_wallet()
-
-    def update_booster_wallet(self):
-        if self.is_done and self.booster and self.actual_price > 0:
-            booster_wallet = self.booster.wallet
-            booster_wallet.available_balance += self.actual_price
-            booster_wallet.save()
 
 
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
-        self.update_actual_price()
+        self.order.update_actual_price()
+        self.order.save()
         super().save(*args, **kwargs)
 
     def __str__(self):

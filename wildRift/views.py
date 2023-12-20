@@ -19,6 +19,7 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from chat.models import Room, Message
+from accounts.models import BaseOrder
 
 User = get_user_model()
 
@@ -178,7 +179,7 @@ def view_that_asks_for_money(request):
                 messages.error(request, "You are a booster!, You can't make order.")
                 return redirect(reverse_lazy('wildrift'))
         
-            user_has_uncompleted_order = WildRiftDivisionOrder.objects.filter(customer=request.user, is_done=False).exists()
+            user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
             if user_has_uncompleted_order:
                 messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
                 return redirect(reverse_lazy('wildrift'))

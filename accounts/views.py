@@ -21,6 +21,7 @@ from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
 from booster.models import Booster
+from accounts.models import BaseOrder
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -66,22 +67,22 @@ def register_view(request):
         # if order.customer:
         #     return HttpResponse('this order with another user, create order again or connect to admin')
         if request.user.is_authenticated:
-            order.customer = request.user
+            order.order.customer = request.user
             order.save()
             admins_chat = create_chat_with_admins(request.user)
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id, 'admins_chat_slug':admins_chat.slug}))
+            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
             if form.is_valid():
                 user = form.save()
-                order.customer = user
+                order.order.customer = user
                 order.save()
                 login(request, user)
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
                 admins_chat = create_chat_with_admins(request.user)
-                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id, 'admins_chat_slug':admins_chat.slug}))
+                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
         form = Registeration()
 
         return render(request, 'accounts/register.html', {'form': form})
@@ -160,10 +161,10 @@ def set_customer_data(request):
         admins_chat_slug = request.POST.get('admins_chat_slug')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
-            order.customer_gamename = customer_gamename
-            order.customer_server = customer_server 
+            order.order.customer_gamename = customer_gamename
+            order.order.customer_server = customer_server 
             if customer_password :
-                order.customer_password = customer_password
+                order.order.customer_password = customer_password
             order.save()
             if booster:
                 room = create_chat_with_booster(User,booster)
@@ -175,12 +176,13 @@ def customer_side(request,id,admins_chat_slug):
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
-    order = WildRiftDivisionOrder.objects.get(id=id)
+    base_order = BaseOrder.objects.get(id=id)
+    order = WildRiftDivisionOrder.objects.get(order=base_order)
     boosters = Booster.objects.filter(can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:
-        specific_room = Room.get_specific_room(request.user, order.booster)
+        specific_room = Room.get_specific_room(request.user, order.order.booster)
         slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)

@@ -1,5 +1,5 @@
 from wildRift.models import WildRiftDivisionOrder
-from accounts.models import BaseUser
+from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
 
@@ -25,9 +25,11 @@ def create_order(invoice, payer_id):
         pass
 
     if booster :
-        order = Game.objects.create(invoice=invoice, booster=booster, payer_id=payer_id)
+        baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id)
     else:
-        order = Game.objects.create(invoice=invoice, payer_id=payer_id)
+        baseOrder = BaseOrder.objects.create(invoice=invoice, payer_id=payer_id)
+
+    order = Game.objects.create(order=baseOrder)
 
     order.save_with_processing()
     print(f'Order: {order}')
