@@ -68,7 +68,7 @@ def register_view(request):
         #     return HttpResponse('this order with another user, create order again or connect to admin')
         if request.user.is_authenticated:
             order.order.customer = request.user
-            order.save()
+            order.order.save()
             admins_chat = create_chat_with_admins(request.user)
             return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
         if request.method == 'POST':
@@ -76,7 +76,7 @@ def register_view(request):
             if form.is_valid():
                 user = form.save()
                 order.order.customer = user
-                order.save()
+                order.order.save()
                 login(request, user)
                 # Send activation email
                 # send_activation_email(user, request)
