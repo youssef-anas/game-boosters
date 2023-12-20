@@ -6,12 +6,10 @@ BaseUser = get_user_model()
 
 
 class Registeration_Booster(UserCreationForm):
-    phone_number = PhoneNumberField(label='Phone name', required=False)
-    image = forms.ImageField(label='Profile Picture',  required=False)
-
+    image = forms.ImageField(label='Profile Picture', required=False)
     class Meta:
         model = BaseUser
-        fields = ("email", "username", "image", 'country', 'about_you', 'achived_rank')
+        fields = ("email", "username", 'image', 'country')
         # fields = '__all__'
 
     def clean_email(self):
@@ -45,12 +43,11 @@ class Registeration_Booster(UserCreationForm):
         return user
     
 class ProfileEditForm(UserChangeForm):
-    phone_number = PhoneNumberField(label='Phone number', required=False)
     image = forms.ImageField(label='Profile Picture', required=False)
 
     class Meta:
         model = BaseUser
-        fields = ("email", "username", "image", 'country', 'about_you', 'achived_rank')
+        fields = ("email", "username", "image", 'country',)
 
     def clean_email(self):
         email = self.cleaned_data['email']

@@ -20,6 +20,7 @@ from chat.models import Room, Message
 from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
+from booster.models import Booster
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -175,7 +176,7 @@ def customer_side(request,id,admins_chat_slug):
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
     order = WildRiftDivisionOrder.objects.get(id=id)
-    boosters = User.objects.filter(is_booster=True, can_choose_me=True)
+    boosters = Booster.objects.filter(can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:
@@ -219,7 +220,7 @@ def edit_customer_profile(request):
 
     if request.method == 'POST':
         if 'profile_submit' in request.POST:
-            profile_form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
+            profile_form = ProfileEditForm(request.POST, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(request, 'Profile Updated Successfully.')

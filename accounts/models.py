@@ -22,13 +22,14 @@ class UserManager(UserManager):
         return self.create_user(email, password, **extra_fields)
 
 class BaseUser(AbstractUser):
-    email_verified_at = models.DateTimeField(null=True,blank=True)
-    image = models.ImageField(upload_to='media/accounts/',blank=True,null=True)
     country = CountryField(blank=True,null=True)
-    about_you = models.TextField(max_length=1000,null=True, blank=True)
-    is_booster = models.BooleanField(default=False ,blank=True)
-    achived_rank = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='booster')
-    can_choose_me = models.BooleanField(default=True ,blank=True)
+    is_booster = models.BooleanField(default= False)
+    is_customer = models.BooleanField(default= False)
+    is_admin = models.BooleanField(default= False)
+
+
+
+
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
@@ -58,8 +59,7 @@ def create_wallet(sender, instance, created, **kwargs):
 class Wallet(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE,related_name='wallet')
     available_balance = models.FloatField(default=0, null=True, blank=True)
-    pendding_balance = models.FloatField(default=0, null=True, blank=True)
-    withdrawal = models.FloatField(default=0, null=True, blank=True)
+
 
     def __str__(self):
         return f'{self.user.username} Has {self.available_balance}$'

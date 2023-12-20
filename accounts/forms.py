@@ -38,11 +38,9 @@ class Registeration(UserCreationForm):
     )
 
 class ProfileEditForm(UserChangeForm):
-    image = forms.ImageField(label='Profile Picture', required=False)
-
     class Meta:
         model = BaseUser
-        fields = ("email", "username", "image", 'country', 'about_you')
+        fields = ("email", "username", 'country')
 
     def clean_email(self):
         email = self.cleaned_data['email']
