@@ -83,7 +83,7 @@ class BaseOrder(models.Model):
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
-    booster = models.ForeignKey('booster.Booster', null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='booster_orders')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} )
     duo_boosting = models.BooleanField(default=False, blank=True)
     select_booster = models.BooleanField(default=False, blank=True)
     turbo_boost = models.BooleanField(default=False, blank=True)
