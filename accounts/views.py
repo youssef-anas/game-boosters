@@ -176,8 +176,7 @@ def customer_side(request,id,admins_chat_slug):
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
-    base_order = BaseOrder.objects.get(id=id)
-    order = WildRiftDivisionOrder.objects.get(order=base_order)
+    order = WildRiftDivisionOrder.objects.get(order__id=id)
     boosters = Booster.objects.filter(can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
