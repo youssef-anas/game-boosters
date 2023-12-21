@@ -100,7 +100,11 @@
     <div class="content">
         <!-- Profile picture -->
         <div class="profile-view">
-            <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.get_image_url }}"  />
+            {% if booster.user.image %}
+            <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.user.image.url }}"  />
+            {% else %}
+            <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
+            {% endif %}
             <h1><strong>{{booster.username}}</strong></h1>
             <div class="container">
                 <div class="row d-flex align-items-center text-center m-2 pb-3">

@@ -161,10 +161,10 @@ def set_customer_data(request):
         admins_chat_slug = request.POST.get('admins_chat_slug')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(BaseOrder, pk=order_id)
-            order.order.customer_gamename = customer_gamename
-            order.order.customer_server = customer_server 
+            order.customer_gamename = customer_gamename
+            order.customer_server = customer_server 
             if customer_password :
-                order.order.customer_password = customer_password
+                order.customer_password = customer_password
             order.save()
             if booster:
                 room = create_chat_with_booster(User,booster)
@@ -177,6 +177,8 @@ def customer_side(request,id,admins_chat_slug):
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
     order = WildRiftDivisionOrder.objects.get(order__id=id)
+    if order.order.is_done:
+        return redirect(reverse_lazy('booster.rate', kwargs={'order_id': order.order.id}))
     boosters = Booster.objects.filter(can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
