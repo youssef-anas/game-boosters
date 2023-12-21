@@ -141,7 +141,7 @@ def create_chat_with_user(user,booster):
         return isRoomExist
     
 def wildRiftOrders(request):
-    divisions_order = WildRiftDivisionOrder.objects.filter(booster__isnull=True)
+    divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
     placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
 
     context = {
@@ -153,7 +153,8 @@ def wildRiftOrders(request):
 def wildRiftOrderChat(request, order_type, id):
     # Check if Booster Have Less Than 3 Orders ?  -----
     if order_type == 'division':
-        order = get_object_or_404(WildRiftDivisionOrder, id=id)
+        base_order = get_object_or_404(BaseOrder, id=id)
+        order = get_object_or_404(WildRiftDivisionOrder, order=base_order)
     elif order_type == 'placement':
         order = get_object_or_404(WildRiftPlacementOrder, id=id)
     else:

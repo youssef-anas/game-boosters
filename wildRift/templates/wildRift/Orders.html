@@ -27,12 +27,12 @@
                 <div class="card-body">
                   <h5 class="card-title">{{order}}</h5>
                   <div class="d-flex justify-content-between align-items-center my-2">
-                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
-                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
+                    <p class="mb-0">{{order.order.customer.first_name}} {{order.order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.order.created_at|date:'m - d - Y' }}</p>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" data-price="{{ order.price }}" data-percent1="{{order.booster_percent1}}" data-percent2="{{order.booster_percent2}}" data-percent3="{{order.booster_percent3}}" data-percent4="{{order.booster_percent4}}"></p>
-                    <a href="{% url 'order.chat' order_type='division' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                    <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" data-price="{{ order.order.price }}" data-percent1="{{order.order.booster_percent1}}" data-percent2="{{order.order.booster_percent2}}" data-percent3="{{order.order.booster_percent3}}" data-percent4="{{order.order.booster_percent4}}"></p>
+                    <a href="{% url 'order.chat' order_type='division' id=order.order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
                   </div>
                 </div>
               </div>
