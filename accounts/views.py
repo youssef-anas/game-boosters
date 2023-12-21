@@ -143,8 +143,8 @@ def choose_booster(request):
         admins_chat_slug = request.POST.get('admins_chat_slug')
 
         if chosen_booster_id and order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
-            booster = get_object_or_404(User, pk=chosen_booster_id)
+            order = get_object_or_404(BaseOrder, pk=order_id)
+            booster = get_object_or_404(Booster, pk=chosen_booster_id)
             order.booster = booster
             order.save()
             room_with_booster = create_chat_with_booster(request.user,booster)
@@ -160,7 +160,7 @@ def set_customer_data(request):
         booster = request.POST.get('chosen_booster_id')
         admins_chat_slug = request.POST.get('admins_chat_slug')
         if customer_gamename and order_id and customer_server:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(BaseOrder, pk=order_id)
             order.order.customer_gamename = customer_gamename
             order.order.customer_server = customer_server 
             if customer_password :

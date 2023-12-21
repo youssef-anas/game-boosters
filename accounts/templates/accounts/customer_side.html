@@ -15,14 +15,14 @@
       <div class="col-lg-3 col-12 mb-lg-0 my-5 information shadow p-5 text-center">
 
         <div class="user-info">
-          {% if order.booster %}
-            {% if order.booster.image %}
-            <img src="{{ order.booster.image.url }}" class="profile-image col-4" alt="profile" />
+          {% if order.order.booster %}
+            {% if order.order.booster.image %}
+            <img src="{{ order.order.booster.image.url }}" class="profile-image col-4" alt="profile" />
             {% else %}
             <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
             {% endif %}
-            <h4 class="my-3">{{order.booster.first_name}} {{order.booster.last_name}}</h4>
-            <a href="{% url 'booster.profile' order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
+            <h4 class="my-3">{{order.order.booster.booster.first_name}} {{order.order.booster.booster.last_name}}</h4>
+            <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
           {% else %}
           <center class="fw-bold"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
@@ -55,15 +55,15 @@
         </div>
 
         <hr>
-        {% if order.message %}
-        <p class="text-danger">{{order.message}}</p>
+        {% if order.order.message %}
+        <p class="text-danger">{{order.order.message}}</p>
         {% endif %}
 
         <div class="game-data">
           <form action="{% url 'set.customer.data' %}" method="POST">
             {% csrf_token %}
             {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
-            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <input type="hidden" name="order_id" value="{{ order.order.id }}">
             <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">@</span>
@@ -83,7 +83,7 @@
               </select>
             </div>
 
-            {% if not order.duo_boosting %}
+            {% if not order.order.duo_boosting %}
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">*</span>
               <input type="password" required name="password" class="form-control" placeholder="Password"
@@ -108,8 +108,8 @@
         <div class="BoosterChatContent mt-lg-0 mt-4" id='BoosterChatContent'>
           <h4 id="chat-booster">Chat With Booster</h4>
           <div class="chat-booster p-4" id='chat-box'>
-            {% if order.booster is null %}
-            {% if order.select_booster %}
+            {% if order.order.booster is null %}
+            {% if order.order.select_booster %}
             <h4 id="choose-booster">Choose Booster</h4>
             <div class="">
               {% for booster in boosters %}
@@ -121,13 +121,13 @@
                   {% else %}
                   <img src="{% static 'base/images/no_profile_image.png' %}"  width="50" height='50' style="border-radius: 50%;" alt="No Profile Photo">
                   {% endif %}
-                  <span class="ms-4">{{booster.first_name}} {{booster.last_name}}</span>
+                  <span class="ms-4">{{booster.booster.first_name}} {{booster.booster.last_name}}</span>
                 </div>
 
                 <form action="{% url 'choose.booster' %}" method="POST">
                   {% csrf_token %}
                   <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
-                  <input type="hidden" name="order_id" value="{{ order.id }}">
+                  <input type="hidden" name="order_id" value="{{ order.order.id }}">
                   <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
                   <button type="submit" class="btn submit-btn">Choose</button>
                 </form>
@@ -136,7 +136,7 @@
               {% endfor %}
             </div>
             {% else %}
-            <div class="container text-center" style="height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+            <div class="container text-center" style="height: 71.9vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
               <center class="fw-bold"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
             </div>
             {% endif %}
