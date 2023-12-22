@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'corsheaders',
     'rest_framework',
-    'chat.apps.ChatConfig',
 ]
 
 MIDDLEWARE = [

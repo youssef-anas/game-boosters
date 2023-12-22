@@ -32,7 +32,9 @@
                   </div>
                   <div class="d-flex justify-content-between align-items-center mt-auto">
                     <div class='d-flex justify-content-between align-items-center'>
-                      <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" id='actual_price_{{ order.order.id }}'></p> <div id="final_price_{{ order.order.id }}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2">Final Price</div>
+                      <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" id='actual_price_{{ order.order.id }}'></p> 
+                      <p id="Timer_{{ order.order.id }}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2"></p> 
+                      <div id="final_price_{{ order.order.id }}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2">Final Price</div>
                     </div>
                     <a href="{% url 'order.chat' order_type='division' id=order.order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
                   </div>
@@ -89,15 +91,18 @@
         success: function (data) {
           // Update the displayed price in the HTML
           $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
+          $('#Timer_{{ order.order.id }}').text('Price increase in '+data.time_difference);
           console.log('actual_price_{{ order.order.id }}', data.actual_price+'$');
-
+          console.log({{ order.order.id }} , data.time_difference)
           // Check the condition before calling the function again
           if ({{ order.order.price }} * ({{ order.order.booster_percent4 }} / 100) !== data.actual_price) {
+            $('#Timer_{{ order.order.id }}').show();
             setTimeout(fetchLatestPrice{{ order.order.id }}, 1000);
           } else {
             stopFetching{{ order.order.id }} = true;
             console.log('stop', {{ order.order.price }} * ({{ order.order.booster_percent4 }} / 100))
             $('#actual_price_{{ order.order.id }}').text({{ order.order.price }} * ({{ order.order.booster_percent4 }} / 100)+'$');
+            $('#Timer_{{ order.order.id }}').hide();
             $('#final_price_{{ order.order.id }}').show();
           }
         },

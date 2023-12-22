@@ -18,9 +18,7 @@ from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from chat.models import Room, Message
-from accounts.models import BaseOrder
-from accounts.order_creator import create_order
+from accounts.models import BaseOrder, Room, Message
 
 User = get_user_model()
 
@@ -134,10 +132,10 @@ def wildRiftGetBoosterByRank(request):
 
 
 # Chat with user
-def create_chat_with_user(user,booster):
-    isRoomExist = Room.get_specific_room(user,booster)
+def create_chat_with_customer(customer,booster,orderId):
+    isRoomExist = Room.get_specific_room(customer,booster,orderId)
     if not isRoomExist:
-        return Room.create_room_with_booster(user,booster)
+        return Room.create_room_with_booster(customer,booster,orderId)
     else:
         return isRoomExist
     
@@ -154,12 +152,13 @@ def wildRiftOrders(request):
 def get_latest_price(request):
     order_id = request.GET.get('order_id')
     order = BaseOrder.objects.filter(id=order_id, booster__isnull=True).first()
+    time_difference = order.get_time_difference_before_final_price()
 
     if order:
         order.update_actual_price()
         order.save()
         latest_price = order.actual_price
-        return JsonResponse({'actual_price': latest_price})
+        return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
     else:
         return JsonResponse({'error': 'Order not found'}, status=404)
 
@@ -176,9 +175,9 @@ def wildRiftOrderChat(request, order_type, id):
         return HttpResponseBadRequest("Invalid Order Type")
     
     try:
-        base_order.booster = request.user
-        base_order.save()
-        create_chat_with_user(base_order.customer,request.user)
+        order.booster = request.user
+        order.save()
+        create_chat_with_user(order.customer,request.user)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest(f"Error updating order{e}")
