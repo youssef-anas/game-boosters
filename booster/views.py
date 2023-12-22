@@ -22,6 +22,7 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from chat.models import Room, Message
 import json
+from accounts.models import BaseOrder
 
 
 def register_booster_view(request):
@@ -82,11 +83,11 @@ def profile_booster_view(request, booster_id):
 
 @login_required
 def get_rate(request, order_id):
-    order_obj = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
-    customer =order_obj.customer
-    booster =order_obj.booster
+    order_obj = get_object_or_404(BaseOrder, id=order_id)
+    customer = order_obj.customer
+    booster = order_obj.booster
     if not (customer and booster):
-        return HttpResponse(f'cant set rate to order {order_id}, with customer {customer} and booster {booster}')
+        return HttpResponse(f"Can't set rate to order {order_id}, with customer {customer} and booster {booster}")
     if order_obj.is_done:
         if request.method == 'POST':
             serializer = RatingSerializer(data=request.POST)

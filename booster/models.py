@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import BaseUser
+from accounts.models import BaseUser, BaseOrder
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 
 class Rating(models.Model):
@@ -10,7 +10,7 @@ class Rating(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     game = models.IntegerField(default=1)
     anonymous = models.BooleanField(default=False)
-    order = models.OneToOneField(WildRiftDivisionOrder, on_delete=models.CASCADE, related_name='order_rated')
+    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, related_name='order_rated')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
