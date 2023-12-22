@@ -150,6 +150,21 @@ def wildRiftOrders(request):
     }
     return render(request,'wildRift/Orders.html', context)
 
+def get_latest_price(request):
+    order_id = request.GET.get('order_id')
+    order = BaseOrder.objects.filter(id=order_id, booster__isnull=True).first()
+    time_difference = order.get_time_difference_before_final_price()
+
+    if order:
+        order.update_actual_price()
+        order.save()
+        latest_price = order.actual_price
+        return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
+    else:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+
 def wildRiftOrderChat(request, order_type, id):
     # Check if Booster Have Less Than 3 Orders ?  -----
     if order_type == 'division':
@@ -161,9 +176,9 @@ def wildRiftOrderChat(request, order_type, id):
         return HttpResponseBadRequest("Invalid Order Type")
     
     try:
-        order.booster = request.user
-        order.save()
-        create_chat_with_user(order.customer,request.user)
+        base_order.booster = request.user
+        base_order.save()
+        create_chat_with_user(base_order.customer,request.user)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest("Error updating order")
@@ -274,3 +289,65 @@ def payment_canceled(request):
 # # Connect the signal to your IPN listener
 # valid_ipn_received.connect(paypal_ipn_listener)
 
+
+def update_rating(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        reached_rank_id = request.POST.get('reached_rank')
+        reached_division = request.POST.get('reached_division')
+        reached_marks = request.POST.get('reached_marks')
+        if reached_rank_id and order_id and reached_division and reached_marks:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            reached_rank = get_object_or_404(WildRiftRank, pk=reached_rank_id)
+            order.reached_rank = reached_rank
+            order.reached_division = reached_division 
+            order.reached_marks = reached_marks 
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def upload_finish_image(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            finish_image = request.FILES.get('finish_image')
+            if finish_image:
+                order.finish_image = finish_image
+                order.is_done = True
+                order.save()
+                return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def drop_order(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order.booster = None
+            order.is_drop = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def confirm_details(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order.message = None
+            order.data_correct = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def ask_customer(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order.message = 'Pleace Specify Your Details'
+            order.data_correct = False
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
