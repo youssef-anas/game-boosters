@@ -159,6 +159,9 @@ class WildRiftDivisionOrder(models.Model):
         self.reached_division = self.current_division
         self.reached_marks = self.current_marks
 
+        if not self.order.name:
+            self.order.name = f'WR{self.order.id}'
+
 
 
     def save_with_processing(self, *args, **kwargs):
