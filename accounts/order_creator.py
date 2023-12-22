@@ -12,7 +12,7 @@ def create_order(invoice, payer_id):
     booster_id = int(invoice_values[11])
     print (f'game id: {game_id}, booster_id: {booster_id}')
 
-    booster = BaseUser.objects.filter(id=booster_id, is_booster=True).first()
+    booster = BaseUser.objects.get(id=booster_id)
     print(booster)
     
     

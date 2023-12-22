@@ -11,4 +11,9 @@ urlpatterns = [
     path('<order_type>/<int:id>/', wildRiftOrderChat, name='order.chat'),
     # path('paypal-ipn/', paypal_ipn_listener, name='paypal-ipn'),
     path('get_latest_price/', get_latest_price, name='get_latest_price'),
+    path('update-rating/',update_rating,name='order.update.rating'),
+    path('upload-image/',upload_finish_image,name='order.upload.image'),
+    path('drop-order/',drop_order,name='drop.order'),
+    path('confirm_details/',confirm_details,name='confirm.details'),
+    path('ask_customer/',ask_customer,name='ask.customer'),
 ]

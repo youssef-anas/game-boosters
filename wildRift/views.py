@@ -288,3 +288,65 @@ def payment_canceled(request):
 # # Connect the signal to your IPN listener
 # valid_ipn_received.connect(paypal_ipn_listener)
 
+
+def update_rating(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        reached_rank_id = request.POST.get('reached_rank')
+        reached_division = request.POST.get('reached_division')
+        reached_marks = request.POST.get('reached_marks')
+        if reached_rank_id and order_id and reached_division and reached_marks:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            reached_rank = get_object_or_404(WildRiftRank, pk=reached_rank_id)
+            order.reached_rank = reached_rank
+            order.reached_division = reached_division 
+            order.reached_marks = reached_marks 
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def upload_finish_image(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            finish_image = request.FILES.get('finish_image')
+            if finish_image:
+                order.finish_image = finish_image
+                order.is_done = True
+                order.save()
+                return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def drop_order(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order.booster = None
+            order.is_drop = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def confirm_details(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order.message = None
+            order.data_correct = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def ask_customer(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order.message = 'Pleace Specify Your Details'
+            order.data_correct = False
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
