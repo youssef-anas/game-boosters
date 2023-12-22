@@ -1,210 +1,140 @@
+{% extends 'layouts/base.html' %}
 {% load static %}
 {% load custom_filters %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        *{
-            color: #ffffff;
-            padding: 0px;
-            margin: 0px;
-        }
-        body {
-            margin: 0px;
-            padding: 0px;
-            background-image: url("./../../../media/wildRift/images/backgrounds/profile.jpg");
-            background-size:auto;
-            background-position: center;
-            font-family: Arial, sans-serif;
-        }
-
-        .content{
-            padding-left: 15%;
-            padding-right: 15%;
-            text-align: center;
-            padding-bottom: 80px;
-        }
-        .profile-view img{
-            width: 170px; 
-            height: 170px;
-            padding: 20px;
-        }
-        .profile-view{
-            padding: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            text-align: center;
-            padding: 8px;
-        }
-        th {
-            background-color:rgba(186, 85, 211, 0.5);
-        }
-        .reviews{
-            background-color: #ffffff;
-            padding: 30px;        
-        }
-        .reviews p,
-        .reviews,
-        .reviews h1,
-        .reviews h2,
-        .reviews h3,
-        .reviews h4,
-        .reviews h5,
-        .reviews h6 {
-            color: black;
-            text-align: center;
-        } 
-        hr {
-            margin: auto;
-        }
-
-        .rating-card{
-            padding: 8px;
-            border-radius: 4px;
-            background: linear-gradient(90deg, rgba(186, 85, 211, 0.5)  0%, rgba(25, 0, 33, 0.5) 100%);
-            height: 100%;
-            width: 100%;
-        }
-        .stars-container {
-            display: flex;
-        }
-        .checked {
-            color: orange;
-            font-size: 32px;
-        }
-        .not-checked {
-            color:darkslategray;
-            font-size: 32px;
-        }
-        .rank-img img{
-            height: 60px;
-            width: 60px;
-        }
-
-        
-
-    </style>
-    <title>Document</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
-<body>
-    <div class="content">
-        <!-- Profile picture -->
-        <div class="profile-view">
-            {% if booster.user.image %}
-            <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.user.image.url }}"  />
-            {% else %}
-            <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
+{% block title %}Game Boosters:{{booster.username}}{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'booster/css/booster-profile.css' %}">
+{% endblock %}
+{% block container %}
+    <div class="container-fluid booster-profile py-5">
+        <div class="container content text-center py-5">
+            <!-- Profile picture -->
+            <div class="profile-view">
+                {% if booster.user.image %}
+                <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.user.image.url }}"  />
+                {% else %}
+                <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
+                {% endif %}
+                <h1><strong>{{booster.username}}</strong></h1>
+                <div class="container">
+                    <div class="row d-flex align-items-center text-center m-2 pb-3">
+                        <div class="col-6 px-4" >
+                        <div style="align-items: end; display:flex; justify-content:end">
+                            <img style="width: 100px; height: 100px;" src="https://static.wikia.nocookie.net/leagueoflegends/images/5/5f/Season_2019_-_Challenger_1.png/revision/latest/scale-to-width-down/250?cb=20181229234913" alt="rank" class="align-self-end">
+                        </div>
+                        </div>
+                        <div class="col-6 px-2" >
+                            <h3 style="align-items: start; display:flex; justify-content:start">Challenger</h3>
+                        </div> 
+                    </div>
+                </div>
+                <div class="container text-center d-flex align-items-center justify-content-center pt-1">
+                    <p>{{booster.about_you}}</p>
+                </div>
+                <hr style="border-color: white; border-width: 1px; border-style: solid; width:70%;"/>
+            </div>
+            <!-- Boosters stats -->
+            <div class="row row-cols-lg-4 row-cols-md-2 row-cols-1 justify-content-between align-items-center my-4">
+                <div class="mb-lg-0 mb-4 ">
+                    <p class="fw-bold text-secondary">Completed Boosts:</p>
+                    <p>{{ completed_boosts_count }}</p>
+                </div>
+                <div class="mb-lg-0 mb-4 ">
+                    <p class="fw-bold text-secondary">Last Boost:</p>
+                    <p>less than a minute ago</p>
+                </div>
+                <div class="mb-lg-0 mb-4 ">
+                    <p class="fw-bold text-secondary">On Boost:</p>
+                    <p>over 2 years</p>
+                </div>
+                <div class="mb-lg-0 mb-4 ">
+                    <p class="fw-bold text-secondary">Customer Reviews:</p>
+                    <p>{{ customer_reviews|default:0 }} / 5</p>
+                </div>
+            </div>
+            <!-- <table>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table> -->
+            {% if booster.can_choose_me %}
+            <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
             {% endif %}
-            <h1><strong>{{booster.username}}</strong></h1>
-            <div class="container">
-                <div class="row d-flex align-items-center text-center m-2 pb-3">
-                    <div class="col-6 px-4" >
-                    <div style="align-items: end; display:flex; justify-content:end">
-                        <img style="width: 100px; height: 100px;" src="https://static.wikia.nocookie.net/leagueoflegends/images/5/5f/Season_2019_-_Challenger_1.png/revision/latest/scale-to-width-down/250?cb=20181229234913" alt="rank" class="align-self-end">
-                    </div>
-                    </div>
-                    <div class="col-6 px-2" >
-                        <h3 style="align-items: start; display:flex; justify-content:start">Challenger</h3>
-                    </div> 
-                </div>
-            </div>
-            <div class="container text-center d-flex align-items-center justify-content-center pt-1">
-                <p>{{booster.about_you}}</p>
-            </div>
-            <hr style="border-color: white; border-width: 1px; border-style: solid; width:60%;"/>
         </div>
-        <!-- Boosters stats -->
-        <table>
-            <tr>
-                <th>Completed Wild Rift Boosts:</th>
-                <th>Last Wild Rift Boost:</th>
-                <th>On Rift Boost:</th>
-                <th>Customer Reviews:</th>
-            </tr>
-            <tr>
-                <td>{{ completed_boosts_count }}</td>
-                <td>less than a minute ago</td>
-                <td>over 2 years</td>
-                <td>{{ customer_reviews|default:0 }}/5</td>
-            </tr>
-        </table>
-        {% if booster.can_choose_me %}
-        <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
-        {% endif %}
-    </div>
-    <div class="reviews">
-        <h1>{{booster.username}} Customer Feedback</h1>
-        <div class="row m-1 p-1 justify-content-around">
-            {% for rate in ratings %}
-            <div class="container col-lg-5 col-md-5 col-sm-12 p-3">
-                <div class="container rating-card d-flex flex-column">
-                    <div class="d-flex justify-content-between p-2">
-                        {% if rate.anonymous %}
-                            <h4></h4>
-                        {% else %}
-                            <h4>{{ rate.customer.username }}</h4>
-                        {% endif %}
-                        <div class="stars-container">
-                            {% for i in '12345' %}
-                                {% if forloop.counter <= rate.rate %}
-                                    <span class="fa fa-star checked"></span>
-                                {% else %}
-                                    <span class="fa fa-star not-checked"></span>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="text-rate d-flex p-2">
-                        <h5>{{ rate.text }}</h5>
-                    </div>
-                    <div class="mt-auto">
-                        <div class="rank-img d-flex justify-content-around align-items-center text-center">
-                            <img src="{{rate.order.current_rank.get_image_url}}" />
-                            <h5>{{ rate.order.current_rank }} {{ rate.order.get_current_division_display }}</h5>
-
-                            <div>
-                                <h3 class="text-primary"> >>> </h3>
+        <div class="reviews">
+            <h1>{{booster.username}} Customer Feedback</h1>
+            <div class="row m-1 p-1 justify-content-around">
+                {% for rate in ratings %}
+                <div class="container col-lg-5 col-md-5 col-sm-12 p-3">
+                    <div class="container rating-card d-flex flex-column">
+                        <div class="d-flex justify-content-between p-2">
+                            {% if rate.anonymous %}
+                                <h4></h4>
+                            {% else %}
+                                <h4>{{ rate.customer.username }}</h4>
+                            {% endif %}
+                            <div class="stars-container">
+                                {% for i in '12345' %}
+                                    {% if forloop.counter <= rate.rate %}
+                                        <span class="fa fa-star checked"></span>
+                                    {% else %}
+                                        <span class="fa fa-star not-checked"></span>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
-                            <img src="{{rate.order.reached_rank.get_image_url}}" />
-                            <h5>{{rate.order.reached_rank}} {{rate.order.get_reached_division_display}}</h5>
+                        </div>
+                        <div class="text-rate d-flex p-2">
+                            <h5>{{ rate.text }}</h5>
+                        </div>
+                        <div class="mt-auto">
+                            <div class="rank-img d-flex justify-content-around align-items-center text-center">
+                                <img src="{{rate.order.current_rank.get_image_url}}" />
+                                <h5>{{ rate.order.current_rank }} {{ rate.order.get_current_division_display }}</h5>
+    
+                                <div>
+                                    <h3 class="text-primary"> >>> </h3>
+                                </div>
+                                <img src="{{rate.order.reached_rank.get_image_url}}" />
+                                <h5>{{rate.order.reached_rank}} {{rate.order.get_reached_division_display}}</h5>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
+            
+            <h1>Order Completed By {{booster.username}}</h1>
+            {% for order in completed_orders%}
+                <div class="rank-img row m-1 p-1 justify-content-around d-flex">
+                    <div class="d-flex align-items-center text-center">
+                        <img src="{{order.current_rank.get_image_url}}" />
+                        <div>
+                            <p>From</p>
+                            <h5>{{ order.current_rank }} {{ order.get_current_division_display }}</h5>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center text-center">
+                        <img src="{{order.current_rank.get_image_url}}" />
+                        <div>
+                            <p>To</p>
+                            <h5>{{ order.reached_rank }} {{ order.get_reached_division_display }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
             {% endfor %}
         </div>
-        
-        <h1>Order Completed By {{booster.username}}</h1>
-        {% for order in completed_orders%}
-            <div class="rank-img row m-1 p-1 justify-content-around d-flex">
-                <div class="d-flex align-items-center text-center">
-                    <img src="{{order.current_rank.get_image_url}}" />
-                    <div>
-                        <p>From</p>
-                        <h5>{{ order.current_rank }} {{ order.get_current_division_display }}</h5>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center text-center">
-                    <img src="{{order.current_rank.get_image_url}}" />
-                    <div>
-                        <p>To</p>
-                        <h5>{{ order.reached_rank }} {{ order.get_reached_division_display }}</h5>
-                    </div>
-                </div>
-            </div>
-            <hr/>
-        {% endfor %}
     </div>
-</body>
-</html>
+{% endblock %}
+{% block script %}
 
+{% endblock %}

@@ -178,7 +178,7 @@ def customer_side(request,id,admins_chat_slug):
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
     order = WildRiftDivisionOrder.objects.get(order__id=id)
     if order.order.is_done:
-        return redirect(reverse_lazy('booster.rate', kwargs={'order_id': order.order.id}))
+        return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))
     boosters = Booster.objects.filter(can_choose_me=True)
     # Chat with booster
     slug = request.GET.get('booster_slug') or None

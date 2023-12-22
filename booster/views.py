@@ -102,8 +102,8 @@ def get_rate(request, order_id):
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
 # this for only test and will remove it        
-def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(order__id=1)
+def rate_page(request, order_id):
+    order = WildRiftDivisionOrder.objects.get(order__id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 # Chat with user
@@ -215,7 +215,7 @@ def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, order__id=order_id)
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
