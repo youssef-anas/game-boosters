@@ -109,11 +109,11 @@ class BaseOrder(models.Model):
             time_difference = (current_time - self.created_at).total_seconds() / 60
 
             if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
+                self.actual_price = self.price * (self.booster_percent1 / 100)
             elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
+                self.actual_price = self.price * (self.booster_percent2 / 100)
             elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
+                self.actual_price = self.price * (self.booster_percent3 / 100)
             else:
                 self.actual_price = self.price * (self.booster_percent4 / 100)
 

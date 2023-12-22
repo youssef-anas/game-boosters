@@ -150,6 +150,20 @@ def wildRiftOrders(request):
     }
     return render(request,'wildRift/Orders.html', context)
 
+def get_latest_price(request):
+    order_id = request.GET.get('order_id')
+    order = BaseOrder.objects.filter(id=order_id, booster__isnull=True).first()
+
+    if order:
+        order.update_actual_price()
+        order.save()
+        latest_price = order.actual_price
+        return JsonResponse({'actual_price': latest_price})
+    else:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+
 def wildRiftOrderChat(request, order_type, id):
     # Check if Booster Have Less Than 3 Orders ?  -----
     if order_type == 'division':

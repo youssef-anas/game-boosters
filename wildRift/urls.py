@@ -10,4 +10,5 @@ urlpatterns = [
     path('orders/', wildRiftOrders ,name='wildrift.confirm.order'),
     path('<order_type>/<int:id>/', wildRiftOrderChat, name='order.chat'),
     # path('paypal-ipn/', paypal_ipn_listener, name='paypal-ipn'),
+    path('get_latest_price/', get_latest_price, name='get_latest_price'),
 ]
