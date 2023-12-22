@@ -18,6 +18,8 @@ from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from accounts.models import BaseOrder
+from accounts.order_creator import create_order
 from accounts.models import BaseOrder, Room, Message
 
 User = get_user_model()
@@ -175,9 +177,9 @@ def wildRiftOrderChat(request, order_type, id):
         return HttpResponseBadRequest("Invalid Order Type")
     
     try:
-        order.booster = request.user
-        order.save()
-        create_chat_with_user(order.customer,request.user)
+        base_order.booster = request.user
+        base_order.save()
+        create_chat_with_customer(base_order.customer,request.user, base_order.id)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest(f"Error updating order{e}")
