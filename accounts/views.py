@@ -16,12 +16,11 @@ from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
-from chat.models import Room, Message
 from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
 from booster.models import Booster
-from accounts.models import BaseOrder
+from accounts.models import BaseOrder, Room, Message
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -43,17 +42,17 @@ def send_activation_email(user, request):
     # Send the email
     send_mail(subject, message, 'your@example.com', [user.email])
 
-def create_chat_with_booster(user,booster):
-    isRoomExist = Room.get_specific_room(user,booster)
+def create_chat_with_booster(customer,booster,orderId):
+    isRoomExist = Room.get_specific_room(customer,booster,orderId)
     if not isRoomExist:
-        return Room.create_room_with_booster(user,booster)
+        return Room.create_room_with_booster(customer,booster,orderId)
     else:
         return isRoomExist
     
-def create_chat_with_admins(user):
-    isRoomExist = Room.get_specific_admins_room(user)
+def create_chat_with_admins(customer,orderId):
+    isRoomExist = Room.get_specific_admins_room(customer,orderId)
     if not isRoomExist:
-        return Room.create_room_with_admins(user)
+        return Room.create_room_with_admins(customer,orderId)
     else:
         return isRoomExist
 
@@ -69,7 +68,7 @@ def register_view(request):
         if request.user.is_authenticated:
             order.order.customer = request.user
             order.order.save()
-            admins_chat = create_chat_with_admins(request.user)
+            admins_chat = create_chat_with_admins(request.user,order.order.id)
             return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -81,7 +80,7 @@ def register_view(request):
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
-                admins_chat = create_chat_with_admins(request.user)
+                admins_chat = create_chat_with_admins(request.user,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
         form = Registeration()
 
@@ -147,7 +146,7 @@ def choose_booster(request):
             booster = get_object_or_404(Booster, pk=chosen_booster_id)
             order.booster = booster
             order.save()
-            room_with_booster = create_chat_with_booster(request.user,booster)
+            room_with_booster = create_chat_with_booster(request.user,booster,order_id)
             return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id,'admins_chat_slug': admins_chat_slug}) + f'?booster_slug={room_with_booster.slug}')
     return JsonResponse({'success': False})
 
@@ -183,7 +182,7 @@ def customer_side(request,id,admins_chat_slug):
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:
-        specific_room = Room.get_specific_room(request.user, order.order.booster)
+        specific_room = Room.get_specific_room(request.user, order.order.booster,order.order.id)
         slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)

@@ -20,9 +20,8 @@ from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
 from django.db.models import Sum
-from chat.models import Room, Message
 import json
-from accounts.models import BaseOrder
+from accounts.models import BaseOrder, Room, Message
 
 
 def register_booster_view(request):
@@ -107,10 +106,10 @@ def rate_page(request, order_id):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 # Chat with user
-def create_chat_with_user(user,booster):
-    isRoomExist = Room.get_specific_room(user,booster)
+def create_chat_with_customer(customer,booster,orderId):
+    isRoomExist = Room.get_specific_room(customer,booster)
     if not isRoomExist:
-        return Room.create_room_with_booster(user,booster)
+        return Room.create_room_with_booster(customer,booster,orderId)
     else:
         return isRoomExist
 
@@ -162,7 +161,7 @@ def booster_orders(request):
 
         now_price = round(order.order.actual_price * (percentege / 100) , 2)
         
-        current_room = Room.get_specific_room(order.order.customer, request.user)
+        current_room = Room.get_specific_room(order.order.customer, request.user, order.order.id)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug
