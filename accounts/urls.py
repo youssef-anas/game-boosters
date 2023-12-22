@@ -10,6 +10,6 @@ urlpatterns = [
     path('logout/', logout_view, name='account.logout'), 
     path('choose_booster/', choose_booster, name='choose.booster'),
     path('set_customer_data/', set_customer_data, name='set.customer.data'),
-    path('customer_side/<int:id>/<slug:admins_chat_slug>/', customer_side, name='accounts.customer_side'),
+    path('customer_side/', customer_side, name='accounts.customer_side'),
     path('edit_profile/', edit_customer_profile, name='edit.customer.profile'),
 ]
