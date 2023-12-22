@@ -141,7 +141,7 @@ def create_chat_with_user(user,booster):
         return isRoomExist
     
 def wildRiftOrders(request):
-    divisions_order = WildRiftDivisionOrder.objects.filter(booster__isnull=True)
+    divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
     placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
 
     context = {
@@ -150,10 +150,25 @@ def wildRiftOrders(request):
     }
     return render(request,'wildRift/Orders.html', context)
 
+def get_latest_price(request):
+    order_id = request.GET.get('order_id')
+    order = BaseOrder.objects.filter(id=order_id, booster__isnull=True).first()
+
+    if order:
+        order.update_actual_price()
+        order.save()
+        latest_price = order.actual_price
+        return JsonResponse({'actual_price': latest_price})
+    else:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+
+
+
 def wildRiftOrderChat(request, order_type, id):
     # Check if Booster Have Less Than 3 Orders ?  -----
     if order_type == 'division':
-        order = get_object_or_404(WildRiftDivisionOrder, id=id)
+        base_order = get_object_or_404(BaseOrder, id=id)
+        order = get_object_or_404(WildRiftDivisionOrder, order=base_order)
     elif order_type == 'placement':
         order = get_object_or_404(WildRiftPlacementOrder, id=id)
     else:

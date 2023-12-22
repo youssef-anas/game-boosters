@@ -83,7 +83,7 @@ class BaseOrder(models.Model):
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
-    booster = models.ForeignKey('booster.Booster', null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='booster_orders')
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False, blank=True)
     select_booster = models.BooleanField(default=False, blank=True)
     turbo_boost = models.BooleanField(default=False, blank=True)
@@ -109,11 +109,11 @@ class BaseOrder(models.Model):
             time_difference = (current_time - self.created_at).total_seconds() / 60
 
             if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
+                self.actual_price = self.price * (self.booster_percent1 / 100)
             elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
+                self.actual_price = self.price * (self.booster_percent2 / 100)
             elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
+                self.actual_price = self.price * (self.booster_percent3 / 100)
             else:
                 self.actual_price = self.price * (self.booster_percent4 / 100)
 

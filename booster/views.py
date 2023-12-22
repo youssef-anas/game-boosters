@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from booster.models import Rating
 from django.contrib.auth import get_user_model
-from wildRift.models import WildRiftDivisionOrder
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
@@ -23,6 +22,7 @@ from django.http import JsonResponse
 from django.db.models import Sum
 from chat.models import Room, Message
 import json
+from accounts.models import BaseOrder
 
 
 def register_booster_view(request):
@@ -69,7 +69,7 @@ def profile_booster_view(request, booster_id):
     total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
     rate_count = ratings.count()
     customer_reviews = total_ratings / rate_count if rate_count > 0 else 0
-    completed_orders = WildRiftDivisionOrder.objects.filter(is_done = True, booster=booster)
+    completed_orders = WildRiftDivisionOrder.objects.filter(order__is_done = True, order__booster=booster)
     completed_boosts_count = completed_orders.count()
     context = {
         "ratings":ratings,
@@ -83,11 +83,11 @@ def profile_booster_view(request, booster_id):
 
 @login_required
 def get_rate(request, order_id):
-    order_obj = get_object_or_404(WildRiftDivisionOrder, id=order_id)
-    customer =order_obj.customer
-    booster =order_obj.booster
+    order_obj = get_object_or_404(BaseOrder, id=order_id)
+    customer = order_obj.customer
+    booster = order_obj.booster
     if not (customer and booster):
-        return HttpResponse(f'cant set rate to order {order_id}, with customer {customer} and booster {booster}')
+        return HttpResponse(f"Can't set rate to order {order_id}, with customer {customer} and booster {booster}")
     if order_obj.is_done:
         if request.method == 'POST':
             serializer = RatingSerializer(data=request.POST)
@@ -103,7 +103,7 @@ def get_rate(request, order_id):
         
 # this for only test and will remove it        
 def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(id=1)
+    order = WildRiftDivisionOrder.objects.get(order__id=1)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 # Chat with user
@@ -117,7 +117,7 @@ def create_chat_with_user(user,booster):
 def booster_orders(request):
     # if not request.user.is_booster:
     #     return HttpResponse('you are not booster')
-    orders = WildRiftDivisionOrder.objects.filter(booster=request.user,is_done=False).order_by('id')
+    orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
     ranks = WildRiftRank.objects.all()
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
         division_data = json.load(file)
@@ -156,13 +156,13 @@ def booster_orders(request):
 
         done_sum = done_sum_div + done_sum_marks
 
-        percentege = round((done_sum / order.price) * 100 , 2)
+        percentege = round((done_sum / order.order.price) * 100 , 2)
         if percentege >= 100 :
             percentege = 100
 
-        now_price = round(order.actual_price * (percentege / 100) , 2)
+        now_price = round(order.order.actual_price * (percentege / 100) , 2)
         
-        current_room = Room.get_specific_room(order.customer, request.user)
+        current_room = Room.get_specific_room(order.order.customer, request.user)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug
@@ -202,7 +202,7 @@ def update_rating(request):
         reached_division = request.POST.get('reached_division')
         reached_marks = request.POST.get('reached_marks')
         if reached_rank_id and order_id and reached_division and reached_marks:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             reached_rank = get_object_or_404(WildRiftRank, pk=reached_rank_id)
             order.reached_rank = reached_rank
             order.reached_division = reached_division 
@@ -215,7 +215,7 @@ def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
@@ -228,7 +228,7 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             order.booster = None
             order.is_drop = True
             order.save()
@@ -239,7 +239,7 @@ def confirm_details(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             order.message = None
             order.data_correct = True
             order.save()
@@ -250,7 +250,7 @@ def ask_customer(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, pk=order_id)
+            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
             order.message = 'Pleace Specify Your Details'
             order.data_correct = False
             order.save()
