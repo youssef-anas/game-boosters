@@ -18,6 +18,8 @@ from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from accounts.models import BaseOrder
+from accounts.order_creator import create_order
 from accounts.models import BaseOrder, Room, Message
 
 User = get_user_model()
@@ -180,7 +182,7 @@ def wildRiftOrderChat(request, order_type, id):
         create_chat_with_customer(base_order.customer,request.user, base_order.id)
     except Exception as e:
         print(f"Error updating order: {e}")
-        return HttpResponseBadRequest("Error updating order")
+        return HttpResponseBadRequest(f"Error updating order{e}")
 
     return redirect(reverse_lazy('booster.orders'))
 
@@ -245,8 +247,6 @@ def view_that_asks_for_money(request):
 #     return HttpResponse(f'order id: {order_id} ---- payer_id {payer_id}')
 
 def payment_canceled(request):
-    order_id = request.GET.get('order_id')
-    order = WildRiftDivisionOrder.objects.get(id = order_id).delete()
     return HttpResponse('payment canceled')
 
 
@@ -322,9 +322,21 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
-            order.booster = None
-            order.is_drop = True
+            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order.order.is_drop = True
+            order.order.is_done = True
+
+            print(order.order.invoice)
+
+            invoice = order.order.invoice.split('-')
+            invoice[2]= str(order.reached_rank.id) 
+            invoice[3]= str(order.reached_division )
+            invoice[4]= str(order.reached_marks)
+            new_invoice = '-'.join(invoice)
+            payer_id = str(order.order.payer_id)
+            print(new_invoice)
+            new_order = create_order(new_invoice,payer_id)
+            order.order.save()
             order.save()
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})

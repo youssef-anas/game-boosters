@@ -74,7 +74,7 @@ class BaseOrder(models.Model):
         (4, 'Africa'),
         (5, 'Australia')
     ]
-    name = models.CharField(max_length=300, default='name')
+    name = models.CharField(max_length=300)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300)
