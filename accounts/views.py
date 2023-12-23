@@ -65,7 +65,7 @@ def register_view(request):
     if invoice:
         if request.user.is_authenticated:
             order = create_order(invoice, payer_id, request.user)
-            create_chat_with_admins(request.user,order.order.id)
+            create_chat_with_admins(customer=request.user,orderId = order.order.id)
             return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -76,10 +76,9 @@ def register_view(request):
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
-                create_chat_with_admins(request.user,order.order.id)
+                create_chat_with_admins(customer=request.user, orderId = order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
         form = Registeration()
-
         return render(request, 'accounts/register.html', {'form': form})
     
     
@@ -171,7 +170,7 @@ def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     order = BaseOrder.objects.filter(customer=customer).last()
     id = order.id
-    admins_chat_slug = f'roomFor-{request.user.username}-admins-{id}'
+    admins_chat_slug = f'roomFor-{request.user.username}-admins-{order.name}'
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 

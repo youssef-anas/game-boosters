@@ -336,6 +336,7 @@ def drop_order(request):
             
             new_order = create_order(new_invoice,payer_id, customer)
             new_order.order.name = order.order.name
+            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
             new_order.order.save()
             order.order.save()
             order.save()
