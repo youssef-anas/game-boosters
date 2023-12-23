@@ -77,6 +77,7 @@ class BaseOrder(models.Model):
     name = models.CharField(max_length=300)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
+    money_owed = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300)
     booster_percent1 = models.IntegerField(default=50)
     booster_percent2 = models.IntegerField(default=60)
@@ -104,18 +105,18 @@ class BaseOrder(models.Model):
         current_time = timezone.now()
 
         if not self.created_at:
-            self.actual_price = self.price * (self.booster_percent1 / 100)
+            self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
         else:
             time_difference = (current_time - self.created_at).total_seconds() / 60
 
             if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent1 / 100)
+                self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
             elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
+                self.actual_price = round(self.price * (self.booster_percent2 / 100) , 2)
             elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
+                self.actual_price = round(self.price * (self.booster_percent3 / 100) , 2)
             else:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
+                self.actual_price = round(self.price * (self.booster_percent4 / 100) , 2)
     
     def get_time_difference_before_final_price(self):
         current_time = timezone.now()

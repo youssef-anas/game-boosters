@@ -1,0 +1,57 @@
+.booster-profile{
+  background-image: url('./../images/magicpattern.png');
+  background-size: cover;
+  background-attachment: fixed;
+  color: white !important;
+}
+
+.content {
+  background-image: linear-gradient(to right, #37175e75 0%, #582984b8 50%, #4a0774c2) !important;
+}
+.content .profile-view img {
+  width: 170px; 
+  height: 170px;
+  padding: 20px;
+}
+.content .profile-view {
+  padding: 20px;
+}
+.reviews{
+  padding: 30px;        
+}
+.reviews p,
+.reviews,
+.reviews h1,
+.reviews h2,
+.reviews h3,
+.reviews h4,
+.reviews h5,
+.reviews h6 {
+  text-align: center;
+} 
+hr {
+  margin: auto;
+}
+
+.rating-card{
+  padding: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(186, 85, 211, 0.5)  0%, rgba(25, 0, 33, 0.5) 100%);
+  height: 100%;
+  width: 100%;
+}
+.stars-container {
+  display: flex;
+}
+.checked {
+  color: orange;
+  font-size: 32px;
+}
+.not-checked {
+  color:darkslategray;
+  font-size: 32px;
+}
+.rank-img img{
+  height: 60px;
+  width: 60px;
+}

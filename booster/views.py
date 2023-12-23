@@ -101,8 +101,8 @@ def get_rate(request, order_id):
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
 # this for only test and will remove it        
-def form_test(request):
-    order = WildRiftDivisionOrder.objects.get(order__id=1)
+def rate_page(request, order_id):
+    order = WildRiftDivisionOrder.objects.get(order__id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 # Chat with user
@@ -160,6 +160,9 @@ def booster_orders(request):
             percentege = 100
 
         now_price = round(order.order.actual_price * (percentege / 100) , 2)
+
+        order.order.money_owed = now_price
+        order.order.save()
         
         current_room = Room.get_specific_room(order.order.customer, request.user, order.order.id)
         if current_room is not None:
@@ -193,7 +196,6 @@ def booster_orders(request):
         'ranks': ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
-
 
 class CanChooseMe(APIView):
     def post(self, request, *args, **kwargs):

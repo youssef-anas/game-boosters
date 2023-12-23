@@ -1,10 +1,9 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% load custom_filters %}
-{% block title %}Game Boosters{% endblock %}
+{% block title %}Game Boosters:{{booster.username}}{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/booster-order.css' %}">
-<link rel="stylesheet" href="{% static 'chat/css/master.css'%}">
 {% endblock %}
 {% block container %}
 <div class="containter-fluid booster-order-body text-white">
