@@ -21,6 +21,7 @@ from accounts.order_creator import  create_order
 User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseOrder, Room, Message
+from accounts.models import BaseUser
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -81,7 +82,7 @@ def register_view(request):
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
                 admins_chat = create_chat_with_admins(request.user,order.order.id)
-                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
+                return redirect(reverse_lazy('accounts.customer_side'))
         form = Registeration()
 
         return render(request, 'accounts/register.html', {'form': form})
@@ -167,11 +168,15 @@ def set_customer_data(request):
             order.save()
             if booster:
                 room = create_chat_with_booster(User,booster)
-                return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id}) + f'?booster_slug={room.slug}')
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id,'admins_chat_slug': admins_chat_slug}))
+                return redirect(reverse_lazy('accounts.customer_side'))
+            return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
-def customer_side(request,id,admins_chat_slug):
+def customer_side(request):
+    customer = BaseUser.objects.get(id = request.user.id)
+    order = BaseOrder.objects.filter(customer=customer).last()
+    id = order.id
+    admins_chat_slug = f'roomFor-{request.user.username}-admins-{id}'
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 

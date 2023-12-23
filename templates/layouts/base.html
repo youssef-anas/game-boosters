@@ -23,11 +23,17 @@
       <ul class="main-nav">
         {% if request.user.id %}
 
+        {% if request.user.is_customer %}
+        <li>
+          <a href="{% url 'accounts.customer_side' %}"><strong>Order:</strong>_WR123</a>
+        </li>
+        {% endif %}
+
         {% if request.user.is_booster %}
 
         <li>
-          <a  href="{% url 'edit.booster.profile' %}">{{request.user.first_name}} {{request.user.last_name}}</a>
-        </li>
+          <a class="text-white"  href="{% url 'edit.booster.profile' %}"> {{request.user.first_name}} {{request.user.last_name}}</a>
+        </li> 
         <li>
           <a href="{% url 'booster.orders' %}">Your Orders</a>
         </li>
