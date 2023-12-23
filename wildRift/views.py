@@ -326,16 +326,17 @@ def drop_order(request):
             order.order.is_drop = True
             order.order.is_done = True
 
-            print(order.order.invoice)
-
             invoice = order.order.invoice.split('-')
             invoice[2]= str(order.reached_rank.id) 
             invoice[3]= str(order.reached_division )
             invoice[4]= str(order.reached_marks)
             new_invoice = '-'.join(invoice)
-            payer_id = str(order.order.payer_id)
-            print(new_invoice)
-            new_order = create_order(new_invoice,payer_id)
+            payer_id = order.order.payer_id
+            customer = order.order.customer
+            
+            new_order = create_order(new_invoice,payer_id, customer)
+            new_order.order.name = order.order.name
+            new_order.order.save()
             order.order.save()
             order.save()
             return redirect(reverse_lazy('booster.orders'))

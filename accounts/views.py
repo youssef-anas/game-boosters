@@ -63,25 +63,20 @@ def register_view(request):
     payer_id = request.GET.get('PayerID')
     
     if invoice:
-        order = create_order(invoice, payer_id)
-        # if order.customer:
-        #     return HttpResponse('this order with another user, create order again or connect to admin')
         if request.user.is_authenticated:
-            order.order.customer = request.user
-            order.order.save()
-            admins_chat = create_chat_with_admins(request.user,order.order.id)
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.order.id, 'admins_chat_slug':admins_chat.slug}))
+            order = create_order(invoice, payer_id, request.user)
+            create_chat_with_admins(request.user,order.order.id)
+            return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
             if form.is_valid():
                 user = form.save()
-                order.order.customer = user
-                order.order.save()
+                order = create_order(invoice, payer_id, user)
                 login(request, user)
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
-                admins_chat = create_chat_with_admins(request.user,order.order.id)
+                create_chat_with_admins(request.user,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
         form = Registeration()
 
@@ -140,15 +135,15 @@ def choose_booster(request):
     if request.method == 'POST':
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
-        admins_chat_slug = request.POST.get('admins_chat_slug')
+        request.POST.get('admins_chat_slug')
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
             booster = get_object_or_404(Booster, pk=chosen_booster_id)
             order.booster = booster
             order.save()
-            room_with_booster = create_chat_with_booster(request.user,booster,order_id)
-            return redirect(reverse_lazy('accounts.customer_side', kwargs={'id':order.id,'admins_chat_slug': admins_chat_slug}) + f'?booster_slug={room_with_booster.slug}')
+            create_chat_with_booster(request.user,booster,order_id)
+            return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
 def set_customer_data(request):
@@ -158,7 +153,7 @@ def set_customer_data(request):
         customer_server = request.POST.get('server')
         customer_password = request.POST.get('password')
         booster = request.POST.get('chosen_booster_id')
-        admins_chat_slug = request.POST.get('admins_chat_slug')
+        request.POST.get('admins_chat_slug')
         if customer_gamename and order_id and customer_server:
             order = get_object_or_404(BaseOrder, pk=order_id)
             order.customer_gamename = customer_gamename
@@ -167,7 +162,7 @@ def set_customer_data(request):
                 order.customer_password = customer_password
             order.save()
             if booster:
-                room = create_chat_with_booster(User,booster)
+                create_chat_with_booster(User,booster)
                 return redirect(reverse_lazy('accounts.customer_side'))
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
