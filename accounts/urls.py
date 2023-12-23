@@ -1,6 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
 from accounts.views import *
+from django.contrib.auth.decorators import user_passes_test
+
+def is_customer(user):
+    return user.is_authenticated and user.is_customer
 
 urlpatterns = [
     path('register/', register_view, name='accounts.register'),
@@ -10,6 +14,6 @@ urlpatterns = [
     path('logout/', logout_view, name='account.logout'), 
     path('choose_booster/', choose_booster, name='choose.booster'),
     path('set_customer_data/', set_customer_data, name='set.customer.data'),
-    path('customer_side/', customer_side, name='accounts.customer_side'),
-    path('edit_profile/', edit_customer_profile, name='edit.customer.profile'),
+    path('customer_side/', user_passes_test(is_customer)(customer_side), name='accounts.customer_side'),
+    path('edit_profile/', user_passes_test(is_customer)(edit_customer_profile), name='edit.customer.profile'),
 ]

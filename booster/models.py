@@ -24,8 +24,6 @@ class Rating(models.Model):
         return f'{self.customer.username} rated {self.booster.username} with {self.rate}'
     
 
-
-
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='user', null=True)
     image = models.ImageField(null=True,upload_to='media/booster/', blank= True)

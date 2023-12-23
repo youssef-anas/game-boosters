@@ -1,0 +1,80 @@
+.custom-input {
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  background: 
+    linear-gradient(to right, var(--main-color), var(--main-color)), 
+    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #FFC107); 
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: var(--main-transition);
+}
+.custom-input[type=checkbox] {
+  display: inline-block;
+  /* margin-top: 1rem !important; */
+  height: 12px;
+  margin-left: 1rem !important;
+}
+.custom-input:focus, .custom-textarea:focus {
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  background: 
+    linear-gradient(to right, var(--main-color), var(--main-color)), 
+    linear-gradient(to right,  #ffc107, #BF65CF, #897AF9, #0F7991); 
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;      
+  box-shadow: none !important;
+  color: white;
+}
+input[type=file]::file-selector-button {
+  border: 0px;
+  border-right: 1px solid #e5e5e5;
+  padding: 13px;
+  margin-right: 20px;
+  transition: .5s;
+}
+.custom-label {
+  color: white !important;
+  font-size: 17px;
+  padding-left: 10px;
+}
+.custom-textarea {
+  background-color: transparent;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  background: 
+    linear-gradient(to right, var(--main-color), var(--main-color)), 
+    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #ffc107); 
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.custom-select {
+  background-color: transparent;
+  height: 50px;
+  border: 2px solid transparent;
+  border-radius: 1.5rem;
+  background: 
+    linear-gradient(to right, var(--main-color), var(--main-color)), 
+    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #FFC107); 
+  background-clip: padding-box, border-box;
+  background-origin: padding-box, border-box;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+.submit-btn {
+  background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774);
+}

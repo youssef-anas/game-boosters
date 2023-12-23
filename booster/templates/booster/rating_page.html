@@ -4,10 +4,11 @@
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/rating_page.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
 {% endblock %}
 {% block container %}
 <div class="container-fluid rating-page py-5">
-  <div class="booster-data">
+  <!-- <div class="booster-data">
 
     <div class="profile-image mx-auto text-center">
       {% if order.order.booster.user.image %}
@@ -26,10 +27,10 @@
       </p>
       {% endif %}
     </div>
-  </div>
+  </div> -->
 
   <div class="rate-part container p-5">
-    <h4>Leave Rating To Your Booster, Be Honest!</h4>
+    <h4>Leave Rating To {{order.order.booster.first_name}} {{order.order.booster.last_name}}, Be Honest!</h4>
     <form id="FormRate" class="px-5 py-3" method="post" action="{% url 'booster.rate' order.order.id %}">
       {% csrf_token %}
   
@@ -61,13 +62,15 @@
   
       <input type="hidden" name="rate" id="rate" value="0">
   
-      <label for="text">Add Details: </label>
+      <!-- <label for="text">Add Details: </label> -->
       <textarea name="text" id="text" class="comment"></textarea>
   
       <label for="anonymous">Anonymous: </label>
       <input type="checkbox" name="anonymous" id="anonymous">
   
-      <button  class="btn btn-warning" id="submitBtn" type="submit">Submit Rating</button>
+      <div class="text-end">
+        <button  class="btn submit-btn fs-5 text-white rounded-5 px-4 py-2" id="submitBtn" type="submit">Submit Rating</button>
+      </div>
     </form>
   </div>
 

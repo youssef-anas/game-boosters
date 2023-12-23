@@ -203,8 +203,8 @@ class CanChooseMe(APIView):
 
         instance = user
 
-        instance.can_choose_me = not instance.can_choose_me
-        instance.save()
+        instance.user.can_choose_me = not instance.user.can_choose_me
+        instance.user.save()
 
         serializer = CanChooseMeSerializer(instance)
         return JsonResponse(serializer.data)

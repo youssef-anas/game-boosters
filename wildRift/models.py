@@ -124,7 +124,7 @@ class WildRiftDivisionOrder(models.Model):
         (5 , '5 Marks'),
         (6 , '6 Marks'),
     ]
-    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None)
+    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='base_order')
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
     reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)

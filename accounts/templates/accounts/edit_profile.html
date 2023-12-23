@@ -4,6 +4,7 @@
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/edit-profile.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
 {% endblock %}
 {% block container %}
 <div class="edit-container p-lg-5 p-0 text-white" style="padding-top: 6rem !important;">
@@ -47,9 +48,9 @@
           <p>{{request.user.email}}</p>
         </div>
 
-        <div class="design-image d-lg-block d-none">
+        <!-- <div class="design-image d-lg-block d-none">
           <img src="{% static 'booster/images/char.png' %}" alt="">
-        </div>
+        </div> -->
       </div>
 
       <div class="col-lg-8 col-12 fields p-5">

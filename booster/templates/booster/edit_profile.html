@@ -5,6 +5,7 @@
 {% block style %}
 <link rel="stylesheet" href="{% static 'booster/css/edit-profile.css' %}">
 <link rel="stylesheet" href="{% static 'booster/css/can-choose-me.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
 {% endblock %}
 {% block container %}
 <div class="edit-container p-lg-5 p-0 text-white" style="padding-top: 6rem !important;">
@@ -26,8 +27,8 @@
 
       <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center p-5">
         <div class="image mx-auto ">
-          {% if request.user.image %}
-          <img src="{{ request.user.image.url }}" class="image"  alt="Profile Photo"/>
+          {% if request.user.user.image %}
+          <img src="{{ request.user.user.image.url }}" class="image"  alt="Profile Photo"/>
           {% else %}
           <img src="{% static 'base/images/no_profile_image.png' %}" class="image" alt="No Profile Photo">
           {% endif %}
@@ -45,7 +46,7 @@
           <form id="edit-profile-form" method="post" action="{% url 'edit.booster.profile' %}">
             {% csrf_token %}
             <span>Customer Can Choose Me</span>
-            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
+            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.user.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
           </form>
         </div>
 

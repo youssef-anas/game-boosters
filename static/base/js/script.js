@@ -10,6 +10,16 @@ for (var i = 0; i < labels.length; i++) {
     labels[i].classList.add('mt-3')
 }
 
+// Add specific styling for labels associated with checkboxes
+checkboxLabels = document.querySelectorAll('label input[type="checkbox"]');
+for (var i = 0; i < checkboxLabels.length; i++) {
+    var checkboxLabel = checkboxLabels[i].parentNode;
+    checkboxLabel.classList.add('checkbox-label');
+}
+
+// Remove unnecessary classes for checkbox labels
+$('.checkbox-label').removeClass('form-label mt-3');
+
 $('.custom-label[for="image-clear_id"]').removeClass('form-label')
 $('.custom-label[for="image-clear_id"]').removeClass('mt-3')
 

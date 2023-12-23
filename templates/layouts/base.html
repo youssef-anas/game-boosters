@@ -23,12 +23,6 @@
       <ul class="main-nav">
         {% if request.user.id %}
 
-        {% if request.user.is_customer %}
-        <li>
-          <a href="{% url 'accounts.customer_side' %}"><strong>Order:</strong>_WR123</a>
-        </li>
-        {% endif %}
-
         {% if request.user.is_booster %}
 
         <li>
@@ -38,11 +32,19 @@
           <a href="{% url 'booster.orders' %}">Your Orders</a>
         </li>
 
-        {% else %}
+        {% elif request.user.is_customer %}
 
         <li>
-          <a  href="{% url 'edit.booster.profile' %}">{{request.user.first_name}} {{request.user.last_name}}</a>
+          <a href="{% url 'edit.customer.profile' %}">{{request.user.first_name}} {{request.user.last_name}}</a>
         </li>
+
+        {% for order in request.user.customer_orders.all %}
+          {% if not order.order_rated %}
+            <li>
+              <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
 
         {% endif %}
 
@@ -61,7 +63,7 @@
 
         {% endif %}
         <li>
-          <a href="#">Other Links</a>
+          <a href="">Other Links</a>
           <!-- Start Megamenu -->
           <div class="mega-menu">
             <div class="image">

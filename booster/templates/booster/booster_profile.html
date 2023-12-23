@@ -52,20 +52,6 @@
                     <p>{{ customer_reviews|default:0 }} / 5</p>
                 </div>
             </div>
-            <!-- <table>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table> -->
             {% if booster.can_choose_me %}
             <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
             {% endif %}
@@ -97,14 +83,14 @@
                         </div>
                         <div class="mt-auto">
                             <div class="rank-img d-flex justify-content-around align-items-center text-center">
-                                <img src="{{rate.order.current_rank.get_image_url}}" />
-                                <h5>{{ rate.order.current_rank }} {{ rate.order.get_current_division_display }}</h5>
+                                <img src="{{rate.order.base_order.current_rank.get_image_url}}" />
+                                <h5>{{ rate.order.base_order.current_rank }} {{ rate.order.base_order.get_current_division_display }}</h5>
     
                                 <div>
                                     <h3 class="text-primary"> >>> </h3>
                                 </div>
-                                <img src="{{rate.order.reached_rank.get_image_url}}" />
-                                <h5>{{rate.order.reached_rank}} {{rate.order.get_reached_division_display}}</h5>
+                                <img src="{{rate.order.base_order.reached_rank.get_image_url}}" />
+                                <h5>{{rate.order.base_order.reached_rank}} {{rate.order.base_order.get_reached_division_display}}</h5>
                             </div>
                         </div>
                     </div>
@@ -112,9 +98,9 @@
                 {% endfor %}
             </div>
             
-            <h1>Order Completed By {{booster.username}}</h1>
+            <h1 class="mt-5">Order Completed By {{booster.username}}</h1>
             {% for order in completed_orders%}
-                <div class="rank-img row m-1 p-1 justify-content-around d-flex">
+                <div class="rank-img row m-1 p-1 row row-cols-2 mt-5">
                     <div class="d-flex align-items-center text-center">
                         <img src="{{order.current_rank.get_image_url}}" />
                         <div>
