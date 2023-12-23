@@ -160,6 +160,9 @@ def booster_orders(request):
             percentege = 100
 
         now_price = round(order.order.actual_price * (percentege / 100) , 2)
+
+        order.order.money_owed = now_price
+        order.order.save()
         
         current_room = Room.get_specific_room(order.order.customer, request.user, order.order.id)
         if current_room is not None:

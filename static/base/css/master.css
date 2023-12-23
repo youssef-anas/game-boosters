@@ -242,15 +242,12 @@ ul {
   top: 0;
   width: 0;
   height: 100%;
-  background-color: #fafafa;
+  background-color: #3d22625e;
   z-index: -1;
   transition: var(--main-transition);
 }
 .nav .mega-menu .links li:hover::before {
   width: 100%;
-}
-.nav .mega-menu .links li:hover a {
-  color: var(--main-color);
 }
 .nav .mega-menu .links li a {
   color: white;
