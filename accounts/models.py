@@ -105,18 +105,18 @@ class BaseOrder(models.Model):
         current_time = timezone.now()
 
         if not self.created_at:
-            self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
+            self.actual_price = self.price * (self.booster_percent1 / 100)
         else:
             time_difference = (current_time - self.created_at).total_seconds() / 60
 
             if time_difference <= 1:
-                self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
+                self.actual_price = self.price * (self.booster_percent1 / 100)
             elif time_difference <= 2:
-                self.actual_price = round(self.price * (self.booster_percent2 / 100) , 2)
+                self.actual_price = self.price * (self.booster_percent2 / 100)
             elif time_difference <= 3:
-                self.actual_price = round(self.price * (self.booster_percent3 / 100) , 2)
+                self.actual_price = self.price * (self.booster_percent3 / 100)
             else:
-                self.actual_price = round(self.price * (self.booster_percent4 / 100) , 2)
+                self.actual_price = self.price * (self.booster_percent4 / 100)
     
     def get_time_difference_before_final_price(self):
         current_time = timezone.now()
@@ -175,9 +175,10 @@ class Room(models.Model):
     
     @classmethod
     def create_room_with_admins(cls,customer,orderId):
+        order_name = BaseOrder.objects.get(id = orderId).name
         room = cls(
-                name=f'{customer}-admins-{orderId}',
-                slug=f'roomFor-{customer}-admins-{orderId}',
+                name=f'{customer}-admins-{order_name}',
+                slug=f'roomFor-{customer}-admins-{order_name}',
                 customer=customer,
                 booster=None,
                 order_id=orderId
@@ -195,7 +196,8 @@ class Room(models.Model):
     
     @classmethod
     def get_specific_admins_room(cls,customer,orderId):
-        return cls.objects.filter(name=f'{customer}-admins-{orderId}').first()
+        order_name = BaseOrder.objects.get(id = orderId).name
+        return cls.objects.filter(name=f'{customer}-admins-{order_name}').first()
     
     def close_the_room(self, slug):
         room = Room.objects.filter(slug=slug).first()
