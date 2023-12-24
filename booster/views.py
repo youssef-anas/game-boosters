@@ -68,7 +68,7 @@ def profile_booster_view(request, booster_id):
     total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
     rate_count = ratings.count()
     customer_reviews = total_ratings / rate_count if rate_count > 0 else 0
-    completed_orders = WildRiftDivisionOrder.objects.filter(order__is_done = True, order__booster=booster)
+    completed_orders = BaseOrder.objects.filter(is_done = True, booster=booster)
     completed_boosts_count = completed_orders.count()
     context = {
         "ratings":ratings,
@@ -95,7 +95,7 @@ def get_rate(request, order_id):
                 if existing_rating:
                     return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
                 serializer.save(order=order_obj)
-                return redirect('wildrift')
+                return redirect('homepage.index')
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)

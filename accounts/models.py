@@ -27,7 +27,8 @@ class BaseUser(AbstractUser):
     is_booster = models.BooleanField(default= False)
     is_customer = models.BooleanField(default= False)
     is_admin = models.BooleanField(default= False)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
