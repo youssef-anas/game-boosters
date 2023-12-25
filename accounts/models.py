@@ -27,7 +27,8 @@ class BaseUser(AbstractUser):
     is_booster = models.BooleanField(default= False)
     is_customer = models.BooleanField(default= False)
     is_admin = models.BooleanField(default= False)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
@@ -215,10 +216,15 @@ class Room(models.Model):
     
 
 class Message(models.Model):
+    MSG_TYPE = [
+        ('normal', 'normal'),
+        ('tip', 'tip'),
+    ]
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     content = models.TextField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
+    msg_type = models.CharField(choices=MSG_TYPE, blank=True, null=True, default='normal')
 
     def __str__(self):
         return "Message is :- "+ self.content
@@ -227,3 +233,14 @@ class Message(models.Model):
     def get_last_msg(cls,room):
         last_message = cls.objects.filter(room=room).order_by('-created_on').first()
         return last_message
+    
+    @classmethod
+    def create_tip_message(cls, user, content, room):
+        new_message = cls.objects.create(
+            user=user,
+            content=content,
+            room=room,
+            created_on=timezone.now(),
+            msg_type='tip'
+        )
+        return new_message

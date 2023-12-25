@@ -6,8 +6,9 @@
 <link rel="stylesheet" href="{% static 'booster/css/booster-profile.css' %}">
 {% endblock %}
 {% block container %}
-    <div class="container-fluid booster-profile py-5">
-        <div class="container content text-center py-5">
+    <div class="container-fluid booster-profile pt-5 pb-0 px-0">
+
+        <div class="container content text-center">
             <!-- Profile picture -->
             <div class="profile-view">
                 {% if booster.user.image %}
@@ -15,19 +16,15 @@
                 {% else %}
                 <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
                 {% endif %}
-                <h1><strong>{{booster.username}}</strong></h1>
-                <div class="container">
-                    <div class="row d-flex align-items-center text-center m-2 pb-3">
-                        <div class="col-6 px-4" >
-                        <div style="align-items: end; display:flex; justify-content:end">
-                            <img style="width: 100px; height: 100px;" src="https://static.wikia.nocookie.net/leagueoflegends/images/5/5f/Season_2019_-_Challenger_1.png/revision/latest/scale-to-width-down/250?cb=20181229234913" alt="rank" class="align-self-end">
-                        </div>
-                        </div>
-                        <div class="col-6 px-2" >
-                            <h3 style="align-items: start; display:flex; justify-content:start">Challenger</h3>
-                        </div> 
-                    </div>
-                </div>
+                <h1>{{booster.first_name}} {{booster.last_name}}@{{booster.username}}</h1>
+
+                {% if booster.user.achived_rank_wr %}
+                <p class="text-capitalize fs-4 fw-bold">
+                    <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ booster.user.achived_rank_wr.rank_image.url }}" style="width: 100px; height: 100px;"  />
+                    {{booster.user.achived_rank_wr}}
+                </p>
+                {% endif %}
+
                 <div class="container text-center d-flex align-items-center justify-content-center pt-1">
                     <p>{{booster.about_you}}</p>
                 </div>
@@ -41,11 +38,16 @@
                 </div>
                 <div class="mb-lg-0 mb-4 ">
                     <p class="fw-bold text-secondary">Last Boost:</p>
-                    <p>less than a minute ago</p>
+                    {% for order in completed_orders %}
+                        {% if forloop.last %}
+                        <p class="text-capitalize ">{{ order.updated_at|format_time_difference }}</p>
+                        {% endif %}
+                    {% endfor %}
+                    
                 </div>
                 <div class="mb-lg-0 mb-4 ">
                     <p class="fw-bold text-secondary">On Boost:</p>
-                    <p>over 2 years</p>
+                    <p class="text-capitalize ">over {{ booster.created_at|format_time_difference }}</p>
                 </div>
                 <div class="mb-lg-0 mb-4 ">
                     <p class="fw-bold text-secondary">Customer Reviews:</p>
@@ -56,19 +58,22 @@
             <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
             {% endif %}
         </div>
-        <div class="reviews">
-            <h1>{{booster.username}} Customer Feedback</h1>
-            <div class="row m-1 p-1 justify-content-around">
+
+        <div class="container-fluid reviews p-0 py-5">
+
+            <h2 class="main-title mt-5">{{booster.first_name}} {{booster.last_name}} Rating</h2>
+            <div class="ratings px-3">
                 {% for rate in ratings %}
-                <div class="container col-lg-5 col-md-5 col-sm-12 p-3">
-                    <div class="container rating-card d-flex flex-column">
-                        <div class="d-flex justify-content-between p-2">
+                <div class="rating-card p-4 {% if forloop.counter == 1 %} mt-0 {% else %} mt-3 {% endif %}">
+                    <div class="info d-flex justify-content-between align-items-center ">
+
+                        <div class="d-flex justify-content-between align-items-center">
                             {% if rate.anonymous %}
-                                <h4></h4>
+                            <h4>Anonymous</h4>
                             {% else %}
-                                <h4>{{ rate.customer.username }}</h4>
+                            <h4>{{ rate.customer.username }}</h4>
                             {% endif %}
-                            <div class="stars-container">
+                            <div class="stars-container mx-4">
                                 {% for i in '12345' %}
                                     {% if forloop.counter <= rate.rate %}
                                         <span class="fa fa-star checked"></span>
@@ -78,46 +83,91 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="text-rate d-flex p-2">
-                            <h5>{{ rate.text }}</h5>
-                        </div>
-                        <div class="mt-auto">
-                            <div class="rank-img d-flex justify-content-around align-items-center text-center">
-                                <img src="{{rate.order.base_order.current_rank.get_image_url}}" />
-                                <h5>{{ rate.order.base_order.current_rank }} {{ rate.order.base_order.get_current_division_display }}</h5>
-    
-                                <div>
-                                    <h3 class="text-primary"> >>> </h3>
-                                </div>
-                                <img src="{{rate.order.base_order.reached_rank.get_image_url}}" />
-                                <h5>{{rate.order.base_order.reached_rank}} {{rate.order.base_order.get_reached_division_display}}</h5>
+
+                        <div class="order d-flex justify-content-between align-items-center">
+                            <div class="from d-flex justify-content-between align-items-center">
+                                <img src="{{rate.order.base_order.current_rank.get_image_url}}" class="me-2" width="30"/>
+                                <h5 class="text-uppercase">{{ rate.order.base_order.current_rank }} {{ rate.order.base_order.get_current_division_display }}</h5>
                             </div>
+
+                            <div>
+                                <p class="mx-3 mb-0 fw-bold " style="color: var(--secondary-color);"> >>> </p>
+                            </div>
+
+                            <div class="to d-flex justify-content-between align-items-center">
+                                <img src="{{rate.order.base_order.reached_rank.get_image_url}}" class="me-2" width="30"/>
+                                <h5 class="text-uppercase">{{rate.order.base_order.reached_rank}} {{rate.order.base_order.get_reached_division_display}}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment">
+                        <h5 class="text-start my-4">{{ rate.text }}</h5>
+                    </div>
+
+                    <div class="customer-rate text-start">
+                        <div class="d-flex justify-content-start align-item-center">
+                            <img src="{% static 'base/images/no_profile_image.jpg' %}" class="image me-2 rounded-circle" alt="No Profile Photo" width="40" height="40">
+                            {% if rate.anonymous %}
+                            <p class="fw-bold fs-5">Anonymous</p>
+                            {% else %}
+                            <p class="fw-bold fs-5">{{ rate.customer.first_name }} {{rate.customer.last_name}}</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             
-            <h1 class="mt-5">Order Completed By {{booster.username}}</h1>
-            {% for order in completed_orders%}
-                <div class="rank-img row m-1 p-1 row row-cols-2 mt-5">
+            <div class="container py-5">
+                <h2 class="main-title mt-5">Order Completed By {{booster.username}}</h2>
+                {% for order in completed_orders %}
+                <div class="rank-img row m-1 p-1 row row-cols-4 my-5">
+                    <!-- From -->
                     <div class="d-flex align-items-center text-center">
-                        <img src="{{order.current_rank.get_image_url}}" />
+                        <img src="{{order.base_order.current_rank.get_image_url}}" />
                         <div>
-                            <p>From</p>
-                            <h5>{{ order.current_rank }} {{ order.get_current_division_display }}</h5>
+                            <p class="text-secondary">From</p>
+                            <h5 class="text-uppercase ">{{ order.base_order.current_rank }} {{ order.base_order.get_current_division_display }}</h5>
                         </div>
                     </div>
+
+                    <!-- To -->
                     <div class="d-flex align-items-center text-center">
-                        <img src="{{order.current_rank.get_image_url}}" />
+                        <img src="{{order.base_order.reached_rank.get_image_url}}" />
                         <div>
-                            <p>To</p>
-                            <h5>{{ order.reached_rank }} {{ order.get_reached_division_display }}</h5>
+                            <p class="text-secondary">To</p>
+                            <h5 class="text-uppercase ">{{ order.base_order.reached_rank }} {{ order.base_order.get_reached_division_display }}</h5>
                         </div>
                     </div>
+
+                    <!-- Date -->
+                    <div class="d-flex align-items-center text-center">
+                        <i class="fa-regular fa-clock fs-1 me-3"></i>
+                        <div>
+                            <p class="text-secondary">Date</p>
+                            <h5>{{ order.updated_at }}</h5>
+                        </div>
+                    </div>
+
+                    <!-- Server -->
+                    <div class="d-flex align-items-center text-center">
+                        
+                        <img src="{% static 'base/images/Servers/' %}{{ order.customer_server|server_name }}.svg" style="width: 50px; height: 50px;" class="me-3" />
+
+
+                        <div>
+                            <p class="text-secondary">Server</p>
+                            <h5 class="text-capitalize ">{{ order.customer_server|server_name }}</h5>
+                        </div>
+                    </div>
+
                 </div>
+                {% if not forloop.last %}
                 <hr/>
-            {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

@@ -30,6 +30,16 @@
     .chatbox, .admins_chatbox {
         font-size: larger;
 
+        .tip-message {
+            text-align: center !important;
+            background-color: var(--main-color);
+            border-radius: 0.5rem;
+            padding: 0.4rem;
+            margin-top: 1rem !important;
+            margin-bottom: 1rem !important;
+            font-weight: 500;
+        }
+
         .userMessage, .otherMessage {
             display: flex;
             margin-top: 1rem !important;

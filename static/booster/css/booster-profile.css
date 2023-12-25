@@ -1,12 +1,11 @@
-.booster-profile{
+.booster-profile {
   background-image: url('./../images/magicpattern.png');
   background-size: cover;
   background-attachment: fixed;
   color: white !important;
 }
-
 .content {
-  background-image: linear-gradient(to right, #37175e75 0%, #582984b8 50%, #4a0774c2) !important;
+  min-height: 100vh !important;
 }
 .content .profile-view img {
   width: 170px; 
@@ -16,7 +15,8 @@
 .content .profile-view {
   padding: 20px;
 }
-.reviews{
+.reviews {
+  background-image: linear-gradient(to right, #37175E 0%, #582984 50%, #4A0774) !important;
   padding: 30px;        
 }
 .reviews p,
@@ -32,12 +32,23 @@
 hr {
   margin: auto;
 }
-
-.rating-card{
+.ratings {
+  max-height: 65vh;
+  width: 60%;
+  max-width: 100%;
+  overflow: auto;
+  margin: auto;
+}
+@media (max-width: 991px) {
+  .ratings {
+    width: 90%;
+  }
+}
+.rating-card {
   padding: 8px;
   border-radius: 4px;
-  background: linear-gradient(90deg, rgba(186, 85, 211, 0.5)  0%, rgba(25, 0, 33, 0.5) 100%);
-  height: 100%;
+  /* background: linear-gradient(90deg, rgba(186, 85, 211, 0.5)  0%, rgba(25, 0, 33, 0.5) 100%); */
+  border: 1px var(--secondary-color) dashed;
   width: 100%;
 }
 .stars-container {
@@ -45,13 +56,15 @@ hr {
 }
 .checked {
   color: orange;
-  font-size: 32px;
+  font-size: 15px;
+  margin: 0 0.2rem;
 }
 .not-checked {
-  color:darkslategray;
-  font-size: 32px;
+  color:#ccc;
+  font-size: 15px;
+  margin: 0 0.2rem;
 }
-.rank-img img{
+.rank-img img {
   height: 60px;
   width: 60px;
 }
