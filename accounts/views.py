@@ -166,6 +166,18 @@ def set_customer_data(request):
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
+def tip_booster(request):
+    if request.method == 'POST':
+        tip = request.POST.get('tip')
+        order_id = request.POST.get('order_id')
+        booster = request.POST.get('booster')
+        if tip and order_id and booster:
+            room = Room.get_specific_room(request.user, booster, order_id)
+            msg = f'{request.user.first_name} tips {booster} with {tip}$'
+            Message.create_tip_message(request.user,msg,room)
+            return redirect(reverse_lazy('accounts.customer_side'))
+        return JsonResponse({'success': False})
+
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     order = BaseOrder.objects.filter(customer=customer).last()

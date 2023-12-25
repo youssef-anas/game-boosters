@@ -133,10 +133,14 @@ function chat(booster_room_name, roomName, orderId){
 
     // Add class based on user authentication
     if (data.username === user) {
-      div.classList.add("chat-message", "userMessage");
-    } else {
-      div.classList.add("chat-message", "otherMessage");
-    }
+          div.classList.add("chat-message", "userMessage");
+      } else {
+        if (data.message.msg_type == 'tip') {
+          div.classList.add("tip-message");
+        } else {
+            div.classList.add("chat-message", "otherMessage");
+        }
+      }
 
     $(`#my_input_${orderId}`).val("");
     console.log('hhhh', `#chatbox-${orderId}`)

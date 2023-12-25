@@ -29,11 +29,11 @@
 .chat-booster, .chat-admin, .choose-booster {
   background-color: #3d22625e;
 }
-.submit-btn {
+.submit-btn, .tip-booster-btn {
   background-color: var(--secondary-color);
   color: white;
 }
-.submit-btn:hover {
+.submit-btn:hover, .tip-booster-btn:hover {
   background-color: var(--secondary-color);
   color: white;
   transform: scale(0.9);
