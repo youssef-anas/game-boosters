@@ -4,7 +4,6 @@ from django_countries.fields import CountryField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from booster.models import *
 # from wildRift.models import WildRiftRank
 
 class UserManager(UserManager):
@@ -140,27 +139,30 @@ class BaseOrder(models.Model):
         self.update_booster_wallet()
 
     def update_booster_wallet(self):
-        if self.is_done and self.booster and self.money_owed > 0:
+        if (self.is_done or self.is_drop) and self.booster and self.money_owed > 0:
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.money_owed
             booster_wallet.save()
 
+            from booster.models import Transaction
+            booster_instance = self.booster.user 
             if self.is_drop :
                 Transaction.objects.create (
-                    user=self.booster,
+                    user=booster_instance,
                     amount=self.money_owed,
                     order=self,
                     status=0,  
                     type='DEPOSIT'
                 )
-            Transaction.objects.create (
-                user=self.booster,
-                amount=self.money_owed,
-                order=self,
-                status=1,  
-                type='DEPOSIT'
-            )
-                
+            else :
+                Transaction.objects.create (
+                    user=booster_instance,
+                    amount=self.money_owed,
+                    order=self,
+                    status=1,  
+                    type='DEPOSIT'
+                )
+      
  
 
     def __str__(self):

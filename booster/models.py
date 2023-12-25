@@ -58,11 +58,11 @@ class Transaction(models.Model):
     ]
     user = models.ForeignKey(Booster, on_delete=models.CASCADE)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    order = models.ForeignKey(BaseOrder, on_delete=models.CASCADE, related_name='from_order')
+    order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
     notice = models.TextField(default='There is no any notice')
     status = models.IntegerField(choices=STATUS, default=1)
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
 
     def __str__(self):
-        return f'{self.user.username} {self.type} {self.amount}$'
+        return f'{self.user.booster.username} {self.type} {self.amount}$'
