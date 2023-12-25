@@ -18,6 +18,8 @@ class RankSerializer(serializers.Serializer):
 
     choose_booster = serializers.IntegerField()
 
+    extend_order = serializers.IntegerField()
+
 
 class PlacementSerializer(serializers.Serializer):
     Previous_Season_Rank = serializers.IntegerField()

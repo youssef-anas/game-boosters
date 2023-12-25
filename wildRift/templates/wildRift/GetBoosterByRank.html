@@ -6,6 +6,7 @@
 <link href="{% static 'wildRift/css/placement.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
+<div id="order-container" data-order="{{ order.get_rank_value }}"></div>
 <div class='body py-5'>
 <div class="container-fluid wild-rift">
     <div class="container">
@@ -219,7 +220,7 @@
                         <input type="hidden" name="streaming" id="streaming" value=false>
                         <input type="hidden" name="price" value="120">
                         <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
-                    
+                        <input type="hidden" id="extendOrder" name="extend_order" value= 0 readonly>                    
                         <div class="purchase col-10 mt-4">
                             <button id="submitBtn" type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
                         </div>

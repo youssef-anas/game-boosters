@@ -138,7 +138,7 @@ def choose_booster(request):
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
-            booster = get_object_or_404(Booster, pk=chosen_booster_id)
+            booster = get_object_or_404(BaseUser, id=chosen_booster_id)
             order.booster = booster
             order.save()
             create_chat_with_booster(request.user,booster,order_id)
@@ -165,6 +165,18 @@ def set_customer_data(request):
                 return redirect(reverse_lazy('accounts.customer_side'))
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
+
+def tip_booster(request):
+    if request.method == 'POST':
+        tip = request.POST.get('tip')
+        order_id = request.POST.get('order_id')
+        booster = request.POST.get('booster')
+        if tip and order_id and booster:
+            room = Room.get_specific_room(request.user, booster, order_id)
+            msg = f'{request.user.first_name} tips {booster} with {tip}$'
+            Message.create_tip_message(request.user,msg,room)
+            return redirect(reverse_lazy('accounts.customer_side'))
+        return JsonResponse({'success': False})
 
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)

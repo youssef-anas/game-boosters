@@ -65,11 +65,87 @@ input[type="radio"]:checked+label {
   transform: translateX(-50%);
   transition: width ease-in 0.4s, left ease-in 0.4s;
 }
+.chat-customer-container{
+  height: 450px;
+  overflow: auto;
+}
+.messages-section {
+  background-color: transparent;
+
+  .chatbox {
+      font-size: larger;
+
+      .tip-message {
+        text-align: center !important;
+        background-color: var(--main-color);
+        border-radius: 0.5rem;
+        padding: 0.4rem;
+        margin-top: 1rem !important;
+        margin-bottom: 1rem !important;
+        font-weight: 500;
+      }
+      .userMessage, .otherMessage {
+          display: flex;
+          margin-top: 1rem !important;
+          margin-bottom: 1rem !important;
+      }
+      .userMessage {
+          direction: rtl;
+      }
+      .message {
+          max-width: 500px;
+          position: relative;
+      }
+      .message::before {
+          content: "";
+          position: absolute;
+          top: 0px;
+          border-width: 0px 17px 25px;
+          border-style: solid; 
+      }
+      .userMessage .message {
+          background-color: var(--secondary-color);
+      }
+      .userMessage .message::before {
+          right: -26px;
+          border-color: transparent transparent transparent var(--secondary-color);
+      }
+      .otherMessage {
+          direction: ltr;
+      }
+      .otherMessage .message {
+          background-color: #202c33;
+          border-top-left-radius: 0 !important;
+      }
+      .otherMessage .message::before {
+          left: -26px;
+          border-color: transparent #202c33 transparent transparent;
+      }
+      .otherMessage .image {
+          margin-right: 1rem;
+      }
+      .otherMessage .image img {
+          border-radius: 50%;
+      }
+      .otherMessage .message .username {
+          color: var(--secondary-color);
+      }
+  }
+
+  .sendButton{
+      background-color: var(--main-color);
+      width: 10%;
+      padding: 0.5rem 1rem;
+      color: white;
+      font-weight: 500;
+  }
+}
+
 .submit-btn, .switch-btn, .orders-list-btn {
   background-color: var(--secondary-color);
   color: white;
 }
-.submit-btn:hover, .switch-btn:hover, .orders-list-btn:hover {
+.submit-btn:hover, .switch-btn:hover, .orders-list-btn:hover, .tip-booster-btn:hover {
   background-color: var(--secondary-color);
   color: white;
   transform: scale(0.9);
