@@ -86,8 +86,8 @@
 
                         <div class="order d-flex justify-content-between align-items-center">
                             <div class="from d-flex justify-content-between align-items-center">
-                                <img src="{{rate.order.base_order.current_rank.get_image_url}}" class="me-2" width="30"/>
-                                <h5 class="text-uppercase">{{ rate.order.base_order.current_rank }} {{ rate.order.base_order.get_current_division_display }}</h5>
+                                <img src="{{rate.order.wildrift_order.current_rank.get_image_url}}" class="me-2" width="30"/>
+                                <h5 class="text-uppercase">{{ rate.order.wildrift_order.current_rank }} {{ rate.order.wildrift_order.get_current_division_display }}</h5>
                             </div>
 
                             <div>
@@ -95,8 +95,8 @@
                             </div>
 
                             <div class="to d-flex justify-content-between align-items-center">
-                                <img src="{{rate.order.base_order.reached_rank.get_image_url}}" class="me-2" width="30"/>
-                                <h5 class="text-uppercase">{{rate.order.base_order.reached_rank}} {{rate.order.base_order.get_reached_division_display}}</h5>
+                                <img src="{{rate.order.wildrift_order.reached_rank.get_image_url}}" class="me-2" width="30"/>
+                                <h5 class="text-uppercase">{{rate.order.wildrift_order.reached_rank}} {{rate.order.wildrift_order.get_reached_division_display}}</h5>
                             </div>
                         </div>
                     </div>
@@ -125,19 +125,19 @@
                 <div class="rank-img row m-1 p-1 row row-cols-4 my-5">
                     <!-- From -->
                     <div class="d-flex align-items-center text-center">
-                        <img src="{{order.base_order.current_rank.get_image_url}}" />
+                        <img src="{{order.wildrift_order.current_rank.get_image_url}}" />
                         <div>
                             <p class="text-secondary">From</p>
-                            <h5 class="text-uppercase ">{{ order.base_order.current_rank }} {{ order.base_order.get_current_division_display }}</h5>
+                            <h5 class="text-uppercase ">{{ order.wildrift_order.current_rank }} {{ order.wildrift_order.get_current_division_display }}</h5>
                         </div>
                     </div>
 
                     <!-- To -->
                     <div class="d-flex align-items-center text-center">
-                        <img src="{{order.base_order.reached_rank.get_image_url}}" />
+                        <img src="{{order.wildrift_order.reached_rank.get_image_url}}" />
                         <div>
                             <p class="text-secondary">To</p>
-                            <h5 class="text-uppercase ">{{ order.base_order.reached_rank }} {{ order.base_order.get_reached_division_display }}</h5>
+                            <h5 class="text-uppercase ">{{ order.wildrift_order.reached_rank }} {{ order.wildrift_order.get_reached_division_display }}</h5>
                         </div>
                     </div>
 

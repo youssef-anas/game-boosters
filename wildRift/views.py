@@ -196,10 +196,10 @@ def view_that_asks_for_money(request):
                 messages.error(request, "You are a booster!, You can't make order.")
                 return redirect(reverse_lazy('wildrift'))
         
-            user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
-            if user_has_uncompleted_order:
-                messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
-                return redirect(reverse_lazy('wildrift'))
+            # user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
+            # if user_has_uncompleted_order:
+            #     messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
+            #     return redirect(reverse_lazy('wildrift'))
         
         print('request POST:  ', request.POST)
         try:
@@ -309,7 +309,7 @@ def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
@@ -347,7 +347,7 @@ def confirm_details(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = None
             order.data_correct = True
             order.save()
@@ -358,7 +358,7 @@ def ask_customer(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = 'Pleace Specify Your Details'
             order.data_correct = False
             order.save()

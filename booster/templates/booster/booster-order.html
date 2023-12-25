@@ -27,7 +27,7 @@
         <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center">
   
           <div class="user-info shadow p-4">
-            <img src="{{ order.order.order.customer.image.url }}" class="profile-image col-4" alt="profile" />
+            <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="profile" />
             <h4 class="my-3">{{order.order.order.customer.first_name}} {{order.order.order.customer.last_name}}</h4>
             <hr>
   
@@ -46,6 +46,13 @@
               <p class="text-secondary">In-Game</p>
               <p>{{order.order.order.customer_gamename}}</p>
             </div>
+
+            {% if order.order.order.duo_boosting  %}
+            <div class="d-flex justify-content-between align-item-center">
+              <p class="text-secondary">Password</p>
+              <p>{{order.order.order.customer_password}}</p>
+            </div>
+            {% endif %}
 
             <form action="{% url 'confirm.details' %}" method="POST">
               {% csrf_token %}

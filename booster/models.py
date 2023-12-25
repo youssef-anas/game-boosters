@@ -1,13 +1,14 @@
 from django.db import models
 from accounts.models import BaseUser, BaseOrder
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 
 class Rating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
     booster = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_received')
     rate = models.IntegerField(default=0)
-    text = models.TextField(null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    text = models.TextField(null=True, max_length=500)
     game = models.IntegerField(default=1)
     anonymous = models.BooleanField(default=False)
     order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, related_name='order_rated')
@@ -46,7 +47,22 @@ class Booster(models.Model):
         super().save(*args, **kwargs)
 
 
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('DEPOSIT', 'Deposit'),
+        ('WITHDRAWAL', 'Withdrawal'),
+    ]
+    STATUS = [
+        (0, "Drop"),
+        (1, "Done")
+    ]
+    user = models.ForeignKey(Booster, on_delete=models.CASCADE)
+    amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    order = models.ForeignKey(BaseOrder, on_delete=models.CASCADE, related_name='from_order')
+    notice = models.TextField(default='There is no any notice')
+    status = models.IntegerField(choices=STATUS, default=1)
+    date = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
 
-
-
-    
+    def __str__(self):
+        return f'{self.user.username} {self.type} {self.amount}$'
