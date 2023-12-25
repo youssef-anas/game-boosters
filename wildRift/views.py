@@ -27,7 +27,7 @@ User = get_user_model()
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
-def get_order_result_by_rank(data):
+def get_order_result_by_rank(data,extend_order_id):
     print('Data: ', data)
     current_rank = data['current_rank']
     current_division = data['current_division']
@@ -83,16 +83,21 @@ def get_order_result_by_rank(data):
     total_sum = sum(sublist)
     price = total_sum - marks_price
     price += (price * total_percent)
-
-
+    if extend_order_id > 0:
+        try:
+            # get extend order 
+            extend_order = BaseOrder.objects.get(id=extend_order_id)
+            extend_order_price = extend_order.price
+            price = price - extend_order_price
+        except: ####
+            pass
     booster_id = data['choose_booster']
     if booster_id > 0 :
-        booster = get_object_or_404(User,id=booster_id,is_booster=True)
-        booster_id = booster.id
+       get_object_or_404(User,id=booster_id,is_booster=True)
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{timezone.now()}'
+    invoice = f'wr-1-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
@@ -102,6 +107,11 @@ def get_order_result_by_rank(data):
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
+    extend_order = request.GET.get('extend')
+    try:
+        order = WildRiftDivisionOrder.objects.get(order_id=extend_order)
+    except:
+        order = None
     ranks = WildRiftRank.objects.all().order_by('id')
     divisions  = WildRiftTier.objects.all().order_by('id')
     marks = WildRiftMark.objects.all().order_by('id')
@@ -128,7 +138,8 @@ def wildRiftGetBoosterByRank(request):
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
-        "placements": placements
+        "placements": placements,
+        "order":order,
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
@@ -196,18 +207,19 @@ def view_that_asks_for_money(request):
                 messages.error(request, "You are a booster!, You can't make order.")
                 return redirect(reverse_lazy('wildrift'))
         
-            user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
-            if user_has_uncompleted_order:
-                messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
-                return redirect(reverse_lazy('wildrift'))
+            # user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
+            # if user_has_uncompleted_order:
+            #     messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
+            #     return redirect(reverse_lazy('wildrift'))
         
         print('request POST:  ', request.POST)
         try:
-            serializer = RankSerializer(data=request.POST)
+            serializer = RankSerializer(data=request.POST) 
             print('request POST', request.POST)
             if serializer.is_valid():
-
-                order_info = get_order_result_by_rank(serializer.validated_data)
+                extend_order_id = serializer.validated_data['extend_order']
+                print(extend_order_id)
+                order_info = get_order_result_by_rank(serializer.validated_data,extend_order_id)
                 request.session['invoice'] = order_info['invoice']
 
                 paypal_dict = {

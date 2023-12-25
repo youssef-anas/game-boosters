@@ -138,7 +138,7 @@ def choose_booster(request):
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
-            booster = get_object_or_404(Booster, pk=chosen_booster_id)
+            booster = get_object_or_404(BaseUser, id=chosen_booster_id)
             order.booster = booster
             order.save()
             create_chat_with_booster(request.user,booster,order_id)

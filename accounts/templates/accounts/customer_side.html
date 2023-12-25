@@ -27,6 +27,7 @@
           {% else %}
           <center class="fw-bold"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
           {% endif %}
+          <a class="btn btn-success m-3" href="{% url 'wildrift' %}?extend={{order.order.id}}">Extend Order</a>
         </div>
         <hr>
 

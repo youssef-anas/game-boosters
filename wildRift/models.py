@@ -173,6 +173,9 @@ class WildRiftDivisionOrder(models.Model):
     def __str__(self):
         return f"Boosting From {self.current_rank} {self.current_division} Marks {self.current_marks} To {self.desired_rank} {self.desired_division}"
     
+    def get_rank_value(self, *args, **kwargs):
+        return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+    
 class WildRiftPlacementOrder(models.Model):
     last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
     number_of_match = models.IntegerField(default=5)

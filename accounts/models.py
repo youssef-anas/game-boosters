@@ -74,7 +74,7 @@ class BaseOrder(models.Model):
         (4, 'Africa'),
         (5, 'Australia')
     ]
-    name = models.CharField(max_length=300)
+    name = models.CharField(max_length=300, null = True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
@@ -92,6 +92,7 @@ class BaseOrder(models.Model):
     finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
     is_done = models.BooleanField(default=False, blank=True)
     is_drop = models.BooleanField(default=False, blank=True)
+    is_extended = models.BooleanField(default=False, blank=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
     customer_server = models.IntegerField(choices=SERVER_CHOICES, blank=True, null=True)
