@@ -117,7 +117,7 @@ def login_view(request):
         if user is not None:
             login(request, user)
             context = {'error_message': ''}
-            return redirect(reverse_lazy('accounts.profile'))
+            return redirect(reverse_lazy('homepage.index'))
         else:
             # Authentication failed, handle it as needed
             context = {'error_message': 'Invalid Credentials'}

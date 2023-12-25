@@ -39,13 +39,17 @@
         </li>
 
         {% for order in request.user.customer_orders.all %}
-          {% if not order.order_rated %}
+          {% if not order.is_done %}
+            <li>
+              <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
+            </li>
+          {% endif %}
+          {% if forloop.last and order.is_done and not order.order_rated %}
             <li>
               <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
             </li>
           {% endif %}
         {% endfor %}
-
         {% endif %}
 
         <li>
