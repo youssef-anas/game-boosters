@@ -22,6 +22,9 @@
       {{order.slug|json_script:"room_slug"}}
       {{order.room.name|json_script:'booster_room_name'}}
       {{request.user.username|json_script:"user"}}
+      {{order.order.order.customer.first_name|json_script:"customer_first_name"}}
+      {{order.order.order.customer.last_name|json_script:"customer_last_name"}}
+
       <div class="row justify-content-between my-5 order order-{{order.order.order.id}}" data-order="order-{{order.order.order.id}}" data-slug="{{order.slug}}" data-room="{{order.room.name}}">
         
         <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center">
@@ -300,5 +303,8 @@
 </div>
 {% endblock %}
 {% block script %}
+<script>
+  var staticUrl = "{% static 'base/images/no_profile_image.png' %}";
+</script>
 <script src="{% static 'booster/js/booster-order.js' %}"></script>
 {% endblock %}

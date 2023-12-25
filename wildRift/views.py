@@ -143,14 +143,6 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-
-# Chat with user
-def create_chat_with_customer(customer,booster,orderId):
-    isRoomExist = Room.get_specific_room(customer,booster,orderId)
-    if not isRoomExist:
-        return Room.create_room_with_booster(customer,booster,orderId)
-    else:
-        return isRoomExist
     
 def wildRiftOrders(request):
     divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
@@ -190,7 +182,6 @@ def wildRiftOrderChat(request, order_type, id):
     try:
         base_order.booster = request.user
         base_order.save()
-        create_chat_with_customer(base_order.customer,request.user, base_order.id)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest(f"Error updating order{e}")

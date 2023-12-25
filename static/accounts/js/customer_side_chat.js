@@ -153,12 +153,51 @@ chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
     $('.noMessageBooster').html('')
     var div = document.createElement("div");
-    div.innerHTML = `
-    <div class="message p-3 rounded-3 ">
-        <p class="content mb-1">${data.message}</p>
-        <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
-    </div>
-    `
+    
+    if(data.username === user){
+        div.innerHTML = `
+        <div class="message p-3 rounded-3 ">
+            <p class="content mb-1">${data.message}</p>
+            <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+        </div>
+        `
+    }
+    else{
+        const booster_first_name = JSON.parse(document.getElementById('booster_first_name').textContent);
+        const booster_last_name = JSON.parse(document.getElementById('booster_last_name').textContent);
+        const booster_image = JSON.parse(document.getElementById('booster_image').textContent);
+
+        if (booster_image){
+            console.log('booster image')
+            div.innerHTML = `
+            <div class="image">
+                <img src="${booster_image}" alt="" width="40" height="40">
+            </div>
+            <div class="message p-3 rounded-3 ">
+                <p class="username mb-1">
+                ${booster_first_name} ${booster_last_name}
+                </p>
+                <p class="content mb-1">${data.message}</p>
+                <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+            </div>
+            `
+        }
+        else{
+            console.log('no booster image')
+            div.innerHTML = `
+            <div class="image">
+                <img src="${staticUrl}" alt="" width="40" height="40">
+            </div>
+            <div class="message p-3 rounded-3 ">
+                <p class="username mb-1">
+                ${booster_first_name} ${booster_last_name}
+                </p>
+                <p class="content mb-1">${data.message}</p>
+                <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+            </div>
+            `
+        }
+    }
 
     // Add class based on user authentication
     if (data.username === user) {

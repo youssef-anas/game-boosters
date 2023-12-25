@@ -184,9 +184,10 @@ class Room(models.Model):
     
     @classmethod
     def create_room_with_booster(cls,customer,booster,orderId):
+        order_name = BaseOrder.objects.get(id = orderId).name
         room = cls(
-                name=f'{customer}-{booster}-{orderId}',
-                slug=f'roomFor-{customer}-{booster}-{orderId}',
+                name=f'{customer}-{order_name}',
+                slug=f'roomFor-{customer}-{order_name}',
                 customer=customer,
                 booster=booster,
                 order_id=orderId
@@ -212,8 +213,9 @@ class Room(models.Model):
         return cls.objects.all().order_by('-created_on')
     
     @classmethod
-    def get_specific_room(cls,customer,booster,orderId):
-        return cls.objects.filter(name=f'{customer}-{booster}-{orderId}').first()
+    def get_specific_room(cls,customer,orderId):
+        order_name = BaseOrder.objects.get(id = orderId).name
+        return cls.objects.filter(name=f'{customer}-{order_name}').first()
     
     @classmethod
     def get_specific_admins_room(cls,customer,orderId):
