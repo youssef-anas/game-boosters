@@ -3,7 +3,7 @@ from .forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, Pass
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from booster.models import Rating, Transaction
+from booster.models import Rating
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -21,7 +21,7 @@ from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
-from accounts.models import BaseOrder, Room, Message
+from accounts.models import BaseOrder, Room, Message, Transaction
 
 
 def register_booster_view(request):
@@ -203,5 +203,5 @@ class CanChooseMe(APIView):
     
 @login_required
 def booster_history(request):
-    history = Transaction.objects.filter(user=request.user.user)
+    history = Transaction.objects.filter(user=request.user)
     return render(request, 'booster/booster_histoty.html', context={'history' : history})
