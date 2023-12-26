@@ -109,6 +109,9 @@ class BaseOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def update_actual_price(self):
+        if self.status == 'Drop':
+            return
+        
         current_time = timezone.now()
 
         if not self.created_at:
@@ -126,6 +129,8 @@ class BaseOrder(models.Model):
                 self.actual_price = round(self.price * (self.booster_percent4 / 100), 2)
     
     def get_time_difference_before_final_price(self):
+        if self.status == 'Drop':
+            return
         current_time = timezone.now()
         time_difference = (current_time - self.created_at).total_seconds()
         
@@ -174,10 +179,17 @@ class BaseOrder(models.Model):
                 )
 
     def customer_wallet(self):
+        print("Inside customer_wallet function")
+        
+        if self.status == 'Drop':
+            print("Order status is 'Drop', exiting customer_wallet function")
+            return
+        
         if self.customer and self.price > 0:
             customer_wallet = self.customer.wallet
             customer_wallet.money += self.price
             customer_wallet.save()
+            print(f"Customer wallet updated. New balance: {customer_wallet.money}")
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
