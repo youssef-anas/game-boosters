@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import BaseUser, BaseOrder, Room, Message, Wallet, Transaction
+from accounts.models import BaseUser, BaseOrder, Room, Message, Wallet, Transaction, BoosterPercent
 
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
@@ -24,3 +24,4 @@ admin.site.register(Room)
 admin.site.register(Message)
 admin.site.register(Wallet)
 admin.site.register(Transaction)
+admin.site.register(BoosterPercent)
