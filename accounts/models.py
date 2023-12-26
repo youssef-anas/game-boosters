@@ -110,6 +110,7 @@ class BaseOrder(models.Model):
 
     def update_actual_price(self):
         current_time = timezone.now()
+<<<<<<< HEAD
 
         if not self.created_at:
             self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
@@ -127,16 +128,22 @@ class BaseOrder(models.Model):
     
     def get_time_difference_before_final_price(self):
         current_time = timezone.now()
+=======
+>>>>>>> 08d20be3a847da3904c9598cfb557761ce616d3a
         time_difference = (current_time - self.created_at).total_seconds()
         
         if time_difference <= 60:
+            self.actual_price = self.price * (self.booster_percent1 / 100)
             return int(60-time_difference)
-        elif time_difference <= 120:
-            return int(120-time_difference)
-        elif time_difference <= 180:
-            return int(180-time_difference)
-        elif time_difference <= 240:
-            return int(240-time_difference)
+        elif time_difference <= 180 :
+            self.actual_price = self.price * (self.booster_percent2 / 100)
+            return int(180 -time_difference)
+        elif time_difference <= 900 :
+            self.actual_price = self.price * (self.booster_percent3 / 100)
+            return int(900 -time_difference)
+        elif time_difference <= 1800 :
+            self.actual_price = self.price * (self.booster_percent4 / 100)
+            return int(1800 -time_difference)
         else:
             return 'Time is up'
         
