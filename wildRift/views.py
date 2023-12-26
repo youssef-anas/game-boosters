@@ -312,7 +312,7 @@ def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
@@ -350,7 +350,7 @@ def confirm_details(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = None
             order.data_correct = True
             order.save()
@@ -361,7 +361,7 @@ def ask_customer(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = 'Pleace Specify Your Details'
             order.data_correct = False
             order.save()

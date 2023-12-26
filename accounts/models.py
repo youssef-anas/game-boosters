@@ -30,8 +30,6 @@ class BaseUser(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
-
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
@@ -60,11 +58,11 @@ def create_wallet(sender, instance, created, **kwargs):
     
 class Wallet(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE,related_name='wallet')
-    available_balance = models.FloatField(default=0, null=True, blank=True)
-
+    money = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user.username} Has {self.available_balance}$'
+        return f'{self.user.username} Has {self.money}$'
+
     
 # Base Order
 class BaseOrder(models.Model):
@@ -141,10 +139,31 @@ class BaseOrder(models.Model):
         self.update_booster_wallet()
 
     def update_booster_wallet(self):
-        if self.is_done and self.booster and self.actual_price > 0:
+        if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed > 0:
             booster_wallet = self.booster.wallet
-            booster_wallet.available_balance += self.actual_price
+            booster_wallet.money += self.money_owed
             booster_wallet.save()
+
+            from booster.models import Transaction
+            booster_instance = self.booster.user 
+            if self.is_drop :
+                Transaction.objects.create (
+                    user=booster_instance,
+                    amount=self.money_owed,
+                    order=self,
+                    status=0,  
+                    type='DEPOSIT'
+                )
+            else :
+                Transaction.objects.create (
+                    user=booster_instance,
+                    amount=self.money_owed,
+                    order=self,
+                    status=1,  
+                    type='DEPOSIT'
+                )
+      
+ 
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'

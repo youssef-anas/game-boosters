@@ -3,7 +3,7 @@ from .forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, Pass
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from booster.models import Rating
+from booster.models import Rating, Transaction
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -200,3 +200,8 @@ class CanChooseMe(APIView):
 
         serializer = CanChooseMeSerializer(instance)
         return JsonResponse(serializer.data)
+    
+@login_required
+def booster_history(request):
+    history = Transaction.objects.filter(user=request.user.user)
+    return render(request, 'booster/booster_histoty.html', context={'history' : history})

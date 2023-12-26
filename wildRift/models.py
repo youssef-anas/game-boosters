@@ -4,7 +4,7 @@ from django.conf import settings
 from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from accounts.models import BaseOrder
+from accounts.models import BaseOrder, Wallet
 
 User = settings.AUTH_USER_MODEL
 # # Create your models here.
@@ -100,6 +100,7 @@ class WildRiftPlacement(models.Model):
     name = models.CharField(max_length=25)
     image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
     price = models.FloatField()
+    
 
 
     def __str__(self):
@@ -124,7 +125,7 @@ class WildRiftDivisionOrder(models.Model):
         (5 , '5 Marks'),
         (6 , '6 Marks'),
     ]
-    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='base_order')
+    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wildrift_order')
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
     reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
@@ -153,6 +154,7 @@ class WildRiftDivisionOrder(models.Model):
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
 
+
         self.current_rank = WildRiftRank.objects.get(pk=current_rank_id)
         self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
         self.reached_rank = self.current_rank
@@ -167,6 +169,10 @@ class WildRiftDivisionOrder(models.Model):
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
         self.order.update_actual_price()
+        if self.order.customer and self.order.price > 0:
+            customer_wallet = self.order.customer.wallet
+            customer_wallet.money += self.order.price
+            customer_wallet.save()
         self.order.save()
         super().save(*args, **kwargs)
 
