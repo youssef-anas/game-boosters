@@ -169,10 +169,6 @@ class WildRiftDivisionOrder(models.Model):
     def save_with_processing(self, *args, **kwargs):
         self.process_name()
         self.order.update_actual_price()
-        if self.order.customer and self.order.price > 0:
-            customer_wallet = self.order.customer.wallet
-            customer_wallet.money += self.order.price
-            customer_wallet.save()
         self.order.save()
         super().save(*args, **kwargs)
 

@@ -4,6 +4,8 @@ from django_countries.fields import CountryField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator
 # from wildRift.models import WildRiftRank
 
 class UserManager(UserManager):
@@ -62,7 +64,6 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Has {self.money}$'
-
     
 # Base Order
 class BaseOrder(models.Model):
@@ -73,6 +74,11 @@ class BaseOrder(models.Model):
         (4, 'Africa'),
         (5, 'Australia')
     ]
+    STATUS_CHOICES = [
+        ('None', 'None'),
+        ('Drop', 'Drop'),
+        ('Extend', 'Extend')
+    ]
     name = models.CharField(max_length=300, null = True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
@@ -82,6 +88,7 @@ class BaseOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='None', null=True, blank=True)
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
     booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False, blank=True)
@@ -105,18 +112,18 @@ class BaseOrder(models.Model):
         current_time = timezone.now()
 
         if not self.created_at:
-            self.actual_price = self.price * (self.booster_percent1 / 100)
+            self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
         else:
             time_difference = (current_time - self.created_at).total_seconds() / 60
 
             if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent1 / 100)
+                self.actual_price = round(self.price * (self.booster_percent1 / 100), 2)
             elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
+                self.actual_price = round(self.price * (self.booster_percent2 / 100), 2)
             elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
+                self.actual_price = round(self.price * (self.booster_percent3 / 100), 2)
             else:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
+                self.actual_price = round(self.price * (self.booster_percent4 / 100), 2)
     
     def get_time_difference_before_final_price(self):
         current_time = timezone.now()
@@ -143,30 +150,52 @@ class BaseOrder(models.Model):
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.money_owed
             booster_wallet.save()
-
-            from booster.models import Transaction
-            booster_instance = self.booster.user 
+ 
             if self.is_drop :
                 Transaction.objects.create (
-                    user=booster_instance,
+                    user=self.booster,
                     amount=self.money_owed,
                     order=self,
                     status=0,  
                     type='DEPOSIT'
                 )
+
             else :
                 Transaction.objects.create (
-                    user=booster_instance,
+                    user=self.booster,
                     amount=self.money_owed,
                     order=self,
                     status=1,  
                     type='DEPOSIT'
                 )
-      
- 
+
+    def customer_wallet(self):
+        if self.customer and self.price > 0:
+            customer_wallet = self.customer.wallet
+            customer_wallet.money += self.price
+            customer_wallet.save()
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
+    
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('DEPOSIT', 'Deposit'),
+        ('WITHDRAWAL', 'Withdrawal'),
+    ]
+    STATUS = [
+        (0, "Drop"),
+        (1, "Done")
+    ]
+    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
+    notice = models.TextField(default='There is no any notice')
+    status = models.IntegerField(choices=STATUS, default=1)
+    date = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+
     
 
 # ####################### Chat #######################

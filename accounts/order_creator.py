@@ -3,7 +3,8 @@ from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
 
-def create_order(invoice, payer_id, customer):
+def create_order(invoice, payer_id, customer, args):
+    print('arges', {drop})
     # Split the invoice string by the hyphen ("-") delimiter
     invoice_values = invoice.split('-')
 
@@ -24,9 +25,6 @@ def create_order(invoice, payer_id, customer):
     except:
         order_name = None
     
-    
-    
-    
 
     if game_id == 1:
         Game = WildRiftDivisionOrder
@@ -36,6 +34,7 @@ def create_order(invoice, payer_id, customer):
         pass
 
     baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,name=order_name)
+    baseOrder.customer_wallet()
     order = Game.objects.create(order=baseOrder)
     order.save_with_processing()
     print(f'Order: {order}')
