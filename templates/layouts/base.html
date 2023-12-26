@@ -25,17 +25,17 @@
 
         {% if request.user.is_booster %}
 
-        <li>
-          <a class="text-white"  href="{% url 'edit.booster.profile' %}"> {{request.user.first_name}} {{request.user.last_name}}</a>
-        </li> 
+          <li>
+            <a class="text-white"  href="{% url 'edit.booster.profile' %}"> {{request.user.first_name}} {{request.user.last_name}}</a>
+          </li> 
 
-        <li>
-          <a href="{% url 'booster.orders' %}">Your Orders</a>
-        </li>
+          <li>
+            <a href="{% url 'booster.orders' %}">Your Orders</a>
+          </li>
 
-        <li>
-          <a href="{% url 'booster.history' %}">Your Money : {{request.user.wallet.money}}$</a>
-        </li>
+          <li>
+            <a href="{% url 'booster.history' %}">Your Money : {{request.user.wallet.money}}$</a>
+          </li>
 
         {% elif request.user.is_customer %}
 
@@ -43,18 +43,9 @@
           <a href="{% url 'edit.customer.profile' %}">{{request.user.first_name}} {{request.user.last_name}}</a>
         </li>
 
-        {% for order in request.user.customer_orders.all %}
-          {% if not order.is_done %}
-            <li>
-              <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
-            </li>
-          {% endif %}
-          {% if forloop.last and order.is_done and not order.order_rated %}
-            <li>
-              <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
-            </li>
-          {% endif %}
-        {% endfor %}
+        <li>
+          <a href="{% url 'customer.history' %}">WITHDRAWAL : {{request.user.wallet.money}}$</a>
+        </li>
         {% endif %}
 
         <li>
@@ -71,8 +62,9 @@
         </li>
 
         {% endif %}
+        {% if request.user.is_booster %}
         <li>
-          <a href="">Other Links</a>
+          <a href="">Jobs</a>
           <!-- Start Megamenu -->
           <div class="mega-menu">
             <div class="image">
@@ -80,20 +72,62 @@
             </div>
             <ul class="links">
               <li>
-                <a href="#testimonials"><i class="far fa-comments fa-fw"></i> Testimonials</a>
+                <a href=""><i class="fa-solid fa-gamepad"></i> League of Legends</a>
               </li>
               <li>
-                <a href="#team"><i class="far fa-user fa-fw"></i> Team Members</a>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Valorant</a>
               </li>
               <li>
-                <a href="#services"><i class="far fa-building fa-fw"></i> Services</a>
+                <a href=""><i class="fa-solid fa-gamepad"></i> TFT</a>
               </li>
               <li>
-                <a href="#our-skills"><i class="far fa-check-circle fa-fw"></i> Our Skills</a>
+                <a href="{% url 'wildrift.confirm.order' %}"><i class="fa-solid fa-gamepad"></i> Wild Rift</a>
               </li>
               <li>
-                <a href="#work-steps"><i class="far fa-clipboard fa-fw"></i> How It Works</a>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Dota 2</a>
               </li>
+            </ul>
+            <ul class="links">
+              <li>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Hearthstone</a>
+              </li>
+              <li>
+                <a href=""><i class="fa-solid fa-gamepad"></i> World of Warcraft</a>
+              </li>
+              <li>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Mobile Legends</a>
+              </li>
+              <li>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Pubg Mobile</a>
+              </li>
+              <li>
+                <a href=""><i class="fa-solid fa-gamepad"></i> Rocket League</a>
+              </li>
+            </ul>
+          </div>
+          <!-- End Megamenu -->
+        </li>
+        {% elif request.user.is_customer %}
+        <li>
+          <a href="">Orders</a>
+          <!-- Start Megamenu -->
+          <div class="mega-menu">
+            <div class="image">
+              <img src="{% static 'base/images/megamenu.webp' %}" alt="" />
+            </div>
+            <ul class="links">
+              {% for order in request.user.customer_orders.all %}
+              {% if not order.is_done %}
+                <li>
+                <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
+                </li>
+              {% endif %}
+              {% if forloop.last and order.is_done and not order.order_rated %}
+                <li>
+                  <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
+                </li>
+              {% endif %}
+              {% endfor %}
             </ul>
             <ul class="links">
               <li>
@@ -115,6 +149,7 @@
           </div>
           <!-- End Megamenu -->
         </li>
+        {% endif %}
       </ul>
     </div>
   </div>

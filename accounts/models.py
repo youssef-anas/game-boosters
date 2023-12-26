@@ -75,9 +75,10 @@ class BaseOrder(models.Model):
         (5, 'Australia')
     ]
     STATUS_CHOICES = [
-        ('None', 'None'),
+        ('New', 'New'),
         ('Drop', 'Drop'),
-        ('Extend', 'Extend')
+        ('Extend', 'Extend'),
+        ('Done', 'Done')
     ]
     name = models.CharField(max_length=300, null = True)
     price = models.FloatField(default=0, blank=True, null=True)
@@ -88,7 +89,7 @@ class BaseOrder(models.Model):
     booster_percent2 = models.IntegerField(default=60)
     booster_percent3 = models.IntegerField(default=70)
     booster_percent4 = models.IntegerField(default=80)
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='None', null=True, blank=True)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='New', null=True, blank=True)
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
     booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False, blank=True)
@@ -129,7 +130,7 @@ class BaseOrder(models.Model):
                 self.actual_price = round(self.price * (self.booster_percent4 / 100), 2)
     
     def get_time_difference_before_final_price(self):
-        if self.status == 'Drop':
+        if self.status == 'Drop' or self.status == 'Extend':
             return
         current_time = timezone.now()
         time_difference = (current_time - self.created_at).total_seconds()
@@ -156,16 +157,22 @@ class BaseOrder(models.Model):
 
     def update_booster_wallet(self):
         if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed > 0:
-            booster_wallet = self.booster.wallet
-            booster_wallet.money += self.money_owed
-            booster_wallet.save()
+            try:
+                booster_wallet = self.booster.wallet
+                booster_wallet.money += self.money_owed
+                booster_wallet.save()
+            except:
+                Wallet.objects.create (
+                    user=self.booster,
+                    money=self.money_owed
+                )
  
             if self.is_drop :
                 Transaction.objects.create (
                     user=self.booster,
                     amount=self.money_owed,
                     order=self,
-                    status=0,  
+                    status='Drop',  
                     type='DEPOSIT'
                 )
 
@@ -174,22 +181,36 @@ class BaseOrder(models.Model):
                     user=self.booster,
                     amount=self.money_owed,
                     order=self,
-                    status=1,  
+                    status='Done',  
                     type='DEPOSIT'
                 )
 
     def customer_wallet(self):
         print("Inside customer_wallet function")
         
-        if self.status == 'Drop':
-            print("Order status is 'Drop', exiting customer_wallet function")
+        if self.status == 'Drop' or self.status == 'Extend':
+            print("Order status is 'Drop' or 'Extend', exiting customer_wallet function")
             return
         
         if self.customer and self.price > 0:
-            customer_wallet = self.customer.wallet
-            customer_wallet.money += self.price
-            customer_wallet.save()
-            print(f"Customer wallet updated. New balance: {customer_wallet.money}")
+            try: 
+                customer_wallet = self.customer.wallet
+                customer_wallet.money += self.price
+                customer_wallet.save()
+                print(f"Customer wallet updated. New balance: {customer_wallet.money}")
+            except: 
+                Wallet.objects.create (
+                    user=self.customer,
+                    money=self.price
+                )
+            
+            Transaction.objects.create (
+                    user=self.customer,
+                    amount=self.price,
+                    order=self,
+                    status='New',  
+                    type='WITHDRAWAL'
+                )
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
@@ -200,17 +221,22 @@ class Transaction(models.Model):
         ('DEPOSIT', 'Deposit'),
         ('WITHDRAWAL', 'Withdrawal'),
     ]
-    STATUS = [
-        (0, "Drop"),
-        (1, "Done")
+    STATUS_CHOICES = [
+        ('New', 'New'),
+        ('Drop', 'Drop'),
+        ('Extend', 'Extend'),
+        ('Done', 'Done')
     ]
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
     order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
     notice = models.TextField(default='There is no any notice')
-    status = models.IntegerField(choices=STATUS, default=1)
+    status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+
+    def __str__(self):
+        return f'{self.user.username} {self.type} {self.amount}$'
 
     
 

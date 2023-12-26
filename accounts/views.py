@@ -249,3 +249,8 @@ def edit_customer_profile(request):
                 return redirect('edit.customer.profile')
 
     return render(request, 'accounts/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
+
+@login_required
+def customer_history(request):
+    history = Transaction.objects.filter(user=request.user)
+    return render(request, 'accounts/customer_histoty.html', context={'history' : history})

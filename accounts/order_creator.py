@@ -3,7 +3,7 @@ from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
 
-def create_order(invoice, payer_id, customer, status='None'):
+def create_order(invoice, payer_id, customer, status='New'):
     # Split the invoice string by the hyphen ("-") delimiter
     invoice_values = invoice.split('-')
 
