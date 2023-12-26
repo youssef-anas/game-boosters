@@ -99,28 +99,26 @@
             $('#final_price_{{ order.order.id }}').show();
           }
           else{
-// Update the displayed price in the HTML
-$('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
-var minutes = Math.floor(data.time_difference / 60);
-var seconds = (data.time_difference % 60).toString().padStart(2, '0');
-$('#Timer_{{ order.order.id }}').text('Price increase in ' + minutes + ':' + seconds + ' minutes');
+            // Update the displayed price in the HTML
+            $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
+            var minutes = Math.floor(data.time_difference / 60);
+            var seconds = (data.time_difference % 60).toString().padStart(2, '0');
+            $('#Timer_{{ order.order.id }}').text('Price increase in ' + minutes + ':' + seconds + ' minutes');
 
-console.log('actual_price_{{ order.order.id }}', data.actual_price+'$');
-console.log({{ order.order.id }} , data.time_difference)
-// Check the condition before calling the function again
-if ({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100) !== data.actual_price ) {
-  $('#Timer_{{ order.order.id }}').show();
-  setTimeout(fetchLatestPrice{{ order.order.id }}, 1000);
-} else {
-  stopFetching{{ order.order.id }} = true;
-  console.log('stop', {{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100))
-  $('#actual_price_{{ order.order.id }}').text({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100)+'$');
-  $('#Timer_{{ order.order.id }}').hide();
-  $('#final_price_{{ order.order.id }}').show();
-}
+            console.log('actual_price_{{ order.order.id }}', data.actual_price+'$');
+            console.log({{ order.order.id }} , data.time_difference)
+            // Check the condition before calling the function again
+            if ({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100) !== data.actual_price ) {
+              $('#Timer_{{ order.order.id }}').show();
+              setTimeout(fetchLatestPrice{{ order.order.id }}, 1000);
+            } else {
+              stopFetching{{ order.order.id }} = true;
+              console.log('stop', {{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100))
+              $('#actual_price_{{ order.order.id }}').text({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100)+'$');
+              $('#Timer_{{ order.order.id }}').hide();
+              $('#final_price_{{ order.order.id }}').show();
+            }
           }
-          
-          
         },
         error: function (error) {
           console.error('Error fetching latest price:', error);
