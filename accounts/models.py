@@ -139,7 +139,7 @@ class BaseOrder(models.Model):
         self.update_booster_wallet()
 
     def update_booster_wallet(self):
-        if (self.is_done or self.is_drop) and self.booster and self.money_owed > 0:
+        if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed > 0:
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.money_owed
             booster_wallet.save()
