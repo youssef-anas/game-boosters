@@ -20,7 +20,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from accounts.models import BaseOrder
 from accounts.order_creator import create_order
-from accounts.models import BaseOrder, Room, Message
+from accounts.models import BaseOrder, Room, Message, BoosterPercent
 
 User = get_user_model()
 
@@ -147,10 +147,12 @@ def wildRiftGetBoosterByRank(request):
 def wildRiftOrders(request):
     divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
     placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
+    booster_percents = BoosterPercent.objects.get(pk=1)
 
     context = {
         "divisions_order": divisions_order,
-        "placements_order": placements_order
+        "placements_order": placements_order,
+        'booster_percents':booster_percents
     }
     return render(request,'wildRift/Orders.html', context)
 
