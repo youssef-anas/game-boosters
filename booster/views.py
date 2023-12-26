@@ -105,14 +105,6 @@ def rate_page(request, order_id):
     order = WildRiftDivisionOrder.objects.get(order__id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
-# Chat with user
-def create_chat_with_customer(customer,booster,orderId):
-    isRoomExist = Room.get_specific_room(customer,booster)
-    if not isRoomExist:
-        return Room.create_room_with_booster(customer,booster,orderId)
-    else:
-        return isRoomExist
-
 def booster_orders(request):
     # if not request.user.is_booster:
     #     return HttpResponse('you are not booster')
@@ -164,7 +156,7 @@ def booster_orders(request):
         order.order.money_owed = now_price
         order.order.save()
         
-        current_room = Room.get_specific_room(order.order.customer, request.user, order.order.id)
+        current_room = Room.get_specific_room(order.order.customer, order.order.id)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug

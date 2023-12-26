@@ -143,14 +143,6 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-
-# Chat with user
-def create_chat_with_customer(customer,booster,orderId):
-    isRoomExist = Room.get_specific_room(customer,booster,orderId)
-    if not isRoomExist:
-        return Room.create_room_with_booster(customer,booster,orderId)
-    else:
-        return isRoomExist
     
 def wildRiftOrders(request):
     divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
@@ -190,7 +182,6 @@ def wildRiftOrderChat(request, order_type, id):
     try:
         base_order.booster = request.user
         base_order.save()
-        create_chat_with_customer(base_order.customer,request.user, base_order.id)
     except Exception as e:
         print(f"Error updating order: {e}")
         return HttpResponseBadRequest(f"Error updating order{e}")
@@ -321,7 +312,7 @@ def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             finish_image = request.FILES.get('finish_image')
             if finish_image:
                 order.finish_image = finish_image
@@ -359,7 +350,7 @@ def confirm_details(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = None
             order.data_correct = True
             order.save()
@@ -370,7 +361,7 @@ def ask_customer(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            order = get_object_or_404(BaseOrder, id=order_id)
             order.message = 'Pleace Specify Your Details'
             order.data_correct = False
             order.save()

@@ -4,8 +4,6 @@
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
-<link rel="stylesheet" href="{% static 'chat/css/master.css'%}">
-
 {% endblock %}
 {% block container %}
 <div class="containter-fluid customer-order-body">
@@ -148,12 +146,7 @@
               {% endif %}
               {% endfor %}
             </div>
-            {% else %}
-            <div class="container text-center" style="height: 71.9vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-              <center class="fw-bold"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
-            </div>
-            {% endif %}
-            {% else %}
+            {% endif %}{% endif %}            
             <div class="container messages-section">
               <div class="row">
                 <div class="col-12 row-cols-1 align-content-between">
@@ -213,7 +206,6 @@
                 </div>
               </div>
             </div>
-            {% endif %}
           </div>
         </div>
 
@@ -289,9 +281,14 @@
     {{request.user.username|json_script:"user"}}
     {{admins_room.name|json_script:"admin_room"}}
     {{room.name|json_script:'booster_room_name'}}
+    {{order.order.booster.first_name|json_script:'booster_first_name'}}
+    {{order.order.booster.last_name|json_script:'booster_last_name'}}    
+    {{order.order.booster.image|json_script:'booster_image'}}    
   </div>
   {% endblock %}
   {% block script %}
-
-  <script src='{% static "chat/js/chat.js" %}'></script>
+  <script>
+    var staticUrl = "{% static 'base/images/no_profile_image.jpg' %}";
+  </script>
+  <script src='{% static "accounts/js/customer_side_chat.js" %}'></script>
   {% endblock %}

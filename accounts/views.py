@@ -44,7 +44,7 @@ def send_activation_email(user, request):
     send_mail(subject, message, 'your@example.com', [user.email])
 
 def create_chat_with_booster(customer,booster,orderId):
-    isRoomExist = Room.get_specific_room(customer,booster,orderId)
+    isRoomExist = Room.get_specific_room(customer,orderId)
     if not isRoomExist:
         return Room.create_room_with_booster(customer,booster,orderId)
     else:
@@ -66,6 +66,7 @@ def register_view(request):
         if request.user.is_authenticated:
             order = create_order(invoice, payer_id, request.user)
             create_chat_with_admins(customer=request.user,orderId = order.order.id)
+            create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
             return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -77,6 +78,7 @@ def register_view(request):
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
                 create_chat_with_admins(customer=request.user, orderId = order.order.id)
+                create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
         form = Registeration()
         return render(request, 'accounts/register.html', {'form': form})
@@ -161,7 +163,7 @@ def set_customer_data(request):
                 order.customer_password = customer_password
             order.save()
             if booster:
-                create_chat_with_booster(User,booster)
+                create_chat_with_booster(User,booster,order_id)
                 return redirect(reverse_lazy('accounts.customer_side'))
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
@@ -172,7 +174,7 @@ def tip_booster(request):
         order_id = request.POST.get('order_id')
         booster = request.POST.get('booster')
         if tip and order_id and booster:
-            room = Room.get_specific_room(request.user, booster, order_id)
+            room = Room.get_specific_room(request.user, order_id)
             msg = f'{request.user.first_name} tips {booster} with {tip}$'
             Message.create_tip_message(request.user,msg,room)
             return redirect(reverse_lazy('accounts.customer_side'))
@@ -193,7 +195,7 @@ def customer_side(request):
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:
-        specific_room = Room.get_specific_room(request.user, order.order.booster,order.order.id)
+        specific_room = Room.get_specific_room(request.user, order.order.id)
         slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)

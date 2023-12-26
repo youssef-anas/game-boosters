@@ -22,12 +22,15 @@
       {{order.slug|json_script:"room_slug"}}
       {{order.room.name|json_script:'booster_room_name'}}
       {{request.user.username|json_script:"user"}}
+      {{order.order.order.customer.first_name|json_script:"customer_first_name"}}
+      {{order.order.order.customer.last_name|json_script:"customer_last_name"}}
+
       <div class="row justify-content-between my-5 order order-{{order.order.order.id}}" data-order="order-{{order.order.order.id}}" data-slug="{{order.slug}}" data-room="{{order.room.name}}">
         
         <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center">
   
           <div class="user-info shadow p-4">
-            <img src="{{ order.order.order.customer.image.url }}" class="profile-image col-4" alt="profile" />
+            <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="profile" />
             <h4 class="my-3">{{order.order.order.customer.first_name}} {{order.order.order.customer.last_name}}</h4>
             <hr>
   
@@ -46,6 +49,13 @@
               <p class="text-secondary">In-Game</p>
               <p>{{order.order.order.customer_gamename}}</p>
             </div>
+
+            {% if order.order.order.duo_boosting  %}
+            <div class="d-flex justify-content-between align-item-center">
+              <p class="text-secondary">Password</p>
+              <p>{{order.order.order.customer_password}}</p>
+            </div>
+            {% endif %}
 
             <form action="{% url 'confirm.details' %}" method="POST">
               {% csrf_token %}
@@ -293,5 +303,8 @@
 </div>
 {% endblock %}
 {% block script %}
+<script>
+  var staticUrl = "{% static 'base/images/no_profile_image.png' %}";
+</script>
 <script src="{% static 'booster/js/booster-order.js' %}"></script>
 {% endblock %}

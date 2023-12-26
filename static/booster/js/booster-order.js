@@ -74,10 +74,10 @@ $('document').ready(function () {
 
 })
 // ######################################### Chats #########################################
-function chat(booster_room_name, roomName, orderId){
+function chat(booster_room_name, roomName, orderId) {
   const user = JSON.parse(document.getElementById('user').textContent);
   console.log('user: ', user)
-  
+
   const chatbox = document.querySelector("#chat-box");
 
   // Function to scroll to the bottom of the chatbox
@@ -88,8 +88,7 @@ function chat(booster_room_name, roomName, orderId){
 
 
   const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
-  // const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/"+ roomName +"/");
-  // alert(chatSocket);
+
   chatSocket.onopen = function (e) {
     console.log("The connection was setup successfully !");
   };
@@ -124,29 +123,48 @@ function chat(booster_room_name, roomName, orderId){
     $('.noMessage').html('');
     console.log('Data: ', data)
     var div = document.createElement("div");
-    div.innerHTML = `
-    <div class="message p-3 rounded-3 ">
-      <p class="content mb-1">${data.message}</p>
-      <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
-    </div>
-    `
+    if (data.username === user) {
+      div.innerHTML = `
+      <div class="message p-3 rounded-3 ">
+          <p class="content mb-1">${data.message}</p>
+          <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+      </div>
+      `
+    }
+    else {
+      const customer_first_name = JSON.parse(document.getElementById('customer_first_name').textContent);
+      const customer_last_name = JSON.parse(document.getElementById('customer_last_name').textContent);
+
+      div.innerHTML = `
+          <div class="image">
+              <img src="${staticUrl}" alt="" width="40" height="40">
+          </div>
+          <div class="message p-3 rounded-3 ">
+              <p class="username mb-1">
+              ${customer_first_name} ${customer_last_name}
+              </p>
+              <p class="content mb-1">${data.message}</p>
+              <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+          </div>
+          `
+    }
 
     // Add class based on user authentication
     if (data.username === user) {
-          div.classList.add("chat-message", "userMessage");
+      div.classList.add("chat-message", "userMessage");
+    } else {
+      if (data.message.msg_type == 'tip') {
+        div.classList.add("tip-message");
       } else {
-        if (data.message.msg_type == 'tip') {
-          div.classList.add("tip-message");
-        } else {
-            div.classList.add("chat-message", "otherMessage");
-        }
+        div.classList.add("chat-message", "otherMessage");
       }
+    }
 
     $(`#my_input_${orderId}`).val("");
     console.log('hhhh', `#chatbox-${orderId}`)
     document.querySelector(`#chatbox-${orderId}`).appendChild(div);
     scrollToBottom();
-  };  
+  };
 }
 
 $('#finish_image').on('change', function () {

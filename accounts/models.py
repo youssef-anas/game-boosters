@@ -30,8 +30,6 @@ class BaseUser(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
-
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
@@ -60,11 +58,11 @@ def create_wallet(sender, instance, created, **kwargs):
     
 class Wallet(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE,related_name='wallet')
-    available_balance = models.FloatField(default=0, null=True, blank=True)
-
+    money = models.FloatField(default=0, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.user.username} Has {self.available_balance}$'
+        return f'{self.user.username} Has {self.money}$'
+
     
 # Base Order
 class BaseOrder(models.Model):
@@ -141,10 +139,31 @@ class BaseOrder(models.Model):
         self.update_booster_wallet()
 
     def update_booster_wallet(self):
-        if self.is_done and self.booster and self.actual_price > 0:
+        if (self.is_done or self.is_drop) and self.booster and self.money_owed > 0:
             booster_wallet = self.booster.wallet
-            booster_wallet.available_balance += self.actual_price
+            booster_wallet.money += self.money_owed
             booster_wallet.save()
+
+            from booster.models import Transaction
+            booster_instance = self.booster.user 
+            if self.is_drop :
+                Transaction.objects.create (
+                    user=booster_instance,
+                    amount=self.money_owed,
+                    order=self,
+                    status=0,  
+                    type='DEPOSIT'
+                )
+            else :
+                Transaction.objects.create (
+                    user=booster_instance,
+                    amount=self.money_owed,
+                    order=self,
+                    status=1,  
+                    type='DEPOSIT'
+                )
+      
+ 
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
@@ -165,9 +184,10 @@ class Room(models.Model):
     
     @classmethod
     def create_room_with_booster(cls,customer,booster,orderId):
+        order_name = BaseOrder.objects.get(id = orderId).name
         room = cls(
-                name=f'{customer}-{booster}-{orderId}',
-                slug=f'roomFor-{customer}-{booster}-{orderId}',
+                name=f'{customer}-{order_name}',
+                slug=f'roomFor-{customer}-{order_name}',
                 customer=customer,
                 booster=booster,
                 order_id=orderId
@@ -193,8 +213,9 @@ class Room(models.Model):
         return cls.objects.all().order_by('-created_on')
     
     @classmethod
-    def get_specific_room(cls,customer,booster,orderId):
-        return cls.objects.filter(name=f'{customer}-{booster}-{orderId}').first()
+    def get_specific_room(cls,customer,orderId):
+        order_name = BaseOrder.objects.get(id = orderId).name
+        return cls.objects.filter(name=f'{customer}-{order_name}').first()
     
     @classmethod
     def get_specific_admins_room(cls,customer,orderId):
