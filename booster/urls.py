@@ -13,6 +13,7 @@ urlpatterns = [
     path('rate/<int:order_id>/',get_rate,name='booster.rate'), # form to get rate if order done
     path('rating/<int:order_id>/', rate_page, name='rate.page'), # test page , only for test
     path('orders/', user_passes_test(is_booster)(booster_orders), name='booster.orders'),
+    path('history/', user_passes_test(is_booster)(booster_history), name='booster.history'),
     # path('update-rating/',update_rating,name='order.update.rating'),
     # path('upload-image/',upload_finish_image,name='order.upload.image'),
     # path('drop-order/',drop_order,name='drop.order'),

@@ -1,0 +1,68 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+
+{% endblock %}
+{% block container %}
+<div class="container py-5" style="min-height: 25vh;">
+  {% if history %}
+  <table class="table text-white">
+    <thead class="text-uppercase" style="background-color: var(--secondary-color);">
+      <tr>
+        <th>order</th>
+        <th>amount</th>
+        <th>customer</th>
+        <th>notice</th>
+        <th>status</th>
+        <th>date</th>
+        <th>More</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for orderInfo in history %}
+      <tr>
+        <td>{{orderInfo.order.name}}</td>
+        <td>{{orderInfo.amount}}</td>
+        <td>{{orderInfo.order.customer.first_name}} {{orderInfo.order.customer.last_name}}</td>
+        <td>{{orderInfo.notice}}</td>
+        <td>{% if orderInfo.status %} Done {% else %} Drop {% endif %}</td>
+        <td>{{orderInfo.date}}</td>
+        <td>
+          <button type="button" class="btn text-white " style="background-color: var(--secondary-color);" data-bs-toggle="modal" data-bs-target="#orderModal" data-order="{{ orderInfo.order.wildrift_order }}">
+            More
+          </button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog bg-dark text-white">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="orderModalLabel">Order Details</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="orderModalBody">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <h1>You Didn't Make Any Order Yet!</h1>
+  {% endif %}
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(document).ready(function () {
+      $('#orderModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var orderContent = button.data('order');
+        $('#orderModalBody').html(orderContent);
+      });
+    });
+  </script>
+{% endblock %}

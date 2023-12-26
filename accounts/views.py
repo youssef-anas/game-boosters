@@ -19,7 +19,7 @@ from wildRift.models import WildRiftDivisionOrder
 from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
-from booster.models import Booster
+from booster.models import Booster, Transaction
 from accounts.models import BaseOrder, Room, Message
 from accounts.models import BaseUser
 

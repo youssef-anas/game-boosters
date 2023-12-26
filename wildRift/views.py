@@ -157,10 +157,9 @@ def wildRiftOrders(request):
 def get_latest_price(request):
     order_id = request.GET.get('order_id')
     order = BaseOrder.objects.filter(id=order_id, booster__isnull=True).first()
-    time_difference = order.get_time_difference_before_final_price()
 
     if order:
-        order.update_actual_price()
+        time_difference = order.update_actual_price()
         order.save()
         latest_price = order.actual_price
         return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})

@@ -154,6 +154,7 @@ class WildRiftDivisionOrder(models.Model):
         current_rank_id = int(invoice_values[2])
         desired_rank_id = int(invoice_values[5])
 
+
         self.current_rank = WildRiftRank.objects.get(pk=current_rank_id)
         self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
         self.reached_rank = self.current_rank

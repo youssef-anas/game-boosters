@@ -2,8 +2,6 @@ $('document').ready(function () {
   let ordersDivs = $('.order');
   console.log('Divs: ', ordersDivs)
   let ordersRadio = $('input[name="radio-order"]')
-  // let booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
-  // let roomName = JSON.parse(document.getElementById('room_slug').textContent);
 
   // Intial 
   let intialOrderId = $('input[name="radio-order"]:checked').data('order');
@@ -75,10 +73,14 @@ $('document').ready(function () {
 })
 // ######################################### Chats #########################################
 function chat(booster_room_name, roomName, orderId) {
+  if (currentSocket) {
+    currentSocket.close();
+  }
+
   const user = JSON.parse(document.getElementById('user').textContent);
   console.log('user: ', user)
 
-  const chatbox = document.querySelector("#chat-box");
+  const chatbox = document.getElementById(`chat-box-${orderId}`);
 
   // Function to scroll to the bottom of the chatbox
   function scrollToBottom() {
@@ -88,15 +90,16 @@ function chat(booster_room_name, roomName, orderId) {
 
 
   const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
+  currentSocket = chatSocket;
 
   chatSocket.onopen = function (e) {
-    console.log("The connection was setup successfully !");
+    console.log("The connection was setup successfully !", orderId);
   };
   chatSocket.onclose = function (e) {
-    console.log("Something unexpected happened !");
+    console.log("WebSocket closed." , orderId);
   };
   $(`#my_input_${orderId}`).focus();
-  document.querySelector("#booster_chat_form").addEventListener("submit", function (e) {
+  document.querySelector(`#booster_chat_form-${orderId}`).addEventListener("submit", function (e) {
     e.preventDefault();
   });
   $(`#my_input_${orderId}`).on('keyup', function (e) {
@@ -118,7 +121,6 @@ function chat(booster_room_name, roomName, orderId) {
   });
 
   chatSocket.onmessage = function (e) {
-    console.log('I am here')
     const data = JSON.parse(e.data);
     $('.noMessage').html('');
     console.log('Data: ', data)
