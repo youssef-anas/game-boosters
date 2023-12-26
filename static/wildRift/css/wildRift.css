@@ -36,6 +36,12 @@ input[type="radio"]:checked + label {
   background-color: var(--secondary-color); /* Change the background color when checked */
   color: white; /* Change the text color when checked */
 }
+input[type="radio"]:disabled + label {
+  color: whitesmoke;
+  filter: grayscale(100%);
+
+  /* Additional styles if needed */
+}
 .wild-rift {
   color: white !important;
   position: relative;
