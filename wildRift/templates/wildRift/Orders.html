@@ -91,7 +91,10 @@
         success: function (data) {
           // Update the displayed price in the HTML
           $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
-          $('#Timer_{{ order.order.id }}').text('Price increase in '+data.time_difference);
+          var minutes = Math.floor(data.time_difference / 60);
+          var seconds = (data.time_difference % 60).toString().padStart(2, '0');
+          $('#Timer_{{ order.order.id }}').text('Price increase in ' + minutes + ':' + seconds + ' minutes');
+          
           console.log('actual_price_{{ order.order.id }}', data.actual_price+'$');
           console.log({{ order.order.id }} , data.time_difference)
           // Check the condition before calling the function again

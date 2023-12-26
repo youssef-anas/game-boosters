@@ -78,10 +78,10 @@ class BaseOrder(models.Model):
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300)
-    booster_percent1 = models.IntegerField(default=50)
-    booster_percent2 = models.IntegerField(default=60)
-    booster_percent3 = models.IntegerField(default=70)
-    booster_percent4 = models.IntegerField(default=80)
+    booster_percent1 = models.IntegerField(default=22)
+    booster_percent2 = models.IntegerField(default=24)
+    booster_percent3 = models.IntegerField(default=27)
+    booster_percent4 = models.IntegerField(default=30)
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
     booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False, blank=True)
@@ -103,33 +103,20 @@ class BaseOrder(models.Model):
 
     def update_actual_price(self):
         current_time = timezone.now()
-
-        if not self.created_at:
-            self.actual_price = self.price * (self.booster_percent1 / 100)
-        else:
-            time_difference = (current_time - self.created_at).total_seconds() / 60
-
-            if time_difference <= 1:
-                self.actual_price = self.price * (self.booster_percent1 / 100)
-            elif time_difference <= 2:
-                self.actual_price = self.price * (self.booster_percent2 / 100)
-            elif time_difference <= 3:
-                self.actual_price = self.price * (self.booster_percent3 / 100)
-            else:
-                self.actual_price = self.price * (self.booster_percent4 / 100)
-    
-    def get_time_difference_before_final_price(self):
-        current_time = timezone.now()
         time_difference = (current_time - self.created_at).total_seconds()
         
         if time_difference <= 60:
+            self.actual_price = self.price * (self.booster_percent1 / 100)
             return int(60-time_difference)
-        elif time_difference <= 120:
-            return int(120-time_difference)
-        elif time_difference <= 180:
-            return int(180-time_difference)
-        elif time_difference <= 240:
-            return int(240-time_difference)
+        elif time_difference <= 180 :
+            self.actual_price = self.price * (self.booster_percent2 / 100)
+            return int(180 -time_difference)
+        elif time_difference <= 900 :
+            self.actual_price = self.price * (self.booster_percent3 / 100)
+            return int(900 -time_difference)
+        elif time_difference <= 1800 :
+            self.actual_price = self.price * (self.booster_percent4 / 100)
+            return int(1800 -time_difference)
         else:
             return 'Time is up'
         

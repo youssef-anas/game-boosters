@@ -30,46 +30,4 @@ $(document).ready(function () {
       placementBoostOrderDiv.classList.add('d-none');
     }
   })
-
-  // $('.division-price').each(function (index, paragraph) {
-  //   let divisionPrice = parseFloat($(paragraph).data('price'));
-  //   let divisionPercent;
-
-  //   function updatePrice(i) {
-  //     divisionPercent = $(paragraph).data(`percent${i}`);
-  //     let divisionRealPrice = divisionPrice * (divisionPercent / 100);
-  //     $(paragraph).text(`${divisionRealPrice.toFixed(2)}$`);
-
-  //     // Schedule the next update after 1000 milliseconds
-  //     if (i < 4) {
-  //       setTimeout(function () {
-  //         updatePrice(i + 1);
-  //       }, 60000);
-  //     }
-  //   }
-
-  //   // Start the update sequence
-  //   updatePrice(1);
-  // });
-  
-  // $('.placement-price').each(function (index, paragraph) {
-  //   let divisionPrice = parseFloat($(paragraph).data('price'));
-  //   let divisionPercent;
-
-  //   function updatePrice(i) {
-  //     divisionPercent = $(paragraph).data(`percent${i}`);
-  //     let divisionRealPrice = divisionPrice * (divisionPercent / 100);
-  //     $(paragraph).text(`${divisionRealPrice.toFixed(2)}$`);
-
-  //     // Schedule the next update after 1000 milliseconds
-  //     if (i < 4) {
-  //       setTimeout(function () {
-  //         updatePrice(i + 1);
-  //       }, 60000);
-  //     }
-  //   }
-
-  //   // Start the update sequence
-  //   updatePrice(1);
-  // });
 })
