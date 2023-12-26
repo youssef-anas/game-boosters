@@ -110,7 +110,6 @@ class BaseOrder(models.Model):
 
     def update_actual_price(self):
         current_time = timezone.now()
-<<<<<<< HEAD
 
         if not self.created_at:
             self.actual_price = round(self.price * (self.booster_percent1 / 100) , 2)
@@ -128,8 +127,6 @@ class BaseOrder(models.Model):
     
     def get_time_difference_before_final_price(self):
         current_time = timezone.now()
-=======
->>>>>>> 08d20be3a847da3904c9598cfb557761ce616d3a
         time_difference = (current_time - self.created_at).total_seconds()
         
         if time_difference <= 60:
