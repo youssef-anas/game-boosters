@@ -84,9 +84,10 @@ class BaseOrder(models.Model):
     ]
     STATUS_CHOICES = [
         ('New', 'New'),
-        ('Drop', 'Drop'),
+        ('Droped', 'Droped'),
         ('Extend', 'Extend'),
-        ('Done', 'Done')
+        ('Done', 'Done'),
+        ('Continue', 'Continue'),
     ]
     name = models.CharField(max_length=300, null = True)
     price = models.FloatField(default=0, blank=True, null=True)
