@@ -22,6 +22,10 @@ User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseOrder, Room, Message
 from accounts.models import BaseUser, Transaction
+from django.conf import settings
+from paypal.standard.forms import PayPalPaymentsForm
+import requests
+
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -168,17 +172,49 @@ def set_customer_data(request):
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
+@csrf_exempt
 def tip_booster(request):
     if request.method == 'POST':
         tip = request.POST.get('tip')
         order_id = request.POST.get('order_id')
         booster = request.POST.get('booster')
+        user = request.user
+        time = str(timezone.now())
         if tip and order_id and booster:
-            room = Room.get_specific_room(request.user, order_id)
-            msg = f'{request.user.first_name} tips {booster} with {tip}$'
-            Message.create_tip_message(request.user,msg,room)
-            return redirect(reverse_lazy('accounts.customer_side'))
+            paypal_dict = {
+                "business": settings.PAYPAL_EMAIL,
+                "amount": tip,
+                "item_name": f"tip {booster}",
+                "invoice": f'tip-{user}-{tip}-{order_id}-{booster}-{time}',
+                "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+                "return": request.build_absolute_uri(reverse('tip_booster.success_tip')),
+                "cancel_return": request.build_absolute_uri(reverse('tip_booster.cancel_tip')),
+            }
+            # Create the instance.
+            form = PayPalPaymentsForm(initial=paypal_dict)
+            context = {"form": form}
+            return render(request, "wildRift/paypal.html", context,status=200)
         return JsonResponse({'success': False})
+    
+
+   
+    
+def success_tip(request):
+    # #payer_id
+    # #token
+    # payment_id = request.GET.get("paymentId")
+
+    # messages.success(request, 'Tip Success, Thank you ♥')
+    # room = Room.get_specific_room(request.user, order_id)
+    # msg = f'{request.user.first_name} tips {booster} with {tip}$'
+    # Message.create_tip_message(request.user,msg,room)
+    return HttpResponse('success')
+    # return redirect(reverse_lazy('accounts.customer_side'))
+
+def cancel_tip(request):
+    messages.error(request, 'Ensure this value is greater than or equal to 10')
+    redirect(reverse_lazy('accounts.customer_side'))
+
 
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)

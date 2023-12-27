@@ -224,7 +224,6 @@ def view_that_asks_for_money(request):
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
-                print(f'order {order_info["invoice"]} : {order_info}')
                 return render(request, "wildRift/paypal.html", context,status=200)
             # return JsonResponse({'error': serializer.errors}, status=400)
             messages.error(request, 'Ensure this value is greater than or equal to 10')

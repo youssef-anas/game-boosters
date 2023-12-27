@@ -178,3 +178,4 @@ ALLOWED_HOSTS = ['*']
 
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
 PAYPAL_TEST = True
+PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
