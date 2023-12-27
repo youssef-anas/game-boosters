@@ -7,6 +7,8 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 # from wildRift.models import WildRiftRank
+import secrets
+
 
 class UserManager(UserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -206,7 +208,13 @@ class BaseOrder(models.Model):
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
-    
+
+class Tip_data(models.Model):
+    payer_id =models.CharField(max_length=50, null=True)
+    invoice = models.TextField(max_length=50, null= True)
+
+    def __str__(self) -> str:
+        return self.payer_id    
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
@@ -222,10 +230,11 @@ class Transaction(models.Model):
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
     order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
-    notice = models.TextField(default='There is no any notice')
+    notice = models.TextField(default='_')
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+    tip = models.OneToOneField(Tip_data, related_name='tip', on_delete=models.DO_NOTHING, null=True)
 
     def __str__(self):
         return f'{self.user.username} {self.type} {self.amount}$'
@@ -328,3 +337,28 @@ class Message(models.Model):
             msg_type='tip'
         )
         return new_message
+    
+
+class TokenForPay(models.Model):
+    user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
+    token = models.TextField(max_length=40, unique=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s token"
+    
+    @classmethod
+    def get_token(cls, token):
+        try:
+            return cls.objects.get(token=token)
+        except cls.DoesNotExist:
+            return None
+
+    @classmethod
+    def delete_token(cls, token):
+        try:
+            cls.objects.get(token=token).delete()
+            return None     
+        except cls.DoesNotExist:
+            return None    
+        
+

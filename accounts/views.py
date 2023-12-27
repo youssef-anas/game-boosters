@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from accounts.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
-from django.contrib import messages
+from django.contrib import messages as NotifyMessage
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils.encoding import force_bytes
@@ -20,12 +20,11 @@ from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
 from booster.models import Booster
-from accounts.models import BaseOrder, Room, Message
-from accounts.models import BaseUser, Transaction
+from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 import requests
-
+import secrets
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -178,17 +177,27 @@ def tip_booster(request):
         tip = request.POST.get('tip')
         order_id = request.POST.get('order_id')
         booster = request.POST.get('booster')
-        user = request.user
+        user = str(request.user.username)
         time = str(timezone.now())
+        token = secrets.token_hex(5)
+        token_with_data = '-'.join([user, tip, order_id, booster, token])
+        token_for_pay, created = TokenForPay.objects.get_or_create(user=request.user, defaults={'token': token_with_data})
+        
+        if not created:
+            token_for_pay.token = token_with_data
+            token_for_pay.save()
+    
         if tip and order_id and booster:
+            invoice = f'tip-{user}-{tip}-{order_id}-{booster}-{time}'
+            request.session['invoice'] = invoice
             paypal_dict = {
                 "business": settings.PAYPAL_EMAIL,
                 "amount": tip,
                 "item_name": f"tip {booster}",
-                "invoice": f'tip-{user}-{tip}-{order_id}-{booster}-{time}',
+                "invoice": invoice,
                 "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                "return": request.build_absolute_uri(reverse('tip_booster.success_tip')),
-                "cancel_return": request.build_absolute_uri(reverse('tip_booster.cancel_tip')),
+                "return": request.build_absolute_uri(f"/accounts/tip_booster/success/{token_with_data}/"),
+                "cancel_return": request.build_absolute_uri(f"/accounts/tip_booster/cancel/{token_with_data}/"),
             }
             # Create the instance.
             form = PayPalPaymentsForm(initial=paypal_dict)
@@ -199,21 +208,32 @@ def tip_booster(request):
 
    
     
-def success_tip(request):
-    # #payer_id
-    # #token
-    # payment_id = request.GET.get("paymentId")
+def success_tip(request,token):
+    token_with_data = TokenForPay.get_token(token) 
+    splited_token = token.split('-')
+    username = splited_token[0]
+    tip = int(splited_token[1])
+    order_id = int(splited_token[2])
+    booster = splited_token[3]
+    payer_id = request.GET.get("PayerID")
+    notice = f'Tip from {username}'
+    invoice = request.session.get('invoice', 'unknown')
+    if request.user == token_with_data.user and request.user.username == username and payer_id:
+        room = Room.get_specific_room(request.user, order_id)
+        msg = f'{request.user.first_name} tips {booster} with {tip}$'
+        Message.create_tip_message(request.user,msg,room)
+        token_with_data.delete()
+        if invoice != 'unknown':
+            request.session.pop('invoice')
+        tip_data = Tip_data.objects.create(invoice=invoice, payer_id=payer_id)
+        Transaction.objects.create(user=request.user, amount=tip, order_id=order_id, notice=notice, tip=tip_data)
+        return redirect('accounts.customer_side')
+    return HttpResponse("error while adding tip to bosster")
 
-    # messages.success(request, 'Tip Success, Thank you ♥')
-    # room = Room.get_specific_room(request.user, order_id)
-    # msg = f'{request.user.first_name} tips {booster} with {tip}$'
-    # Message.create_tip_message(request.user,msg,room)
-    return HttpResponse('success')
-    # return redirect(reverse_lazy('accounts.customer_side'))
-
-def cancel_tip(request):
-    messages.error(request, 'Ensure this value is greater than or equal to 10')
-    redirect(reverse_lazy('accounts.customer_side'))
+def cancel_tip(request, token):
+    TokenForPay.delete_token(token)
+    request.session['success_tip'] = 'false'
+    return redirect('accounts.customer_side')
 
 
 def customer_side(request):
@@ -274,14 +294,14 @@ def edit_customer_profile(request):
             profile_form = ProfileEditForm(request.POST, instance=request.user)
             if profile_form.is_valid():
                 profile_form.save()
-                messages.success(request, 'Profile Updated Successfully.')
+                NotifyMessage.success(request, 'Profile Updated Successfully.')
                 return redirect('edit.customer.profile')
 
         elif 'password_submit' in request.POST:
             password_form = PasswordEditForm(request.user, request.POST)
             if password_form.is_valid():
                 password_form.save()
-                messages.success(request, 'Password Changed Successfully.')
+                NotifyMessage.success(request, 'Password Changed Successfully.')
                 return redirect('edit.customer.profile')
 
     return render(request, 'accounts/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
