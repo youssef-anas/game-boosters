@@ -5,6 +5,7 @@ from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from accounts.models import BaseOrder, Wallet
+from accounts.templatetags.custom_filters import romanize_division
 
 User = settings.AUTH_USER_MODEL
 # # Create your models here.
@@ -173,7 +174,8 @@ class WildRiftDivisionOrder(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Boosting From {self.current_rank} {self.current_division} Marks {self.current_marks} To {self.desired_rank} {self.desired_division}"
+        return f"Boosting From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
+
     
     def get_rank_value(self, *args, **kwargs):
         return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"

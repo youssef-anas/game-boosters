@@ -9,13 +9,17 @@
 <div class="containter-fluid booster-order-body text-white">
   <div class="overlay py-5">
     <div class="container py-5 booster-order text-white">
-  
+      
       <div class="orders-switch d-flex justify-content-between align-items-center p-4">
+        {% if orders %}
         {% for order in orders %}
           <input type="radio" id="order-{{order.order.order.id}}" data-order="order-{{order.order.order.id}}" name="radio-order" {% if forloop.counter0 == 0 %} checked {% endif %}>
           <label for="order-{{order.order.order.id}}" class="me-2">Order {{order.order.order.id}}</label>
         {% endfor %}
         <a class="btn orders-list-btn" href="{% url 'wildrift.confirm.order' %}"><i class="fa-solid fa-plus"></i></a>
+        {% else %}
+        <h3 class="text-white text-center">You Havn't Any Order Yet</h3>
+        {% endif %}
       </div>
   
       {% for order in orders %}
@@ -189,8 +193,8 @@
               {% endif %}
               <!-- Modal -->
               <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog bg-dark">
-                  <div class="modal-content  bg-dark">
+                <div class="modal-dialog" style="background-color: var(--main-color);">
+                  <div class="modal-content" style="background-color: var(--main-color);">
                     <div class="modal-header">
                       <h1 class="modal-title fs-5" id="staticBackdropLabel">Upload Complete Image</h1>
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: var(--secondary-color); !important"></button>

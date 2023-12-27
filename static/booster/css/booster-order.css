@@ -17,11 +17,12 @@ input[type="radio"]:checked+label {
   background-image: url('./../images/bg.jpg');
   background-size: cover;
   background-attachment: fixed;
-  min-height: 100vh;
+  min-height: calc(100vh - 72px);
   position: relative;
 }
 .overlay {
   background-color: rgb(0 0 0 / 70%);
+  min-height: calc(100vh - 72px);
 }
 .orders-switch {
   background-color: #3d22625e;
@@ -165,20 +166,15 @@ input[type="radio"]:checked+label {
   height: 200px;
   padding: 20px;
   border-radius: 10px;
-  border: 2px dashed #555;
-  color: #444;
+  border: 2px dashed var(--secondary-color);
+  color: var(--secondary-color);
   cursor: pointer;
   transition: background .2s ease-in-out, border .2s ease-in-out;
   background-color: transparent;
 }
 
-.drop-container:hover {
-  background: #353535;
-  border-color: #111;
-}
-
 .drop-container:hover .drop-title {
-  color: #222;
+  color: white;
 }
 .drop-title {
   color: #444;

@@ -14,9 +14,7 @@
             <tr>
               <th>order</th>
               <th>amount</th>
-              <th>customer</th>
-              <th>notice</th>
-              <th>status</th>
+              <th>booster</th>
               <th>date</th>
               <th>More</th>
             </tr>
@@ -26,9 +24,11 @@
             <tr>
               <td>{{orderInfo.order.name}}</td>
               <td>{{orderInfo.amount}}</td>
-              <td>{{orderInfo.order.customer.first_name}} {{orderInfo.order.customer.last_name}}</td>
-              <td>{{orderInfo.notice}}</td>
-              <td>{{orderInfo.status}}</td>
+              {% if orderInfo.order.booster %}
+              <td>{{orderInfo.order.booster.first_name}} {{orderInfo.order.booster.last_name}}</td>
+              {% else %}
+              <td>Wait Booster..</td>
+              {% endif %}
               <td>{{orderInfo.date}}</td>
               <td>
                 <button type="button" class="btn text-white " style="background-color: var(--secondary-color);" data-bs-toggle="modal" data-bs-target="#orderModal" data-order="{{ orderInfo.order.wildrift_order }}">

@@ -19,4 +19,5 @@ urlpatterns = [
     path('tip_booster/cancel/', cancel_tip, name='tip_booster.cancel_tip'),
     path('customer_side/', user_passes_test(is_customer)(customer_side), name='accounts.customer_side'),
     path('edit_profile/', user_passes_test(is_customer)(edit_customer_profile), name='edit.customer.profile'),
+    path('history/', user_passes_test(is_customer)(customer_history), name='customer.history'),
 ]

@@ -87,6 +87,12 @@
   padding-bottom: var(--section-padding);
   position: relative;
 }
+@media (max-width: 767px) {
+  .games {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+  }
+}
 .games .container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
