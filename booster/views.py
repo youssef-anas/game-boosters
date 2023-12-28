@@ -120,7 +120,7 @@ def booster_orders(request):
         marks_price = [item for sublist in marks_data for item in sublist]
         marks_price.insert(0,0)
 
-    orders_with_percentege = []
+    orders_with_percentage = []
     rooms =[]
     messages=[]
     slugs=[]
@@ -147,11 +147,11 @@ def booster_orders(request):
 
         done_sum = done_sum_div + done_sum_marks
 
-        percentege = round((done_sum / order.order.price) * 100 , 2)
-        if percentege >= 100 :
-            percentege = 100
+        percentage = round((done_sum / order.order.price) * 100 , 2)
+        if percentage >= 100 :
+            percentage = 100
 
-        now_price = round(order.order.actual_price * (percentege / 100) , 2)
+        now_price = round(order.order.actual_price * (percentage / 100) , 2)
 
         order.order.money_owed = now_price
         order.order.save()
@@ -162,29 +162,29 @@ def booster_orders(request):
             slug = current_room.slug
             order_data = {
                 'order': order,
-                'percentege': percentege,
+                'percentage': percentage,
                 'now_price': now_price,
                 'user': request.user,
                 'room': current_room,
                 'messages': messages,
                 'slug': slug,
             }
-            orders_with_percentege.append(order_data)
+            orders_with_percentage.append(order_data)
         else:
             order_data = {
             'order': order,
-            'percentege': percentege,
+            'percentage': percentage,
             'now_price': now_price,
             'user': request.user,
             'room': None,
             'messages': None,
             'slug': None,
             }
-            orders_with_percentege.append(order_data)
+            orders_with_percentage.append(order_data)
             
  
     context = {
-        'orders': orders_with_percentege,
+        'orders': orders_with_percentage,
         'ranks': ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)

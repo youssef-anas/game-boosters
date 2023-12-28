@@ -22,24 +22,39 @@
             <h4 class="my-3">{{order.order.booster.first_name}} {{order.order.booster.last_name}}</h4>
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
+            <div>
+              <a class="btn btn-success m-3" href="{% url 'wildrift' %}?extend={{order.order.id}}">Extend Order</a>
+              <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
+                {% csrf_token %}
+                
+                <input type="hidden" name="order_id" value="{{ order.order.id }}">
+                <input type="hidden" name="booster" value="{{ order.order.booster }}">
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">$</span>
+                  <input type="number" required name="tip" class="form-control" placeholder="Tip"
+                    aria-label="Tip">
+                </div>
+                <button id='submitTipButton' type="submit" class="btn tip-booster-btn">Tip Booster</button>
+              </form>
+            </div>
           {% else %}
           <center class="fw-bold"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
           {% endif %}
-          <a class="btn btn-success m-3" href="{% url 'wildrift' %}?extend={{order.order.id}}">Extend Order</a>
+          
         </div>
         <hr>
 
         <div class="order-info my-4">
-          <div class="from row">
+          <!-- <div class="from row">
             <p class="my-3 text-uppercase col-4 px-0">From</p>
             <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" height="70" />
             <p class="my-3 text-uppercase col-4 px-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
-          </div>
+          </div> -->
 
-          <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
+          <!-- <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i> -->
 
           <div class="current row">
-            <p class="my-3 text-uppercase col-4 px-0">Current</p>
+            <p class="my-3 text-uppercase col-4 px-0">Now</p>
             <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" height="70" />
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
           </div>
@@ -66,46 +81,34 @@
             <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">@</span>
-              <input type="text" required name="gamename" class="form-control" placeholder="Username"
-                aria-label="Username" aria-describedby="basic-addon1">
+              <input type="text" required name="gamename" class="form-control" placeholder="Username" value="{% if order.order.customer_gamename %} {{order.order.customer_gamename}} {% endif %}" {% if order.order.data_correct %}readonly{% endif %} aria-label="Username" aria-describedby="basic-addon1">
             </div>
 
             <div class="input-group mb-3">
-              <label class="input-group-text my-0" for="inputGroupSelect01"
-                style="margin: 0 !important;">Servers</label>
-              <select class="form-select" required name="server" id="inputGroupSelect01">
-                <option value="1" selected>Europa</option>
-                <option value="2">America</option>
-                <option value="3">Asia</option>
-                <option value="4">Africa</option>
-                <option value="5">Australia</option>
+              <label class="input-group-text my-0" for="inputGroupSelect01" style="margin: 0 !important;">Servers</label>
+              <select class="form-select" required name="server" id="inputGroupSelect01" {% if order.order.data_correct %}disabled{% endif %} >
+                  <option value="1" {% if order.order.customer_server == 1 or order.order.customer_serve is null %}selected{% endif %}>Europa</option>
+                  <option value="2" {% if order.order.customer_server == 2 %}selected{% endif %}>America</option>
+                  <option value="3" {% if order.order.customer_server == 3 %}selected{% endif %}>Asia</option>
+                  <option value="4" {% if order.order.customer_server == 4 %}selected{% endif %}>Africa</option>
+                  <option value="5" {% if order.order.customer_server == 5 %}selected{% endif %}>Australia</option>
               </select>
-            </div>
+          </div>
 
             {% if not order.order.duo_boosting %}
             <div class="input-group mb-3">
               <span class="input-group-text" id="basic-addon1">*</span>
-              <input type="password" required name="password" class="form-control" placeholder="Password"
-                aria-label="Password" aria-describedby="basic-addon1">
+              <input type="text" required name="password" class="form-control" placeholder="Password" value="{% if order.order.customer_password %} {{order.order.customer_password}} {% endif %}" aria-label="Password" aria-describedby="basic-addon1" {% if order.order.data_correct %}readonly{% endif %} >
             </div>
             {% endif %}
 
+            {% if not order.order.data_correct %}
             <div class="text-end">
-              <button type="submit" class="btn submit-btn">Submit</button>
+              <button type="submit" class="btn submit-btn" >Submit</button>
             </div>
+            {% endif %}
           </form>
-          <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
-            {% csrf_token %}
-            
-            <input type="hidden" name="order_id" value="{{ order.order.id }}">
-            <input type="hidden" name="booster" value="{{ order.order.booster }}">
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1">$</span>
-              <input type="number" required name="tip" class="form-control" placeholder="Tip"
-                aria-label="Tip">
-            </div>
-            <button id='submitTipButton' type="submit" class="btn tip-booster-btn">Tip Booster</button>
-          </form>
+          
         </div>
       </div>
 
@@ -116,37 +119,9 @@
         </center>
 
         <!-- Chat With Booster -->
-        <div class="BoosterChatContent mt-lg-0 mt-4" id='BoosterChatContent'>
+        <div class="BoosterChatContent mt-lg-0 my-4" id='BoosterChatContent'>
           <h4 id="chat-booster">Chat With Booster</h4>
-          <div class="chat-booster p-4" id='chat-box'>
-            {% if order.order.booster is null %}
-            {% if order.order.select_booster %}
-            <h4 id="choose-booster">Choose Booster</h4>
-            <div class="">
-              {% for booster in boosters %}
-              {% if booster != user %}
-              <div class="booster d-flex justify-content-between align-items-center">
-                <div class="data mb-3">
-                  {% if booster.image %}
-                  <img src="{{ booster.image.url }}" alt="profile" width="50" height='50' style="border-radius: 50%;" />
-                  {% else %}
-                  <img src="{% static 'base/images/no_profile_image.jpg' %}"  width="50" height='50' style="border-radius: 50%;" alt="No Profile Photo">
-                  {% endif %}
-                  <span class="ms-4">{{booster.booster.first_name}} {{booster.booster.last_name}}</span>
-                </div>
-
-                <form action="{% url 'choose.booster' %}" method="POST">
-                  {% csrf_token %}
-                  <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
-                  <input type="hidden" name="order_id" value="{{ order.order.id }}">
-                  <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
-                  <button type="submit" class="btn submit-btn">Choose</button>
-                </form>
-              </div>
-              {% endif %}
-              {% endfor %}
-            </div>
-            {% endif %}{% endif %}            
+          <div class="chat-booster p-4" id='chat-box'>           
             <div class="container messages-section">
               <div class="row">
                 <div class="col-12 row-cols-1 align-content-between">
@@ -155,14 +130,15 @@
                     <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
                       {% for message in messages %}
                       <div
-                        class="chat-message {% if message.user == request.user %} {% if message.msg_type == 'tip' %} tip-message {%else%} userMessage {% endif %} {% else %} otherMessage {% endif %}">
+                        class="chat-message {% if message.user == request.user %} {% if message.msg_type == 'tip' %} tip-message {%else%} userMessage {% endif %} {% else %} otherMessage {% endif %}" style="background-color: transparent !important;">
                         {% if message.msg_type == 'tip' %}
-                          <div class="mb-1">{{ message.content }}</div>
+                        <h4><span class="badge" style="background-color: var(--secondary-color);">{{ message.content }}</span></h4>
+                          <!-- <div class="mb-1 message-tip"></div> -->
                         {% else %}
                           {% if request.user != message.user %}
                           <div class="image">
-                            {% if message.user.image %}
-                            <img src="{{message.user.image.url}}" alt="" width="40" height="40">
+                            {% if message.user.user.image %}
+                            <img src="{{message.user.user.image.url}}" alt="" width="40" height="40">
                             {% else %}
                             <img src="{% static 'base/images/no_profile_image.jpg' %}" alt="" width="40" height="40">
                             {% endif %}
@@ -270,6 +246,38 @@
             </div>
           </div>
         </div>
+
+        <!-- Choose Booster -->
+        {% if order.order.booster is null %}
+          {% if order.order.select_booster %}
+        <h4 id="choose-booster">Choose Booster</h4>
+        <div class="choose-booster p-4">
+            <div class="">
+              {% for booster in boosters %}
+              {% if booster != user %}
+              <div class="booster d-flex justify-content-between align-items-center">
+                <div class="data mb-3">
+                  {% if booster.image %}
+                  <img src="{{ booster.image.url }}" alt="profile" width="50" height='50' style="border-radius: 50%;" />
+                  {% else %}
+                  <img src="{% static 'base/images/no_profile_image.jpg' %}"  width="50" height='50' style="border-radius: 50%;" alt="No Profile Photo">
+                  {% endif %}
+                  <span class="ms-4">{{booster.booster.first_name}} {{booster.booster.last_name}}</span>
+                </div>
+
+                <form action="{% url 'choose.booster' %}" method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
+                  <input type="hidden" name="order_id" value="{{ order.order.id }}">
+                  <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
+                  <button type="submit" class="btn submit-btn">Choose</button>
+                </form>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+        </div>
+        {% endif %}{% endif %} 
       </div>
     </div>
   </div>

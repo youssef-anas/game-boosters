@@ -43,7 +43,3 @@ class Booster(models.Model):
         self.booster.is_booster = True
         self.booster.save()
         super().save(*args, **kwargs)
-
-
-    def __str__(self):
-        return f'{self.user.booster.username} {self.type} {self.amount}$'
