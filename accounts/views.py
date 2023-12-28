@@ -20,7 +20,7 @@ from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
 from booster.models import Booster
-from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data
+from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 import requests
@@ -220,13 +220,24 @@ def success_tip(request,token):
     invoice = request.session.get('invoice', 'unknown')
     if request.user == token_with_data.user and request.user.username == username and payer_id:
         room = Room.get_specific_room(request.user, order_id)
-        msg = f'{request.user.first_name} tips {booster} with {tip}$'
+        msg = f'{request.user.first_name} Tips {booster} with {tip}$'
         Message.create_tip_message(request.user,msg,room)
         token_with_data.delete()
         if invoice != 'unknown':
             request.session.pop('invoice')
         tip_data = Tip_data.objects.create(invoice=invoice, payer_id=payer_id)
-        Transaction.objects.create(user=request.user, amount=tip, order_id=order_id, notice=notice, tip=tip_data)
+        booster_instance = BaseUser.objects.get(username=booster)
+        Transaction.objects.create(user=booster_instance, amount=tip, order_id=order_id, notice=notice, tip=tip_data, status='Tip', type='DEPOSIT')
+        try: 
+            booster_wallet = booster_instance.wallet
+            booster_wallet.money += tip
+            booster_wallet.save()
+        except: 
+            Wallet.objects.create (
+                user=booster_instance,
+                money=tip
+            )
+
         return redirect('accounts.customer_side')
     return HttpResponse("error while adding tip to bosster")
 

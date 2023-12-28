@@ -226,7 +226,8 @@ class Transaction(models.Model):
         ('New', 'New'),
         ('Drop', 'Drop'),
         ('Extend', 'Extend'),
-        ('Done', 'Done')
+        ('Done', 'Done'),
+        ('Tip', 'Tip')
     ]
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
