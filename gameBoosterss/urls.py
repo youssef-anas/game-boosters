@@ -10,8 +10,9 @@ urlpatterns = [
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),
     path('dashboard/', include('dashboard.urls')),
-    path('wildRift/', include('wildRift.urls'), name='wildRift'),
+    path('wildRift/', include('wildRift.urls')),
     path('accounts/', include('accounts.urls')),
+    path('valorant/', include('valorant.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

@@ -13,7 +13,6 @@ import uuid
 from django.forms.models import model_to_dict
 from .serializers import RankSerializer
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
@@ -119,7 +118,7 @@ def wildRiftGetBoosterByRank(request):
 
     divisions_data = [
         [division.from_IV_to_III] if division.rank.rank_name == 'master' else
-        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_II, division.from_I_to_IV_next]
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
         for division in divisions
     ]
 

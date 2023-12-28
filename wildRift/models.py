@@ -48,8 +48,6 @@ User = settings.AUTH_USER_MODEL
 class WildRiftRank(models.Model):
     rank_name = models.CharField(max_length=25)
     rank_image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
-    customer_show = models.BooleanField(default=False ,blank=True)
-    booster_show = models.BooleanField(default=False ,blank=True)
 
     def __str__(self):
         return self.rank_name
@@ -67,7 +65,7 @@ class WildRiftTier(models.Model):
     rank = models.OneToOneField('WildRiftRank', related_name='tier', on_delete=models.CASCADE)
     from_IV_to_III = models.FloatField(default=0)
     from_III_to_II = models.FloatField(default=0)
-    from_II_to_II = models.FloatField(default=0)
+    from_II_to_I = models.FloatField(default=0)
     from_I_to_IV_next = models.FloatField(default=0)
 
     def __str__(self):
@@ -101,8 +99,6 @@ class WildRiftPlacement(models.Model):
     name = models.CharField(max_length=25)
     image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
     price = models.FloatField()
-    
-
 
     def __str__(self):
         return self.name

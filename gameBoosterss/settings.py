@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'customer.apps.CustomerConfig',
     'dashboard.apps.DashboardConfig',
     'wildRift.apps.WildriftConfig',
+    'valorant.apps.ValorantConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
     'paypal.standard.ipn',
