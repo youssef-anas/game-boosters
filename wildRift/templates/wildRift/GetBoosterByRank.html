@@ -2,8 +2,8 @@
 {% load static %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-<link href="{% static 'wildRift/css/wildRift.css'%}" rel="stylesheet" />
-<link href="{% static 'wildRift/css/placement.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/placement.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
@@ -249,6 +249,6 @@
 </div>
 {% endblock %}
 {% block script %}
-<script src="{% static 'wildRift/js/main.js' %}"></script>
+<script src="{% static 'games/js/main.js' %}"></script>
 <script src="{% static 'wildRift/js/division-placement-boost.js' %}"></script>
 {% endblock %}
