@@ -69,37 +69,10 @@ class ValorantDivisionOrder(models.Model):
 
   choose_agents = models.BooleanField(default=False, blank=True, null=True)
 
-  def process_name(self):
-    # Split the invoice string by the hyphen ("-") delimiter
-    invoice_values = self.order.invoice.split('-')
-
-    # Extract specific values
-    self.current_division = int(invoice_values[3])
-    self.current_marks = int(invoice_values[4])
-    self.desired_division = int(invoice_values[6])
-    self.order.price = float(invoice_values[12])
-    
-    # Update the BaseOrder fields based on invoice_values
-    self.order.duo_boosting = bool(int(invoice_values[7]))
-    self.order.select_booster = bool(int(invoice_values[8]))
-    self.order.turbo_boost = bool(int(invoice_values[9]))
-    self.order.streaming = bool(int(invoice_values[10]))
-
-    current_rank_id = int(invoice_values[2])
-    desired_rank_id = int(invoice_values[5])
-
-
-    self.current_rank = ValorantRank.objects.get(pk=current_rank_id)
-    self.desired_rank = ValorantRank.objects.get(pk=desired_rank_id)
-    self.reached_rank = self.current_rank
-    self.reached_division = self.current_division
-    self.reached_marks = self.current_marks
-
-    if not self.order.name:
-      self.order.name = f'Valo{self.order.id}'
 
   def save_with_processing(self, *args, **kwargs):
-    self.process_name()
+    if not self.order.name:
+      self.order.name = f'Valo{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
