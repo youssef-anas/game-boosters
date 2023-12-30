@@ -254,7 +254,7 @@
         <div class="choose-booster p-4">
             <div class="">
               {% for booster in boosters %}
-              {% if booster != user %}
+              {% if booster != user %} 
               <div class="booster d-flex justify-content-between align-items-center">
                 <div class="data mb-3">
                   {% if booster.image %}
@@ -267,9 +267,8 @@
 
                 <form action="{% url 'choose.booster' %}" method="POST">
                   {% csrf_token %}
-                  <input type="hidden" name="chosen_booster_id" value="{{ booster.id }}">
+                  <input type="hidden" name="chosen_booster_id" value="{{ booster.booster.id }}">
                   <input type="hidden" name="order_id" value="{{ order.order.id }}">
-                  <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
                   <button type="submit" class="btn submit-btn">Choose</button>
                 </form>
               </div>

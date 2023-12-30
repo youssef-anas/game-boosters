@@ -24,4 +24,7 @@
 
 /static/wildRift/data/
 
+/valorant/migrations/
+/valorant/__pycache__/
+
 

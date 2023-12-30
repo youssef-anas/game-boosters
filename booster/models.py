@@ -24,7 +24,7 @@ class Rating(models.Model):
     
 
 class Booster(models.Model):
-    booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='user', null=True)
+    booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True)
     image = models.ImageField(null=True,upload_to='media/booster/', blank= True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)

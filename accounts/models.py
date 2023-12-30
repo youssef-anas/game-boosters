@@ -115,11 +115,12 @@ class BaseOrder(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def update_actual_price(self):
-        if self.status == 'Drop':
-            return 'Droped'
+        if self.status == 'Continue':
+            return 'Continue'
+
         
         current_time = timezone.now()
-
+        
         percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
         percent2 = BoosterPercent.objects.get(pk=1).booster_percent2
         percent3 = BoosterPercent.objects.get(pk=1).booster_percent3
@@ -180,9 +181,7 @@ class BaseOrder(models.Model):
                     type='DEPOSIT'
                 )
 
-    def customer_wallet(self):
-        print("Inside customer_wallet function")
-        
+    def customer_wallet(self):        
         if self.status == 'Drop' or self.status == 'Extend':
             print("Order status is 'Drop' or 'Extend', exiting customer_wallet function")
             return

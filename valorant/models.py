@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
+import requests
 
 # Create your models here.
 class ValorantRank(models.Model):
@@ -29,6 +30,7 @@ class ValorantMark(models.Model):
   marks_41_60 = models.FloatField(default=0)
   marks_61_80 = models.FloatField(default=0)
   marks_81_100 = models.FloatField(default=0)
+  
 
   def __str__(self):
     return f"{self.rank} -> Marks 0-20 : {self.marks_0_20}, Marks 21_40 : {self.marks_21_40}, Marks 41_60 : {self.marks_41_60}, Marks 61_80 : {self.marks_61_80}, Marks 81_100 : {self.marks_81_100}"
@@ -66,43 +68,48 @@ class ValorantDivisionOrder(models.Model):
   desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
-
+  created_at = models.DateTimeField(auto_now_add =True)
   choose_agents = models.BooleanField(default=False, blank=True, null=True)
 
-  def process_name(self):
-    # Split the invoice string by the hyphen ("-") delimiter
-    invoice_values = self.order.invoice.split('-')
 
-    # Extract specific values
-    self.current_division = int(invoice_values[3])
-    self.current_marks = int(invoice_values[4])
-    self.desired_division = int(invoice_values[6])
-    self.order.price = float(invoice_values[12])
-    
-    # Update the BaseOrder fields based on invoice_values
-    self.order.duo_boosting = bool(int(invoice_values[7]))
-    self.order.select_booster = bool(int(invoice_values[8]))
-    self.order.turbo_boost = bool(int(invoice_values[9]))
-    self.order.streaming = bool(int(invoice_values[10]))
+  def send_discord_notification(self):
+        if self.order.status == 'Extend':
+            return print('Extend Order')
+        discord_webhook_url = 'https://discord.com/api/webhooks/1190613917853032554/ox-bqYupSInRiv3x41Fgj0Nh6gKZjbfkdnJvX1vIokc68xqQqyXmg1hEz6ZtrqGONbaR'
+        current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        embed = {
+            "title": "Vlorant",
+            "description": (
+                f"**Order ID:** {self.order.name}\n"
+                f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} "
+                f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            ),
+            "color": 0xff9999,  # Hex color code for a Discord color
+            "footer": {"text": f"{current_time}"}, 
+        }
+        data = {
+            "content": "New order has arrived \n",
+            "embeds": [embed],
+        }
 
-    current_rank_id = int(invoice_values[2])
-    desired_rank_id = int(invoice_values[5])
 
+        headers = {
+            "Content-Type": "application/json"
+        }
 
-    self.current_rank = ValorantRank.objects.get(pk=current_rank_id)
-    self.desired_rank = ValorantRank.objects.get(pk=desired_rank_id)
-    self.reached_rank = self.current_rank
-    self.reached_division = self.current_division
-    self.reached_marks = self.current_marks
+        response = requests.post(discord_webhook_url, json=data, headers=headers)
 
-    if not self.order.name:
-      self.order.name = f'Valo{self.order.id}'
+        if response.status_code != 204:
+            print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
 
   def save_with_processing(self, *args, **kwargs):
-    self.process_name()
+    if not self.order.name:
+      self.order.name = f'Valo{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
 
   def __str__(self):
     return f"Boosting From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
