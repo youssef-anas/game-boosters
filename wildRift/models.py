@@ -6,6 +6,8 @@ from django.db.models.signals import post_migrate
 from django.dispatch import receiver
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
+import requests
+from django.utils import timezone
 
 User = settings.AUTH_USER_MODEL
 # # Create your models here.
@@ -131,44 +133,48 @@ class WildRiftDivisionOrder(models.Model):
     desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
-
-    def process_name(self):
-        # Split the invoice string by the hyphen ("-") delimiter
-        invoice_values = self.order.invoice.split('-')
-
-        # Extract specific values
-        self.current_division = int(invoice_values[3])
-        self.current_marks = int(invoice_values[4])
-        self.desired_division = int(invoice_values[6])
-        self.order.price = float(invoice_values[12])
-        
-        # Update the BaseOrder fields based on invoice_values
-        self.order.duo_boosting = bool(int(invoice_values[7]))
-        self.order.select_booster = bool(int(invoice_values[8]))
-        self.order.turbo_boost = bool(int(invoice_values[9]))
-        self.order.streaming = bool(int(invoice_values[10]))
-
-        current_rank_id = int(invoice_values[2])
-        desired_rank_id = int(invoice_values[5])
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
-        self.current_rank = WildRiftRank.objects.get(pk=current_rank_id)
-        self.desired_rank = WildRiftRank.objects.get(pk=desired_rank_id)
-        self.reached_rank = self.current_rank
-        self.reached_division = self.current_division
-        self.reached_marks = self.current_marks
+    def send_discord_notification(self):
+        if self.order.status == 'Extend':
+            return print('Extend Order')
+        discord_webhook_url = 'https://discord.com/api/webhooks/1190313898201583626/HtkVOsIBOEfj9Jl8eTO95ltrm36NVkKW-kq1a-XRPjOjC1UqXCMwy7t-s4DuOmxA5Ucs'
+        current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        embed = {
+            "title": "Rift",
+            "description": (
+                f"**Order ID:** {self.order.name}\n"
+                f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
+                f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            ),
+            "color": 0x3498db,  # Hex color code for a Discord blue color
+            "footer": {"text": f"{current_time}"}, 
+        }
+        data = {
+            "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+            "embeds": [embed],
+        }
 
-        if not self.order.name:
-            self.order.name = f'WR{self.order.id}'
 
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+        if response.status_code != 204:
+            print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
 
     def save_with_processing(self, *args, **kwargs):
-        self.process_name()
+        if not self.order.name:
+            self.order.name = f'WR{self.order.id}'
         self.order.update_actual_price()
         self.order.save()
         super().save(*args, **kwargs)
-
+        self.send_discord_notification()
+        
     def __str__(self):
         return f"Boosting From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
 

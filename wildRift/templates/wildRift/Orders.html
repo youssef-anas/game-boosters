@@ -5,15 +5,71 @@
 <link rel="stylesheet" href="{% static 'wildRift/css/orders.css'%}">
 {% endblock %}
 {% block container %}
+{% block script %}
+{% for order in divisions_order %}
+<script>
+  function startTimer(price,seconds, callback) {
+    let remainingTime = seconds;
+  
+    function updateTimer() {
+      const minutes = Math.floor(remainingTime / 60);
+      const seconds = remainingTime % 60;
+  
+      // Add leading zeros to minutes and seconds
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
+      const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+  
+      $('#actual_price_{{ order.order.id }}').text(price+'$');
+      $('#Timer_{{ order.order.id }}').text('Price increase in ' + formattedMinutes + ':' + formattedSeconds);
+      $('#Timer_{{ order.order.id }}').show();
+  
+      if (remainingTime === 0) {
+        clearInterval(timerId);
+        callback(); 
+      } else {
+        remainingTime--;
+      }
+    }
+  
+    updateTimer();
+  
+    const timerId = setInterval(updateTimer, 1000);
+  }
+  
+  function fetchLatestPrice{{ order.order.id }}() {
+    console.log('Order status:', '{{ order.order.status }}');
+    $.ajax({
+      url: '{% url "get_latest_price" %}?order_id={{ order.order.id }}',
+      method: 'GET',
+      success: function (data) {
+        console.log(data)
+        if (data.time_difference === 'Time is up' || data.time_difference ===  'Continue' ) {
+          console.log('final price')
+          $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
+          $('#Timer_{{ order.order.id }}').hide();
+          $('#final_price_{{ order.order.id }}').show();
+        }else{
+          console.log('timer start')
+          startTimer(data.actual_price,data.time_difference +2, function() {
+            fetchLatestPrice{{ order.order.id }}();
+          });
+        }
+        
+      },
+      error: function (error) {
+        console.error('Error fetching latest price:', error);
+      }
+    });
+  }
+
+  // Call the function immediately without document ready
+  fetchLatestPrice{{ order.order.id }}();
+</script>
+{% endfor %}
+{% endblock %}
 <div class="orders-container container-fluid p-5 text-white">
   <div class="container">
 
-    <!-- <div class="choise text-center mb-3">
-      <input type="radio" id="division-boost-order" name="radio-group-order-type" checked>
-      <label for="division-boost-order" class="me-2">Division Boost Orders</label>
-      <input type="radio" id="placements-boost-order" name="radio-group-order-type">
-      <label for="placements-boost-order" class="me-2">Placements Boost Orders</label>
-    </div> -->
 
     <div class="row">
       <div class="col-12">
@@ -49,91 +105,8 @@
             {% endfor %}
           </div>
         </div>
-
-        <!-- --------------- Placements Boost Orders --------------- -->
-        <!-- <div class="placements-boost-order p-5 rounded-3">
-          <h4 class="mb-3">Placements Boost Orders</h4>
-          <div class="row">
-            {% for order in placements_order %}
-            <div class="col-xl-6 col-md-12 mb-4 text-dark">
-              <div class="card shadow h-100 py-2 orders">
-                <div class="card-body">
-                  <h5 class="card-title">{{order}}</h5>
-                  <div class="d-flex justify-content-between align-items-center my-2">
-                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
-                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
-                  </div>
-                  <div class="d-flex justify-content-between align-items-center">
-                    <p class="h5 mb-0 placement-price placement-price{{forloop.counter0}}" data-price="{{ order.price }}" ></p>
-                    <a href="{% url 'order.chat' order_type='placement' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div> -->
-      </div>
-
-      <!-- <div class="col-lg-4 d-lg-block d-none">
-        <img class="wild-rift-image" src="{% static 'wildRift/images/wild-rift.webp' %}" />
-      </div> -->
     </div>
 
   </div>
 </div>
-{% endblock %}
-{% block script %}
-{% for order in divisions_order %}
-<script>
-  var stopFetching{{ order.order.id }} = false;
-
-  function fetchLatestPrice{{ order.order.id }}() {
-    console.log('Order status:', '{{ order.order.status }}');
-    if (!stopFetching{{ order.order.id }}) {
-      $.ajax({
-        url: '{% url "get_latest_price" %}?order_id={{ order.order.id }}',
-        method: 'GET',
-        success: function (data) {
-          if (data.time_difference == 'Droped'){
-            stopFetching{{ order.order.id }} = true;
-            console.log('stop', {{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100))
-            $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
-            $('#Timer_{{ order.order.id }}').hide();
-            $('#final_price_{{ order.order.id }}').show();
-          }
-          else{
-            // Update the displayed price in the HTML
-            $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
-            var minutes = Math.floor(data.time_difference / 60);
-            var seconds = (data.time_difference % 60).toString().padStart(2, '0');
-            $('#Timer_{{ order.order.id }}').text('Price increase in ' + minutes + ':' + seconds + ' minutes');
-
-            console.log('actual_price_{{ order.order.id }}', data.actual_price+'$');
-            console.log({{ order.order.id }} , data.time_difference)
-            // Check the condition before calling the function again
-            if ({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100) !== data.actual_price ) {
-              $('#Timer_{{ order.order.id }}').show();
-              setTimeout(fetchLatestPrice{{ order.order.id }}, 1000);
-            } else {
-              stopFetching{{ order.order.id }} = true;
-              console.log('stop', {{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100))
-              $('#actual_price_{{ order.order.id }}').text({{ order.order.price }} * ({{ booster_percents.booster_percent4 }} / 100)+'$');
-              $('#Timer_{{ order.order.id }}').hide();
-              $('#final_price_{{ order.order.id }}').show();
-            }
-          }
-        },
-        error: function (error) {
-          console.error('Error fetching latest price:', error);
-        }
-      });
-    }
-  }
-
-  // Initial call to start the loop
-  fetchLatestPrice{{ order.order.id }}();
-</script>
-{% endfor %}
-<!-- <script src="{% static 'wildRift/js/orders.js' %}"></script> -->
 {% endblock %}

@@ -139,11 +139,12 @@ def choose_booster(request):
     if request.method == 'POST':
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
-        request.POST.get('admins_chat_slug')
+        print(chosen_booster_id)
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
             booster = get_object_or_404(BaseUser, id=chosen_booster_id)
+            print(f'$$$$$$$$$$$$$$$$${booster}')
             order.booster = booster
             order.save()
             create_chat_with_booster(request.user,booster,order_id)
