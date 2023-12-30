@@ -1,0 +1,309 @@
+// Extra Charges Part
+// Buttons 
+const buttons = {
+  duoBoosting: document.querySelector('#duoBoostingButton'),
+  selectBooster: document.querySelector('#selectBoosterButton'),
+  turboBoost: document.querySelector('#turboBoostButton'),
+  chooseAgents: document.querySelector('#chooseAgentsButton'),
+  streaming: document.querySelector('#streamingButton'),
+};
+
+// Content
+const contents = {
+  duoBoosting: document.querySelector('.duoBoostingContent'),
+  selectBooster: document.querySelector('.selectBoosterContent'),
+  turboBoost: document.querySelector('.turboBoostContent'),
+  chooseAgents: document.querySelector('.chooseAgentsContent'),
+  streaming: document.querySelector('.streamingContent'),
+};
+
+// Apply
+const Applybuttons = {
+  duoBoosting: document.querySelector('#duoBoostingApplyButton'),
+  selectBooster: document.querySelector('#selectBoosterApplyButton'),
+  turboBoost: document.querySelector('#turboBoostApplyButton'),
+  chooseAgents: document.querySelector('#chooseAgentsApplyButton'),
+  streaming: document.querySelector('#streamingApplyButton'),
+};
+
+// Toggle Function
+function toggleContent(content) {
+  for (const key in contents) {
+    contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
+  }
+}
+
+// Toggle click event
+function setupButtonClickEvent(button, content) {
+  button.addEventListener('click', function () {
+    toggleContent(content);
+  });
+}
+
+// Update Percentege
+function updateTotalPercentage(percentage, add = true, button) {
+  let buttonOldName = buttons[button].innerHTML
+  if (add) {
+    total_Percentage += percentage;
+    $(`#${button}`).val(true);
+    buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
+    Applybuttons[button].innerHTML = 'Cancel'
+    Applybuttons[button].classList.remove('applyButton');
+    Applybuttons[button].classList.add('cancelButton');
+  } else {
+    $(`#${button}`).val(false);
+    total_Percentage -= percentage;
+    buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check me-2"></i>', '');
+    Applybuttons[button].innerHTML = 'Apply'
+    Applybuttons[button].classList.remove('cancelButton');
+    Applybuttons[button].classList.add('applyButton');
+  }
+}
+
+// Additional Initial Percent
+var total_Percentage = 0;
+
+// ----------------------------- Division Boost ---------------------------------
+
+// Buttons
+const radioButtonsCurrent = document.querySelectorAll('input[name="radio-group-current"]');
+const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-desired"]');
+const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
+const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
+const makrs_on_current_rank_checked = document.querySelectorAll('input[name="radio-group-current-mark"]');
+const makrs_on_current_rank = document.querySelectorAll('.current-mark-container');
+
+// Disable Functions
+function setRadioButtonStateWithDisable(radioButtons, values) {
+  radioButtons.forEach((radio, index) => {
+    // Assuming values in the specified order correspond to radio button indices
+    radio.checked = (index === values);
+    radio.disabled = true;
+  });
+}
+function setRadioButtonState(radioButtons, values) {
+  radioButtons.forEach((radio, index) => {
+    radio.checked = (index === values);
+    if (index<values){
+      radio.disabled = true;
+    }
+  });
+}
+function setRadioButtonStateForDesiredDivision(radioButtons, values) {
+  radioButtons.forEach((radio, index) => {
+    radio.checked = (index === values);
+  });
+}
+
+// Slice Function
+function sliceArray(array, start, end) {
+  return array.slice(start, end + 1);
+}
+
+// Initail Values
+const initiallyCheckedIndexCurrent = Array.from(radioButtonsCurrent).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexDesired = Array.from(radioButtonsDesired).findIndex(radio => radio.checked) + 1;
+
+const initiallyCheckedIndexCurrentDivision = Array.from(radioButtonsCurrentDivision).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexDesiredDivision = Array.from(radioButtonsDesiredDivision).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexMark = Array.from(makrs_on_current_rank_checked).findIndex(radio => radio.checked);
+
+// Read Values From Json File
+let divisionPrices = [0];
+let marks_price = [[0, 0, 0, 0, 0, 0]];
+Promise.all([
+  new Promise(function (resolve, reject) {
+    $.getJSON('/static/valorant/data/divisions_data.json', function (data) {
+      divisionPrices = divisionPrices.concat(...data);
+      resolve();
+    });
+  }),
+  new Promise(function (resolve, reject) {
+    $.getJSON('/static/valorant/data/marks_data.json', function (data) {
+      marks_price = marks_price.concat(data.slice(0));
+      resolve();
+    });
+  })
+]).then(function () {
+  // Array For Names 
+  const divisionRanks = ['', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', '	immortal'];
+
+  const divisionNames = [0, 'I', 'II', 'III']
+
+  // Variable That I Use
+  var current_rank = initiallyCheckedIndexCurrent;
+  var desired_rank = initiallyCheckedIndexDesired;
+  var current_division = initiallyCheckedIndexCurrentDivision;
+  var desired_division = initiallyCheckedIndexDesiredDivision;
+  var current_rank_name = divisionRanks[initiallyCheckedIndexCurrent];
+  var desired_rank_name = divisionRanks[initiallyCheckedIndexDesired];
+  var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
+  var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
+  var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
+  var mark = 0
+
+  // Get Result Function
+  function getResult() {
+    const startRank = ((current_rank - 1) * 3) + current_division;
+
+    const endRank = ((desired_rank - 1) * 3) + desired_division - 1;
+    const slicedArray = sliceArray(divisionPrices, startRank, endRank);
+    const result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+    let result_with_mark = result
+
+    if (result !== 0) {
+      result_with_mark = result - number_of_mark;
+    }
+
+    // Apply extra charges to the result
+    result_with_mark += result_with_mark * total_Percentage;
+    result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
+
+    const pricee = document.querySelector('.price-data.division-boost');
+    pricee.innerHTML = `
+    <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
+    <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
+  `;
+
+    // From Value
+    $('input[name="current_rank"]').val(current_rank);
+    $('input[name="current_division"]').val(current_division);
+    $('input[name="marks"]').val(mark);
+    $('input[name="desired_rank"]').val(desired_rank);
+    $('input[name="desired_division"]').val(desired_division);
+    $('input[name="price"]').val(result_with_mark);
+  }
+
+  // Get Result 
+  getResult();
+
+  // Current Rank Change
+  radioButtonsCurrent.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      const selectedIndex = Array.from(radioButtonsCurrent).indexOf(radio);
+      current_rank = selectedIndex + 1;
+      current_rank_name = divisionRanks[current_rank];
+      makrs_on_current_rank_checked[0].checked = true; // make 0 mark is check
+      getResult();
+    });
+  });
+
+  // Desired Rank Change
+  radioButtonsDesired.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
+      desired_rank = selectedIndex + 1;
+      desired_rank_name = divisionRanks[desired_rank]
+      const desired_division_to_hide = document.getElementById('desired-division');
+      if (desired_rank == 8) {
+        desired_division_to_hide.classList.add('d-none');
+        let desired_division_IV = document.getElementById("desired-division0")
+        desired_division_IV.checked = true;
+      }
+      else {
+        desired_division_to_hide.classList.remove('d-none');
+      }
+      getResult();
+    });
+  });
+
+  // Current Division Change
+  radioButtonsCurrentDivision.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
+      current_division = selectedIndex + 1;
+      current_division_name = divisionNames[current_division]
+      getResult();
+    });
+  })
+
+  // Desired Division Change
+  radioButtonsDesiredDivision.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      const selectedIndex = Array.from(radioButtonsDesiredDivision).indexOf(radio);
+      desired_division = selectedIndex + 1;
+      desired_division_name = divisionNames[desired_division]
+      getResult()
+    });
+  });
+
+  // Mark Changes
+  makrs_on_current_rank_checked.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
+      number_of_mark = marks_price[current_rank][selectedIndex];
+      mark = selectedIndex
+      getResult();
+    });
+  });
+
+  // Apply Extra Button
+  function setupApplyButtonClickEvent(button, percentage) {
+    Applybuttons[button].addEventListener('click', function () {
+      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+      getResult();
+      getPrices();
+    });
+  }
+
+  // Setup click events for each button
+  for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+  }
+  setupApplyButtonClickEvent('duoBoosting', 0.65);
+  setupApplyButtonClickEvent('selectBooster', 0.05);
+  setupApplyButtonClickEvent('turboBoost', 0.20);
+  // buttons['chooseAgents'].click();
+  setupApplyButtonClickEvent('chooseAgents', 0.0);
+  setupApplyButtonClickEvent('streaming', 0.15);
+});
+
+// ----------------------------- Placments Boost ---------------------------------
+const radioButtonsRank = $('input[name="radio-group-ranks"]');
+const sliderEl = $("#game-count");
+const sliderValue = $(".value");
+const gameCounterInitial = Number(sliderEl.val())
+const initiallyCheckedIndexRank = $('input[name="radio-group-ranks"]').index($('input[name="radio-group-ranks"]:checked'));
+const initiallyCheckedRank = $('input[name="radio-group-ranks"]').eq(initiallyCheckedIndexRank);
+const initiallyCheckedIndexRankPrice = initiallyCheckedRank.data('price');
+
+let rank = initiallyCheckedIndexRank
+let rank_price = initiallyCheckedIndexRankPrice
+let gameCounter = gameCounterInitial
+
+
+const getPrices = () => {
+let price = (rank_price * gameCounter);
+price = parseFloat(price + (price * total_Percentage)).toFixed(2)
+const pricee = $('.price-data.placements-boost').eq(0);
+pricee.html(`
+<p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
+<h4>$${price}</h4>
+`);
+}
+getPrices()
+
+radioButtonsRank.each(function (index, radio) {
+$(radio).on('change', function () {
+  const selectedIndex = radioButtonsRank.index(radio);
+  rank = selectedIndex;
+  rank_price = $(radio).data('price');
+  getPrices()
+});
+});
+
+
+sliderEl.on("input", function (event) {
+gameCounter = Number(event.target.value);
+
+sliderValue.text(gameCounter);
+
+const progress = (gameCounter / sliderEl.prop("max")) * 100;
+
+sliderEl.css("background", `linear-gradient(to right, var(--main-color) ${progress}%, #ccc ${progress}%)`);
+
+sliderEl.css("--thumb-rotate", `${(gameCounter / 100) * 2160}deg`);
+
+getPrices()
+});

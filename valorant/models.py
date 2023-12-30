@@ -35,13 +35,13 @@ class ValorantMark(models.Model):
   def __str__(self):
     return f"{self.rank} -> Marks 0-20 : {self.marks_0_20}, Marks 21_40 : {self.marks_21_40}, Marks 41_60 : {self.marks_41_60}, Marks 61_80 : {self.marks_61_80}, Marks 81_100 : {self.marks_81_100}"
   
-class WildRiftPlacement(models.Model):
+class ValorantPlacement(models.Model):
   rank_name = models.CharField(max_length=25)
   rank_image = models.ImageField(upload_to='valorant/images/', blank=True, null=True)
   price = models.FloatField()
 
   def __str__(self):
-    return self.name
+    return self.rank_name
   
   def get_image_url(self):
     return f"/media/{self.rank_image}"
@@ -53,11 +53,11 @@ class ValorantDivisionOrder(models.Model):
     (3, 'III'),
   ]
   MARKS_CHOISES = [
-      (1, '0-20'),
-      (2 , '21-40'),
-      (3, '41-60'),
-      (4, '61-80'),
-      (5, '81-100')
+    (0, '0-20'),
+    (1 , '21-40'),
+    (2, '41-60'),
+    (3, '61-80'),
+    (4, '81-100')
   ]
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='valorant_division_order')
   current_rank = models.ForeignKey(ValorantRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
@@ -71,36 +71,34 @@ class ValorantDivisionOrder(models.Model):
   created_at = models.DateTimeField(auto_now_add =True)
   choose_agents = models.BooleanField(default=False, blank=True, null=True)
 
-
   def send_discord_notification(self):
-        if self.order.status == 'Extend':
-            return print('Extend Order')
-        discord_webhook_url = 'https://discord.com/api/webhooks/1190613917853032554/ox-bqYupSInRiv3x41Fgj0Nh6gKZjbfkdnJvX1vIokc68xqQqyXmg1hEz6ZtrqGONbaR'
-        current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        embed = {
-            "title": "Vlorant",
-            "description": (
-                f"**Order ID:** {self.order.name}\n"
-                f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} "
-                f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
-            ),
-            "color": 0xff9999,  # Hex color code for a Discord color
-            "footer": {"text": f"{current_time}"}, 
-        }
-        data = {
-            "content": "New order has arrived \n",
-            "embeds": [embed],
-        }
+    if self.order.status == 'Extend':
+      return print('Extend Order')
+    discord_webhook_url = 'https://discord.com/api/webhooks/1190613917853032554/ox-bqYupSInRiv3x41Fgj0Nh6gKZjbfkdnJvX1vIokc68xqQqyXmg1hEz6ZtrqGONbaR'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+      "title": "Vlorant",
+      "description": (
+        f"**Order ID:** {self.order.name}\n"
+        f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} "
+        f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+      ),
+      "color": 0xff9999,  # Hex color code for a Discord color
+      "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+      "content": "New order has arrived \n",
+      "embeds": [embed],
+    }
 
+    headers = {
+      "Content-Type": "application/json"
+    }
 
-        headers = {
-            "Content-Type": "application/json"
-        }
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
 
-        response = requests.post(discord_webhook_url, json=data, headers=headers)
-
-        if response.status_code != 204:
-            print(f"Failed to send Discord notification. Status code: {response.status_code}")
+    if response.status_code != 204:
+      print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
 
   def save_with_processing(self, *args, **kwargs):
@@ -120,7 +118,7 @@ class ValorantDivisionOrder(models.Model):
     
 class ValorantPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='valorant_placement_order')
-  last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
+  last_rank = models.ForeignKey(ValorantPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
   number_of_match = models.IntegerField(default=5)
 
   choose_agents = models.BooleanField(default=False, blank=True, null=True)

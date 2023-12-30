@@ -5,5 +5,6 @@ from valorant.models import *
 admin.site.register(ValorantRank)
 admin.site.register(ValorantTier)
 admin.site.register(ValorantMark)
+admin.site.register(ValorantPlacement)
 admin.site.register(ValorantDivisionOrder)
 admin.site.register(ValorantPlacementOrder)

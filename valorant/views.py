@@ -14,7 +14,7 @@ def valorantGetBoosterByRank(request):
   ranks = ValorantRank.objects.all().order_by('id')
   divisions  = ValorantTier.objects.all().order_by('id')
   marks = ValorantMark.objects.all().order_by('id')
-  placements = WildRiftPlacement.objects.all().order_by('id')
+  placements = ValorantPlacement.objects.all().order_by('id')
 
   divisions_data = [
     [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]

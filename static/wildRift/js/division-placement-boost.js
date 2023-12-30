@@ -190,53 +190,54 @@ function setRadioButtonStateForDesiredDivision(radioButtons, values) {
     setupApplyButtonClickEvent('turboBoost', 0.20);
     setupApplyButtonClickEvent('streaming', 0.15);
 
-        // Get the 'choose-booster' query parameter value from the URL
-        const chooseBoosterValue = urlParams.get('choose_booster');
-        let chooseBoosterInt = 0
-        let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
-        if (chooseBoosterValue != null){
-          chooseBoosterInt = parseInt(chooseBoosterValue, 10);
-          autoSelectBooster.click()
+    // Get the 'choose-booster' query parameter value from the URL
+    const chooseBoosterValue = urlParams.get('choose_booster');
+    let chooseBoosterInt = 0
+    let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
+    if (chooseBoosterValue != null){
+      chooseBoosterInt = parseInt(chooseBoosterValue, 10);
+      autoSelectBooster.click()
+    }
+    // Set the value of the input field to the obtained 'choose-booster' value
+    document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
+
+    if (extend_order){
+        let orderID = parseInt(extend_order, 10);
+        document.getElementById('extendOrder').value = orderID; 
+
+        // Set the checked state for each group of radio buttons using the specified order
+        setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
+        setRadioButtonStateWithDisable(radioButtonsCurrentDivision, valuesToSet[1]-1);
+        setRadioButtonStateWithDisable(makrs_on_current_rank_checked, valuesToSet[2]);
+        setRadioButtonState(radioButtonsDesired, valuesToSet[3]-1, true);
+        setRadioButtonStateForDesiredDivision(radioButtonsDesiredDivision, valuesToSet[4]-1);
+        current_rank = valuesToSet[0];
+        current_division = valuesToSet[1];
+        desired_rank = valuesToSet[3];
+        desired_division = valuesToSet[4];
+        var current_rank_name = divisionRanks[current_rank];
+        var desired_rank_name = divisionRanks[desired_rank];
+        var current_division_name = divisionNames[current_division];
+        var desired_division_name = divisionNames[desired_division];
+
+        let duoBoostingApply= document.getElementById('duoBoostingApplyButton')
+        let turboBoostApply = document.getElementById('turboBoostApplyButton')
+        let streamingApply = document.getElementById('streamingApplyButton')
+
+        // Function to set checkbox state based on values
+        function setCheckboxState(checkbox, value) {
+          if (value === true){
+            checkbox.click();
+            console.log("hi")
+          }
         }
-        // Set the value of the input field to the obtained 'choose-booster' value
-        document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
-
-        if (extend_order){
-            let orderID = parseInt(extend_order, 10);
-            document.getElementById('extendOrder').value = orderID; 
-
-            // Set the checked state for each group of radio buttons using the specified order
-            setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
-            setRadioButtonStateWithDisable(radioButtonsCurrentDivision, valuesToSet[1]-1);
-            setRadioButtonStateWithDisable(makrs_on_current_rank_checked, valuesToSet[2]);
-            setRadioButtonState(radioButtonsDesired, valuesToSet[3]-1, true);
-            setRadioButtonStateForDesiredDivision(radioButtonsDesiredDivision, valuesToSet[4]-1);
-            current_rank = valuesToSet[0];
-            current_division = valuesToSet[1];
-            desired_rank = valuesToSet[3];
-            desired_division = valuesToSet[4];
-            var current_rank_name = divisionRanks[current_rank];
-            var desired_rank_name = divisionRanks[desired_rank];
-            var current_division_name = divisionNames[current_division];
-            var desired_division_name = divisionNames[desired_division];
-
-            let duoBoostingApply= document.getElementById('duoBoostingApplyButton')
-            let turboBoostApply = document.getElementById('turboBoostApplyButton')
-            let streamingApply = document.getElementById('streamingApplyButton')
-
-            // Function to set checkbox state based on values
-            function setCheckboxState(checkbox, value) {
-              if (value === true){
-                checkbox.click();
-                console.log("hi")
-              }
-            }
-            // Set the state of each checkbox based on the values list
-            setCheckboxState(duoBoostingApply, valuesToSetAdditional[0]);
-            setCheckboxState(autoSelectBooster, valuesToSetAdditional[1]);
-            setCheckboxState(turboBoostApply, valuesToSetAdditional[2]);
-            setCheckboxState(streamingApply, valuesToSetAdditional[3]);
-        }
+        // Set the state of each checkbox based on the values list
+        setCheckboxState(duoBoostingApply, valuesToSetAdditional[0]);
+        setCheckboxState(autoSelectBooster, valuesToSetAdditional[1]);
+        setCheckboxState(turboBoostApply, valuesToSetAdditional[2]);
+        setCheckboxState(streamingApply, valuesToSetAdditional[3]);
+    }
+    
     if(extend_order){
       function getResult() {
         const startt = ((valuesToSet[3] - 1) * 4) + valuesToSet[4];
