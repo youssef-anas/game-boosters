@@ -1,4 +1,5 @@
 from wildRift.models import WildRiftDivisionOrder
+from valorant.models import ValorantDivisionOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
@@ -26,7 +27,11 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
 
     if game_id == 1:
         Game = WildRiftDivisionOrder
+    # Here ---> 
     elif game_id == 2:
+        Game = ValorantDivisionOrder
+        choose_agents = bool(int(invoice_values[15]))
+    elif game_id == 3:
         Game = 'anoter model' # for future work
     else:
         pass
@@ -44,8 +49,6 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         extend_order.status = 'Extend'
         extend_order.save()
         status = 'Extend'
-
-
         
         extend_order_money_owed = extend_order.money_owed
         extend_order_price = extend_order.price
@@ -61,54 +64,33 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         extend_order_game_reached_rank = extend_order_game.reached_rank
         extend_order_game_reached_division = extend_order_game.reached_division
         extend_order_game_reached_marks = extend_order_game.reached_marks
+
     except BaseOrder.DoesNotExist:
             extend_order = None
-
-
 
 
     if status == 'New' or status == 'Continue':
         baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name)
 
-        order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division,
-                                    current_marks=current_marks,desired_rank_id=desired_rank,
-                                    desired_division=desired_division,reached_rank_id=current_rank,
-                                    reached_division=current_division,reached_marks=current_marks)
+        # Here ---> 
+        if game_id == 1:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks)
+        elif game_id == 2:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_agents=choose_agents)
 
     if status == 'Extend':
         print(f"order extended from:  {order_name}")
-        baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,
-                                             duo_boosting=duo_boosting,select_booster=select_booster,
-                                             turbo_boost=turbo_boost,streaming=streaming,
-                                             customer=extend_order_customer,payer_id=payer_id,
-                                             customer_gamename=extend_order_customer_gamename,
-                                             customer_password=extend_order_customer_password,
-                                             customer_server=extend_order_server,
-                                             name = order_name,
-                                             money_owed =extend_order_money_owed,
-                                             price = price + extend_order_price,
-                                             data_correct = extend_order_data_correct,
-                                             status = "Extend",
-                                             )
-        order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division,
-                                    current_marks=current_marks,desired_rank_id=desired_rank,
-                                    desired_division=desired_division,reached_rank=extend_order_game_reached_rank,
-                                    reached_division=extend_order_game_reached_division,
-                                    reached_marks=extend_order_game_reached_marks)
+        baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = price + extend_order_price, data_correct = extend_order_data_correct, status = "Extend")
 
-        
+        # Here --->
+        if game_id == 1:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks)
+
+        elif game_id == 2:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)
 
     order.save_with_processing()
     return order
-
-
-
-
-
-
-
-
-
 
 
     # extend_order_price = 0

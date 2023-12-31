@@ -251,10 +251,6 @@ def view_that_asks_for_money(request):
 def payment_canceled(request):
     return HttpResponse('payment canceled')
 
-
-
-
-
 # @csrf_exempt
 # def paypal_ipn_listener(sender, **kwargs):
 #     ipn_obj = sender

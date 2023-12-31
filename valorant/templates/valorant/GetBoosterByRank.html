@@ -198,30 +198,31 @@
           <br/>
           <hr class="hr border border-3 mt-5 mb-0" style='width:100% !important'>
           <div class="row py-5 rounded-3 purchase-Section">
-              <div class="price-data division-boost col-10 text-start"></div>
-              <div class="price-data placements-boost col-10 text-start"></div>
-              <center>
-                  <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post" id="purchaseForm">
-                      <input type="hidden" name="game_id" value="0">
-                      <input type="hidden" name="current_rank" value="1">
-                      <input type="hidden" name="current_division" value="1">
-                      <input type="hidden" name="marks" value="1">
-                      <input type="hidden" name="desired_rank" value="3">
-                      <input type="hidden" name="desired_division" value="1">
-                      <input type="hidden" name="try" value="try">
-                      <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
-                      <input type="hidden" name="select_booster" id="selectBooster" value=false>
-                      <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                      <input type="hidden" name="choose_agents" id="chooseAgents" value=false>
-                      <input type="hidden" name="streaming" id="streaming" value=false>
-                      <input type="hidden" name="price" value="120">
-                      <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
-                      <input type="hidden" id="extendOrder" name="extend_order" value= 0 readonly>                    
-                      <div class="purchase col-10 mt-4">
-                          <button id="submitBtn" type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
-                      </div>
-                  </form>
-              </center>
+            <div class="price-data division-boost col-10 text-start"></div>
+            <div class="price-data placements-boost col-10 text-start"></div>
+            <center>
+              <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post"  id="purchaseForm">
+                <input type="hidden" name="game_id" value="2">
+                <input type="hidden" name="current_rank" value="1">
+                <input type="hidden" name="current_division" value="1">
+                <input type="hidden" name="marks" value="1">
+                <input type="hidden" name="desired_rank" value="3">
+                <input type="hidden" name="desired_division" value="1">
+                <input type="hidden" name="try" value="try">
+                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
+                <input type="hidden" name="choose_agents" id="chooseAgents" value=true>
+                <input type="hidden" name="select_booster" id="selectBooster" value=false>
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="choose_agents" id="chooseAgents" value=false>
+                <input type="hidden" name="streaming" id="streaming" value=false>
+                <input type="hidden" name="price" value="120">
+                <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
+                <input type="hidden" id="extendOrder" name="extend_order" value= 0 readonly>                    
+                <div class="purchase col-10 mt-4">
+                  <button id="submitBtn" type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                </div>
+              </form>
+            </center>
           </div>
         </div>
     </div>
@@ -245,5 +246,5 @@
 {% endblock %}
 {% block script %}
 <script src="{% static 'games/js/main.js' %}"></script>
-<script src="{% static 'valorant/js/archive.js' %}"></script>
+<script src="{% static 'valorant/js/division-placement-boost.js' %}"></script>
 {% endblock %}

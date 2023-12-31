@@ -13,7 +13,7 @@ def index(request):
       "id": 2,
       "name": "Valorant",
       "image": "Valorant.jpg",
-      "link": ""
+      "link": "valorant"
     },
     {
       "id": 3,

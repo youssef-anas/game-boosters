@@ -1,3 +1,21 @@
+// --------- If Customer Come After Choose Booster or For Extend Order ---------
+// Get Params
+// Assume you have a reference to the HTML element
+const orderContainer = document.getElementById('order-container');
+const urlParams = new URLSearchParams(window.location.search);
+const extend_order = urlParams.get('extend');
+
+// Get the 'choose-booster' query parameter value from the URL
+const chooseBoosterValue = urlParams.get('choose_booster');
+let chooseBoosterInt = 0
+let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
+if (chooseBoosterValue != null){
+  chooseBoosterInt = parseInt(chooseBoosterValue, 10);
+  autoSelectBooster.click()
+}
+// Set the value of the input field to the obtained 'choose-booster' value
+document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
+
 // Extra Charges Part
 // Buttons 
 const buttons = {
@@ -53,7 +71,7 @@ function updateTotalPercentage(percentage, add = true, button) {
   } else {
     $(`#${button}`).val(false);
     total_Percentage -= percentage;
-    buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check me-2"></i>', '');
+    buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
     Applybuttons[button].innerHTML = 'Apply'
     Applybuttons[button].classList.remove('cancelButton');
     Applybuttons[button].classList.add('applyButton');
@@ -126,7 +144,7 @@ Promise.all([
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', '	immortal'];
+  const divisionRanks = ['', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', 'immortal'];
 
   const divisionNames = [0, 'I', 'II', 'III']
 
@@ -162,10 +180,11 @@ Promise.all([
 
     const pricee = document.querySelector('.price-data.division-boost');
     pricee.innerHTML = `
-    <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
+    <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR to ${desired_rank_name} ${desired_division_name} </span></p>
     <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
   `;
 
+    console.log('Result', result_with_mark)
     // From Value
     $('input[name="current_rank"]').val(current_rank);
     $('input[name="current_division"]').val(current_division);
@@ -198,8 +217,8 @@ Promise.all([
       const desired_division_to_hide = document.getElementById('desired-division');
       if (desired_rank == 8) {
         desired_division_to_hide.classList.add('d-none');
-        let desired_division_IV = document.getElementById("desired-division0")
-        desired_division_IV.checked = true;
+        let desired_division_I = document.getElementById("desired-division0")
+        desired_division_I.checked = true;
       }
       else {
         desired_division_to_hide.classList.remove('d-none');
@@ -254,8 +273,8 @@ Promise.all([
   setupApplyButtonClickEvent('duoBoosting', 0.65);
   setupApplyButtonClickEvent('selectBooster', 0.05);
   setupApplyButtonClickEvent('turboBoost', 0.20);
-  // buttons['chooseAgents'].click();
   setupApplyButtonClickEvent('chooseAgents', 0.0);
+  Applybuttons['chooseAgents'].click();
   setupApplyButtonClickEvent('streaming', 0.15);
 });
 

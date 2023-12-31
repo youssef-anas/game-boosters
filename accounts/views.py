@@ -16,6 +16,7 @@ from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
+from valorant.models import ValorantDivisionOrder
 from django.http import JsonResponse
 from accounts.order_creator import  create_order
 User = get_user_model()
@@ -255,8 +256,14 @@ def customer_side(request):
     admins_chat_slug = f'roomFor-{request.user.username}-admins-{order.name}'
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
-    admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug)) 
-    order = WildRiftDivisionOrder.objects.get(order__id=id)
+    admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
+
+    # Here ---> 
+    if 'WR' in order.name:
+        order = WildRiftDivisionOrder.objects.get(order__id=id)
+    elif 'Valo' in order.name:
+        order = ValorantDivisionOrder.objects.get(order__id=id)
+
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))
     boosters = Booster.objects.filter(can_choose_me=True)
