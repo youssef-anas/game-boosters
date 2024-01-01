@@ -4,7 +4,7 @@
   border-radius: 1.5rem;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #FFC107); 
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   height: 50px;
@@ -26,7 +26,7 @@
   border-radius: 1.5rem;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right,  #ffc107, #BF65CF, #897AF9, #0F7991); 
+    linear-gradient(to right,  #6228D7 , #EE2A7B , #F9CE34); 
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;      
   box-shadow: none !important;
@@ -50,7 +50,7 @@ input[type=file]::file-selector-button {
   border-radius: 1.5rem;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #ffc107); 
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   border-radius: 20px;
@@ -66,7 +66,7 @@ input[type=file]::file-selector-button {
   border-radius: 1.5rem;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #0F7991, #897AF9, #BF65CF, #FFC107); 
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
   background-clip: padding-box, border-box;
   background-origin: padding-box, border-box;
   border-radius: 20px;
