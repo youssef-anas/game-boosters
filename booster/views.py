@@ -21,8 +21,8 @@ from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
-from accounts.models import BaseOrder, Room, Message, Transaction
-
+from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
+from django.http import HttpResponseBadRequest
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -60,6 +60,29 @@ def edit_booster_profile(request):
                 return redirect('edit.booster.profile')
 
     return render(request, 'booster/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
+
+# Orders Page
+def jobs(request):
+    orders = BaseOrder.objects.filter(booster__isnull=True)
+    booster_percents = BoosterPercent.objects.get(pk=1)
+
+    context = {
+        "orders": orders,
+        'booster_percents':booster_percents
+    }
+    return render(request,'booster/Orders.html', context)
+
+def calmOrder(request, id):
+    order = get_object_or_404(BaseOrder, id=id)
+    
+    try:
+        order.booster = request.user
+        order.save()
+    except Exception as e:
+        print(f"Error updating order: {e}")
+        return HttpResponseBadRequest(f"Error updating order{e}")
+
+    return redirect(reverse_lazy('booster.orders'))
 
 
 def profile_booster_view(request, booster_id):

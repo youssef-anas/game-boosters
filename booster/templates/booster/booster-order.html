@@ -19,7 +19,7 @@
         {% else %}
         <h3 class="text-white text-center">You Havn't Any Order Yet</h3>
         {% endif %}
-        <a class="btn orders-list-btn" href="{% url 'wildrift.confirm.order' %}"><i class="fa-solid fa-plus"></i></a>
+        <a class="btn orders-list-btn" href="{% url 'orders.jobs' %}"><i class="fa-solid fa-plus"></i></a>
       </div>
   
       {% for order in orders %}

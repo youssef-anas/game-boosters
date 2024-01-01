@@ -14,10 +14,7 @@ urlpatterns = [
     path('rating/<int:order_id>/', rate_page, name='rate.page'), # test page , only for test
     path('orders/', user_passes_test(is_booster)(booster_orders), name='booster.orders'),
     path('history/', user_passes_test(is_booster)(booster_history), name='booster.history'),
-    # path('update-rating/',update_rating,name='order.update.rating'),
-    # path('upload-image/',upload_finish_image,name='order.upload.image'),
-    # path('drop-order/',drop_order,name='drop.order'),
-    # path('confirm_details/',confirm_details,name='confirm.details'),
-    # path('ask_customer/',ask_customer,name='ask.customer'),
     path('can_choose_me/', CanChooseMe.as_view(), name='can_choose_me'),
+    path('jobs/', jobs ,name='orders.jobs'),
+    path('<int:id>/', calmOrder, name='calm.order'),
 ]

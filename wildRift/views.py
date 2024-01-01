@@ -142,18 +142,6 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-    
-def wildRiftOrders(request):
-    divisions_order = WildRiftDivisionOrder.objects.filter(order__booster__isnull=True)
-    placements_order = WildRiftPlacementOrder.objects.filter(booster__isnull=True)
-    booster_percents = BoosterPercent.objects.get(pk=1)
-
-    context = {
-        "divisions_order": divisions_order,
-        "placements_order": placements_order,
-        'booster_percents':booster_percents
-    }
-    return render(request,'wildRift/Orders.html', context)
 
 def get_latest_price(request):
     order_id = request.GET.get('order_id')
@@ -166,28 +154,6 @@ def get_latest_price(request):
         return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
     else:
         return JsonResponse({'error': 'Order not found'}, status=404)
-
-
-
-def wildRiftOrderChat(request, order_type, id):
-    # Check if Booster Have Less Than 3 Orders ?  -----
-    if order_type == 'division':
-        base_order = get_object_or_404(BaseOrder, id=id)
-        order = get_object_or_404(WildRiftDivisionOrder, order=base_order)
-    elif order_type == 'placement':
-        order = get_object_or_404(WildRiftPlacementOrder, id=id)
-    else:
-        return HttpResponseBadRequest("Invalid Order Type")
-    
-    try:
-        base_order.booster = request.user
-        base_order.save()
-    except Exception as e:
-        print(f"Error updating order: {e}")
-        return HttpResponseBadRequest(f"Error updating order{e}")
-
-    return redirect(reverse_lazy('booster.orders'))
-
 
 
 @csrf_exempt

@@ -134,8 +134,6 @@ def logout_view(request):
     logout(request)
     return redirect(reverse_lazy('homepage.index'))
 
-
-
 def choose_booster(request):
     if request.method == 'POST':
         chosen_booster_id = request.POST.get('chosen_booster_id')
@@ -206,9 +204,6 @@ def tip_booster(request):
             context = {"form": form}
             return render(request, "wildRift/paypal.html", context,status=200)
         return JsonResponse({'success': False})
-    
-
-   
     
 def success_tip(request,token):
     token_with_data = TokenForPay.get_token(token) 

@@ -70,22 +70,29 @@
 <div class="orders-container container-fluid p-5 text-white">
   <div class="container">
 
-
     <div class="row">
       <div class="col-12">
         <!-- --------------- Division Boost Orders --------------- -->
         <div class="division-boost-order p-5  rounded-3">
-          <h4 class="my-4">Division Boost Orders</h4>
+          <!-- <h4 class="my-4">Division Boost Orders</h4> -->
           <div class="row">
-            {% for order in divisions_order %}
+            {% for order in orders %}
             <div class="col-xl-6 col-md-12 mb-4 text-dark">
               <div class="card shadow h-100 py-2 orders">
                 <div class="card-body d-flex flex-column">
-                  <h5><span class="badge" style="background-color: {% if order.order.status == 'New' %} var(--secondary-color) {% else %} red {% endif %} ;">{{order.order.status}}</span></h5>
-                  <h5 class="card-title">{{order}}</h5>
+                  <h5><span class="badge" style="background-color: {% if order.order.status == 'New' %} var(--secondary-color) {% else %} red {% endif %} ;">{{order.status}}</span></h5>
+                  <!-- Start Here -->
+                  {% if order.wildrift_order %}
+                  <h5 class="card-title">{{order.wildrift_order}} - WildRift</h5>
+                  {% elif order.valorant_division_order %}
+                  <h5 class="card-title">{{order.valorant_division_order}} - Valorant</h5>
+                  {% elif order.valorant_placement_order %}
+                  <h5 class="card-title">{{order.valorant_placement_order}} - Valorant</h5>
+                  {% endif %}
+                  <!-- End Here -->
                   <div class="d-flex justify-content-between align-items-center my-2">
-                    <p class="mb-0">{{order.order.customer.first_name}} {{order.order.customer.last_name}}</p>
-                    <p class="mb-0">{{ order.order.created_at|date:'m - d - Y' }}</p>
+                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
+                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
                   </div>
 
                   <!------------------- Time ----------------->
@@ -96,7 +103,7 @@
                   </div>
 
                   <div class="d-flex justify-content-end align-items-center">
-                    <a href="{% url 'order.chat' order_type='division' id=order.order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                    <a href="{% url 'calm.order' id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
                   </div>
 
                 </div>
