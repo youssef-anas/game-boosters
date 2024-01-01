@@ -14,8 +14,8 @@
 
         <div class="user-info">
           {% if order.order.booster %}
-            {% if order.order.booster.user.image %}
-            <img src="{{ order.order.booster.user.image.url }}" class="profile-image col-4" alt="profile" />
+            {% if order.order.booster.booster.image %}
+            <img src="{{ order.order.booster.booster.image.url }}" class="profile-image col-4" alt="profile" />
             {% else %}
             <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
             {% endif %}

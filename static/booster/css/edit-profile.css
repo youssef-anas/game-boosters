@@ -45,9 +45,3 @@ a {
   width: 700px;
   max-width: 100%;
 }
-.message {
-  background-color: #3d22625e;
-  box-shadow: 0px 0px 8px 2px yellowgreen;
-  position: relative;
-  z-index: 100;
-}

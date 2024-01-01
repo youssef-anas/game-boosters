@@ -90,6 +90,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)
 
     order.save_with_processing()
+    baseOrder.customer_wallet()
     return order
 
 

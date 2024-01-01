@@ -102,6 +102,7 @@ class ValorantDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
+    self.order.game_name = 'Valorant'
     if not self.order.name:
       self.order.name = f'Valo{self.order.id}'
     self.order.update_actual_price()
@@ -122,6 +123,14 @@ class ValorantPlacementOrder(models.Model):
   number_of_match = models.IntegerField(default=5)
 
   choose_agents = models.BooleanField(default=False, blank=True, null=True)
+
+  def save_with_processing(self, *args, **kwargs):
+    self.order.game_name = 'Valorant'
+    if not self.order.name:
+      self.order.name = f'Valo{self.order.id}'
+    self.order.update_actual_price()
+    self.order.save()
+    super().save(*args, **kwargs)
 
   def __str__(self):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"

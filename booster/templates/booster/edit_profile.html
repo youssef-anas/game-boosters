@@ -12,7 +12,7 @@
   {% if messages %}
     {% for message in messages %}
       <div class="py-3 mx-auto" style="width: 550px;">
-        <div class="alert {{ message.tags }} alert-dismissible mb-0 message" role="alert" >
+        <div class="alert {{ message.tags }} alert-dismissible mb-0 success-message" role="alert" >
           {{ message }}
         </div>
       </div>
@@ -27,8 +27,8 @@
 
       <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center p-5">
         <div class="image mx-auto ">
-          {% if request.user.user.image %}
-          <img src="{{ request.user.user.image.url }}" class="image"  alt="Profile Photo"/>
+          {% if request.user.booster.image %}
+          <img src="{{ request.user.booster.image.url }}" class="image"  alt="Profile Photo"/>
           {% else %}
           <img src="{% static 'base/images/no_profile_image.png' %}" class="image" alt="No Profile Photo">
           {% endif %}
@@ -46,7 +46,7 @@
           <form id="edit-profile-form" method="post" action="{% url 'edit.booster.profile' %}">
             {% csrf_token %}
             <span>Customer Can Choose Me</span>
-            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.user.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
+            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.booster.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
           </form>
         </div>
 
@@ -57,10 +57,10 @@
           
           <p>{{request.user.email}}</p>
           <p>{{request.user.about_you}}</p>
-          {% if request.user.user.achived_rank_wr %}
+          {% if request.user.booster.achived_rank_wr %}
           <p class="text-capitalize fs-4">
-            <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ request.user.user.achived_rank_wr.rank_image.url }}" style="width: 50px; height: 50px;"  />
-              {{request.user.user.achived_rank_wr}}
+            <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ request.user.booster.achived_rank_wr.rank_image.url }}" style="width: 50px; height: 50px;"  />
+              {{request.user.booster.achived_rank_wr}}
           </p>
           {% endif %}
         </div>

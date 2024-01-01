@@ -11,17 +11,17 @@
         <div class="container content text-center">
             <!-- Profile picture -->
             <div class="profile-view">
-                {% if booster.user.image %}
-                <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.user.image.url }}"  />
+                {% if booster.booster.image %}
+                <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.booster.image.url }}"  />
                 {% else %}
                 <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
                 {% endif %}
                 <h1>{{booster.first_name}} {{booster.last_name}}@{{booster.username}}</h1>
 
-                {% if booster.user.achived_rank_wr %}
+                {% if booster.booster.achived_rank_wr %}
                 <p class="text-capitalize fs-4 fw-bold">
-                    <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ booster.user.achived_rank_wr.rank_image.url }}" style="width: 100px; height: 100px;"  />
-                    {{booster.user.achived_rank_wr}}
+                    <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ booster.booster.achived_rank_wr.rank_image.url }}" style="width: 100px; height: 100px;"  />
+                    {{booster.booster.achived_rank_wr}}
                 </p>
                 {% endif %}
 

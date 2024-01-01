@@ -72,15 +72,20 @@ def jobs(request):
     }
     return render(request,'booster/Orders.html', context)
 
-def calmOrder(request, id):
+def calmOrder(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
-    
-    try:
-        order.booster = request.user
-        order.save()
-    except Exception as e:
-        print(f"Error updating order: {e}")
-        return HttpResponseBadRequest(f"Error updating order{e}")
+
+    if (game_name == 'Wildrift' and request.user.booster.is_wf_player) or \
+        (game_name == 'Valorant' and request.user.booster.is_valo_player):
+        try:
+            order.booster = request.user
+            order.save()
+        except Exception as e:
+            print(f"Error updating order: {e}")
+            return HttpResponseBadRequest(f"Error updating order{e}")
+    else:
+        messages.error(request, "You aren't play this game, Calm order for your game!")
+        return redirect(reverse_lazy('orders.jobs'))
 
     return redirect(reverse_lazy('booster.orders'))
 
@@ -218,8 +223,8 @@ class CanChooseMe(APIView):
 
         instance = user
 
-        instance.user.can_choose_me = not instance.user.can_choose_me
-        instance.user.save()
+        instance.booster.can_choose_me = not instance.booster.can_choose_me
+        instance.booster.save()
 
         serializer = CanChooseMeSerializer(instance)
         return JsonResponse(serializer.data)

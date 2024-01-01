@@ -1,0 +1,12 @@
+.error-message {
+  background-color: #3d22625e;
+  box-shadow: 0px 0px 8px 2px red;
+  position: relative;
+  z-index: 100;
+}
+.success-message {
+  background-color: #3d22625e;
+  box-shadow: 0px 0px 8px 2px yellowgreen;
+  position: relative;
+  z-index: 100;
+}

@@ -90,6 +90,7 @@ class BaseOrder(models.Model):
         ('Continue', 'Continue'),
     ]
     name = models.CharField(max_length=300, null = True)
+    game_name = models.CharField(max_length=300, null=True, blank=True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
@@ -199,12 +200,12 @@ class BaseOrder(models.Model):
                 )
             
             Transaction.objects.create (
-                    user=self.customer,
-                    amount=self.price,
-                    order=self,
-                    status='New',  
-                    type='WITHDRAWAL'
-                )
+                user=self.customer,
+                amount=self.price,
+                order=self,
+                status='New',  
+                type='WITHDRAWAL'
+            )
 
     def __str__(self):
         return f'{self.customer} have order - cost {self.price}'
@@ -230,7 +231,7 @@ class Transaction(models.Model):
     ]
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
+    order = models.ForeignKey(BaseOrder, on_delete=models.CASCADE, related_name='from_order')
     notice = models.TextField(default='_')
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
