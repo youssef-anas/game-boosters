@@ -203,18 +203,24 @@
             <center>
               <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post"  id="purchaseForm">
                 <input type="hidden" name="game_id" value="2">
+                <input type="hidden" name="game_type" value="D">
+                <!-- Division -->
                 <input type="hidden" name="current_rank" value="1">
                 <input type="hidden" name="current_division" value="1">
                 <input type="hidden" name="marks" value="1">
                 <input type="hidden" name="desired_rank" value="3">
                 <input type="hidden" name="desired_division" value="1">
-                <input type="hidden" name="try" value="try">
+                <!-- Placement -->
+                <input type="hidden" name="last_rank" value="1">
+                <input type="hidden" name="number_of_match" value="5">
+                <!-- Extra Fields -->
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
                 <input type="hidden" name="choose_agents" id="chooseAgents" value=true>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
                 <input type="hidden" name="choose_agents" id="chooseAgents" value=false>
                 <input type="hidden" name="streaming" id="streaming" value=false>
+                <!-- Other -->
                 <input type="hidden" name="price" value="120">
                 <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
                 <input type="hidden" id="extendOrder" name="extend_order" value= 0 readonly>                    

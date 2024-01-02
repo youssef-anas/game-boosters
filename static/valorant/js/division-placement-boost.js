@@ -186,12 +186,14 @@ Promise.all([
 
     console.log('Result', result_with_mark)
     // From Value
-    $('input[name="current_rank"]').val(current_rank);
-    $('input[name="current_division"]').val(current_division);
-    $('input[name="marks"]').val(mark);
-    $('input[name="desired_rank"]').val(desired_rank);
-    $('input[name="desired_division"]').val(desired_division);
-    $('input[name="price"]').val(result_with_mark);
+    if ($('input[name="game_type"]').val() == 'D') {
+      $('input[name="current_rank"]').val(current_rank);
+      $('input[name="current_division"]').val(current_division);
+      $('input[name="marks"]').val(mark);
+      $('input[name="desired_rank"]').val(desired_rank);
+      $('input[name="desired_division"]').val(desired_division);
+      $('input[name="price"]').val(result_with_mark);
+    }
   }
 
   // Get Result 
@@ -287,29 +289,35 @@ const initiallyCheckedIndexRank = $('input[name="radio-group-ranks"]').index($('
 const initiallyCheckedRank = $('input[name="radio-group-ranks"]').eq(initiallyCheckedIndexRank);
 const initiallyCheckedIndexRankPrice = initiallyCheckedRank.data('price');
 
-let rank = initiallyCheckedIndexRank
+let last_rank = initiallyCheckedIndexRank
 let rank_price = initiallyCheckedIndexRankPrice
 let gameCounter = gameCounterInitial
 
 
 const getPrices = () => {
-let price = (rank_price * gameCounter);
-price = parseFloat(price + (price * total_Percentage)).toFixed(2)
-const pricee = $('.price-data.placements-boost').eq(0);
-pricee.html(`
-<p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
-<h4>$${price}</h4>
-`);
+  let price = (rank_price * gameCounter);
+  price = parseFloat(price + (price * total_Percentage)).toFixed(2)
+  const pricee = $('.price-data.placements-boost').eq(0);
+  pricee.html(`
+  <p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
+  <h4>$${price}</h4>
+  `);
+
+  if ($('input[name="game_type"]').val() == 'P') {
+    $('input[name="last_rank"]').val(last_rank);
+    $('input[name="number_of_match"]').val(gameCounter);
+    $('input[name="price"]').val(price);
+  }
 }
 getPrices()
 
 radioButtonsRank.each(function (index, radio) {
-$(radio).on('change', function () {
-  const selectedIndex = radioButtonsRank.index(radio);
-  rank = selectedIndex;
-  rank_price = $(radio).data('price');
-  getPrices()
-});
+  $(radio).on('change', function () {
+    const selectedIndex = radioButtonsRank.index(radio);
+    last_rank = selectedIndex;
+    rank_price = $(radio).data('price');
+    getPrices()
+  });
 });
 
 

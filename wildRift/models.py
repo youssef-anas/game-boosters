@@ -168,7 +168,9 @@ class WildRiftDivisionOrder(models.Model):
 
 
     def save_with_processing(self, *args, **kwargs):
+        self.order.game_id = 1
         self.order.game_name = 'Wildrift'
+        self.order.game_type = 'D'
         if not self.order.name:
             self.order.name = f'WR{self.order.id}'
         self.order.update_actual_price()

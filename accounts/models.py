@@ -89,8 +89,14 @@ class BaseOrder(models.Model):
         ('Done', 'Done'),
         ('Continue', 'Continue'),
     ]
+    GAME_TYPE = [
+        ('D', 'Division'),
+        ('P', 'Placement')
+    ]
     name = models.CharField(max_length=300, null = True)
+    game_id = models.IntegerField(null=True, blank=True)
     game_name = models.CharField(max_length=300, null=True, blank=True)
+    game_type = models.CharField(max_length=100, choices=GAME_TYPE, null=True, blank=True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
@@ -119,7 +125,6 @@ class BaseOrder(models.Model):
         if self.status == 'Continue':
             return 'Continue'
 
-        
         current_time = timezone.now()
         
         percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
