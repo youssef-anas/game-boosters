@@ -16,5 +16,9 @@ urlpatterns = [
     path('history/', user_passes_test(is_booster)(booster_history), name='booster.history'),
     path('can_choose_me/', CanChooseMe.as_view(), name='can_choose_me'),
     path('jobs/', jobs ,name='orders.jobs'),
-    path('<str:game_name>/<int:id>/', calmOrder, name='calm.order'),
+    path('<str:game_name>/<int:id>/', calm_order, name='calm.order'),
+    path('confirm_details/',confirm_details,name='confirm.details'),
+    path('ask_customer/',ask_customer,name='ask.customer'),
+    path('get_latest_price/', get_latest_price, name='get_latest_price'),
+    path('upload-image/',upload_finish_image,name='order.upload.image'),
 ]

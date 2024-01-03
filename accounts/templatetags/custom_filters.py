@@ -48,3 +48,16 @@ def format_time_difference(updated_at):
     return f'{days} {"day" if days == 1 else "days"}'
   else:
     return 'today'
+  
+@register.filter(name='romanize_division_original')
+def romanize_division(value):
+  if value == 1:
+    return 'I'
+  elif value == 2:
+    return 'II'
+  elif value == 3:
+    return 'III'
+  elif value == 4:
+    return 'IV'
+  else:
+    return value

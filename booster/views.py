@@ -18,11 +18,15 @@ from .forms import Registeration_Booster
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
+from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, ValorantRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
 from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
 from django.http import HttpResponseBadRequest
+from wildRift.reached_percent import wildrift_reached_percent
+from valorant.reached_percent import valorant_reached_percent
+from itertools import chain
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -72,7 +76,7 @@ def jobs(request):
     }
     return render(request,'booster/Orders.html', context)
 
-def calmOrder(request, game_name, id):
+def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
 
     if (game_name == 'Wildrift' and request.user.booster.is_wf_player) or \
@@ -134,55 +138,31 @@ def rate_page(request, order_id):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    # if not request.user.is_booster:
-    #     return HttpResponse('you are not booster')
-    orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
-    ranks = WildRiftRank.objects.all()
-    with open('static/wildRift/data/divisions_data.json', 'r') as file:
-        division_data = json.load(file)
-        division_price = [item for sublist in division_data for item in sublist]
-        division_price.insert(0,0)
-    
-    with open('static/wildRift/data/marks_data.json', 'r') as file:
-        marks_data = json.load(file)
-        marks_price = [item for sublist in marks_data for item in sublist]
-        marks_price.insert(0,0)
+    reached_percent = None
+    ranks = None
+    # Wildrift
+    if request.user.booster.is_wf_player:
+        wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
+        reached_percent = wildrift_reached_percent(wildrift_orders)
+
+        ranks = WildRiftRank.objects.all()
+    # Valorant
+    if request.user.booster.is_valo_player:
+        valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        reached_percent = valorant_reached_percent(valorant_division_orders)
+
+        ranks = ValorantRank.objects.all()
+
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders))
     orders_with_percentage = []
     rooms =[]
     messages=[]
     slugs=[]
     for order in orders:
-
-        current_rank = order.current_rank.id
-        current_division = order.current_division
-        current_marks = order.current_marks
-
-        reached_rank = order.reached_rank.id
-        reached_division = order.reached_division
-        reached_marks = order.reached_marks
-
-        start_division = ((current_rank-1)*4) + current_division
-        now_division = ((reached_rank-1)*4)+ reached_division
-        sublist_div = division_price[start_division:now_division]
-
-        start_marks = (((current_rank-1)*4) + current_marks + 1) + 1
-        now_marks = (((reached_rank-1)*4) + reached_marks + 1) + 1
-        sublist_marks = marks_price[start_marks:now_marks]
-
-        done_sum_div = sum(sublist_div)
-        done_sum_marks = sum(sublist_marks)
-
-        done_sum = done_sum_div + done_sum_marks
-
-        percentage = round((done_sum / order.order.price) * 100 , 2)
-        if percentage >= 100 :
-            percentage = 100
-
-        now_price = round(order.order.actual_price * (percentage / 100) , 2)
-
-        order.order.money_owed = now_price
-        order.order.save()
         
         current_room = Room.get_specific_room(order.order.customer, order.order.id)
         if current_room is not None:
@@ -190,8 +170,8 @@ def booster_orders(request):
             slug = current_room.slug
             order_data = {
                 'order': order,
-                'percentage': percentage,
-                'now_price': now_price,
+                'percentage': reached_percent[0],
+                'now_price': reached_percent[1],
                 'user': request.user,
                 'room': current_room,
                 'messages': messages,
@@ -201,8 +181,8 @@ def booster_orders(request):
         else:
             order_data = {
             'order': order,
-            'percentage': percentage,
-            'now_price': now_price,
+            'percentage': reached_percent[0],
+            'now_price': reached_percent[1],
             'user': request.user,
             'room': None,
             'messages': None,
@@ -233,3 +213,51 @@ class CanChooseMe(APIView):
 def booster_history(request):
     history = Transaction.objects.filter(user=request.user)
     return render(request, 'booster/booster_histoty.html', context={'history' : history})
+
+def confirm_details(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(BaseOrder, id=order_id)
+            order.message = None
+            order.data_correct = True
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+def ask_customer(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(BaseOrder, id=order_id)
+            order.message = 'Pleace Specify Your Details'
+            order.data_correct = False
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+
+def get_latest_price(request):
+    order_id = request.GET.get('order_id')
+    order = BaseOrder.objects.get(id=order_id)
+
+    if order:
+        time_difference = order.update_actual_price()
+        order.save()
+        latest_price = order.actual_price
+        return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
+    else:
+        return JsonResponse({'error': 'Order not found'}, status=404)
+    
+def upload_finish_image(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        if order_id:
+            order = get_object_or_404(BaseOrder, id=order_id)
+            finish_image = request.FILES.get('finish_image')
+            if finish_image:
+                order.finish_image = finish_image
+                order.is_done = True
+                order.save()
+                return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})

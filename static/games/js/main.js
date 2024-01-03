@@ -9,11 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
   if (divisionBoostRadio.checked) {
     divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
     placementsBoostDiv.forEach(div => div.classList.add('d-none'));
-    $('input[name="game_type"]').val('D');
   } else {
     divisionBoostDiv.forEach(div => div.classList.add('d-none'));
     placementsBoostDiv.forEach(div => div.classList.remove('d-none'));
-    $('input[name="game_type"]').val('P');
   }
 
   // Event listener for division-boost radio button
@@ -21,10 +19,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (divisionBoostRadio.checked) {
       divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
       placementsBoostDiv.forEach(div => div.classList.add('d-none'));
-      $('input[name="game_type"]').val('D');
     } else {
       divisionBoostDiv.forEach(div => div.classList.add('d-none'));
-      $('input[name="game_type"]').val('P');
     }
   });
 
@@ -33,10 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (placementsBoostRadio.checked) {
       divisionBoostDiv.forEach(div => div.classList.add('d-none'));
       placementsBoostDiv.forEach(div => div.classList.remove('d-none'));
-      $('input[name="game_type"]').val('P');
     } else {
       placementsBoostDiv.forEach(div => div.classList.add('d-none'));
-      $('input[name="game_type"]').val('D');
     }
   });
 });

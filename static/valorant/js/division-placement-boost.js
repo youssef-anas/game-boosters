@@ -9,7 +9,7 @@ const extend_order = urlParams.get('extend');
 const chooseBoosterValue = urlParams.get('choose_booster');
 let chooseBoosterInt = 0
 let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
-if (chooseBoosterValue != null){
+if (chooseBoosterValue != null) {
   chooseBoosterInt = parseInt(chooseBoosterValue, 10);
   autoSelectBooster.click()
 }
@@ -63,13 +63,15 @@ function updateTotalPercentage(percentage, add = true, button) {
   let buttonOldName = buttons[button].innerHTML
   if (add) {
     total_Percentage += percentage;
-    $(`#${button}`).val(true);
+    $(`.division-boost #${button}`).val(true);
+    $(`.placements-boost #${button}`).val(true);
     buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
     Applybuttons[button].innerHTML = 'Cancel'
     Applybuttons[button].classList.remove('applyButton');
     Applybuttons[button].classList.add('cancelButton');
   } else {
-    $(`#${button}`).val(false);
+    $(`.division-boost #${button}`).val(false);
+    $(`.placements-boost #${button}`).val(false);
     total_Percentage -= percentage;
     buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
     Applybuttons[button].innerHTML = 'Apply'
@@ -161,7 +163,7 @@ Promise.all([
   var mark = 0
 
   // Get Result Function
-  function getResult() {
+  function getDivisionPrice() {
     const startRank = ((current_rank - 1) * 3) + current_division;
 
     const endRank = ((desired_rank - 1) * 3) + desired_division - 1;
@@ -186,18 +188,18 @@ Promise.all([
 
     console.log('Result', result_with_mark)
     // From Value
-    if ($('input[name="game_type"]').val() == 'D') {
-      $('input[name="current_rank"]').val(current_rank);
-      $('input[name="current_division"]').val(current_division);
-      $('input[name="marks"]').val(mark);
-      $('input[name="desired_rank"]').val(desired_rank);
-      $('input[name="desired_division"]').val(desired_division);
-      $('input[name="price"]').val(result_with_mark);
+    if ($('.division-boost input[name="game_type"]').val() == 'D') {
+      $('.division-boost input[name="current_rank"]').val(current_rank);
+      $('.division-boost input[name="current_division"]').val(current_division);
+      $('.division-boost input[name="marks"]').val(mark);
+      $('.division-boost input[name="desired_rank"]').val(desired_rank);
+      $('.division-boost input[name="desired_division"]').val(desired_division);
+      $('.division-boost input[name="price"]').val(result_with_mark);
     }
   }
 
   // Get Result 
-  getResult();
+  getDivisionPrice();
 
   // Current Rank Change
   radioButtonsCurrent.forEach(function (radio, index) {
@@ -206,7 +208,7 @@ Promise.all([
       current_rank = selectedIndex + 1;
       current_rank_name = divisionRanks[current_rank];
       makrs_on_current_rank_checked[0].checked = true; // make 0 mark is check
-      getResult();
+      getDivisionPrice();
     });
   });
 
@@ -225,7 +227,7 @@ Promise.all([
       else {
         desired_division_to_hide.classList.remove('d-none');
       }
-      getResult();
+      getDivisionPrice();
     });
   });
 
@@ -235,7 +237,7 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
       current_division = selectedIndex + 1;
       current_division_name = divisionNames[current_division]
-      getResult();
+      getDivisionPrice();
     });
   })
 
@@ -245,7 +247,7 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsDesiredDivision).indexOf(radio);
       desired_division = selectedIndex + 1;
       desired_division_name = divisionNames[desired_division]
-      getResult()
+      getDivisionPrice()
     });
   });
 
@@ -255,7 +257,7 @@ Promise.all([
       const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
       number_of_mark = marks_price[current_rank][selectedIndex];
       mark = selectedIndex
-      getResult();
+      getDivisionPrice();
     });
   });
 
@@ -263,8 +265,8 @@ Promise.all([
   function setupApplyButtonClickEvent(button, percentage) {
     Applybuttons[button].addEventListener('click', function () {
       updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
-      getResult();
-      getPrices();
+      getDivisionPrice();
+      getPlacementPrice();
     });
   }
 
@@ -294,7 +296,7 @@ let rank_price = initiallyCheckedIndexRankPrice
 let gameCounter = gameCounterInitial
 
 
-const getPrices = () => {
+const getPlacementPrice = () => {
   let price = (rank_price * gameCounter);
   price = parseFloat(price + (price * total_Percentage)).toFixed(2)
   const pricee = $('.price-data.placements-boost').eq(0);
@@ -303,20 +305,20 @@ const getPrices = () => {
   <h4>$${price}</h4>
   `);
 
-  if ($('input[name="game_type"]').val() == 'P') {
-    $('input[name="last_rank"]').val(last_rank);
-    $('input[name="number_of_match"]').val(gameCounter);
-    $('input[name="price"]').val(price);
+  if ($('.placements-boost input[name="game_type"]').val() == 'P') {
+    $('.placements-boost input[name="last_rank"]').val(last_rank);
+    $('.placements-boost input[name="number_of_match"]').val(gameCounter);
+    $('.placements-boost input[name="price"]').val(price);
   }
 }
-getPrices()
+getPlacementPrice()
 
 radioButtonsRank.each(function (index, radio) {
   $(radio).on('change', function () {
     const selectedIndex = radioButtonsRank.index(radio);
     last_rank = selectedIndex;
     rank_price = $(radio).data('price');
-    getPrices()
+    getPlacementPrice()
   });
 });
 
@@ -332,5 +334,5 @@ sliderEl.css("background", `linear-gradient(to right, var(--main-color) ${progre
 
 sliderEl.css("--thumb-rotate", `${(gameCounter / 100) * 2160}deg`);
 
-getPrices()
+getPlacementPrice()
 });

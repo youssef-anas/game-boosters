@@ -96,7 +96,7 @@ def get_order_result_by_rank(data,extend_order_id):
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
@@ -141,20 +141,6 @@ def wildRiftGetBoosterByRank(request):
         "order":order,
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
-
-
-def get_latest_price(request):
-    order_id = request.GET.get('order_id')
-    order = BaseOrder.objects.get(id=order_id)
-
-    if order:
-        time_difference = order.update_actual_price()
-        order.save()
-        latest_price = order.actual_price
-        return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
-    else:
-        return JsonResponse({'error': 'Order not found'}, status=404)
-
 
 @csrf_exempt
 def view_that_asks_for_money(request):
@@ -269,19 +255,6 @@ def update_rating(request):
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
 
-def upload_finish_image(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(BaseOrder, id=order_id)
-            finish_image = request.FILES.get('finish_image')
-            if finish_image:
-                order.finish_image = finish_image
-                order.is_done = True
-                order.save()
-                return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
-
 def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
@@ -305,28 +278,6 @@ def drop_order(request):
             new_order.order.customer_server = order.order.customer_server
             new_order.order.save()
             order.order.save()
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
-
-def confirm_details(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(BaseOrder, id=order_id)
-            order.message = None
-            order.data_correct = True
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
-
-def ask_customer(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(BaseOrder, id=order_id)
-            order.message = 'Pleace Specify Your Details'
-            order.data_correct = False
             order.save()
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})

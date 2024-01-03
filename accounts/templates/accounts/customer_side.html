@@ -23,7 +23,9 @@
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
             <div>
+              {% if order.order.game_type == 'D' %}
               <a class="btn btn-success m-3" href="{% url 'wildrift' %}?extend={{order.order.id}}">Extend Order</a>
+              {% endif %}
               <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
                 {% csrf_token %}
                 
@@ -48,26 +50,37 @@
           <!-- <div class="from row">
             <p class="my-3 text-uppercase col-4 px-0">From</p>
             <img class="text-center col-4 px-0" src="{{order.current_rank.get_image_url}}" width="70" height="70" />
-            <p class="my-3 text-uppercase col-4 px-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
+            <p class="my-3 text-uppercase col-4 px-0">{{order.current_rank}} {{ order.current_division|romanize_division_original }}</p>
           </div> -->
 
           <!-- <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i> -->
 
+          {% if order.order.game_type == D %}
+          <!-- Division -->
           <div class="current row">
             <p class="my-3 text-uppercase col-4 px-0">Now</p>
-            <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" width="70" height="70" />
-            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+            <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" />
+            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
           </div>
 
           <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i>
 
           <div class="to row">
             <p class="my-3 text-uppercase col-4 px-0">TO</p>
-            <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" width="70" height="70" />
-            <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+            <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" />
+            <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
           </div>
+          {% else %}
+          <!-- Placement -->
+          <div class="last">
+            <p class="my-3 text-uppercase px-0">Rank</p>
+            <img class="text-center px-0" src="{{order.last_rank.get_image_url}}"  />
+            <p class="my-3 text-uppercase px-0">{{order.last_rank}}</p>
+            <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.number_of_match}}</span></p>
+          </div>
+          {% endif %}
+          
         </div>
-
         <hr>
         {% if order.order.message %}
         <p class="text-danger">{{order.order.message}}</p>

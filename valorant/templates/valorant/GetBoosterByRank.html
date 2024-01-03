@@ -201,7 +201,8 @@
             <div class="price-data division-boost col-10 text-start"></div>
             <div class="price-data placements-boost col-10 text-start"></div>
             <center>
-              <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post"  id="purchaseForm">
+              <!-- Division Form -->
+              <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post"  id="purchaseForm" class="division-boost">
                 <input type="hidden" name="game_id" value="2">
                 <input type="hidden" name="game_type" value="D">
                 <!-- Division -->
@@ -210,20 +211,38 @@
                 <input type="hidden" name="marks" value="1">
                 <input type="hidden" name="desired_rank" value="3">
                 <input type="hidden" name="desired_division" value="1">
-                <!-- Placement -->
-                <input type="hidden" name="last_rank" value="1">
-                <input type="hidden" name="number_of_match" value="5">
                 <!-- Extra Fields -->
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
-                <input type="hidden" name="choose_agents" id="chooseAgents" value=true>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="choose_agents" id="chooseAgents" value=false>
+                <input type="hidden" name="choose_agents" id="chooseAgents" value=true>
                 <input type="hidden" name="streaming" id="streaming" value=false>
                 <!-- Other -->
                 <input type="hidden" name="price" value="120">
-                <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
-                <input type="hidden" id="extendOrder" name="extend_order" value= 0 readonly>                    
+                <input type="hidden" id="chooseBoosterInput" name="choose_booster" value=0 readonly>
+                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>                    
+                <div class="purchase col-10 mt-4">
+                  <button id="submitBtn" type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
+                </div>
+              </form>
+
+              <!-- Placement Form -->
+              <form action= "http://127.0.0.1:8000/valorant/paypal/" method="post"  id="purchaseForm" class="placements-boost">
+                <input type="hidden" name="game_id" value="2">
+                <input type="hidden" name="game_type" value="P">
+                <!-- Placement -->
+                <input type="hidden" name="last_rank" value="0">
+                <input type="hidden" name="number_of_match" value="5">
+                <!-- Extra Fields -->
+                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
+                <input type="hidden" name="select_booster" id="selectBooster" value=false>
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="choose_agents" id="chooseAgents" value=true>
+                <input type="hidden" name="streaming" id="streaming" value=false>
+                <!-- Other -->
+                <input type="hidden" name="price" value="120">
+                <input type="hidden" id="chooseBoosterInput" name="choose_booster" value=0  readonly>
+                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>                    
                 <div class="purchase col-10 mt-4">
                   <button id="submitBtn" type="submit" class="btn purchase-btn rounded-3"><i class="fa-solid fa-shield-heart"></i> Purchase</button>
                 </div>
