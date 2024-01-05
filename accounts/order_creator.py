@@ -77,7 +77,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         extend_order_game_reached_marks = extend_order_game.reached_marks
 
     except BaseOrder.DoesNotExist:
-            extend_order = None
+        extend_order = None
 
 
     if status == 'New' or status == 'Continue':

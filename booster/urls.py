@@ -21,4 +21,5 @@ urlpatterns = [
     path('ask_customer/',ask_customer,name='ask.customer'),
     path('get_latest_price/', get_latest_price, name='get_latest_price'),
     path('upload-image/',upload_finish_image,name='order.upload.image'),
+    path('drop-order/',drop_order,name='drop.order'),
 ]

@@ -27,6 +27,7 @@ from django.http import HttpResponseBadRequest
 from wildRift.reached_percent import wildrift_reached_percent
 from valorant.reached_percent import valorant_reached_percent
 from itertools import chain
+from accounts.order_creator import create_order
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -267,4 +268,42 @@ def upload_finish_image(request):
                 order.is_done = True
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False})
+
+# Drop
+def drop_order(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        game_id = request.POST.get('order_game_id')
+        order = None
+
+        if order_id:
+            if int(game_id) == 1:
+                order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+            elif int(game_id) == 2:
+                order = get_object_or_404(ValorantDivisionOrder, order_id=order_id)
+            
+            try:
+                order.order.is_drop = True
+                order.order.is_done = True
+
+                invoice = order.order.invoice.split('-')
+                invoice[3]= str(order.reached_rank.id) 
+                invoice[4]= str(order.reached_division )
+                invoice[5]= str(order.reached_marks)
+                new_invoice = '-'.join(invoice)
+                payer_id = order.order.payer_id
+                customer = order.order.customer
+                
+                new_order = create_order(new_invoice,payer_id, customer, 'Continue', order.order.name)
+                new_order.order.actual_price = order.order.actual_price-order.order.money_owed
+                new_order.order.customer_gamename = order.order.customer_gamename
+                new_order.order.customer_password = order.order.customer_password
+                new_order.order.customer_server = order.order.customer_server
+                new_order.order.save()
+                order.order.save()
+                order.save()
+                return redirect(reverse_lazy('booster.orders'))
+            except:
+                return JsonResponse({'success': False})
     return JsonResponse({'success': False})

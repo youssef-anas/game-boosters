@@ -173,12 +173,31 @@ Promise.all([
   var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
   var mark = 0
 
+  // Apply Extra Button
+  function setupApplyButtonClickEvent(button, percentage) {
+    Applybuttons[button].addEventListener('click', function () {
+      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+      getResult();
+      getPrices();
+    });
+  }
+
+  // Setup click events for each button
+  for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+  }
+  setupApplyButtonClickEvent('duoBoosting', 0.65);
+  setupApplyButtonClickEvent('selectBooster', 0.05);
+  setupApplyButtonClickEvent('turboBoost', 0.20);
+  setupApplyButtonClickEvent('streaming', 0.15);
+
   // Read Marks
   $.getJSON('/static/wildRift/data/marks_data.json', function (data) {
     marks_price = marks_price.concat(data.slice(1));
     number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
     getResult();
   });
+
   if (extend_order) {
     let orderID = parseInt(extend_order, 10);
     document.getElementById('extendOrder').value = orderID; 
@@ -216,7 +235,7 @@ Promise.all([
     setCheckboxState(streamingApply, valuesToSetAdditional[3]);
   }
     
-  if(extend_order){
+  if(extend_order) {
     function getResult() {
       const startt = ((valuesToSet[3] - 1) * 4) + valuesToSet[4];
       const endd = ((desired_rank - 1) * 4) + desired_division-1;
@@ -383,28 +402,10 @@ Promise.all([
       getResult();
     });
   });
-
-  // Apply Extra Button
-  function setupApplyButtonClickEvent(button, percentage) {
-    Applybuttons[button].addEventListener('click', function () {
-      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
-      getResult();
-      getPrices();
-    });
-  }
-
-  // Setup click events for each button
-  for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-  }
-  setupApplyButtonClickEvent('duoBoosting', 0.65);
-  setupApplyButtonClickEvent('selectBooster', 0.05);
-  setupApplyButtonClickEvent('turboBoost', 0.20);
-  setupApplyButtonClickEvent('streaming', 0.15);
 });
 
 
-// ################################ Placments Boost ################################
+// --------------------------- Placments Boost --------------------------
 const radioButtonsRank = $('input[name="radio-group-ranks"]');
 const sliderEl = $("#game-count");
 const sliderValue = $(".value");
