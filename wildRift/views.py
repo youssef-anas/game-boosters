@@ -264,9 +264,9 @@ def drop_order(request):
             order.order.is_done = True
 
             invoice = order.order.invoice.split('-')
-            invoice[2]= str(order.reached_rank.id) 
-            invoice[3]= str(order.reached_division )
-            invoice[4]= str(order.reached_marks)
+            invoice[3]= str(order.reached_rank.id) 
+            invoice[4]= str(order.reached_division )
+            invoice[5]= str(order.reached_marks)
             new_invoice = '-'.join(invoice)
             payer_id = order.order.payer_id
             customer = order.order.customer

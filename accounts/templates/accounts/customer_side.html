@@ -24,7 +24,8 @@
               &rarr;</a>
             <div>
               {% if order.order.game_type == 'D' %}
-              <a class="btn btn-success m-3" href="{% url 'wildrift' %}?extend={{order.order.id}}">Extend Order</a>
+
+              <a class="btn btn-success m-3" href="{% url order.order.game_name %}?extend={{order.order.id}}">Extend Order</a>
               {% endif %}
               <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
                 {% csrf_token %}
@@ -55,7 +56,7 @@
 
           <!-- <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i> -->
 
-          {% if order.order.game_type == D %}
+          {% if order.order.game_type == 'D' %}
           <!-- Division -->
           <div class="current row">
             <p class="my-3 text-uppercase col-4 px-0">Now</p>

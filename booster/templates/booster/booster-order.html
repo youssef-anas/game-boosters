@@ -75,8 +75,9 @@
           </div>
   
           <div class="order-info my-4 shadow p-4">
-  
+            
             <h4 class="mb-5">Boost Progression</h4>
+            {% if order.order.order.game_type == 'D' %}
             <div class="from row">
               <p class="my-3 text-uppercase col-4 px-0">From</p>
               <img class="text-center col-4 px-0" src="{{order.order.current_rank.get_image_url}}" width="70" />
@@ -104,6 +105,7 @@
               <img class="text-center col-4 px-0" src="{{order.order.desired_rank.get_image_url}}" width="70" />
               <p class="my-3 text-uppercase col-4 px-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division }}</p>
             </div>
+            
             <hr>
 
             <div class="process">
@@ -137,9 +139,8 @@
                 {% csrf_token %}
                 {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
                 <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
-                <div class="input-group mb-3">
-                  <label class="input-group-text my-0" for="reached_rank"
-                    style="margin: 0 !important;">Rank</label>
+
+                <div class="mb-3">
                   <select class="form-select custom-input" required name="reached_rank" id="reached_rank">
                     {% for rank in ranks %}
                     {% with mark=rank.mark %}
@@ -150,8 +151,6 @@
                 </div>
   
                 <div class="input-group mb-3">
-                  <label class="input-group-text my-0" for="reached_division"
-                    style="margin: 0 !important;">Division</label>
                   <select class="form-select custom-input" required name="reached_division" id="reached_division">
                     <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>IV</option>
                     <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>III</option>
@@ -161,8 +160,6 @@
                 </div>
   
                 <div class="input-group mb-3">
-                  <label class="input-group-text my-0" for="reached_marks"
-                    style="margin: 0 !important;">Marks</label>
                   <select class="form-select custom-input" required name="reached_marks" id="reached_marks">
                     <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 Mark</option>
                     <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>1 Marks</option>
@@ -178,14 +175,29 @@
                   <button type="submit" class="btn submit-btn">Update Rating</button>
                 </div>
               </form>
-
-              <div class="my-3">
-              {% if order.order.reached_rank.id > order.order.desired_rank.id %}
-                <!-- Button trigger modal -->
-                <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                  <i class="fa-regular fa-circle-check"></i> Complete Order
-                </button>
-              {% elif order.order.reached_rank.id == order.order.desired_rank.id   and order.order.reached_division >= order.order.desired_division %}
+            </div>
+            {% else %}
+              <!-- Placement -->
+              <div class="last">
+                <p class="my-3 text-uppercase px-0">Rank</p>
+                <img class="text-center px-0" src="{{order.order.last_rank.get_image_url}}"  />
+                <p class="my-3 text-uppercase px-0">{{order.order.last_rank}}</p>
+                <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.order.number_of_match}}</span></p>
+              </div>
+              <hr>
+              {% endif %}
+            <div class="my-3">
+              {% if order.order.order.game_type == 'P' %}
+              <!-- Button trigger modal -->
+              <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="fa-regular fa-circle-check"></i> Complete Order
+              </button>
+              {% elif order.order.reached_rank.id > order.order.desired_rank.id or order.order.order.game_type == 'P' %}
+              <!-- Button trigger modal -->
+              <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <i class="fa-regular fa-circle-check"></i> Complete Order
+              </button>
+              {% elif order.order.reached_rank.id == order.order.desired_rank.id and order.order.reached_division >= order.order.desired_division  %}
               <!-- Button trigger modal -->
               <button type="button" class="btn submit-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 <i class="fa-regular fa-circle-check"></i> Complete Order
@@ -227,7 +239,7 @@
                 </div>
               </div>
             </div>
-            </div>
+
           </div>
         </div>
 

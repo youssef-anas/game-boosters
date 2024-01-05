@@ -2,7 +2,8 @@ from wildRift.models import WildRiftRank
 import json
 
 def wildrift_reached_percent(orders):
-  ranks = WildRiftRank.objects.all()
+  print('Orders: ', orders)
+
   with open('static/valorant/data/divisions_data.json', 'r') as file:
     division_data = json.load(file)
     division_price = [item for sublist in division_data for item in sublist]
@@ -44,3 +45,5 @@ def wildrift_reached_percent(orders):
 
     order.order.money_owed = now_price
     order.order.save()
+  
+  return [percentage, now_price]

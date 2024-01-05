@@ -69,7 +69,7 @@ class ValorantDivisionOrder(models.Model):
   current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
-  choose_agents = models.BooleanField(default=False, blank=True, null=True)
+  choose_agents = models.BooleanField(default=True, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -103,7 +103,7 @@ class ValorantDivisionOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2
-    self.order.game_name = 'Valorant'
+    self.order.game_name = 'valorant'
     self.order.game_type = 'D'
     if not self.order.name:
       self.order.name = f'Valo{self.order.id}'
@@ -117,7 +117,7 @@ class ValorantDivisionOrder(models.Model):
 
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
     
 class ValorantPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='valorant_placement_order')
@@ -128,7 +128,7 @@ class ValorantPlacementOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2
-    self.order.game_name = 'Valorant'
+    self.order.game_name = 'valorant'
     self.order.game_type = 'P'
     if not self.order.name:
       self.order.name = f'Valo{self.order.id}'

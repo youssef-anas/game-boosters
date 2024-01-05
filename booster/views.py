@@ -79,8 +79,8 @@ def jobs(request):
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
 
-    if (game_name == 'Wildrift' and request.user.booster.is_wf_player) or \
-        (game_name == 'Valorant' and request.user.booster.is_valo_player):
+    if (game_name == 'wildrift' and request.user.booster.is_wf_player) or \
+        (game_name == 'valorant' and request.user.booster.is_valo_player):
         try:
             order.booster = request.user
             order.save()
@@ -92,7 +92,6 @@ def calm_order(request, game_name, id):
         return redirect(reverse_lazy('orders.jobs'))
 
     return redirect(reverse_lazy('booster.orders'))
-
 
 def profile_booster_view(request, booster_id):
     booster = get_object_or_404(User, id=booster_id,is_booster = True)
@@ -140,30 +139,37 @@ def rate_page(request, order_id):
 def booster_orders(request):
     reached_percent = None
     ranks = None
+    # component = None
     # Wildrift
     if request.user.booster.is_wf_player:
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
-        reached_percent = wildrift_reached_percent(wildrift_orders)
-
         ranks = WildRiftRank.objects.all()
+        wildrift_component = 'wildRift/booster_orders.html'
+
+        wildrift_percent = []
+        if wildrift_orders:
+            wildrift_percent = wildrift_reached_percent(wildrift_orders)
+        
     # Valorant
     if request.user.booster.is_valo_player:
         valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
-        reached_percent = valorant_reached_percent(valorant_division_orders)
+        valorant_percent = []
+        if valorant_division_orders:
+            valorant_percent = valorant_reached_percent(valorant_division_orders)
 
         ranks = ValorantRank.objects.all()
-
+     
     orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders))
+    reached_percent = list(chain(wildrift_percent, valorant_percent))
     orders_with_percentage = []
     rooms =[]
     messages=[]
     slugs=[]
     for order in orders:
-        
         current_room = Room.get_specific_room(order.order.customer, order.order.id)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
@@ -194,6 +200,7 @@ def booster_orders(request):
     context = {
         'orders': orders_with_percentage,
         'ranks': ranks,
+        'wildrift_component': wildrift_component,
     }
     return render(request, 'booster/booster-order.html', context=context)
 

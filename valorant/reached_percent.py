@@ -2,7 +2,7 @@ from valorant.models import ValorantRank
 import json
 
 def valorant_reached_percent(orders):
-  ranks = ValorantRank.objects.all()
+  
   with open('static/valorant/data/divisions_data.json', 'r') as file:
     division_data = json.load(file)
     division_price = [item for sublist in division_data for item in sublist]
@@ -45,4 +45,4 @@ def valorant_reached_percent(orders):
     order.order.money_owed = now_price
     order.order.save()
 
-    return [percentage, now_price]
+  return [percentage, now_price]
