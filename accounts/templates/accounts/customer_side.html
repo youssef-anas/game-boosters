@@ -33,7 +33,7 @@
                 <input type="hidden" name="order_id" value="{{ order.order.id }}">
                 <input type="hidden" name="booster" value="{{ order.order.booster }}">
                 <div class="input-group mb-3">
-                  <span class="input-group-text" id="basic-addon1">$</span>
+                  <!-- <span class="input-group-text" id="basic-addon1">$</span> -->
                   <input type="number" required name="tip" class="form-control" placeholder="Tip"
                     aria-label="Tip">
                 </div>
@@ -94,7 +94,7 @@
             <input type="hidden" name="order_id" value="{{ order.order.id }}">
             <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
             <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1">@</span>
+              <!-- <span class="input-group-text" id="basic-addon1">@</span> -->
               <input type="text" required name="gamename" class="form-control" placeholder="Username" value="{% if order.order.customer_gamename %} {{order.order.customer_gamename}} {% endif %}" {% if order.order.data_correct %}readonly{% endif %} aria-label="Username" aria-describedby="basic-addon1">
             </div>
 
@@ -124,7 +124,7 @@
 
             {% if not order.order.duo_boosting %}
             <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1">*</span>
+              <!-- <span class="input-group-text" id="basic-addon1">*</span> -->
               <input type="text" required name="password" class="form-control" placeholder="Password" value="{% if order.order.customer_password %} {{order.order.customer_password}} {% endif %}" aria-label="Password" aria-describedby="basic-addon1" {% if order.order.data_correct %}readonly{% endif %} >
             </div>
             {% endif %}

@@ -18,7 +18,6 @@ from paypal.standard.ipn.signals import valid_ipn_received
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from accounts.models import BaseOrder
-from accounts.order_creator import create_order
 from accounts.models import BaseOrder, Room, Message, BoosterPercent
 
 User = get_user_model()
@@ -251,33 +250,6 @@ def update_rating(request):
             order.reached_rank = reached_rank
             order.reached_division = reached_division 
             order.reached_marks = reached_marks 
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
-
-def drop_order(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
-            order.order.is_drop = True
-            order.order.is_done = True
-
-            invoice = order.order.invoice.split('-')
-            invoice[3]= str(order.reached_rank.id) 
-            invoice[4]= str(order.reached_division )
-            invoice[5]= str(order.reached_marks)
-            new_invoice = '-'.join(invoice)
-            payer_id = order.order.payer_id
-            customer = order.order.customer
-            
-            new_order = create_order(new_invoice,payer_id, customer, 'Continue', order.order.name)
-            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
-            new_order.order.customer_gamename = order.order.customer_gamename
-            new_order.order.customer_password = order.order.customer_password
-            new_order.order.customer_server = order.order.customer_server
-            new_order.order.save()
-            order.order.save()
             order.save()
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})

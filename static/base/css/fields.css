@@ -76,5 +76,7 @@ input[type=file]::file-selector-button {
   color: white;
 }
 .submit-btn {
+  border-radius: 3rem;
   background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774);
+  padding: 0.5rem 2rem;
 }

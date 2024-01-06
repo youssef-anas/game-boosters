@@ -34,4 +34,4 @@ class PlacementSerializer(serializers.Serializer):
 
     choose_booster = serializers.IntegerField()
 
-    # extend_order = serializers.IntegerField()
+    extend_order = serializers.IntegerField()

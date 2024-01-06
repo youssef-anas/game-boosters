@@ -178,6 +178,28 @@ Promise.all([
   var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
   var mark = 0
 
+  // Apply Extra Button
+  function setupApplyButtonClickEvent(button, percentage) {
+    Applybuttons[button].addEventListener('click', function () {
+      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+      getDivisionPrice();
+      getPlacementPrice();
+    });
+  }
+
+  // Setup click events for each button
+  for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+  }
+  setupApplyButtonClickEvent('duoBoosting', 0.65);
+  setupApplyButtonClickEvent('selectBooster', 0.05);
+  setupApplyButtonClickEvent('turboBoost', 0.20);
+  setupApplyButtonClickEvent('chooseAgents', 0.0);
+  if (!extend_order) {
+    Applybuttons['chooseAgents'].click();
+  }
+  setupApplyButtonClickEvent('streaming', 0.15);
+
   // Extend
   if (extend_order) {
     let orderID = parseInt(extend_order, 10);
@@ -353,28 +375,6 @@ Promise.all([
       getDivisionPrice();
     });
   });
-
-  // Apply Extra Button
-  function setupApplyButtonClickEvent(button, percentage) {
-    Applybuttons[button].addEventListener('click', function () {
-      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
-      getDivisionPrice();
-      getPlacementPrice();
-    });
-  }
-
-  // Setup click events for each button
-  for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-  }
-  setupApplyButtonClickEvent('duoBoosting', 0.65);
-  setupApplyButtonClickEvent('selectBooster', 0.05);
-  setupApplyButtonClickEvent('turboBoost', 0.20);
-  setupApplyButtonClickEvent('chooseAgents', 0.0);
-  if (!extend_order) {
-    Applybuttons['chooseAgents'].click();
-  }
-  setupApplyButtonClickEvent('streaming', 0.15);
 });
 
 // ----------------------------- Placments Boost ---------------------------------
