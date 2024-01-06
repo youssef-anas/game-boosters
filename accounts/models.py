@@ -80,7 +80,11 @@ class BaseOrder(models.Model):
         (2, 'America'),
         (3, 'Asia'),
         (4, 'Africa'),
-        (5, 'Australia')
+        (5, 'Australia'),
+        (6, 'North America'),
+        (7, 'South America'),
+        (8, 'Middle East'),
+        (9, 'KRJP'),
     ]
     STATUS_CHOICES = [
         ('New', 'New'),
