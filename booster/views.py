@@ -138,47 +138,82 @@ def rate_page(request, order_id):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    reached_percent = None
-    ranks = None
     # component = None
     # Wildrift
+    wildrift_ranks = None
     if request.user.booster.is_wf_player:
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
-        ranks = WildRiftRank.objects.all()
-        wildrift_component = 'wildRift/booster_orders.html'
-
-        wildrift_percent = []
-        if wildrift_orders:
-            wildrift_percent = wildrift_reached_percent(wildrift_orders)
+        wildrift_ranks = WildRiftRank.objects.all()
         
     # Valorant
+    valorant_ranks = None
     if request.user.booster.is_valo_player:
         valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
-        valorant_percent = []
-        if valorant_division_orders:
-            valorant_percent = valorant_reached_percent(valorant_division_orders)
-
-        ranks = ValorantRank.objects.all()
+        valorant_ranks = ValorantRank.objects.all()
      
     orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders))
-    reached_percent = list(chain(wildrift_percent, valorant_percent))
+    
+    
     orders_with_percentage = []
     rooms =[]
     messages=[]
     slugs=[]
     for order in orders:
+        percentage = 0
+        now_price = 0
+        if order.order.game_type != 'P':
+            with open(f'static/{order.order.game_name}/data/divisions_data.json', 'r') as file:
+                division_data = json.load(file)
+                division_price = [item for sublist in division_data for item in sublist]
+                division_price.insert(0,0)
+        
+            with open(f'static/{order.order.game_name}/data/marks_data.json', 'r') as file:
+                marks_data = json.load(file)
+                marks_price = [item for sublist in marks_data for item in sublist]
+                marks_price.insert(0,0)
+
+                current_rank = order.current_rank.id
+                current_division = order.current_division
+                current_marks = order.current_marks
+
+                reached_rank = order.reached_rank.id
+                reached_division = order.reached_division
+                reached_marks = order.reached_marks
+
+                start_division = ((current_rank-1) * 4) + current_division
+                now_division = ((reached_rank-1) * 4)+ reached_division
+                sublist_div = division_price[start_division:now_division]
+
+                start_marks = (((current_rank-1) * 4) + current_marks + 1) + 1
+                now_marks = (((reached_rank-1) * 4) + reached_marks + 1) + 1
+                sublist_marks = marks_price[start_marks:now_marks]
+
+                done_sum_div = sum(sublist_div)
+                done_sum_marks = sum(sublist_marks)
+
+                done_sum = done_sum_div + done_sum_marks
+
+                percentage = round((done_sum / order.order.price) * 100 , 2)
+                if percentage >= 100 :
+                    percentage = 100
+
+                now_price = round(order.order.actual_price * (percentage / 100) , 2)
+
+                order.order.money_owed = now_price
+                order.order.save()
+
         current_room = Room.get_specific_room(order.order.customer, order.order.id)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug
             order_data = {
                 'order': order,
-                'percentage': reached_percent[0],
-                'now_price': reached_percent[1],
+                'percentage': percentage,
+                'now_price': now_price,
                 'user': request.user,
                 'room': current_room,
                 'messages': messages,
@@ -188,8 +223,8 @@ def booster_orders(request):
         else:
             order_data = {
             'order': order,
-            'percentage': reached_percent[0],
-            'now_price': reached_percent[1],
+            'percentage': percentage,
+            'now_price': now_price,
             'user': request.user,
             'room': None,
             'messages': None,
@@ -200,10 +235,11 @@ def booster_orders(request):
  
     context = {
         'orders': orders_with_percentage,
-        'ranks': ranks,
-        'wildrift_component': wildrift_component,
+        'wildrift_ranks': wildrift_ranks,
+        'valorant_ranks': valorant_ranks
     }
     return render(request, 'booster/booster-order.html', context=context)
+
 
 class CanChooseMe(APIView):
     def post(self, request, *args, **kwargs):
@@ -306,4 +342,35 @@ def drop_order(request):
                 return redirect(reverse_lazy('booster.orders'))
             except:
                 return JsonResponse({'success': False})
+    return JsonResponse({'success': False})
+
+def update_rating(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        game_id  = request.POST.get('order_game_id')
+        print('Game ID: ', game_id)
+        # Order Model & Rank Model
+        OrderModel = None
+        RankModel = None
+        if int(game_id) == 1:
+            OrderModel = WildRiftDivisionOrder
+            RankModel = WildRiftRank
+        elif int(game_id) == 2:
+            OrderModel = ValorantDivisionOrder
+            RankModel = ValorantRank
+
+        try:
+            reached_rank_id = request.POST.get('reached_rank')
+            reached_division = request.POST.get('reached_division')
+            reached_marks = request.POST.get('reached_marks')
+            if reached_rank_id and order_id and reached_division and reached_marks:
+                order = get_object_or_404(OrderModel, order__id=order_id)
+                reached_rank = get_object_or_404(RankModel, pk=reached_rank_id)
+                order.reached_rank = reached_rank
+                order.reached_division = reached_division 
+                order.reached_marks = reached_marks 
+                order.save()
+                return redirect(reverse_lazy('booster.orders'))
+        except:
+            pass
     return JsonResponse({'success': False})

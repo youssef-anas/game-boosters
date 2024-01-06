@@ -1,36 +1,36 @@
-.custom-input {
+.custom-input:not([type='radio']) {
   background-color: transparent;
-  border: 2px solid transparent;
-  border-radius: 1.5rem;
+  border: 2px solid transparent !important;
+  border-radius: 1.5rem !important;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
-  background-clip: padding-box, border-box;
-  background-origin: padding-box, border-box;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  transition: var(--main-transition);
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7) !important; 
+  background-clip: padding-box, border-box !important;
+  background-origin: padding-box, border-box !important;
+  height: 50px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  color: white !important;
+  transition: var(--main-transition) !important;
 }
 .custom-input[type=checkbox] {
-  display: inline-block;
+  display: inline-block !important;
   /* margin-top: 1rem !important; */
-  height: 12px;
+  height: 12px !important;
   margin-left: 1rem !important;
 }
 .custom-input:focus, .custom-textarea:focus {
-  background-color: transparent;
-  border: 2px solid transparent;
-  border-radius: 1.5rem;
+  background-color: transparent !important;
+  border: 2px solid transparent !important;
+  border-radius: 1.5rem !important;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right,  #6228D7 , #EE2A7B , #F9CE34); 
-  background-clip: padding-box, border-box;
-  background-origin: padding-box, border-box;      
+    linear-gradient(to right,  #6228D7 , #EE2A7B , #F9CE34) !important; 
+  background-clip: padding-box, border-box !important;
+  background-origin: padding-box, border-box !important;      
   box-shadow: none !important;
-  color: white;
+  color: white !important;
 }
 input[type=file]::file-selector-button {
   border: 0px;
@@ -45,38 +45,38 @@ input[type=file]::file-selector-button {
   padding-left: 10px;
 }
 .custom-textarea {
-  background-color: transparent;
-  border: 2px solid transparent;
-  border-radius: 1.5rem;
+  background-color: transparent !important;
+  border: 2px solid transparent !important;
+  border-radius: 1.5rem !important;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
-  background-clip: padding-box, border-box;
-  background-origin: padding-box, border-box;
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7) !important; 
+  background-clip: padding-box, border-box !important;
+  background-origin: padding-box, border-box !important;
+  border-radius: 20px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  color: white !important;
 }
 .custom-select {
-  background-color: transparent;
-  height: 50px;
-  border: 2px solid transparent;
-  border-radius: 1.5rem;
+  background-color: transparent !important;
+  height: 50px !important;
+  border: 2px solid transparent !important;
+  border-radius: 1.5rem !important;
   background: 
     linear-gradient(to right, var(--main-color), var(--main-color)), 
-    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7); 
-  background-clip: padding-box, border-box;
-  background-origin: padding-box, border-box;
-  border-radius: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+    linear-gradient(to right, #F9CE34 , #EE2A7B , #6228D7) !important; 
+  background-clip: padding-box, border-box !important;
+  background-origin: padding-box, border-box !important;
+  border-radius: 20px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  color: var(--secondary-color) !important;
 }
 .submit-btn {
-  border-radius: 3rem;
-  background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774);
-  padding: 0.5rem 2rem;
+  border-radius: 3rem !important;
+  background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774) !important;
+  padding: 0.5rem 2rem !important;
 }
