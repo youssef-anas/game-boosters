@@ -48,13 +48,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # My Apps
     'booster.apps.BoosterConfig',
     'customer.apps.CustomerConfig',
     'dashboard.apps.DashboardConfig',
     'wildRift.apps.WildriftConfig',
     'valorant.apps.ValorantConfig',
+    'pubg.apps.PubgConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
+    
+    # Others
     'paypal.standard.ipn',
     'corsheaders',
     'rest_framework',

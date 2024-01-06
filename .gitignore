@@ -27,4 +27,5 @@
 /valorant/migrations/
 /valorant/__pycache__/
 
-
+/pubg/migrations/
+/pubg/__pycache__/
