@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import BaseUser, BaseOrder
 from wildRift.models import WildRiftRank
 from valorant.models import ValorantRank
+from pubg.models import PubgRank
 
 class Rating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -32,8 +33,10 @@ class Booster(models.Model):
     email_verified_at = models.DateTimeField(null=True,blank=True)
     is_wf_player = models.BooleanField(default=False)
     is_valo_player = models.BooleanField(default=False)
+    is_pubg_player = models.BooleanField(default=False)
     achived_rank_wr = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank')
     achived_rank_valo = models.ForeignKey(ValorantRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank')
+    achived_rank_pubg = models.ForeignKey(PubgRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank')
 
 
     def __str__(self):

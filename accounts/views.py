@@ -26,6 +26,7 @@ from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 import requests
 import secrets
+from pubg.models import PubgDivisionOrder
 
 
     
@@ -267,6 +268,9 @@ def customer_side(request):
     elif 'Valo' in order.name and order.game_type == 'P':
         order = ValorantPlacementOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
+    elif 'Pubg' in order.name:
+        order = PubgDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))

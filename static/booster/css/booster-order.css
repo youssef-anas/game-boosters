@@ -74,63 +74,63 @@ input[type="radio"]:checked+label {
   background-color: transparent;
 
   .chatbox {
-      font-size: larger;
+    font-size: larger;
 
-      .tip-message {
-        text-align: center !important;
-        background-color: var(--main-color);
-        border-radius: 0.5rem;
-        padding: 0.4rem;
-        margin-top: 1rem !important;
-        margin-bottom: 1rem !important;
-        font-weight: 500;
-      }
-      .userMessage, .otherMessage {
-          display: flex;
-          margin-top: 1rem !important;
-          margin-bottom: 1rem !important;
-      }
-      .userMessage {
-          direction: rtl;
-      }
-      .message {
-          max-width: 500px;
-          position: relative;
-      }
-      .message::before {
-          content: "";
-          position: absolute;
-          top: 0px;
-          border-width: 0px 17px 25px;
-          border-style: solid; 
-      }
-      .userMessage .message {
-          background-color: var(--secondary-color);
-      }
-      .userMessage .message::before {
-          right: -26px;
-          border-color: transparent transparent transparent var(--secondary-color);
-      }
-      .otherMessage {
-          direction: ltr;
-      }
-      .otherMessage .message {
-          background-color: #202c33;
-          border-top-left-radius: 0 !important;
-      }
-      .otherMessage .message::before {
-          left: -26px;
-          border-color: transparent #202c33 transparent transparent;
-      }
-      .otherMessage .image {
-          margin-right: 1rem;
-      }
-      .otherMessage .image img {
-          border-radius: 50%;
-      }
-      .otherMessage .message .username {
-          color: var(--secondary-color);
-      }
+    .tip-message {
+      text-align: center !important;
+      background-color: var(--main-color);
+      border-radius: 0.5rem;
+      padding: 0.4rem;
+      margin-top: 1rem !important;
+      margin-bottom: 1rem !important;
+      font-weight: 500;
+    }
+    .userMessage, .otherMessage {
+      display: flex;
+      margin-top: 1rem !important;
+      margin-bottom: 1rem !important;
+    }
+    .userMessage {
+      direction: rtl;
+    }
+    .message {
+      max-width: 500px;
+      position: relative;
+    }
+    .message::before {
+      content: "";
+      position: absolute;
+      top: 0px;
+      border-width: 0px 17px 25px;
+      border-style: solid; 
+    }
+    .userMessage .message {
+      background-color: var(--secondary-color);
+    }
+    .userMessage .message::before {
+      right: -26px;
+      border-color: transparent transparent transparent var(--secondary-color);
+    }
+    .otherMessage {
+      direction: ltr;
+    }
+    .otherMessage .message {
+      background-color: #202c33;
+      border-top-left-radius: 0 !important;
+    }
+    .otherMessage .message::before {
+      left: -26px;
+      border-color: transparent #202c33 transparent transparent;
+    }
+    .otherMessage .image {
+      margin-right: 1rem;
+    }
+    .otherMessage .image img {
+      border-radius: 50%;
+    }
+    .otherMessage .message .username {
+      color: var(--secondary-color);
+    }
   }
 
   .sendButton{
@@ -150,11 +150,6 @@ input[type="radio"]:checked+label {
   background-color: var(--secondary-color);
   color: white;
   transform: scale(0.9);
-}
-.custom-input {
-  background-color: transparent;
-  border: 1px solid var(--alternative-color);
-  color: white;
 }
 .drop-container {
   position: relative;

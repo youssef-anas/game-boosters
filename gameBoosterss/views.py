@@ -55,7 +55,7 @@ def index(request):
       "id": 9,
       "name": "Pubg Mobile",
       "image": "Pubg Mobile.avif",
-      "link": ""
+      "link": "pubg"
     },
     {
       "id": 10,

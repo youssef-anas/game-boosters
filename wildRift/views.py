@@ -102,7 +102,6 @@ def get_order_result_by_rank(data,extend_order_id):
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
     extend_order = request.GET.get('extend')
@@ -149,11 +148,6 @@ def view_that_asks_for_money(request):
                 messages.error(request, "You are a booster!, You can't make order.")
                 return redirect(reverse_lazy('wildrift'))
         
-            # user_has_uncompleted_order = BaseOrder.objects.filter(customer=request.user, is_done=False).exists()
-            # if user_has_uncompleted_order:
-            #     messages.error(request, "You already have a uncompleted order!, You can't make another one until this finish")
-            #     return redirect(reverse_lazy('wildrift'))
-        
         print('request POST:  ', request.POST)
         try:
             serializer = RankSerializer(data=request.POST) 
@@ -185,71 +179,5 @@ def view_that_asks_for_money(request):
 
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-
-
-# def payment_successed(request):
-#     payer_id = request.GET.get('PayerID')
-#     order_id = request.GET.get('order_id')
-#     # Use the parameters as needed
-#     print(f'Payment success with payer ID: {payer_id}')
-    
-#     # Perform additional actions, such as updating the order status, generating an invoice, etc.
-
-#     # Redirect to a relevant page, e.g., the account registration page
-#     return redirect(reverse('accounts.register'))
-#     return HttpResponse(f'order id: {order_id} ---- payer_id {payer_id}')
-
 def payment_canceled(request):
     return HttpResponse('payment canceled')
-
-# @csrf_exempt
-# def paypal_ipn_listener(sender, **kwargs):
-#     ipn_obj = sender
-
-#     # Check if the payment is completed
-#     if ipn_obj.payment_status == "Completed":
-
-#         payer_id = ipn_obj.payer_id
-#         payer_email = ipn_obj.payer_email
-#         order_name = ipn_obj.item_name
-#         order_price = ipn_obj.mc_gross
-#         order_invoice = ipn_obj.invoice
-        
-#         # print(f"Transaction ID: {ipn_obj.txn_id}")
-#         # print(f"Payer ID: {ipn_obj.payer_id}")
-#         # print(f"Payer Email: {ipn_obj.payer_email}")
-#         # print(f"Payment Status: {ipn_obj.payment_status}")
-#         # print(f"Gross Amount: {ipn_obj.mc_gross}")
-#         # print(f"Currency: {ipn_obj.mc_currency}")
-#         # print(f"Item Name: {ipn_obj.item_name}")
-#         # print(f"Invoice ID: {ipn_obj.invoice}")
-#         # print(f"Custom Field: {ipn_obj.custom}")
-#         # print(f"Receiver Email: {ipn_obj.receiver_email}")
-#         # print(f"Is Test IPN: {ipn_obj.test_ipn}")
-
-#         buyer_first_name = ipn_obj.first_name
-#         buyer_last_name = ipn_obj.last_name
-
-#         # create a user account
-#         user = create_user_account(payer_id, payer_email, buyer_first_name, buyer_last_name)
-#         create_division_order(order_name,order_price,order_invoice,user)
-
-# # Connect the signal to your IPN listener
-# valid_ipn_received.connect(paypal_ipn_listener)
-
-
-def update_rating(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        reached_rank_id = request.POST.get('reached_rank')
-        reached_division = request.POST.get('reached_division')
-        reached_marks = request.POST.get('reached_marks')
-        if reached_rank_id and order_id and reached_division and reached_marks:
-            order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
-            reached_rank = get_object_or_404(WildRiftRank, pk=reached_rank_id)
-            order.reached_rank = reached_rank
-            order.reached_division = reached_division 
-            order.reached_marks = reached_marks 
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})

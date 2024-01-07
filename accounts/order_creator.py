@@ -1,5 +1,6 @@
 from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
+from pubg.models import PubgDivisionOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
@@ -47,7 +48,11 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             Game = ValorantDivisionOrder
         elif type == 'P':
             Game = ValorantPlacementOrder
+    # Pubg
     elif game_id == 3:
+        choose_agents = bool(int(invoice_values[16]))
+        Game = PubgDivisionOrder
+    elif game_id == 4:
         Game = 'anoter model' # for future work
     else:
         pass
@@ -96,6 +101,10 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # Valorant - Placement
         elif game_id == 2 and type == 'P':
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_agents=choose_agents)
+        # Pubg Without Placement 
+        elif game_id == 3:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks, desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division, reached_marks=current_marks, choose_agents=choose_agents)
+
 
     if status == 'Extend':
         print(f"order extended from:  {order_name}")
@@ -109,7 +118,10 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)
         # Valorant - Placement
         elif game_id == 2 and type == 'P':
-            order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_agents=choose_agents)
+            order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_agents=choose_agents)       
+        # Pubg Without Placement 
+        elif game_id == 3:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)
 
     order.save_with_processing()
     baseOrder.customer_wallet()
