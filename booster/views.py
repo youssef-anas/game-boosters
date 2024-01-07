@@ -27,7 +27,7 @@ from django.http import HttpResponseBadRequest
 from wildRift.reached_percent import wildrift_reached_percent
 from valorant.reached_percent import valorant_reached_percent
 from itertools import chain
-from accounts.order_creator import create_order
+from accounts.order_creator import create_order, refresh_order_page
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -91,7 +91,7 @@ def calm_order(request, game_name, id):
     else:
         messages.error(request, "You aren't play this game, Calm order for your game!")
         return redirect(reverse_lazy('orders.jobs'))
-
+    refresh_order_page()
     return redirect(reverse_lazy('booster.orders'))
 
 def profile_booster_view(request, booster_id):
@@ -199,7 +199,7 @@ def booster_orders(request):
             
  
     context = {
-        'orders': orders_with_percentage,
+        # 'orders': orders_with_percentage,
         'ranks': ranks,
         'wildrift_component': wildrift_component,
     }

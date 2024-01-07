@@ -5,68 +5,6 @@
 <link rel="stylesheet" href="{% static 'games/css/orders.css'%}">
 {% endblock %}
 {% block container %}
-{% block script %}
-{% for order in divisions_order %}
-<script>
-  function startTimer(price,seconds, callback) {
-    let remainingTime = seconds;
-  
-    function updateTimer() {
-      const minutes = Math.floor(remainingTime / 60);
-      const seconds = remainingTime % 60;
-  
-      // Add leading zeros to minutes and seconds
-      const formattedMinutes = minutes < 10 ? `0${minutes}` : `${minutes}`;
-      const formattedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
-  
-      $('#actual_price_{{ order.order.id }}').text(price+'$');
-      $('#Timer_{{ order.order.id }}').text('Price increase in ' + formattedMinutes + ':' + formattedSeconds);
-      $('#Timer_{{ order.order.id }}').show();
-  
-      if (remainingTime === 0) {
-        clearInterval(timerId);
-        callback(); 
-      } else {
-        remainingTime--;
-      }
-    }
-  
-    updateTimer();
-  
-    const timerId = setInterval(updateTimer, 1000);
-  }
-  
-  function fetchLatestPrice{{ order.order.id }}() {
-    console.log('Order status:', '{{ order.order.status }}');
-    $.ajax({
-      url: '{% url "get_latest_price" %}?order_id={{ order.order.id }}',
-      method: 'GET',
-      success: function (data) {
-        console.log(data)
-        if (data.time_difference === 'Time is up' || data.time_difference ===  'Continue' ) {
-          console.log('final price')
-          $('#actual_price_{{ order.order.id }}').text(data.actual_price+'$');
-          $('#Timer_{{ order.order.id }}').hide();
-          $('#final_price_{{ order.order.id }}').show();
-        }else{
-          console.log('timer start')
-          startTimer(data.actual_price,data.time_difference +2, function() {
-            fetchLatestPrice{{ order.order.id }}();
-          });
-        }
-        
-      },
-      error: function (error) {
-        console.error('Error fetching latest price:', error);
-      }
-    });
-  }
-
-  // Call the function immediately without document ready
-  fetchLatestPrice{{ order.order.id }}();
-</script>
-{% endfor %}
-{% endblock %}
 <div class="orders-container container-fluid p-5 text-white">
   <div class="container">
     {% if messages %}
@@ -83,45 +21,52 @@
         <!-- --------------- Division Boost Orders --------------- -->
         <div class="division-boost-order p-5  rounded-3">
           <!-- <h4 class="my-4">Division Boost Orders</h4> -->
-          <div class="row">
-            {% for order in orders %}
-            <div class="col-xl-6 col-md-12 mb-4 text-dark">
-              <div class="card shadow h-100 py-2 orders">
-                <div class="card-body d-flex flex-column">
-                  <h5><span class="badge" style="background-color: {% if order.order.status == 'New' %} var(--secondary-color) {% else %} red {% endif %} ;">{{order.status}}</span></h5>
-                  <!-- Start Here -->
-                  {% if order.wildrift_order %}
-                  <h5 class="card-title">{{order.wildrift_order}} - WildRift</h5>
-                  {% elif order.valorant_division_order %}
-                  <h5 class="card-title">{{order.valorant_division_order}} - Valorant</h5>
-                  {% elif order.valorant_placement_order %}
-                  <h5 class="card-title">{{order.valorant_placement_order}} - Valorant</h5>
-                  {% endif %}
-                  <!-- End Here -->
-                  <div class="d-flex justify-content-between align-items-center my-2">
-                    <p class="mb-0">{{order.customer.first_name}} {{order.customer.last_name}}</p>
-                    <p class="mb-0">{{ order.created_at|date:'m - d - Y' }}</p>
-                  </div>
+          <div id="order_list" class="row">
 
-                  <!------------------- Time ----------------->
-                  <div class='d-flex justify-content-between align-items-center price-time py-3 my-2'>
-                    <p class="h5 mb-0 division-price division-price{{forloop.counter0}}" id='actual_price_{{ order.order.id }}'></p> 
-                    <p id="Timer_{{ order.order.id }}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2"></p> 
-                    <div id="final_price_{{ order.order.id }}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2"><i class="fa-solid fa-star" style="color: gold;"></i> Final Price</div>
-                  </div>
-
-                  <div class="d-flex justify-content-end align-items-center">
-                    <a href="{% url 'calm.order' game_name=order.game_name id=order.id %}" class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-            {% endfor %}
           </div>
         </div>
     </div>
 
   </div>
 </div>
+{% endblock %}
+{% block script %}
+<script>
+  let host = window.location.host
+  const socket = new WebSocket('ws://' + window.location.host + '/ws/order/');
+  socket.onmessage = function(e){
+      let data = JSON.parse(e.data)
+      console.log('data',data)
+      if(data.type === 'order'){
+          let orderContainer = document.getElementById('order_list')
+          orderContainer.innerHTML = '';
+          data.order.forEach(order => {
+              orderContainer.insertAdjacentHTML('beforeend',
+                  `<div class="col-xl-6 col-md-6 mb-4 text-dark">
+                    <div class="card shadow h-100 py-2 orders">
+                      <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${order.name}</h5>
+                        <div class="d-flex justify-content-between align-items-center my-2">
+                          <p class="mb-0">${order.details}</p>
+                        </div>
+                        <!------------------- Time ----------------->
+                        <div class='d-flex justify-content-between align-items-center price-time py-3 my-2'>
+                          <p class="h5 mb-0 division-price" id='actual_price_${order.id}'></p> 
+                          <p id="Timer_${order.id}" style="display: inline; color: var(--secondary-color)" class="h5 mb-0 ms-2">${order.price}$</p> 
+                          <div id="final_price_${order.id}" style="display: none; color: var(--secondary-color)" class="h5 mb-0 ms-2"><i class="fa-solid fa-star" style="color: gold;"></i> Final Price</div>
+                        </div>
+      
+                        <div class="d-flex justify-content-end align-items-center">
+                          <a href='${order.url}' class="fs-5 text-decoration-none" style="color: var(--main-color)"><i class="fa-solid fa-mug-hot"></i> Calm</a>
+                        </div>
+      
+                      </div>
+                    </div>
+                  </div>`
+              );
+          });
+      }
+  }
+
+</script>
 {% endblock %}

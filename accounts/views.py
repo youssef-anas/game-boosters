@@ -18,7 +18,7 @@ from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from django.http import JsonResponse
-from accounts.order_creator import  create_order
+from accounts.order_creator import create_order, refresh_order_page
 User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
@@ -27,6 +27,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 import requests
 import secrets
 
+
+    
 @csrf_exempt
 def send_activation_email(user, request):
     # Generate a token for the user
@@ -71,6 +73,7 @@ def register_view(request):
             order = create_order(invoice, payer_id, request.user)
             create_chat_with_admins(customer=request.user,orderId = order.order.id)
             create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
+            refresh_order_page()
             return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -83,6 +86,7 @@ def register_view(request):
                 # return render(request, 'accounts/activation_sent.html')
                 create_chat_with_admins(customer=request.user, orderId = order.order.id)
                 create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
+                refresh_order_page()
                 return redirect(reverse_lazy('accounts.customer_side'))
         form = Registeration()
         return render(request, 'accounts/register.html', {'form': form})
@@ -328,3 +332,38 @@ def edit_customer_profile(request):
 def customer_history(request):
     history = Transaction.objects.filter(user=request.user)
     return render(request, 'accounts/customer_histoty.html', context={'history' : history})
+
+
+
+
+
+############### test
+# def order_list(request):
+#     return render(request, 'accounts/order_list.html')
+
+
+# def submit_order(request):
+
+#     order_name = 'order by webb b '
+#     user = request.user.username
+
+#     BaseOrder.objects.create(status=order_name,user=user)
+#     orders = BaseOrder.objects.all().order_by('-timestamp')[:2]
+#     all_orders_dict = [
+#         {
+#             "id": order.pk,
+#             'customer': order.customer.username,
+#             'status': order.status,
+#             'created_at': str(order.created_at),
+#         }
+#         for order in orders
+#     ]
+#     async_to_sync(channel_layer.group_send)(
+#         'orders',
+#         {
+#             'type': 'order_list',
+#             'order': all_orders_dict,
+#         }
+#     )
+
+#     return JsonResponse({'message': 'Order submitted successfully'})

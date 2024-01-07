@@ -1,0 +1,38 @@
+<!-- myapp/templates/myapp/order_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order List</title>
+</head>
+<body>
+    <h1>Order List</h1>
+    <ul id="order-list">
+    </ul>
+    <div id="order"></div>
+    <script>
+        let url = `ws://${window.location.host}ws/order/`
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/order/');
+        socket.onmessage = function(e){
+            let data = JSON.parse(e.data)
+            console.log('data',data.order)
+            if(data.type === 'order'){
+                let orderContainer = document.getElementById('order')
+                orderContainer.innerHTML = '';
+                data.order.forEach(order => {
+                    orderContainer.insertAdjacentHTML('beforeend',
+                        `<div class='order${order.id}'>
+                            <p>ID: ${order.id}</p>
+                            <p>User: ${order.customer}</p>
+                            <p>Status: ${order.status}</p>
+                            <p>Timestamp: ${order.created_at}</p>
+                            <hr/>
+                        </div>`
+                    );
+                });
+            }
+        }
+
+    </script>
+</body>
+</html>

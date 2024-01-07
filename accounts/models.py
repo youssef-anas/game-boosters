@@ -93,10 +93,11 @@ class BaseOrder(models.Model):
         ('D', 'Division'),
         ('P', 'Placement')
     ]
-    name = models.CharField(max_length=300, null = True)
-    game_id = models.IntegerField(null=True, blank=True)
-    game_name = models.CharField(max_length=300, null=True, blank=True)
-    game_type = models.CharField(max_length=100, choices=GAME_TYPE, null=True, blank=True)
+    name = models.CharField(max_length=30, null = True)
+    details = models.CharField(max_length=300, default='no details')
+    game_id = models.IntegerField(null=True)
+    game_name = models.CharField(max_length=30, default='game name')
+    game_type = models.CharField(max_length=10, choices=GAME_TYPE, null=True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)

@@ -105,16 +105,20 @@ class ValorantDivisionOrder(models.Model):
     self.order.game_id = 2
     self.order.game_name = 'valorant'
     self.order.game_type = 'D'
+    self.order.details = self.get_details()
     if not self.order.name:
       self.order.name = f'Valo{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
     self.send_discord_notification()
+    
+  def get_details(self):
+    return f"From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
+
 
   def __str__(self):
-    return f"Boosting From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
-
+    self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
     return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
@@ -130,11 +134,15 @@ class ValorantPlacementOrder(models.Model):
     self.order.game_id = 2
     self.order.game_name = 'valorant'
     self.order.game_type = 'P'
+    self.order.details = self.get_details()
     if not self.order.name:
       self.order.name = f'Valo{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
 
-  def __str__(self):
+  def get_details(self):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"
+
+  def __str__(self):
+    self.get_details()

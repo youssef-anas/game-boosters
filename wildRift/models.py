@@ -171,15 +171,22 @@ class WildRiftDivisionOrder(models.Model):
         self.order.game_id = 1
         self.order.game_name = 'wildrift'
         self.order.game_type = 'D'
+        self.order.details = self.get_details()
+        # 
         if not self.order.name:
             self.order.name = f'WR{self.order.id}'
         self.order.update_actual_price()
         self.order.save()
         super().save(*args, **kwargs)
         self.send_discord_notification()
-        
+    
+    def get_details(self):
+        return f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
+
     def __str__(self):
-        return f"Boosting From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
+        return self.get_details()
+    
+    
 
     
     def get_rank_value(self, *args, **kwargs):

@@ -3,6 +3,11 @@ from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+import json
+channel_layer = get_channel_layer()
+
 
 def create_order(invoice, payer_id, customer, status='New',name = None):
     # Split the invoice string by the hyphen ("-") delimiter
@@ -109,3 +114,36 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     order.save_with_processing()
     baseOrder.customer_wallet()
     return order
+
+
+
+
+
+
+
+def live_orders():
+    orders = BaseOrder.objects.filter(booster=None).order_by('-created_at')
+    all_orders_dict = []
+    for order in orders:
+        order_dict = {
+            "id": order.pk,
+            'name': order.game_name,
+            'server': order.customer_server,
+            'status': order.status,
+            'price': order.price,
+            'game_name':order.game_name,
+            'details':order.details,
+            'url':f'{order.game_name}/{order.pk}/',
+        }
+        all_orders_dict.append(order_dict)
+    return all_orders_dict 
+
+def refresh_order_page():
+    all_orders_dict = live_orders()
+    async_to_sync(channel_layer.group_send)(
+        'orders',
+        {
+            'type': 'order_list',
+            'order': all_orders_dict,
+        }
+    )
