@@ -11,7 +11,7 @@ class DivisionSerializer(serializers.Serializer):
     select_booster = serializers.BooleanField()
     turbo_boost = serializers.BooleanField()
     streaming = serializers.BooleanField()
-    choose_agents = serializers.BooleanField()
+    choose_champions = serializers.BooleanField()
 
     price = serializers.FloatField(min_value=10)
 

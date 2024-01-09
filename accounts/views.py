@@ -17,6 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
+from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from django.http import JsonResponse
 from accounts.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -28,8 +29,6 @@ import requests
 import secrets
 from pubg.models import PubgDivisionOrder
 
-
-    
 @csrf_exempt
 def send_activation_email(user, request):
     # Generate a token for the user
@@ -207,7 +206,7 @@ def tip_booster(request):
             # Create the instance.
             form = PayPalPaymentsForm(initial=paypal_dict)
             context = {"form": form}
-            return render(request, "wildRift/paypal.html", context,status=200)
+            return render(request, "accounts/paypal.html", context,status=200)
         return JsonResponse({'success': False})
     
 def success_tip(request,token):
@@ -271,6 +270,15 @@ def customer_side(request):
     elif 'Pubg' in order.name:
         order = PubgDivisionOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
+    elif 'Pubg' in order.name:
+        order = PubgDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
+    elif 'LOL' in order.name and order.game_type == 'D':
+        order = LeagueOfLegendsDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
+    elif 'LOL' in order.name and order.game_type == 'P':
+        order = LeagueOfLegendsPlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))

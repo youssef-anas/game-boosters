@@ -16,7 +16,7 @@ from paypal.standard.forms import PayPalPaymentsForm
 User = get_user_model()
 
 division_names = ['','IV','III','II','I']  
-rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ASCENDANT', 'IMMORTAL']
+rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
 def get_division_order_result_by_rank(data,extend_order_id):
   print('Data: ', data)
@@ -69,16 +69,16 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   # Read data from JSON file
   with open('static/lol/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    division_price = json.load(file)
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
   ##
   with open('static/lol/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
+    marks_data = json.load(file)
+    marks_data.insert(0,[0,0,0,0,0,0])
   ##    
-  start_division = ((current_rank-1) * 3) + current_division
-  end_division = ((desired_rank-1) * 3)+ desired_division
+  start_division = ((current_rank-1) * 4) + current_division
+  end_division = ((desired_rank-1) * 4)+ desired_division
   marks_price = marks_data[current_rank][marks]
   sublist = flattened_data[start_division:end_division ]
   total_sum = sum(sublist)
@@ -102,12 +102,12 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_champions_value}'
+  invoice = f'lol-4-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'VALORANT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
+  name = f'LOL, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
@@ -180,7 +180,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
+  invoice = f'lol-4-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -208,7 +208,7 @@ def leagueOfLegendsGetBoosterByRank(request):
   ]
 
   marks_data = [
-    [0,mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
+    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
     for mark in marks
   ]
 
@@ -258,6 +258,7 @@ def view_that_asks_for_money(request):
         # Division
         if request.POST.get('game_type') == 'D':
           order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
+          print('Order Info: ', order_info)
         # Placement
         elif request.POST.get('game_type') == 'P':
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
@@ -271,12 +272,12 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/lol/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/leagueOfLegends/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "lol/paypal.html", context,status=200)
+        return render(request, "leagueOfLegends/paypal.html", context,status=200)
       return JsonResponse({'error': serializer.errors}, status=400)
       # messages.error(request, 'Ensure this value is greater than or equal to 10')
       # return redirect(reverse_lazy('valorant'))

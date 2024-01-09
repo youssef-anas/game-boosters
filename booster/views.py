@@ -19,6 +19,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, ValorantRank
+from pubg.models import PubgDivisionOrder, PubgRank
+from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder, LeagueOfLegendsRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -79,7 +81,8 @@ def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
 
     if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
-        (game_name == 'valorant' and request.user.booster.is_valo_player):
+        (game_name == 'valorant' and request.user.booster.is_valo_player) or \
+        (game_name == 'lol' and request.user.booster.is_lol_player):
         try:
             order.booster = request.user
             order.save()
@@ -109,7 +112,6 @@ def profile_booster_view(request, booster_id):
         }
     return render(request, 'booster/booster_profile.html', context)
 
-
 @login_required
 def get_rate(request, order_id):
     order_obj = get_object_or_404(BaseOrder, id=order_id)
@@ -130,9 +132,9 @@ def get_rate(request, order_id):
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
-# this for only test and will remove it        
+# this for only test and will remove it ---- ***** This Need Edit *****        
 def rate_page(request, order_id):
-    order = WildRiftDivisionOrder.objects.get(order__id=order_id)
+    order = BaseOrder.objects.get(id=order_id) # ***** Check If This Run Well *****
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
@@ -152,8 +154,24 @@ def booster_orders(request):
         valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         valorant_ranks = ValorantRank.objects.all()
+
+    # LOL
+    pubg_ranks = None
+    if request.user.booster.is_lol_player:
+        pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        pubg_ranks = PubgRank.objects.all()
+
+    # LOL
+    lol_ranks = None
+    if request.user.booster.is_lol_player:
+        lol_division_orders = LeagueOfLegendsDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        lol_placement_orders = LeagueOfLegendsPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        lol_ranks = LeagueOfLegendsRank.objects.all()
      
-    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders))
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders))
     
     
     orders_with_percentage = []
@@ -235,6 +253,8 @@ def booster_orders(request):
         'orders': orders_with_percentage,
         'wildrift_ranks': wildrift_ranks,
         'valorant_ranks': valorant_ranks,
+        'pubg_ranks': pubg_ranks,
+        'lol_ranks': lol_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -316,6 +336,10 @@ def drop_order(request):
                 order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
             elif int(game_id) == 2:
                 order = get_object_or_404(ValorantDivisionOrder, order_id=order_id)
+            elif int(game_id) == 3:
+                order = get_object_or_404(PubgDivisionOrder, order_id=order_id)
+            elif int(game_id) == 4:
+                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order_id=order_id)
             
             try:
                 order.order.is_drop = True
@@ -356,6 +380,12 @@ def update_rating(request):
         elif int(game_id) == 2:
             OrderModel = ValorantDivisionOrder
             RankModel = ValorantRank
+        elif int(game_id) == 3:
+            OrderModel = PubgDivisionOrder
+            RankModel = PubgRank
+        elif int(game_id) == 4:
+            OrderModel = LeagueOfLegendsDivisionOrder
+            RankModel = LeagueOfLegendsRank
 
         try:
             reached_rank_id = request.POST.get('reached_rank')

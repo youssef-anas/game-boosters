@@ -82,19 +82,22 @@
               <p class="my-3 text-uppercase col-4 px-0">From</p>
               <img class="text-center col-4 px-0" src="{{order.order.current_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
-                {% if order.order.order.game_name == 'wildrift' %}
+                <!-- Here Sara Division Range I II III .. Or V IV III ... -->
+                {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division }}</p>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division_original }}</p>
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
-                {% if order.order.order.game_name == 'wildrift' %}
+                {% if order.order.order.game_name == 'wildRift' %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.current_marks}} Marks</span>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 RR {% elif order.order.current_marks == 1 %} 21-40 RR {% elif order.order.current_marks == 2 %} 41-60 RR {% elif order.order.current_marks == 3 %} 61-80 RR {% elif order.order.current_marks == 4 %} 81-100 RR {% endif %} </span>
+                {% elif order.order.order.game_name == 'lol' %}
+                <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 LP {% elif order.order.current_marks == 1 %} 21-40 LP {% elif order.order.current_marks == 2 %} 41-60 LP {% elif order.order.current_marks == 3 %} 61-80 LP {% elif order.order.current_marks == 4 %} 81-99 LP {% elif order.order.current_marks == 5 %} SERIES {% endif %} </span>
                 {% endif %}
-
+                <!-- Here Sara Check Marks For Pubg -->
               </div>
             </div>
   
@@ -104,18 +107,22 @@
               <p class="my-3 text-uppercase col-4 px-0">Now</p>
               <img class="text-center col-4 px-0" src="{{order.order.reached_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
-                {% if order.order.order.game_name == 'wildrift' %}
+                <!-- Here Sara Division Range I II III .. Or V IV III ... -->
+                {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division }}</p>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division_original }}</p>
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
-                {% if order.order.order.game_name == 'wildrift' %}
+                {% if order.order.order.game_name == 'wildRift' %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.reached_marks}} Marks</span>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 RR {% elif order.order.reached_marks == 1 %} 21-40 RR {% elif order.order.reached_marks == 2 %} 41-60 RR {% elif order.order.reached_marks == 3 %} 61-80 RR {% elif order.order.reached_marks == 4 %} 81-100 RR {% endif %} </span>
+                {% elif order.order.order.game_name == 'lol' %}
+                <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 LP {% elif order.order.reached_marks == 1 %} 21-40 LP {% elif order.order.reached_marks == 2 %} 41-60 LP {% elif order.order.reached_marks == 3 %} 61-80 LP {% elif order.order.reached_marks == 4 %} 81-99 LP {% elif order.order.reached_marks == 4 %} SERIES {% endif %} </span>
                 {% endif %}
+                <!-- Here Sara Check Marks For Pubg -->
               </div>
             </div>
   
@@ -124,7 +131,8 @@
             <div class="to row">
               <p class="my-3 text-uppercase col-4 px-0">TO</p>
               <img class="text-center col-4 px-0" src="{{order.order.desired_rank.get_image_url}}" width="70" />
-              {% if order.order.order.game_name == 'wildrift' %}
+              <!-- Here Sara Division Range I II III .. Or V IV III ... -->
+              {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' %}
               <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division }}</p>
               {% elif order.order.order.game_name == 'valorant' %}
               <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division_original }}</p>
@@ -159,10 +167,14 @@
             {% endif %}
             <hr>
             <!-- Here We Change Update Component Depend On Game -->
-            {% if order.order.order.game_name == 'wildrift' %}
+            {% if order.order.order.game_name == 'wildRift' %}
               {% include 'wildrift/order_update.html' with wildrift_ranks=wildrift_ranks %}
             {% elif order.order.order.game_name == 'valorant' %}
               {% include 'valorant/order_update.html' with valorant_ranks=valorant_ranks %}
+            {% elif order.order.order.game_name == 'lol' %}
+              {% include 'leagueOfLegends/order_update.html' with lol_ranks=lol_ranks %}
+            {% elif order.order.order.game_name == 'pubg' %}
+              {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
             {% endif %}
             
             {% else %}

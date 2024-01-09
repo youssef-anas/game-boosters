@@ -75,7 +75,7 @@ class LeagueOfLegendsDivisionOrder(models.Model):
   choose_champions = models.BooleanField(default=True, blank=True, null=True)
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 2
+    self.order.game_id = 4
     self.order.game_name = 'lol'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
@@ -104,7 +104,7 @@ class LeagueOfLegendsPlacementOrder(models.Model):
   choose_champions = models.BooleanField(default=False, blank=True, null=True)
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 2
+    self.order.game_id = 4
     self.order.game_name = 'lol'
     self.order.game_type = 'P'
     self.order.details = self.get_details()

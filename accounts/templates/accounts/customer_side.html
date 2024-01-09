@@ -100,7 +100,7 @@
 
             <div class="input-group mb-3">
               <!-- <label class="input-group-text my-0" for="inputGroupSelect01" style="margin: 0 !important;">Servers</label> -->
-              {% if "WR" in order.order.name or "Valo" in order.order.name %}
+              {% if "WR" in order.order.name or "Valo" in order.order.name or "LOL" in order.order.name %}
               <select class="form-select" required name="server" id="inputGroupSelect01" {% if order.order.data_correct %}disabled{% endif %} >
                 <option value="1" {% if order.order.customer_server == 1 or order.order.customer_serve is null %}selected{% endif %}>Europa</option>
                 <option value="2" {% if order.order.customer_server == 2 %}selected{% endif %}>America</option>
