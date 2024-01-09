@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder, Wallet
-from accounts.templatetags.custom_filters import romanize_division
+from accounts.templatetags.custom_filters import romanize_division_original
 import requests
 
 # Create your models here.
@@ -80,8 +80,8 @@ class ValorantDivisionOrder(models.Model):
       "title": "Vlorant",
       "description": (
         f"**Order ID:** {self.order.name}\n"
-        f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} "
-        f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Points {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+        f" From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} Points {self.current_marks} "
+        f" {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} Points {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)} server us" # change server next
       ),
       "color": 0xff9999,  # Hex color code for a Discord color
       "footer": {"text": f"{current_time}"}, 
@@ -114,11 +114,11 @@ class ValorantDivisionOrder(models.Model):
     self.send_discord_notification()
     
   def get_details(self):
-    return f"From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
+    return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
 
 
   def __str__(self):
-    self.get_details()
+    return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
     return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
@@ -145,4 +145,4 @@ class ValorantPlacementOrder(models.Model):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"
 
   def __str__(self):
-    self.get_details()
+    return self.get_details()

@@ -13,6 +13,7 @@ urlpatterns = [
     path('wildRift/', include('wildRift.urls')),
     path('accounts/', include('accounts.urls')),
     path('valorant/', include('valorant.urls')),
+    path('lol/', include('leagueOfLegends.urls')),
     path('pubg/', include('pubg.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

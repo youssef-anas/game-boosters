@@ -7,7 +7,7 @@ def index(request):
       "id" : 1,
       "name": "League of Legends",
       "image": "League of legends.jpeg",
-      "link": ""
+      "link": "lol"
     },
     {
       "id": 2,
@@ -19,7 +19,7 @@ def index(request):
       "id": 3,
       "name": "TFT",
       "image": "tft.jpg",
-      "link": ""
+      "link": "tft"
     },
     {
       "id": 4,
@@ -31,13 +31,13 @@ def index(request):
       "id": 5,
       "name": "Dota 2",
       "image": "Dota 2.jpg",
-      "link": ""
+      "link": "dota2"
     },
     {
       "id": 6,
       "name": "Hearthstone",
       "image": "Hearthstone.jpg",
-      "link": ""
+      "link": "hearthstone"
     },
     {
       "id": 7,

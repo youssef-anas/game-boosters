@@ -24,8 +24,6 @@ from django.db.models import Sum
 import json
 from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
 from django.http import HttpResponseBadRequest
-from wildRift.reached_percent import wildrift_reached_percent
-from valorant.reached_percent import valorant_reached_percent
 from itertools import chain
 from accounts.order_creator import create_order, refresh_order_page
 
@@ -80,7 +78,7 @@ def jobs(request):
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
 
-    if (game_name == 'wildrift' and request.user.booster.is_wf_player) or \
+    if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
         (game_name == 'valorant' and request.user.booster.is_valo_player):
         try:
             order.booster = request.user

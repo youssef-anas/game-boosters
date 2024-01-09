@@ -6,15 +6,16 @@ from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
-from valorant.models import *
-from valorant.serializers import DivisionSerializer, PlacementSerializer
+from leagueOfLegends.models import *
+from leagueOfLegends.serializers import DivisionSerializer, PlacementSerializer
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from paypal.standard.forms import PayPalPaymentsForm
 
+# Create your views here.
 User = get_user_model()
 
-division_names = ['','I','II','III']  
+division_names = ['','IV','III','II','I']  
 rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ASCENDANT', 'IMMORTAL']
 
 def get_division_order_result_by_rank(data,extend_order_id):
@@ -31,13 +32,13 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_agents = data['choose_agents']
+  choose_champions = data['choose_champions']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_agents_value = 0
+  choose_champions_value = 0
 
   boost_options = []
 
@@ -61,18 +62,18 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_agents:
+  if choose_champions:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_agents_value = 1
+    choose_champions_value = 1
 
   # Read data from JSON file
-  with open('static/valorant/data/divisions_data.json', 'r') as file:
+  with open('static/lol/data/divisions_data.json', 'r') as file:
       division_price = json.load(file)
       flattened_data = [item for sublist in division_price for item in sublist]
       flattened_data.insert(0,0)
   ##
-  with open('static/valorant/data/marks_data.json', 'r') as file:
+  with open('static/lol/data/marks_data.json', 'r') as file:
       marks_data = json.load(file)
       marks_data.insert(0,[0,0,0,0,0,0])
   ##    
@@ -101,7 +102,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_agents_value}'
+  invoice = f'lol-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -119,13 +120,13 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_agents = data['choose_agents']
+  choose_champions = data['choose_champions']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_agents_value = 0
+  choose_champions_value = 0
 
   boost_options = []
 
@@ -149,13 +150,13 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_agents:
+  if choose_champions:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_agents_value = 1
+    choose_champions_value = 1
 
   # Read data from JSON file
-  with open('static/valorant/data/placements_data.json', 'r') as file:
+  with open('static/lol/data/placements_data.json', 'r') as file:
     placement_data = json.load(file)
   ##    
   
@@ -179,7 +180,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_agents_value}'
+  invoice = f'lol-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -190,24 +191,24 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
 # Create your views here.
 @csrf_exempt
-def valorantGetBoosterByRank(request):
+def leagueOfLegendsGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = ValorantDivisionOrder.objects.get(order_id=extend_order)
+    order = LeagueOfLegendsDivisionOrder.objects.get(order_id=extend_order)
   except:
     order = None
-  ranks = ValorantRank.objects.all().order_by('id')
-  divisions  = ValorantTier.objects.all().order_by('id')
-  marks = ValorantMark.objects.all().order_by('id')
-  placements = ValorantPlacement.objects.all().order_by('id')
+  ranks = LeagueOfLegendsRank.objects.all().order_by('id')
+  divisions  = LeagueOfLegendsTier.objects.all().order_by('id')
+  marks = LeagueOfLegendsMark.objects.all().order_by('id')
+  placements = LeagueOfLegendsPlacement.objects.all().order_by('id')
 
   divisions_data = [
-    [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
+    [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
     for division in divisions
   ]
 
   marks_data = [
-    [0,mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+    [0,mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
     for mark in marks
   ]
 
@@ -216,13 +217,13 @@ def valorantGetBoosterByRank(request):
     for placement in placements
   ]
 
-  with open('static/valorant/data/divisions_data.json', 'w') as json_file:
+  with open('static/lol/data/divisions_data.json', 'w') as json_file:
     json.dump(divisions_data, json_file)
 
-  with open('static/valorant/data/marks_data.json', 'w') as json_file:
+  with open('static/lol/data/marks_data.json', 'w') as json_file:
     json.dump(marks_data, json_file)
 
-  with open('static/valorant/data/placements_data.json', 'w') as json_file:
+  with open('static/lol/data/placements_data.json', 'w') as json_file:
     json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
@@ -232,7 +233,7 @@ def valorantGetBoosterByRank(request):
     "placements": placements,
     "order":order,
   }
-  return render(request,'valorant/GetBoosterByRank.html', context)
+  return render(request,'leagueOfLegends/GetBoosterByRank.html', context)
 
 # Paypal
 @csrf_exempt
@@ -241,7 +242,7 @@ def view_that_asks_for_money(request):
     if request.user.is_authenticated :
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('valorant'))
+        return redirect(reverse_lazy('lol'))
       
     print('request POST:  ', request.POST)
     try:
@@ -270,15 +271,15 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/valorant/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/lol/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "valorant/paypal.html", context,status=200)
-      # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
-      return redirect(reverse_lazy('valorant'))
+        return render(request, "lol/paypal.html", context,status=200)
+      return JsonResponse({'error': serializer.errors}, status=400)
+      # messages.error(request, 'Ensure this value is greater than or equal to 10')
+      # return redirect(reverse_lazy('valorant'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

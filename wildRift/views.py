@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement, WildRiftDivisionOrder, WildRiftPlacementOrder
+from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark, WildRiftPlacement, WildRiftDivisionOrder
 import json
 import uuid
 from django.forms.models import model_to_dict
@@ -81,12 +81,13 @@ def get_order_result_by_rank(data,extend_order_id):
     total_sum = sum(sublist)
     price = total_sum - marks_price
     price += (price * total_percent)
+    price = round(price, 2)
     if extend_order_id > 0:
         try:
             # get extend order 
             extend_order = BaseOrder.objects.get(id=extend_order_id)
             extend_order_price = extend_order.price
-            price = price - extend_order_price
+            price = round((price - extend_order_price), 2)
         except: ####
             pass
     booster_id = data['choose_booster']

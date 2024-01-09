@@ -10,42 +10,6 @@ import requests
 from django.utils import timezone
 
 User = settings.AUTH_USER_MODEL
-# # Create your models here.
-
-# class Wild_rift_rc(models.Model):
-#     # rc = rank_price
-#     iron_rc = models.FloatField(default=2.54)
-#     bronze_rc = models.FloatField(default=4.15)
-#     silver_rc = models.FloatField(default=5.80)
-#     gold_rc = models.FloatField(default=9.06)
-#     gold_rc_from_II_to_I = models.FloatField(default=12.95)
-#     gold_rc_from_I_to_platinum = models.FloatField()
-#     platinum_rc = models.FloatField(default=12.95)
-#     platinum_rc_from_I_to_emerald = models.FloatField(default=19.42)
-#     emerald_rc = models.FloatField(default=27.78)
-#     diamond_rc_from_IV_to_III = models.FloatField(default=48.12)
-#     diamond_rc_from_III_to_II = models.FloatField(default=53.45)
-#     diamond_rc_from_II_to_I = models.FloatField(default=76.80)
-#     diamond_rc_from_I_to_master = models.FloatField(default=85.32)
-
-#     def save(self, *args, **kwargs):
-#         self.Gold_rc_from_I_to_Platinum = self.Gold_rc_from_II_to_I
-#         super().save(*args, **kwargs)
-
-
-# class Wild_rift_mc():
-#     # mc = mark cost 
-#     iron_mc = models.FloatField(default=0.38) # 6.70
-#     bronze_mc = models.FloatField(default=0.41) # 10.10
-#     silver_mc = models.FloatField(default=0.58) # 10.00
-#     gold_mc = models.FloatField(default=0.88) # 10.29
-#     platinum_mc = models.FloatField(default=1.04) # 12.451
-#     platinum_mc_from_I_to_emerald = models.FloatField(default=1.50)# 12.946
-#     emerald_mc = models.FloatField(default=1.94)
-
-# wildRift/models.py
-
-
 
 class WildRiftRank(models.Model):
     rank_name = models.CharField(max_length=25)
@@ -56,12 +20,6 @@ class WildRiftRank(models.Model):
     
     def get_image_url(self):
         return f"/media/{self.rank_image}"
-    
-# @receiver(post_migrate)
-# def create_default_ranks(sender, **kwargs):
-#     if sender.name == 'your_app_name':  # Replace 'your_app_name' with the actual name of your app
-#         WildRiftRank.objects.get_or_create(rank_name='Default Rank 1', rank_image='path/to/default_image_1.jpg')
-#         WildRiftRank.objects.get_or_create(rank_name='Default Rank 2', rank_image='path/to/default_image_2.jpg')
 
 class WildRiftTier(models.Model):
     rank = models.OneToOneField('WildRiftRank', related_name='tier', on_delete=models.CASCADE)
@@ -90,8 +48,6 @@ class WildRiftMark(models.Model):
     mark_4 = models.FloatField(default=0)
     mark_5 = models.FloatField(default=0)
     mark_6 = models.FloatField(default=0)
-
-
 
     def __str__(self):
         return f"Mark {self.mark_number} for Tiers: {self.tier} in Rank: {self.rank.rank_name}"
@@ -166,10 +122,9 @@ class WildRiftDivisionOrder(models.Model):
         if response.status_code != 204:
             print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
-
     def save_with_processing(self, *args, **kwargs):
         self.order.game_id = 1
-        self.order.game_name = 'wildrift'
+        self.order.game_name = 'wildRift'
         self.order.game_type = 'D'
         self.order.details = self.get_details()
         # 
@@ -187,29 +142,5 @@ class WildRiftDivisionOrder(models.Model):
         return self.get_details()
     
     
-
-    
     def get_rank_value(self, *args, **kwargs):
         return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
-    
-class WildRiftPlacementOrder(models.Model):
-    last_rank = models.ForeignKey(WildRiftPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
-    number_of_match = models.IntegerField(default=5)
-    price = models.FloatField(default=0)
-    invoice = models.FloatField(default=0)
-    booster_percent1 = models.IntegerField(default=50)
-    booster_percent2 = models.IntegerField(default=60)
-    booster_percent3 = models.IntegerField(default=70)
-    booster_percent4 = models.IntegerField(default=80)
-    customer = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_placement')
-    booster = models.ForeignKey(User,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_placement', limit_choices_to={'is_booster': True} )
-    duo_boosting = models.BooleanField(default=False ,blank=True)
-    select_booster = models.BooleanField(default=False ,blank=True)
-    turbo_boost = models.BooleanField(default=False ,blank=True)
-    streaming = models.BooleanField(default=False ,blank=True)
-    is_done = models.BooleanField(default=False ,blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"
