@@ -140,6 +140,7 @@ def rate_page(request, order_id):
 def booster_orders(request):
     # component = None
     # Wildrift
+    wildrift_orders = []
     wildrift_ranks = None
     if request.user.booster.is_wf_player:
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -147,6 +148,8 @@ def booster_orders(request):
         wildrift_ranks = WildRiftRank.objects.all()
         
     # Valorant
+    valorant_division_orders = []
+    valorant_placement_orders = []
     valorant_ranks = None
     if request.user.booster.is_valo_player:
         valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -155,7 +158,8 @@ def booster_orders(request):
 
         valorant_ranks = ValorantRank.objects.all()
 
-    # LOL
+    # Pubg
+    pubg_division_orders = []   
     pubg_ranks = None
     if request.user.booster.is_lol_player:
         pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -163,6 +167,8 @@ def booster_orders(request):
         pubg_ranks = PubgRank.objects.all()
 
     # LOL
+    lol_division_orders = []
+    lol_placement_orders = []
     lol_ranks = None
     if request.user.booster.is_lol_player:
         lol_division_orders = LeagueOfLegendsDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -329,31 +335,34 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id = request.POST.get('order_game_id')
+        print('game_id: ', game_id)
         order = None
 
         if order_id:
             if int(game_id) == 1:
-                order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+                order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             elif int(game_id) == 2:
-                order = get_object_or_404(ValorantDivisionOrder, order_id=order_id)
+                order = get_object_or_404(ValorantDivisionOrder, order__id=order_id)
             elif int(game_id) == 3:
-                order = get_object_or_404(PubgDivisionOrder, order_id=order_id)
+                order = get_object_or_404(PubgDivisionOrder, order__id=order_id)
             elif int(game_id) == 4:
-                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order_id=order_id)
-            
+                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order__id=order_id)
+                print('Order: ', order)
             try:
                 order.order.is_drop = True
                 order.order.is_done = True
 
                 invoice = order.order.invoice.split('-')
+                print('Old Invoice: ', invoice)
                 invoice[3]= str(order.reached_rank.id) 
                 invoice[4]= str(order.reached_division )
                 invoice[5]= str(order.reached_marks)
                 new_invoice = '-'.join(invoice)
+                print('New Invoice: ', new_invoice)
                 payer_id = order.order.payer_id
                 customer = order.order.customer
                 
-                new_order = create_order(new_invoice,payer_id, customer, 'Continue', order.order.name)
+                new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
                 new_order.order.actual_price = order.order.actual_price-order.order.money_owed
                 new_order.order.customer_gamename = order.order.customer_gamename
                 new_order.order.customer_password = order.order.customer_password
@@ -370,7 +379,6 @@ def update_rating(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id  = request.POST.get('order_game_id')
-        print('Game ID: ', game_id)
         # Order Model & Rank Model
         OrderModel = None
         RankModel = None
@@ -400,5 +408,5 @@ def update_rating(request):
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
         except:
-            pass
+            return JsonResponse({'update success': False})
     return JsonResponse({'success': False})

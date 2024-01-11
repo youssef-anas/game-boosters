@@ -4,7 +4,6 @@ from pubg.models import PubgDivisionOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
-
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import json
@@ -73,33 +72,35 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         booster = None
 
     try:
-        extend_order = BaseOrder.objects.get(id=extend_order_id)
-        extend_order.is_done = True
-        extend_order.is_extended = True
-        extend_order.money_owed = 0
-        extend_order.status = 'Extend'
-        extend_order.save()
-        status = 'Extend'
-        
-        extend_order_money_owed = extend_order.money_owed
-        extend_order_price = extend_order.price
-        order_name = extend_order.name
-        extend_order_booster = extend_order.booster
-        extend_order_customer = extend_order.customer
-        extend_order_customer_gamename = extend_order.customer_gamename
-        extend_order_customer_password = extend_order.customer_password
-        extend_order_server = extend_order.customer_server
-        extend_order_data_correct = extend_order.data_correct
+        if status != 'Continue':
+            extend_order = BaseOrder.objects.get(id=extend_order_id)
+            extend_order.is_done = True
+            extend_order.is_extended = True
+            extend_order.money_owed = 0
+            extend_order.status = 'Extend'
+            extend_order.save()
+            status = 'Extend'
+            
+            extend_order_money_owed = extend_order.money_owed
+            extend_order_price = extend_order.price
+            order_name = extend_order.name
+            extend_order_booster = extend_order.booster
+            extend_order_customer = extend_order.customer
+            extend_order_customer_gamename = extend_order.customer_gamename
+            extend_order_customer_password = extend_order.customer_password
+            extend_order_server = extend_order.customer_server
+            extend_order_data_correct = extend_order.data_correct
 
-        extend_order_game = Game.objects.get(order = extend_order)
-        extend_order_game_reached_rank = extend_order_game.reached_rank
-        extend_order_game_reached_division = extend_order_game.reached_division
-        extend_order_game_reached_marks = extend_order_game.reached_marks
+            extend_order_game = Game.objects.get(order = extend_order)
+            extend_order_game_reached_rank = extend_order_game.reached_rank
+            extend_order_game_reached_division = extend_order_game.reached_division
+            extend_order_game_reached_marks = extend_order_game.reached_marks
 
     except BaseOrder.DoesNotExist:
         extend_order = None
-
+    print("Check Condition: ",status == 'New' or status == 'Continue')
     if status == 'New' or status == 'Continue':
+        print('Booster: ', booster)
         baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name)
         # Wildrift Without Placement 
         if game_id == 1:
@@ -121,7 +122,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=choose_champions)   
 
 
-    if status == 'Extend':
+    elif status == 'Extend':
         print(f"order extended from:  {order_name}")
         baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = price + extend_order_price, data_correct = extend_order_data_correct, status = "Extend")
 
@@ -148,12 +149,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     baseOrder.customer_wallet()
     return order
 
-
-
-
-
-
-
+#--------------------------------------------------------------------------
 def live_orders():
     orders = BaseOrder.objects.filter(booster=None).order_by('-created_at')
     all_orders_dict = []
