@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder
-from accounts.templatetags.custom_filters import romanize_division
+from accounts.templatetags.custom_filters import romanize_division, romanize_division_original
 import requests
 
 class PubgRank(models.Model):
@@ -97,6 +97,7 @@ class PubgDivisionOrder(models.Model):
     self.order.game_id = 3
     self.order.game_name = 'pubg'
     self.order.game_type = 'D'
+    self.order.details = self.get_details()
     if not self.order.name:
       self.order.name = f'Pubg{self.order.id}'
     self.order.update_actual_price()
@@ -104,6 +105,8 @@ class PubgDivisionOrder(models.Model):
     super().save(*args, **kwargs)
     self.send_discord_notification()
 
+  def get_details(self):
+      return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
   def __str__(self):
     return f"Boosting From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
 

@@ -82,6 +82,7 @@ def calm_order(request, game_name, id):
 
     if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
         (game_name == 'valorant' and request.user.booster.is_valo_player) or \
+        (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
         (game_name == 'lol' and request.user.booster.is_lol_player):
         try:
             order.booster = request.user
@@ -132,9 +133,9 @@ def get_rate(request, order_id):
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
-# this for only test and will remove it ---- ***** This Need Edit *****        
+# this for only test and will remove it ----      
 def rate_page(request, order_id):
-    order = BaseOrder.objects.get(id=order_id) # ***** Check If This Run Well *****
+    order = BaseOrder.objects.get(id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
@@ -155,9 +156,9 @@ def booster_orders(request):
 
         valorant_ranks = ValorantRank.objects.all()
 
-    # LOL
+    # PUBG
     pubg_ranks = None
-    if request.user.booster.is_lol_player:
+    if request.user.booster.is_pubg_player:
         pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         pubg_ranks = PubgRank.objects.all()
