@@ -371,3 +371,17 @@ def customer_history(request):
 #     )
 
 #     return JsonResponse({'message': 'Order submitted successfully'})
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+def update_order_price(request,order_id):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"price_updates_{order_id}",
+        {
+            'type': 'update_price',
+            'price': BaseOrder.objects.get(id=order_id).actual_price,
+        }
+    )
+    pass

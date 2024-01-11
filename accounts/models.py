@@ -144,18 +144,18 @@ class BaseOrder(models.Model):
 
             if time_difference <= 60:
                 self.actual_price = round(self.price * (percent1 / 100), 2)
-                return int(60-time_difference)
+                return {'time':int(60-time_difference),'price':self.actual_price}
             elif time_difference <= 180:
                 self.actual_price = round(self.price * (percent2 / 100), 2)
-                return int(180-time_difference)
-            elif time_difference <= 900:
+                return {'time':int(180-time_difference),'price':self.actual_price}
+            elif time_difference <= 190:
                 self.actual_price = round(self.price * (percent3 / 100), 2)
-                return int(900-time_difference)
-            elif time_difference <= 1800 :
+                return {'time':int(190-time_difference),'price':self.actual_price}
+            elif time_difference <= 200 :
                 self.actual_price = round(self.price * (percent4 / 100), 2)
-                return int(1800-time_difference)
+                return {'time':int(200-time_difference),'price':self.actual_price}
             else:
-                return 'Time is up'
+                return {'time':-1,'price':self.actual_price}
         
 
     def save(self, *args, **kwargs):

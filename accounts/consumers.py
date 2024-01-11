@@ -1,5 +1,5 @@
 import json
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 from accounts.models import BaseOrder
 from accounts.order_creator import live_orders
@@ -46,4 +46,46 @@ class OrderConsumer(WebsocketConsumer):
     #             'order':'hi'
     #         }
     #     )
+
+class PriceConsumer(WebsocketConsumer):
+    def connect(self):
+        self.order_id = self.scope['url_route']['kwargs']['order_id']
+        self.group_name = f"price_updates_{self.order_id}"
+
+        # Join room group
+        self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        self.accept()
+        details = BaseOrder.objects.get(id=self.order_id).update_actual_price()
+        self.send(text_data=json.dumps({
+            'type':'time_with_price',
+            'time':details['time'],
+            'price':details['price'],
+            
+        }))
+
+    # def disconnect(self):
+    #     # Leave room group
+    #     self.channel_layer.group_discard(
+    #         self.group_name,
+    #         self.channel_name,
+    #     )
+
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        order_id = text_data_json['order_id']
+        print(order_id)
+        details = BaseOrder.objects.get(id=self.order_id).update_actual_price()
+        self.send(text_data=json.dumps({
+            'type':'update_price',
+            'time':details['time'],
+            'price':details['price'],
+        }))
+
+
+    def update_price(self, event):
+        price = event['price']
+        self.send(text_data=json.dumps({'price': price}))
         
