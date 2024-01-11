@@ -66,7 +66,6 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('CHOOSE AGENTS')
     choose_agents_value = 1
 
-
   # Read data from JSON file
   with open('static/valorant/data/divisions_data.json', 'r') as file:
       division_price = json.load(file)
@@ -277,9 +276,9 @@ def view_that_asks_for_money(request):
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
         return render(request, "valorant/paypal.html", context,status=200)
-      return JsonResponse({'error': serializer.errors}, status=400)
-      # messages.error(request, 'Ensure this value is greater than or equal to 10')
-      # return redirect(reverse_lazy('valorant'))
+      # return JsonResponse({'error': serializer.errors}, status=400)
+      messages.error(request, 'Ensure this value is greater than or equal to 10')
+      return redirect(reverse_lazy('valorant'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

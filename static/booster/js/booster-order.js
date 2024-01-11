@@ -37,9 +37,9 @@ $('document').ready(function () {
   })
 
 
-  var rankSelect = $('#reached_rank');
-  var divisionSelect = $('#reached_division');
-  var marksSelect = $('#reached_marks');
+  var rankSelect = $('#reached_rank_wildrift');
+  var divisionSelect = $('#reached_division_wildrift');
+  var marksSelect = $('#reached_marks_wildrift');
 
   var originalDivisionOptions = divisionSelect.html();
   var originalMarksOptions = marksSelect.html();

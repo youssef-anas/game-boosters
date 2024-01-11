@@ -333,15 +333,7 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
       desired_rank = selectedIndex + 1;
       desired_rank_name = divisionRanks[desired_rank]
-      const desired_division_to_hide = document.getElementById('desired-division');
-      if (desired_rank == 8) {
-        desired_division_to_hide.classList.add('d-none');
-        let desired_division_I = document.getElementById("desired-division0")
-        desired_division_I.checked = true;
-      }
-      else {
-        desired_division_to_hide.classList.remove('d-none');
-      }
+      
       getDivisionPrice();
     });
   });

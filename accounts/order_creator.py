@@ -1,6 +1,7 @@
 from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from pubg.models import PubgDivisionOrder
+from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 
@@ -15,8 +16,8 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     invoice_values = invoice.split('-')
 
     # Extract specific values
-    type = str(invoice_values[2])
     game_id = int(invoice_values[1])
+    type = str(invoice_values[2])
     booster_id = int(invoice_values[12])
     extend_order_id = int(invoice_values[14])
     price = float(invoice_values[13])
@@ -52,7 +53,16 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     elif game_id == 3:
         choose_agents = bool(int(invoice_values[16]))
         Game = PubgDivisionOrder
+    # LOL
     elif game_id == 4:
+        # Extra Fields +
+        print('Choose Champions: ', invoice_values[16])
+        choose_champions = bool(int(invoice_values[16]))
+        if type == 'D':
+            Game = LeagueOfLegendsDivisionOrder
+        elif type == 'P':
+            Game = LeagueOfLegendsPlacementOrder
+    elif game_id == 5:
         Game = 'anoter model' # for future work
     else:
         pass
@@ -89,7 +99,6 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     except BaseOrder.DoesNotExist:
         extend_order = None
 
-
     if status == 'New' or status == 'Continue':
         baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name)
         # Wildrift Without Placement 
@@ -104,6 +113,12 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # Pubg Without Placement 
         elif game_id == 3:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks, desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division, reached_marks=current_marks, choose_agents=choose_agents)
+        # LOL - Division
+        elif game_id == 4 and type == 'D':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_champions=choose_champions)
+        # LOL - Placement
+        elif game_id == 4 and type == 'P':
+            order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=choose_champions)   
 
 
     if status == 'Extend':
@@ -122,6 +137,12 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # Pubg Without Placement 
         elif game_id == 3:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)
+        # LOL - Division
+        elif game_id == 4 and type == 'D':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_champions=choose_champions)
+        # LOL - Placement
+        elif game_id == 4 and type == 'P':
+            order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=choose_champions) 
 
     order.save_with_processing()
     baseOrder.customer_wallet()

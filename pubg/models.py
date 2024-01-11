@@ -94,7 +94,7 @@ class PubgDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 2
+    self.order.game_id = 3
     self.order.game_name = 'pubg'
     self.order.game_type = 'D'
     if not self.order.name:

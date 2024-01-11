@@ -50,7 +50,7 @@ def format_time_difference(updated_at):
     return 'today'
   
 @register.filter(name='romanize_division_original')
-def romanize_division(value):
+def romanize_division_original(value):
   if value == 1:
     return 'I'
   elif value == 2:

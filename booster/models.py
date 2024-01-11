@@ -3,6 +3,7 @@ from accounts.models import BaseUser, BaseOrder
 from wildRift.models import WildRiftRank
 from valorant.models import ValorantRank
 from pubg.models import PubgRank
+from leagueOfLegends.models import LeagueOfLegendsRank
 
 class Rating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -34,10 +35,11 @@ class Booster(models.Model):
     is_wf_player = models.BooleanField(default=False)
     is_valo_player = models.BooleanField(default=False)
     is_pubg_player = models.BooleanField(default=False)
+    is_lol_player = models.BooleanField(default=False)
     achived_rank_wr = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank')
     achived_rank_valo = models.ForeignKey(ValorantRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank')
     achived_rank_pubg = models.ForeignKey(PubgRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank')
-
+    achived_rank_lol = models.ForeignKey(LeagueOfLegendsRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='lol_rank')
 
     def __str__(self):
         return f'{self.booster.username}'
