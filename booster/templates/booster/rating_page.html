@@ -31,7 +31,7 @@
 
   <div class="rate-part container p-5">
     <h4>Leave Rating To {{order.order.booster.first_name}} {{order.order.booster.last_name}}, Be Honest!</h4>
-    <form id="FormRate" class="px-5 py-3" method="post" action="{% url 'booster.rate' order.order.id %}">
+    <form id="FormRate" class="px-5 py-3" method="post" action="{% url 'booster.rate' order.id %}">
       {% csrf_token %}
   
       <div class="p-2 m-2" style="height: 80px; width: 400px;"  >

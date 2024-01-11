@@ -78,6 +78,7 @@
                 let time_price = JSON.parse(e.data);
                 console.log(time_price);
                 if (time_price.type === 'time_with_price'){
+                  console.log('${order.details}')
                   orderContainer.insertAdjacentHTML('beforeend',
                   `<div class="col-xl-6 col-md-6 mb-4 text-dark">
                     <div class="card shadow h-100 py-2 orders">
