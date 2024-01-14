@@ -29,6 +29,14 @@ from paypal.standard.forms import PayPalPaymentsForm
 import requests
 import secrets
 from pubg.models import PubgDivisionOrder
+from channels.db import database_sync_to_async
+from django_q.tasks import async_task
+from .tasks import update_database_task
+import time
+from django.core.mail import send_mail
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -75,6 +83,7 @@ def register_view(request):
             create_chat_with_admins(customer=request.user,orderId = order.order.id)
             create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
             refresh_order_page()
+            async_task(update_database_task,order.order.id)
             return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -88,8 +97,8 @@ def register_view(request):
                 create_chat_with_admins(customer=request.user, orderId = order.order.id)
                 create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
                 refresh_order_page()
+                async_task(update_database_task,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
-        form = Registeration()
         return render(request, 'accounts/register.html', {'form': form})
     
     
@@ -387,16 +396,50 @@ def customer_history(request):
 
 #     return JsonResponse({'message': 'Order submitted successfully'})
 
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
-def update_order_price(request,order_id):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        f"price_updates_{order_id}",
-        {
-            'type': 'update_price',
-            'price': BaseOrder.objects.get(id=order_id).actual_price,
-        }
-    )
-    pass
+
+
+
+# async def create_background_job_to_change_order_price(request, id):    
+#     # Run the background task asynchronously
+#     asyncio.create_task(my_background_task(id))
+#     return redirect(reverse('accounts.customer_side'))
+    
+
+# async def my_background_task(id):
+#     print(f"Task executed: order_id {id}")
+#     delays = [60, 180, 900, 1800]
+#     group_name = f"price_updates_{id}"
+#     channel_layer = get_channel_layer()
+#     async def send_price_update(delay, details):
+#         await asyncio.sleep(delay)
+#         print(f'price updated ... {delay}')
+#         order = await get_order(id)
+#         details = await database_sync_to_async(order.update_actual_price)()
+#         await channel_layer.group_send(
+#             group_name,
+#             {
+#                 'type': 'update_price',
+#                 'price': details['price'],
+#                 'time': details['time'],
+#             }
+#         )
+#         for delay in delays:
+#                 order = await get_order(id)
+#                 details = await database_sync_to_async(order.update_actual_price)()
+#                 if details['time'] == -1:
+#                     print(f"Breaking loop due to details['time'] = -1")
+#                     break
+#                 else:
+#                     await send_price_update(delay, details)
+# 
+# 
+# @database_sync_to_async
+# def get_order(id):
+#     return BaseOrder.objects.get(id=id)
+
+
+
+def test(request):
+    # return render(request, 'accounts/order_list.html')
+    return HttpResponse('Done')

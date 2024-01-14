@@ -53,7 +53,7 @@ class PriceConsumer(WebsocketConsumer):
         self.group_name = f"price_updates_{self.order_id}"
 
         # Join room group
-        self.channel_layer.group_add(
+        async_to_sync(self.channel_layer.group_add)(
             self.group_name,
             self.channel_name
         )
@@ -74,9 +74,6 @@ class PriceConsumer(WebsocketConsumer):
     #     )
 
     def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        order_id = text_data_json['order_id']
-        print(order_id)
         details = BaseOrder.objects.get(id=self.order_id).update_actual_price()
         self.send(text_data=json.dumps({
             'type':'update_price',
@@ -87,5 +84,11 @@ class PriceConsumer(WebsocketConsumer):
 
     def update_price(self, event):
         price = event['price']
-        self.send(text_data=json.dumps({'price': price}))
+        time = event['time']
+        print('all work good bro')
+        self.send(text_data=json.dumps({
+            'type':'update_price',
+            'time':time,
+            'price':price,
+        }))
         

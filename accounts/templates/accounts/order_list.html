@@ -11,26 +11,22 @@
     </ul>
     <div id="order"></div>
     <script>
-        let url = `ws://${window.location.host}ws/order/`
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/order/');
-        socket.onmessage = function(e){
+        order = 38
+        const timeSocket = new WebSocket('ws://' + window.location.host + '/ws/price/52/');
+        timeSocket.onmessage = function(e){
             let data = JSON.parse(e.data)
-            console.log('data',data.order)
-            if(data.type === 'order'){
-                let orderContainer = document.getElementById('order')
-                orderContainer.innerHTML = '';
-                data.order.forEach(order => {
-                    orderContainer.insertAdjacentHTML('beforeend',
-                        `<div class='order${order.id}'>
-                            <p>ID: ${order.id}</p>
-                            <p>User: ${order.customer}</p>
-                            <p>Status: ${order.status}</p>
-                            <p>Timestamp: ${order.created_at}</p>
-                            <hr/>
-                        </div>`
-                    );
-                });
-            }
+            console.log('data',data)
+        }
+        timeSocket.onclose = function(e){
+            console.warn('socket disconnect')
+        }
+        const timeSocket2 = new WebSocket('ws://' + window.location.host + '/ws/price/51/');
+        timeSocket2.onmessage = function(e){
+            let data = JSON.parse(e.data)
+            console.log('data',data)
+        }
+        timeSocket2.onclose = function(e){
+            console.warn('socket disconnect')
         }
 
     </script>
