@@ -20,6 +20,8 @@ urlpatterns = [
     path('customer_side/', user_passes_test(is_customer)(customer_side), name='accounts.customer_side'),
     path('edit_profile/', user_passes_test(is_customer)(edit_customer_profile), name='edit.customer.profile'),
     path('history/', user_passes_test(is_customer)(customer_history), name='customer.history'),
+    path('test/', test, name='test'),
+    # path('create_job/<int:id>/',create_background_job_to_change_order_price,name='create_job')
     # path('order-list/', order_list, name='order.list'),
     # path('create_order/', submit_order, name='order.create'),
 ]

@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'paypal.standard.ipn',
     'corsheaders',
     'rest_framework',
+    'django_q',
+
 ]
 
 MIDDLEWARE = [
@@ -177,6 +179,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+EMAIL_USE_SSL = False
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
@@ -187,3 +191,38 @@ ALLOWED_HOSTS = ['*']
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
 PAYPAL_TEST = True
 PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+
+
+Q_CLUSTER = {
+    'name': 'gameBoosterss',
+    'workers': 10,
+    'recycle': 500,
+    'timeout': 1960,
+    'retry': 2000,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default',
+    'sync': False,
+    'cleanup': 500, 
+}
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'class': 'logging.StreamHandler',
+#         },
+#     },
+#     'root': {
+#         'handlers': ['console'],
+#         'level': 'DEBUG',  # Set to 'DEBUG' for more detailed logs
+#     },
+#     'loggers': {
+#         'django_q': {
+#             'handlers': ['console'],
+#             'level': 'DEBUG',  # Set to 'DEBUG' for more detailed logs
+#             'propagate': True,
+#         },
+#     },
+# }

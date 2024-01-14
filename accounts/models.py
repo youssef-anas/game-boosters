@@ -129,7 +129,6 @@ class BaseOrder(models.Model):
     def update_actual_price(self):
         if self.status == 'Continue':
             return 'Continue'
-
         current_time = timezone.now()
         
         percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
@@ -144,18 +143,18 @@ class BaseOrder(models.Model):
 
             if time_difference <= 60:
                 self.actual_price = round(self.price * (percent1 / 100), 2)
-                return {'time':int(60-time_difference),'price':self.actual_price}
+                return {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
             elif time_difference <= 180:
                 self.actual_price = round(self.price * (percent2 / 100), 2)
-                return {'time':int(180-time_difference),'price':self.actual_price}
-            elif time_difference <= 190:
+                return {'time':int(180-time_difference),'price':self.actual_price,'progress':2}
+            elif time_difference <= 900:
                 self.actual_price = round(self.price * (percent3 / 100), 2)
-                return {'time':int(190-time_difference),'price':self.actual_price}
-            elif time_difference <= 200 :
+                return {'time':int(900-time_difference),'price':self.actual_price,'progress':3}
+            elif time_difference <= 1800 :
                 self.actual_price = round(self.price * (percent4 / 100), 2)
-                return {'time':int(200-time_difference),'price':self.actual_price}
+                return {'time':int(1800-time_difference),'price':self.actual_price,'progress':4}
             else:
-                return {'time':-1,'price':self.actual_price}
+                return {'time':-1,'price':self.actual_price,'progress':5}
         
 
     def save(self, *args, **kwargs):

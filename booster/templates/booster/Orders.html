@@ -39,7 +39,7 @@
         console.error(`Timer element with id 'timer_${orderId}' not found.`);
         return;
     }
-
+    let refresher = 0;
     function updateTimerDisplay() {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
@@ -50,12 +50,19 @@
         // Execute the callback when the timer reaches zero
         if (seconds === 0 && typeof onTimeOut === 'function') {
             onTimeOut(orderId);
+            clearTimeout(timeoutId);
         }
 
         seconds--;
+        refresher++;
+        console.log(refresher)
+        if(refresher%20 === 0){
+          onTimeOut(orderId);
+          clearTimeout(timeoutId);
+        }
 
         if (seconds >= 0) {
-            setTimeout(updateTimerDisplay, 1000);
+           var timeOut = setTimeout(updateTimerDisplay, 1000);
         } else{
           timerElement.style.display = 'none'
         }
@@ -108,14 +115,14 @@
                   console.log('price updated')
                 }
                 if (time_price.time > 0){
-                  changeTimer(time_price.time, onTimeOutFunction,order.id);
+                  changeTimer(time_price.time+2, onTimeOutFunction,order.id);
                   }
                   else{
                     let priceElement = document.getElementById(`final_price_${order.id}`);
                     priceElement.style.display = "inline";
                   }
                   function onTimeOutFunction() {
-                    console.log("Time is out! Executing onTimeOutFunction.");
+                    console.log("Executing onTimeOutFunction.");
                     timeSocket.send(JSON.stringify({ order_id: order.id }));
                   }
               };
