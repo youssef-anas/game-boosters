@@ -82,6 +82,7 @@ def calm_order(request, game_name, id):
 
     if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
         (game_name == 'valorant' and request.user.booster.is_valo_player) or \
+        (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
         (game_name == 'lol' and request.user.booster.is_lol_player):
         try:
             order.booster = request.user
@@ -132,14 +133,15 @@ def get_rate(request, order_id):
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)
         
-# this for only test and will remove it ---- ***** This Need Edit *****        
+# this for only test and will remove it ----      
 def rate_page(request, order_id):
-    order = BaseOrder.objects.get(id=order_id) # ***** Check If This Run Well *****
+    order = BaseOrder.objects.get(id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
     # component = None
     # Wildrift
+    wildrift_orders = []
     wildrift_ranks = None
     if request.user.booster.is_wf_player:
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -147,6 +149,8 @@ def booster_orders(request):
         wildrift_ranks = WildRiftRank.objects.all()
         
     # Valorant
+    valorant_division_orders = []
+    valorant_placement_orders = []
     valorant_ranks = None
     if request.user.booster.is_valo_player:
         valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -155,14 +159,17 @@ def booster_orders(request):
 
         valorant_ranks = ValorantRank.objects.all()
 
-    # LOL
+    # PUBG
+    pubg_division_orders = []   
     pubg_ranks = None
-    if request.user.booster.is_lol_player:
+    if request.user.booster.is_pubg_player:
         pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         pubg_ranks = PubgRank.objects.all()
 
     # LOL
+    lol_division_orders = []
+    lol_placement_orders = []
     lol_ranks = None
     if request.user.booster.is_lol_player:
         lol_division_orders = LeagueOfLegendsDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -329,31 +336,34 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id = request.POST.get('order_game_id')
+        print('game_id: ', game_id)
         order = None
 
         if order_id:
             if int(game_id) == 1:
-                order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+                order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             elif int(game_id) == 2:
-                order = get_object_or_404(ValorantDivisionOrder, order_id=order_id)
+                order = get_object_or_404(ValorantDivisionOrder, order__id=order_id)
             elif int(game_id) == 3:
-                order = get_object_or_404(PubgDivisionOrder, order_id=order_id)
+                order = get_object_or_404(PubgDivisionOrder, order__id=order_id)
             elif int(game_id) == 4:
-                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order_id=order_id)
-            
+                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order__id=order_id)
+                print('Order: ', order)
             try:
                 order.order.is_drop = True
                 order.order.is_done = True
 
                 invoice = order.order.invoice.split('-')
+                print('Old Invoice: ', invoice)
                 invoice[3]= str(order.reached_rank.id) 
                 invoice[4]= str(order.reached_division )
                 invoice[5]= str(order.reached_marks)
                 new_invoice = '-'.join(invoice)
+                print('New Invoice: ', new_invoice)
                 payer_id = order.order.payer_id
                 customer = order.order.customer
                 
-                new_order = create_order(new_invoice,payer_id, customer, 'Continue', order.order.name)
+                new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
                 new_order.order.actual_price = order.order.actual_price-order.order.money_owed
                 new_order.order.customer_gamename = order.order.customer_gamename
                 new_order.order.customer_password = order.order.customer_password
@@ -370,7 +380,6 @@ def update_rating(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id  = request.POST.get('order_game_id')
-        print('Game ID: ', game_id)
         # Order Model & Rank Model
         OrderModel = None
         RankModel = None
@@ -400,5 +409,5 @@ def update_rating(request):
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
         except:
-            pass
+            return JsonResponse({'update success': False})
     return JsonResponse({'success': False})
