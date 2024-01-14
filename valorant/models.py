@@ -100,7 +100,6 @@ class ValorantDivisionOrder(models.Model):
     if response.status_code != 204:
       print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
-
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2
     self.order.game_name = 'valorant'
@@ -114,7 +113,8 @@ class ValorantDivisionOrder(models.Model):
     self.send_discord_notification()
     
   def get_details(self):
-    return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
+    return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} {'0-20' if self.current_marks == 0 else ('21-40' if self.current_marks == 1 else ('41-60' if self.current_marks == 2 else ('61-80' if self.current_marks == 3 else '81-100')))} RR To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
+
 
 
   def __str__(self):

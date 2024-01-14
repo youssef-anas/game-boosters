@@ -32,3 +32,6 @@
 
 /leagueOfLegends/migrations/
 /leagueOfLegends/__pycache__/
+
+/tft/migrations/
+/tft/__pycache__/

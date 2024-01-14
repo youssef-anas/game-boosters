@@ -6,8 +6,8 @@ from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
-from leagueOfLegends.models import *
-from leagueOfLegends.serializers import DivisionSerializer, PlacementSerializer
+from tft.models import *
+from tft.serializers import DivisionSerializer, PlacementSerializer
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from paypal.standard.forms import PayPalPaymentsForm
@@ -28,52 +28,38 @@ def get_division_order_result_by_rank(data,extend_order_id):
   desired_division = data['desired_division']
 
   total_percent = 0
-  duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
-  turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_champions = data['choose_champions']
+  speed_up_boost = data['speed_up_boost']
 
-  duo_boosting_value = 0
   select_booster_value = 0
-  turbo_boost_value = 0
   streaming_value = 0
-  choose_champions_value = 0
+  speed_up_boost_value = 0
 
   boost_options = []
-
-  if duo_boosting:
-    total_percent += 0.65
-    boost_options.append('DUO BOOSTING')
-    duo_boosting_value = 1
 
   if select_booster:
     total_percent += 0.05
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
-
-  if turbo_boost:
-    total_percent += 0.20
-    boost_options.append('TURBO BOOSTING')
-    turbo_boost_value = 1
   
   if streaming:
     total_percent += 0.15
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_champions:
+  if speed_up_boost:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_champions_value = 1
+    speed_up_boost_value = 1
 
   # Read data from JSON file
-  with open('static/lol/data/divisions_data.json', 'r') as file:
+  with open('static/tft/data/divisions_data.json', 'r') as file:
     division_price = json.load(file)
     flattened_data = [item for sublist in division_price for item in sublist]
     flattened_data.insert(0,0)
   ##
-  with open('static/lol/data/marks_data.json', 'r') as file:
+  with open('static/tft/data/marks_data.json', 'r') as file:
     marks_data = json.load(file)
     marks_data.insert(0,[0,0,0,0,0,0])
   ##    
@@ -102,12 +88,12 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-4-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_champions_value}'
+  invoice = f'tft-5-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{speed_up_boost_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'LOL, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
+  name = f'TFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
@@ -116,47 +102,33 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   number_of_match = data['number_of_match']
 
   total_percent = 0
-  duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
-  turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_champions = data['choose_champions']
+  speed_up_boost = data['speed_up_boost']
 
-  duo_boosting_value = 0
   select_booster_value = 0
-  turbo_boost_value = 0
   streaming_value = 0
-  choose_champions_value = 0
+  speed_up_boost_value = 0
 
   boost_options = []
-
-  if duo_boosting:
-    total_percent += 0.65
-    boost_options.append('DUO BOOSTING')
-    duo_boosting_value = 1
 
   if select_booster:
     total_percent += 0.05
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
-
-  if turbo_boost:
-    total_percent += 0.20
-    boost_options.append('TURBO BOOSTING')
-    turbo_boost_value = 1
   
   if streaming:
     total_percent += 0.15
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_champions:
+  if speed_up_boost:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_champions_value = 1
+    speed_up_boost_value = 1
 
   # Read data from JSON file
-  with open('static/lol/data/placements_data.json', 'r') as file:
+  with open('static/tft/data/placements_data.json', 'r') as file:
     placement_data = json.load(file)
   ##    
   
@@ -180,27 +152,27 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-4-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
+  invoice = f'tft-5-P-{last_rank}-{number_of_match}-none-none-none-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{speed_up_boost_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'LOL, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}'
+  name = f'TFT, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 # Create your views here.
 @csrf_exempt
-def leagueOfLegendsGetBoosterByRank(request):
+def tftGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = LeagueOfLegendsDivisionOrder.objects.get(order_id=extend_order)
+    order = TFTDivisionOrder.objects.get(order_id=extend_order)
   except:
     order = None
-  ranks = LeagueOfLegendsRank.objects.all().order_by('id')
-  divisions  = LeagueOfLegendsTier.objects.all().order_by('id')
-  marks = LeagueOfLegendsMark.objects.all().order_by('id')
-  placements = LeagueOfLegendsPlacement.objects.all().order_by('id')
+  ranks = TFTRank.objects.all().order_by('id')
+  divisions  = TFTTier.objects.all().order_by('id')
+  marks = TFTMark.objects.all().order_by('id')
+  placements = TFTPlacement.objects.all().order_by('id')
 
   divisions_data = [
     [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
@@ -208,7 +180,7 @@ def leagueOfLegendsGetBoosterByRank(request):
   ]
 
   marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
+    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
     for mark in marks
   ]
 
@@ -217,13 +189,13 @@ def leagueOfLegendsGetBoosterByRank(request):
     for placement in placements
   ]
 
-  with open('static/lol/data/divisions_data.json', 'w') as json_file:
+  with open('static/tft/data/divisions_data.json', 'w') as json_file:
     json.dump(divisions_data, json_file)
 
-  with open('static/lol/data/marks_data.json', 'w') as json_file:
+  with open('static/tft/data/marks_data.json', 'w') as json_file:
     json.dump(marks_data, json_file)
 
-  with open('static/lol/data/placements_data.json', 'w') as json_file:
+  with open('static/tft/data/placements_data.json', 'w') as json_file:
     json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
@@ -233,7 +205,7 @@ def leagueOfLegendsGetBoosterByRank(request):
     "placements": placements,
     "order":order,
   }
-  return render(request,'leagueOfLegends/GetBoosterByRank.html', context)
+  return render(request,'tft/GetBoosterByRank.html', context)
 
 # Paypal
 @csrf_exempt
@@ -242,7 +214,7 @@ def view_that_asks_for_money(request):
     if request.user.is_authenticated :
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('lol'))
+        return redirect(reverse_lazy('tft'))
       
     print('request POST:  ', request.POST)
     try:
@@ -272,15 +244,15 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/leagueOfLegends/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/tft/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "leagueOfLegends/paypal.html", context,status=200)
-      # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
-      return redirect(reverse_lazy('lol'))
+        return render(request, "tft/paypal.html", context,status=200)
+      return JsonResponse({'error': serializer.errors}, status=400)
+      # messages.error(request, 'Ensure this value is greater than or equal to 10')
+      # return redirect(reverse_lazy('tft'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

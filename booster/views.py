@@ -21,6 +21,7 @@ from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, ValorantRank
 from pubg.models import PubgDivisionOrder, PubgRank
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder, LeagueOfLegendsRank
+from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -83,7 +84,8 @@ def calm_order(request, game_name, id):
     if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
         (game_name == 'valorant' and request.user.booster.is_valo_player) or \
         (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
-        (game_name == 'lol' and request.user.booster.is_lol_player):
+        (game_name == 'lol' and request.user.booster.is_lol_player) or \
+        (game_name == 'tft' and request.user.booster.is_tft_player):
         try:
             order.booster = request.user
             order.save()
@@ -177,8 +179,19 @@ def booster_orders(request):
         lol_placement_orders = LeagueOfLegendsPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         lol_ranks = LeagueOfLegendsRank.objects.all()
+
+    # TFT
+    tft_division_orders = []
+    tft_placement_orders = []
+    tft_ranks = None
+    if request.user.booster.is_tft_player:
+        tft_division_orders = TFTDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        tft_placement_orders = TFTPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        tft_ranks = TFTRank.objects.all()
      
-    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders))
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders))
     
     
     orders_with_percentage = []
@@ -262,6 +275,7 @@ def booster_orders(request):
         'valorant_ranks': valorant_ranks,
         'pubg_ranks': pubg_ranks,
         'lol_ranks': lol_ranks,
+        'tft_ranks': tft_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -348,6 +362,8 @@ def drop_order(request):
                 order = get_object_or_404(PubgDivisionOrder, order__id=order_id)
             elif int(game_id) == 4:
                 order = get_object_or_404(LeagueOfLegendsDivisionOrder, order__id=order_id)
+            elif int(game_id) == 5:
+                order = get_object_or_404(TFTDivisionOrder, order__id=order_id)
                 print('Order: ', order)
             try:
                 order.order.is_drop = True
@@ -395,6 +411,9 @@ def update_rating(request):
         elif int(game_id) == 4:
             OrderModel = LeagueOfLegendsDivisionOrder
             RankModel = LeagueOfLegendsRank
+        elif int(game_id) == 5:
+            OrderModel = TFTDivisionOrder
+            RankModel = TFTRank
 
         try:
             reached_rank_id = request.POST.get('reached_rank')
