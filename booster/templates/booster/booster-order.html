@@ -87,6 +87,8 @@
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division }}</p>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division_original }}</p>
+                {% elif order.order.order.game_name == 'hearthstone' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|ten_romanize_division}}</p>
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -101,6 +103,9 @@
 
                 {% elif order.order.order.game_name == 'tft' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 LP {% elif order.order.current_marks == 1 %} 21-40 LP {% elif order.order.current_marks == 2 %} 41-60 LP {% elif order.order.current_marks == 3 %} 61-80 LP {% elif order.order.current_marks == 4 %} 81-100 LP {% endif %} </span>
+
+                {% elif order.order.order.game_name == 'hearthstone' %}
+                <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 3 STAR {% elif order.order.current_marks == 1 %} 2 STAR {% elif order.order.current_marks == 2 %} 1 STAR {% endif %} </span>
 
                 {% endif %}
                 <!-- Here Sara Check Marks For Pubg -->
@@ -118,6 +123,8 @@
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division }}</p>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division_original }}</p>
+                {% elif order.order.order.game_name == 'hearthstone' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|ten_romanize_division }}</p>
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -132,6 +139,9 @@
 
                 {% elif order.order.order.game_name == 'tft' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 LP {% elif order.order.reached_marks == 1 %} 21-40 LP {% elif order.order.reached_marks == 2 %} 41-60 LP {% elif order.order.reached_marks == 3 %} 61-80 LP {% elif order.order.reached_marks == 4 %} 81-100 LP {% endif %} </span>
+
+                {% elif order.order.order.game_name == 'hearthstone' %}
+                <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 3 STAR {% elif order.order.reached_marks == 1 %} 2 STAR {% elif order.order.reached_marks == 2 %} 1 STAR {% endif %} </span>
 
                 {% endif %}
                 <!-- Here Sara Check Marks For Pubg -->
@@ -149,6 +159,8 @@
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division }}</p>
                 {% elif order.order.order.game_name == 'valorant' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division_original }}</p>
+                {% elif order.order.order.game_name == 'hearthstone' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|ten_romanize_division }}</p>
                 {% endif %}
               </div>
             </div>
@@ -191,13 +203,15 @@
               {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
             {% elif order.order.order.game_name == 'tft' %}
               {% include 'tft/order_update.html' with tft_ranks=tft_ranks %}
+            {% elif order.order.order.game_name == 'hearthstone' %}
+              {% include 'hearthstone/order_update.html' with hearthstone_ranks=hearthstone_ranks %}
             {% endif %}
             
             {% else %}
               <!-- Placement -->
               <div class="last">
                 <p class="my-3 text-uppercase px-0">Rank</p>
-                <img class="text-center px-0" src="{{order.order.last_rank.get_image_url}}"  />
+                <img class="text-center px-0" src="{{order.order.last_rank.get_image_url}}"  width="200" height="200" />
                 <p class="my-3 text-uppercase px-0">{{order.order.last_rank}}</p>
                 <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.order.number_of_match}}</span></p>
               </div>

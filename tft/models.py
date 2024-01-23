@@ -93,7 +93,7 @@ class TFTDivisionOrder(models.Model):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming },{self.speed_up_boost}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{False},{self.order.streaming },{self.speed_up_boost}"
     
 class TFTPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='tft_placement_order')

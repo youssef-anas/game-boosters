@@ -10,7 +10,7 @@ const orderValue = orderContainer.dataset.order;
 
 const valuesAsList = orderValue.split(',')
 const list1 = valuesAsList.slice(0, 5);
-const list2 = valuesAsList.slice(5, 10);
+const list2 = valuesAsList.slice(5, valuesAsList.length);
 
 const valuesToSet = list1.map(function(item) {
   return parseInt(item, 10); // Use parseFloat if you have decimal numbers
@@ -37,8 +37,8 @@ document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 const buttons = {
   duoBoosting: document.querySelector('#duoBoostingButton'),
   selectBooster: document.querySelector('#selectBoosterButton'),
-  turboBoost: document.querySelector('#turboBoostButton'),
-  chooseAgents: document.querySelector('#chooseAgentsButton'),
+  speedUpBoost: document.querySelector('#speedUpBoostButton'),
+  chooseLegends: document.querySelector('#chooseLegendsButton'),
   streaming: document.querySelector('#streamingButton'),
 };
 
@@ -46,8 +46,8 @@ const buttons = {
 const contents = {
   duoBoosting: document.querySelector('.duoBoostingContent'),
   selectBooster: document.querySelector('.selectBoosterContent'),
-  turboBoost: document.querySelector('.turboBoostContent'),
-  chooseAgents: document.querySelector('.chooseAgentsContent'),
+  speedUpBoost: document.querySelector('.speedUpBoostContent'),
+  chooseLegends: document.querySelector('.chooseLegendsContent'),
   streaming: document.querySelector('.streamingContent'),
 };
 
@@ -55,8 +55,8 @@ const contents = {
 const Applybuttons = {
   duoBoosting: document.querySelector('#duoBoostingApplyButton'),
   selectBooster: document.querySelector('#selectBoosterApplyButton'),
-  turboBoost: document.querySelector('#turboBoostApplyButton'),
-  chooseAgents: document.querySelector('#chooseAgentsApplyButton'),
+  speedUpBoost: document.querySelector('#speedUpBoostApplyButton'),
+  chooseLegends: document.querySelector('#chooseLegendsApplyButton'),
   streaming: document.querySelector('#streamingApplyButton'),
 };
 
@@ -146,25 +146,25 @@ const initiallyCheckedIndexMark = Array.from(makrs_on_current_rank_checked).find
 
 // Read Values From Json File
 let divisionPrices = [0];
-let marks_price = [[0, 0, 0, 0, 0]];
+let marks_price = [[0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/valorant/data/divisions_data.json', function (data) {
+    $.getJSON('/static/hearthstone/data/divisions_data.json', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/valorant/data/marks_data.json', function (data) {
+    $.getJSON('/static/hearthstone/data/marks_data.json', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', 'immortal'];
+  const divisionRanks = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'LEGEND'];
 
-  const divisionNames = [0, 'I', 'II', 'III']
+  const divisionNames = [0,'X','IX','VIII','VII','VI','V','IV','III','II','I']  
 
   // Variable That I Use
   var current_rank = initiallyCheckedIndexCurrent;
@@ -193,11 +193,8 @@ Promise.all([
   }
   setupApplyButtonClickEvent('duoBoosting', 0.65);
   setupApplyButtonClickEvent('selectBooster', 0.05);
-  setupApplyButtonClickEvent('turboBoost', 0.20);
-  setupApplyButtonClickEvent('chooseAgents', 0.0);
-  if (!extend_order) {
-    Applybuttons['chooseAgents'].click();
-  }
+  setupApplyButtonClickEvent('speedUpBoost', 0.20);
+  setupApplyButtonClickEvent('chooseLegends', 0.0);
   setupApplyButtonClickEvent('streaming', 0.15);
 
   // Extend
@@ -220,10 +217,10 @@ Promise.all([
     var current_division_name = divisionNames[current_division];
     var desired_division_name = divisionNames[desired_division];
 
-    let duoBoostingApply= document.getElementById('duoBoostingApplyButton')
-    let turboBoostApply = document.getElementById('turboBoostApplyButton')
+    let duoBoostingApply = document.getElementById('duoBoostingApplyButton')
+    let speedUpBoostApply = document.getElementById('speedUpBoostApplyButton')
+    let chooseLegendsApply = document.getElementById('chooseLegendsApplyButton')
     let streamingApply = document.getElementById('streamingApplyButton')
-    let chooseAgentsApply = document.getElementById('chooseAgentsApplyButton')
 
     // Function to set checkbox state based on values
     function setCheckboxState(button, value) {
@@ -237,15 +234,15 @@ Promise.all([
     // Set the state of each checkbox based on the values list
     setCheckboxState(duoBoostingApply, valuesToSetAdditional[0]);
     setCheckboxState(autoSelectBooster, valuesToSetAdditional[1]);
-    setCheckboxState(turboBoostApply, valuesToSetAdditional[2]);
-    setCheckboxState(streamingApply, valuesToSetAdditional[3]);
-    setCheckboxState(chooseAgentsApply, valuesToSetAdditional[4]);
+    setCheckboxState(speedUpBoostApply, valuesToSetAdditional[2]);
+    setCheckboxState(chooseLegendsApply, valuesToSetAdditional[3]);
+    setCheckboxState(streamingApply, valuesToSetAdditional[4]);
   }
 
   if(extend_order) {
     function getDivisionPrice() {
-      const startRank = ((valuesToSet[3] - 1) * 3) + valuesToSet[4];
-      const endRank = ((desired_rank - 1) * 3) + desired_division-1;
+      const startRank = ((valuesToSet[3] - 1) * 10) + valuesToSet[4];
+      const endRank = ((desired_rank - 1) * 10) + desired_division-1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
       const sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       console.log(slicedArray)
@@ -263,8 +260,8 @@ Promise.all([
 
       const pricee = document.querySelector('.price-data.division-boost');
       pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR to ${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]] } </span></p>
-      <p class='fs-5 text-uppercase my-4'>Extend <span class='fw-bold'>From ${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR to ${desired_rank_name} ${desired_division_name} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} ${mark == 0 ? '3 STAR' : mark == 1 ? '2 STAR' : '1 STAR'} to ${divisionRanks[valuesToSet[3]]}  ${divisionNames[valuesToSet[4]] != 'LEGEND' ? divisionNames[valuesToSet[4]] : ''} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Extend <span class='fw-bold'>From ${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark == 0 ? '3 STAR' : mark == 1 ? '2 STAR' : '1 STAR'} to ${desired_rank_name} ${desired_rank_name != 'LEGEND' ? desired_division_name : ''}</span></p>
       <span class='fs-5 text-uppercase fw-bold'>Extra Cost: $${result_with_mark}</span>
     `;
 
@@ -279,8 +276,8 @@ Promise.all([
   } else {
     // Get Result Function
     function getDivisionPrice() {
-      const startRank = ((current_rank - 1) * 3) + current_division;
-      const endRank = ((desired_rank - 1) * 3) + desired_division - 1;
+      const startRank = ((current_rank - 1) * 10) + current_division;
+      const endRank = ((desired_rank - 1) * 10) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
       const result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   
@@ -296,7 +293,7 @@ Promise.all([
   
       const pricee = document.querySelector('.price-data.division-boost');
       pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR to ${desired_rank_name} ${desired_division_name} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} ${mark == 0 ? '3 STAR' : mark == 1 ? '2 STAR' : '1 STAR'} to ${desired_rank_name} ${desired_rank_name != 'LEGEND' ? desired_division_name : ''}</span></p>
       <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
     `;
   
@@ -333,7 +330,15 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
       desired_rank = selectedIndex + 1;
       desired_rank_name = divisionRanks[desired_rank]
-      
+      const desired_division_to_hide = document.getElementById('desired-division');
+      if (desired_rank == 6) {
+        desired_division_to_hide.classList.add('d-none');
+        let desired_division_I = document.getElementById("desired-division0")
+        desired_division_I.checked = true;
+      }
+      else {
+        desired_division_to_hide.classList.remove('d-none');
+      }
       getDivisionPrice();
     });
   });
@@ -367,59 +372,4 @@ Promise.all([
       getDivisionPrice();
     });
   });
-});
-
-// ----------------------------- Placments Boost ---------------------------------
-const radioButtonsRank = $('input[name="radio-group-ranks"]');
-const sliderEl = $("#game-count");
-const sliderValue = $(".value");
-const gameCounterInitial = Number(sliderEl.val())
-const initiallyCheckedIndexRank = $('input[name="radio-group-ranks"]').index($('input[name="radio-group-ranks"]:checked'));
-const initiallyCheckedRank = $('input[name="radio-group-ranks"]').eq(initiallyCheckedIndexRank);
-const initiallyCheckedIndexRankPrice = initiallyCheckedRank.data('price');
-
-let last_rank = initiallyCheckedIndexRank
-let rank_price = initiallyCheckedIndexRankPrice
-let gameCounter = gameCounterInitial
-
-
-const getPlacementPrice = () => {
-  let price = (rank_price * gameCounter);
-  price = parseFloat(price + (price * total_Percentage)).toFixed(2)
-  const pricee = $('.price-data.placements-boost').eq(0);
-  pricee.html(`
-  <p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
-  <h4>$${price}</h4>
-  `);
-
-  if ($('.placements-boost input[name="game_type"]').val() == 'P') {
-    $('.placements-boost input[name="last_rank"]').val(last_rank);
-    $('.placements-boost input[name="number_of_match"]').val(gameCounter);
-    $('.placements-boost input[name="price"]').val(price);
-  }
-}
-getPlacementPrice()
-
-radioButtonsRank.each(function (index, radio) {
-  $(radio).on('change', function () {
-    const selectedIndex = radioButtonsRank.index(radio);
-    last_rank = selectedIndex;
-    rank_price = $(radio).data('price');
-    getPlacementPrice()
-  });
-});
-
-
-sliderEl.on("input", function (event) {
-gameCounter = Number(event.target.value);
-
-sliderValue.text(gameCounter);
-
-const progress = (gameCounter / sliderEl.prop("max")) * 100;
-
-sliderEl.css("background", `linear-gradient(to right, var(--main-color) ${progress}%, #ccc ${progress}%)`);
-
-sliderEl.css("--thumb-rotate", `${(gameCounter / 100) * 2160}deg`);
-
-getPlacementPrice()
 });

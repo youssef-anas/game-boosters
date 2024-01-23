@@ -19,6 +19,7 @@ from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
+from hearthstone.models import HearthstoneDivisionOrder
 from django.http import JsonResponse
 from accounts.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -257,7 +258,6 @@ def cancel_tip(request, token):
     request.session['success_tip'] = 'false'
     return redirect('accounts.customer_side')
 
-
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     order = BaseOrder.objects.filter(customer=customer).last()
@@ -267,7 +267,6 @@ def customer_side(request):
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
 
-    # Here ---> 
     if 'WR' in order.name:
         order = WildRiftDivisionOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_wf_player=True)
@@ -295,6 +294,9 @@ def customer_side(request):
     elif 'TFT' in order.name and order.game_type == 'P':
         order = TFTPlacementOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
+    elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
+        order = HearthstoneDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))

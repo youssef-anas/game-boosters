@@ -3,6 +3,7 @@ from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from pubg.models import PubgDivisionOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
+from hearthstone.models import HearthstoneDivisionOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 from channels.layers import get_channel_layer
@@ -71,7 +72,14 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             Game = TFTDivisionOrder
         elif type == 'P':
             Game = TFTPlacementOrder
-    elif game_id == 6:
+    # HEARTHSTONE
+    elif game_id == 7:
+         # Extra Fields +
+        choose_legends = bool(int(invoice_values[16]))
+        speed_up_boost = bool(int(invoice_values[17]))
+        Game = HearthstoneDivisionOrder
+    # Other Games
+    elif game_id == 8:
         Game = 'anoter model' # for future work
     else:
         pass
@@ -136,6 +144,9 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # TFT - Placement
         elif game_id == 5 and type == 'P':
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,speed_up_boost=speed_up_boost)
+        # HEARTHSTONE
+        elif game_id == 7:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_legends=choose_legends,speed_up_boost=speed_up_boost)
 
 
     elif status == 'Extend':
@@ -166,6 +177,9 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # TFT - Placement
         elif game_id == 5 and type == 'P':
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,speed_up_boost=speed_up_boost)
+        # HEARTHSTONE
+        elif game_id == 7:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks,choose_legends=choose_legends, speed_up_boost=speed_up_boost)
 
     order.save_with_processing()
     baseOrder.customer_wallet()

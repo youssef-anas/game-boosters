@@ -35,3 +35,6 @@
 
 /tft/migrations/
 /tft/__pycache__/
+
+/hearthstone/migrations/
+/hearthstone/__pycache__/

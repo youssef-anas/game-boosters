@@ -170,13 +170,13 @@ class BaseOrder(models.Model):
             except:
                 Wallet.objects.create (
                     user=self.booster,
-                    money=self.money_owed
+                    money=round(self.money_owed, 3)
                 )
  
             if self.is_drop :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=self.money_owed,
+                    amount=round(self.money_owed, 3),
                     order=self,
                     status='Drop',  
                     type='DEPOSIT'
@@ -185,7 +185,7 @@ class BaseOrder(models.Model):
             else :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=self.money_owed,
+                    amount=round(self.money_owed, 3),
                     order=self,
                     status='Done',  
                     type='DEPOSIT'
@@ -205,12 +205,12 @@ class BaseOrder(models.Model):
             except: 
                 Wallet.objects.create (
                     user=self.customer,
-                    money=self.price
+                    money=round(self.price, 3)
                 )
             
             Transaction.objects.create (
                 user=self.customer,
-                amount=self.price,
+                amount=round(self.price, 3),
                 order=self,
                 status='New',  
                 type='WITHDRAWAL'

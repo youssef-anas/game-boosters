@@ -49,8 +49,8 @@ def get_division_order_result_by_rank(data,extend_order_id):
     streaming_value = 1
 
   if speed_up_boost:
-    total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
+    total_percent += 0.25
+    boost_options.append('SPEED UP BOOST')
     speed_up_boost_value = 1
 
   # Read data from JSON file
@@ -88,7 +88,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'tft-5-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{speed_up_boost_value}'
+  invoice = f'tft-5-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{speed_up_boost_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -123,8 +123,8 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     streaming_value = 1
 
   if speed_up_boost:
-    total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
+    total_percent += 0.25
+    boost_options.append('SPEED UP BOOST')
     speed_up_boost_value = 1
 
   # Read data from JSON file
@@ -180,7 +180,7 @@ def tftGetBoosterByRank(request):
   ]
 
   marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+    [0,mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
     for mark in marks
   ]
 
@@ -250,9 +250,9 @@ def view_that_asks_for_money(request):
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
         return render(request, "tft/paypal.html", context,status=200)
-      return JsonResponse({'error': serializer.errors}, status=400)
-      # messages.error(request, 'Ensure this value is greater than or equal to 10')
-      # return redirect(reverse_lazy('tft'))
+      # return JsonResponse({'error': serializer.errors}, status=400)
+      messages.error(request, 'Ensure this value is greater than or equal to 10')
+      return redirect(reverse_lazy('tft'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

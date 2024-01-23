@@ -64,7 +64,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   if choose_champions:
     total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
+    boost_options.append('CHOOSE CHAMPIONS')
     choose_champions_value = 1
 
   # Read data from JSON file
@@ -102,7 +102,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-4-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_champions_value}'
+  invoice = f'lol-4-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -152,7 +152,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   if choose_champions:
     total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
+    boost_options.append('CHOOSE CHAMPIONS')
     choose_champions_value = 1
 
   # Read data from JSON file

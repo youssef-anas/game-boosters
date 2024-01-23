@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
 class DivisionSerializer(serializers.Serializer):
-    current_rank = serializers.IntegerField(min_value=1, max_value=8)
-    current_division = serializers.IntegerField(min_value=1, max_value=3)
+    current_rank = serializers.IntegerField(min_value=1, max_value=7)
+    current_division = serializers.IntegerField(min_value=1, max_value=4)
     marks = serializers.IntegerField(min_value=0, max_value=4)
     desired_rank = serializers.IntegerField(min_value=1, max_value=8)
-    desired_division = serializers.IntegerField(min_value=1, max_value=3)
+    desired_division = serializers.IntegerField(min_value=1, max_value=4)
 
     select_booster = serializers.BooleanField()
     streaming = serializers.BooleanField()

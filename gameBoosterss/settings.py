@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'valorant.apps.ValorantConfig',
     'pubg.apps.PubgConfig',
     'tft.apps.TftConfig',
+    'hearthstone.apps.HearthstoneConfig',
     'leagueOfLegends.apps.LeagueoflegendsConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',

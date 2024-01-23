@@ -10,7 +10,7 @@ const orderValue = orderContainer.dataset.order;
 
 const valuesAsList = orderValue.split(',')
 const list1 = valuesAsList.slice(0, 5);
-const list2 = valuesAsList.slice(5, 10);
+const list2 = valuesAsList.slice(5, 8);
 
 const valuesToSet = list1.map(function(item) {
   return parseInt(item, 10); // Use parseFloat if you have decimal numbers
@@ -222,9 +222,9 @@ Promise.all([
     }
 
     // Set the state of each checkbox based on the values list
-    setCheckboxState(autoSelectBooster, valuesToSetAdditional[1]);
-    setCheckboxState(streamingApply, valuesToSetAdditional[3]);
-    setCheckboxState(speedUpBoostApply, valuesToSetAdditional[4]);
+    setCheckboxState(autoSelectBooster, valuesToSetAdditional[0]);
+    setCheckboxState(streamingApply, valuesToSetAdditional[1]);
+    setCheckboxState(speedUpBoostApply, valuesToSetAdditional[2]);
   }
 
   if(extend_order) {

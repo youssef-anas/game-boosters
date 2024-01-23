@@ -22,6 +22,7 @@ from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, Valor
 from pubg.models import PubgDivisionOrder, PubgRank
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder, LeagueOfLegendsRank
 from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
+from hearthstone.models import HearthstoneDivisionOrder, HearthstoneRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -85,7 +86,8 @@ def calm_order(request, game_name, id):
         (game_name == 'valorant' and request.user.booster.is_valo_player) or \
         (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
         (game_name == 'lol' and request.user.booster.is_lol_player) or \
-        (game_name == 'tft' and request.user.booster.is_tft_player):
+        (game_name == 'tft' and request.user.booster.is_tft_player) or \
+        (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player)   :
         try:
             order.booster = request.user
             order.save()
@@ -141,7 +143,6 @@ def rate_page(request, order_id):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    # component = None
     # Wildrift
     wildrift_orders = []
     wildrift_ranks = None
@@ -149,6 +150,7 @@ def booster_orders(request):
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         wildrift_ranks = WildRiftRank.objects.all()
+        wildrift_divide_number = [4, 6]
         
     # Valorant
     valorant_division_orders = []
@@ -160,6 +162,7 @@ def booster_orders(request):
         valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         valorant_ranks = ValorantRank.objects.all()
+        valorant_divide_number = [3, 5]
 
     # PUBG
     pubg_division_orders = []   
@@ -168,6 +171,7 @@ def booster_orders(request):
         pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         pubg_ranks = PubgRank.objects.all()
+        pubg_divide_number = [4, 5]
 
     # LOL
     lol_division_orders = []
@@ -179,6 +183,7 @@ def booster_orders(request):
         lol_placement_orders = LeagueOfLegendsPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         lol_ranks = LeagueOfLegendsRank.objects.all()
+        lol_divide_number = [4, 6]
 
     # TFT
     tft_division_orders = []
@@ -190,8 +195,18 @@ def booster_orders(request):
         tft_placement_orders = TFTPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         tft_ranks = TFTRank.objects.all()
+        tft_divide_number = [4, 5]
+
+    # Hearthstone
+    hearthstone_orders = []
+    hearthstone_ranks = None
+    if request.user.booster.is_hearthstone_player:
+        hearthstone_orders = HearthstoneDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        hearthstone_ranks = HearthstoneRank.objects.all()
+        hearthstone_divide_number = [10, 3]
      
-    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders))
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders, hearthstone_orders))
     
     
     orders_with_percentage = []
@@ -202,6 +217,23 @@ def booster_orders(request):
         percentage = 0
         now_price = 0
         if order.order.game_type != 'P':
+
+            divide_number = [0, 0 ]
+            if int(order.order.game_id) == 1:
+                divide_number = wildrift_divide_number
+            elif int(order.order.game_id) == 2:
+                divide_number = valorant_divide_number
+            elif int(order.order.game_id) == 3:
+                divide_number = pubg_divide_number
+            elif int(order.order.game_id) == 4:
+                divide_number = lol_divide_number
+            elif int(order.order.game_id) == 5:
+                divide_number = tft_divide_number
+            elif int(order.order.game_id) == 6:
+                pass
+            elif int(order.order.game_id) == 7:
+                divide_number = hearthstone_divide_number
+
             with open(f'static/{order.order.game_name}/data/divisions_data.json', 'r') as file:
                 division_data = json.load(file)
                 division_price = [item for sublist in division_data for item in sublist]
@@ -220,12 +252,13 @@ def booster_orders(request):
                 reached_division = order.reached_division
                 reached_marks = order.reached_marks
 
-                start_division = ((current_rank-1) * 4) + current_division
-                now_division = ((reached_rank-1) * 4)+ reached_division
+                print("Divide Number: ", divide_number)
+                start_division = ((current_rank-1) * divide_number[0]) + current_division
+                now_division = ((reached_rank-1) * divide_number[0])+ reached_division
                 sublist_div = division_price[start_division:now_division]
 
-                start_marks = (((current_rank-1) * 4) + current_marks + 1) + 1
-                now_marks = (((reached_rank-1) * 4) + reached_marks + 1) + 1
+                start_marks = (((current_rank-1) * divide_number[1]) + current_marks + 1) + 1
+                now_marks = (((reached_rank-1) * divide_number[1]) + reached_marks + 1) + 1
                 sublist_marks = marks_price[start_marks:now_marks]
 
                 done_sum_div = sum(sublist_div)
@@ -276,6 +309,7 @@ def booster_orders(request):
         'pubg_ranks': pubg_ranks,
         'lol_ranks': lol_ranks,
         'tft_ranks': tft_ranks,
+        'hearthstone_ranks': hearthstone_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -365,6 +399,9 @@ def drop_order(request):
             elif int(game_id) == 5:
                 order = get_object_or_404(TFTDivisionOrder, order__id=order_id)
                 print('Order: ', order)
+            elif int(game_id) == 7:
+                order = get_object_or_404(HearthstoneDivisionOrder, order__id=order_id)
+                print('Order: ', order)
             try:
                 order.order.is_drop = True
                 order.order.is_done = True
@@ -414,6 +451,9 @@ def update_rating(request):
         elif int(game_id) == 5:
             OrderModel = TFTDivisionOrder
             RankModel = TFTRank
+        elif int(game_id) == 7:
+            OrderModel = HearthstoneDivisionOrder
+            RankModel = HearthstoneRank
 
         try:
             reached_rank_id = request.POST.get('reached_rank')
