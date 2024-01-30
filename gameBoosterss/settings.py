@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'tft.apps.TftConfig',
     'hearthstone.apps.HearthstoneConfig',
     'leagueOfLegends.apps.LeagueoflegendsConfig',
+    'rocketLeague.apps.RocketleagueConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
     

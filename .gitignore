@@ -38,3 +38,6 @@
 
 /hearthstone/migrations/
 /hearthstone/__pycache__/
+
+/rocketLeague/migrations/
+/rocketLeague/__pycache__/

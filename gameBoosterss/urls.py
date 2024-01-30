@@ -17,6 +17,7 @@ urlpatterns = [
     path('pubg/', include('pubg.urls')),
     path('tft/', include('tft.urls')),
     path('hearthstone/', include('hearthstone.urls')),
+    path('rocketLeague/', include('rocketLeague.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

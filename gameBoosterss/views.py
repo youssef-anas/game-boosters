@@ -61,7 +61,7 @@ def index(request):
       "id": 10,
       "name": "Rocket League",
       "image": "Rocket League.webp",
-      "link": ""
+      "link": "rocketLeague"
     },
   ]
 

@@ -20,6 +20,7 @@ from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
+from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from django.http import JsonResponse
 from accounts.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -297,6 +298,18 @@ def customer_side(request):
     elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
         order = HearthstoneDivisionOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
+    elif 'RL' in order.name and order.game_type == 'D':
+        order = RocketLeagueRankedOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'P':
+        order = RocketLeaguePlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'S':
+        order = RocketLeagueSeasonalOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'T':
+        order = RocketLeagueTournamentOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))

@@ -169,12 +169,12 @@ function chat(booster_room_name, roomName, orderId) {
   };
 }
 
-$('#finish_image').on('change', function () {
+$('.finish_image').on('change', function () {
   previewImage(this);
 });
 
 function previewImage(input) {
-  var preview = $('#image-preview')[0];
+  var preview = $(input).closest('.modal-content').find('.image-preview')[0];
   var file = input.files[0];
 
   if (file) {
@@ -191,24 +191,27 @@ function previewImage(input) {
   }
 }
 
-const dropContainer = document.getElementById("dropcontainer")
-const fileInput = document.getElementById("finish_image")
+const dropContainers = document.querySelectorAll(".dropcontainer");
+const fileInputs = document.querySelectorAll(".finish_image");
 
-dropContainer.addEventListener("dragover", (e) => {
-  e.preventDefault()
-}, false)
+dropContainers.forEach(dropContainer => {
+  dropContainer.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  }, false);
 
-dropContainer.addEventListener("dragenter", () => {
-  dropContainer.classList.add("drag-active")
-})
+  dropContainer.addEventListener("dragenter", () => {
+    dropContainer.classList.add("drag-active");
+  });
 
-dropContainer.addEventListener("dragleave", () => {
-  dropContainer.classList.remove("drag-active")
-})
+  dropContainer.addEventListener("dragleave", () => {
+    dropContainer.classList.remove("drag-active");
+  });
 
-dropContainer.addEventListener("drop", (e) => {
-  e.preventDefault()
-  dropContainer.classList.remove("drag-active")
-  fileInput.files = e.dataTransfer.files
-  previewImage(fileInput);
-})
+  dropContainer.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropContainer.classList.remove("drag-active");
+    const fileInput = e.currentTarget.querySelector('.finish_image');
+    fileInput.files = e.dataTransfer.files;
+    previewImage(fileInput);
+  });
+});

@@ -42,7 +42,7 @@ input[type="radio"]:disabled + label {
 
   /* Additional styles if needed */
 }
-.wild-rift {
+.game-container {
   color: white !important;
   position: relative;
 }

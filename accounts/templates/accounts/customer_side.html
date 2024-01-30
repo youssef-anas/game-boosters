@@ -63,7 +63,7 @@
             <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" />
             {% if order.order.game_name == 'wildRift' or order.order.game_name == 'lol' or order.order.game_name == 'pubg' or order.order.game_name == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
-            {% elif order.order.game_name == 'valorant' %}
+            {% elif order.order.game_name == 'valorant' or order.order.game_name == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
             {% elif order.order.game_name == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
@@ -77,19 +77,37 @@
             <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" />
             {% if order.order.game_name == 'wildRift' or order.order.game_name == 'lol' or order.order.game_name == 'pubg' or order.order.game_name == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
-            {% elif order.order.game_name == 'valorant' %}
+            {% elif order.order.game_name == 'valorant' or order.order.game_name == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
             {% elif order.order.game_name == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|ten_romanize_division }}</p>
             {% endif %}
           </div>
-          {% else %}
+          {% elif order.order.game_type == 'P' %}
           <!-- Placement -->
           <div class="last">
-            <p class="my-3 text-uppercase px-0">Rank</p>
+            <p class="my-3 text-secondary px-0">Placement Boost</p>
+            <p class="my-3 text-uppercase px-0">Last Rank</p>
             <img class="text-center px-0" src="{{order.last_rank.get_image_url}}" width="200" height="200"  />
-            <p class="my-3 text-uppercase px-0">{{order.last_rank}}</p>
+            <p class="my-3 text-uppercase px-0">{{order.last_rank.rank_name}}</p>
             <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.number_of_match}}</span></p>
+          </div>
+          {% elif order.order.game_type == 'S' %}
+          <!-- Seasonal -->
+          <div class="last">
+            <p class="my-3 text-secondary px-0">Seasonal Reward</p>
+            <p class="my-3 text-uppercase px-0">Current Rank</p>
+            <img class="text-center px-0" src="{{order.current_rank.get_image_url}}" width="200" height="200"  />
+            <p class="my-3 text-uppercase px-0">{{order.current_rank.rank_name}}</p>
+            <p class="my-3 text-uppercase px-0">Number of Wins : <span class="text-secondary fs-5">{{order.number_of_wins}}</span></p>
+          </div>
+          {% elif order.order.game_type == 'T' %}
+          <!-- Tournament -->
+          <div class="last">
+            <p class="my-3 text-secondary px-0">Tournament Boost</p>
+            <p class="my-3 text-uppercase px-0">Current League</p>
+            <img class="text-center px-0" src="{{order.current_league.get_image_url}}" width="200" height="200"  />
+            <p class="my-3 text-uppercase px-0">{{order.current_league.rank_name}}</p>
           </div>
           {% endif %}
           
@@ -112,7 +130,7 @@
 
             <div class="input-group mb-3">
               <!-- <label class="input-group-text my-0" for="inputGroupSelect01" style="margin: 0 !important;">Servers</label> -->
-              {% if "WR" in order.order.name or "Valo" in order.order.name or "LOL" in order.order.name or "TFT" in order.order.name or "HEARTHSTONE" in order.order.name %}
+              {% if "WR" in order.order.name or "Valo" in order.order.name or "LOL" in order.order.name or "TFT" in order.order.name or "HEARTHSTONE" in order.order.name or "RL" in order.order.name %}
               <select class="form-select" required name="server" id="inputGroupSelect01" {% if order.order.data_correct %}disabled{% endif %} >
                 <option value="1" {% if order.order.customer_server == 1 or order.order.customer_serve is null %}selected{% endif %}>Europa</option>
                 <option value="2" {% if order.order.customer_server == 2 %}selected{% endif %}>America</option>

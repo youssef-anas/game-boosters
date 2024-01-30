@@ -4,13 +4,13 @@ from pubg.models import PubgDivisionOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
+from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import json
 channel_layer = get_channel_layer()
-
 
 def create_order(invoice, payer_id, customer, status='New',name = None):
     # Split the invoice string by the hyphen ("-") delimiter
@@ -32,6 +32,11 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     elif type == 'P':
         last_rank = int(invoice_values[3])
         number_of_match = int(invoice_values[4])
+    elif type == 'S':
+        current_rank = int(invoice_values[3])
+        number_of_wins = int(invoice_values[4])
+    elif type == 'T':
+        current_league = int(invoice_values[3])
 
     duo_boosting = bool(int(invoice_values[8]))
     select_booster = bool(int(invoice_values[9]))
@@ -66,7 +71,6 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     # TFT
     elif game_id == 5:
          # Extra Fields +
-        print('Speed Up Boost: ', invoice_values[16])
         speed_up_boost = bool(int(invoice_values[16]))
         if type == 'D':
             Game = TFTDivisionOrder
@@ -78,8 +82,19 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         choose_legends = bool(int(invoice_values[16]))
         speed_up_boost = bool(int(invoice_values[17]))
         Game = HearthstoneDivisionOrder
+    # Rocket League
+    elif game_id == 9:
+        if type == 'D':
+            ranked_type = int(invoice_values[15])
+            Game = RocketLeagueRankedOrder
+        elif type == 'P':
+            Game = RocketLeaguePlacementOrder
+        elif type == 'S':
+            Game = RocketLeagueSeasonalOrder
+        elif type == 'T':
+            Game = RocketLeagueTournamentOrder
     # Other Games
-    elif game_id == 8:
+    elif game_id == 10:
         Game = 'anoter model' # for future work
     else:
         pass
@@ -112,7 +127,8 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             extend_order_game = Game.objects.get(order = extend_order)
             extend_order_game_reached_rank = extend_order_game.reached_rank
             extend_order_game_reached_division = extend_order_game.reached_division
-            extend_order_game_reached_marks = extend_order_game.reached_marks
+            if game_id != 9:
+                extend_order_game_reached_marks = extend_order_game.reached_marks
 
     except BaseOrder.DoesNotExist:
         extend_order = None
@@ -147,6 +163,18 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_legends=choose_legends,speed_up_boost=speed_up_boost)
+        # Rocket League - Division
+        elif game_id == 9 and type == 'D':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, desired_rank_id=desired_rank, desired_division=desired_division, reached_rank_id=current_rank, reached_division=current_division, ranked_type=ranked_type)
+        # Rocket League - Placement
+        elif game_id == 9 and type == 'P':
+            order = Game.objects.create(order=baseOrder,last_rank_id=last_rank,number_of_match=number_of_match)
+        # Rocket League - Seasonal
+        elif game_id == 9 and type == 'S':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,number_of_wins=number_of_wins)
+        # Rocket League - Tournament
+        elif game_id == 9 and type == 'T':
+            order = Game.objects.create(order=baseOrder,current_league_id=current_league)
 
 
     elif status == 'Extend':
@@ -180,6 +208,18 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks,choose_legends=choose_legends, speed_up_boost=speed_up_boost)
+        # Rocket League - Division
+        elif game_id == 9 and type == 'D':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, desired_rank_id=desired_rank, desired_division=desired_division, reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, ranked_type=ranked_type)
+        # Rocket League - Placement
+        elif game_id == 9 and type == 'P':
+            order = Game.objects.create(order=baseOrder,last_rank_id=last_rank,number_of_match=number_of_match)
+        # Rocket League - Seasonal
+        elif game_id == 9 and type == 'S':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,number_of_wins=number_of_wins)
+        # Rocket League - Tournament
+        elif game_id == 9 and type == 'T':
+            order = Game.objects.create(order=baseOrder,current_league_id=current_league)
 
     order.save_with_processing()
     baseOrder.customer_wallet()

@@ -217,7 +217,7 @@ class BaseOrder(models.Model):
             )
 
     def __str__(self):
-        return f'{self.customer} have order - cost {self.price}'
+        return f'{self.customer} have [{self.game_name.upper()}] order - {self.details}'
 
 class Tip_data(models.Model):
     payer_id =models.CharField(max_length=50, null=True)
