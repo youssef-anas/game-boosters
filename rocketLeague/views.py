@@ -7,11 +7,11 @@ from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
 from rocketLeague.models import *
-from rocketLeague.serializers import RankedSerializer, PlacementSerializer, SeasonalSerializer, TournamentSerializer
+from rocketLeague.controller.serializers import RankedSerializer, PlacementSerializer, SeasonalSerializer, TournamentSerializer
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from paypal.standard.forms import PayPalPaymentsForm
-from rocketLeague.controller.main import *
+from rocketLeague.controller.order_information import *
 
 # Create your views here.
 

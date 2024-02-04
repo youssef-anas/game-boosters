@@ -2,7 +2,7 @@ import json
 from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 from accounts.models import BaseOrder
-from accounts.order_creator import live_orders
+from accounts.controller.order_creator import live_orders
 
 class OrderConsumer(WebsocketConsumer):
     def connect(self):

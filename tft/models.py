@@ -41,7 +41,7 @@ class TFTPlacement(models.Model):
   price = models.FloatField()
 
   def __str__(self):
-    return self.rank_name
+    return f'{self.rank_name} - {self.price}'
   
   def get_image_url(self):
     return f"/media/{self.rank_image}"

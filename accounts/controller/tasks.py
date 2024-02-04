@@ -1,5 +1,5 @@
 from time import sleep
-from .models import BaseOrder
+from accounts.models import BaseOrder
 
 def get_details(item_id):
     order = BaseOrder.objects.get(id=item_id)

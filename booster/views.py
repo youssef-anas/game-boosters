@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from .forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -10,11 +10,10 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from booster.serializers import RatingSerializer, CanChooseMeSerializer
+from booster.controller.serializers import RatingSerializer, CanChooseMeSerializer
 User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from .forms import Registeration_Booster
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
@@ -30,7 +29,7 @@ import json
 from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
 from django.http import HttpResponseBadRequest
 from itertools import chain
-from accounts.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order, refresh_order_page
 
 def register_booster_view(request):
     form = Registeration_Booster()

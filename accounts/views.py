@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from accounts.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from accounts.controller.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages as NotifyMessage
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
@@ -22,7 +22,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from django.http import JsonResponse
-from accounts.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order, refresh_order_page
 User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
@@ -33,7 +33,7 @@ import secrets
 from pubg.models import PubgDivisionOrder
 from channels.db import database_sync_to_async
 from django_q.tasks import async_task
-from .tasks import update_database_task
+from .controller.tasks import update_database_task
 import time
 from django.core.mail import send_mail
 from channels.layers import get_channel_layer
