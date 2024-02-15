@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'rocketLeague.apps.RocketleagueConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
+    'mobileLegends.apps.MobilelegendsConfig',
     
     # Others
     'paypal.standard.ipn',
