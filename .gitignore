@@ -42,5 +42,8 @@
 /rocketLeague/migrations/
 /rocketLeague/__pycache__/
 
+/honorOfKings/migrations/
+/honorOfKings/__pycache__/
+
 /mobileLegends/migrations/
 /mobileLegends/__pycache__/
