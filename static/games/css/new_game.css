@@ -1,0 +1,95 @@
+/* Start Diff Games */
+.game-landing.wildrift {
+  background-image: url('./../images/wildrift_bg.jpg');
+}
+
+/* Start Diff Games */
+/* Start Base Design For Radio */
+input[type="radio"] {
+  display: none;
+}
+
+label {
+  display: inline-block;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+}
+
+input[type="radio"]:disabled+label {
+  color: whitesmoke;
+  filter: grayscale(100%);
+}
+
+/* End Base Design For Radio */
+.game-container {
+  position: relative;
+  background-color: var(--background-color);
+}
+
+.game-container .game-landing {
+  width: 100%;
+  height: 690px;
+  background-size: cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.game-container .game-landing::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url('./../images/bg_cover.png');
+}
+.game-landing .heading {
+  position: absolute;
+  top: 30%;
+  text-align: center;
+  color: white;
+  z-index: 110;
+}
+.game-landing .heading h1 {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: var(--heading-font);
+  letter-spacing: 3px;
+}
+.game-landing .heading p {
+  font-size: 24px;
+  font-weight: 300;
+}
+.create-order {
+  position: relative;
+  margin-top: -330px; /* Adjust this value as needed */
+}
+.choise label {
+  color: white;
+  background-color: #1E1814;
+  border-radius: 32px;
+}
+.choise input[type="radio"]:checked+label {
+  background-color: #5B2418;
+  color: var(--secondary-color);
+}
+.choices-ranks .current {
+  border-radius: 16px;
+  padding: 30px; 
+  background: 
+  linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
+  linear-gradient(180deg, rgba(178, 191, 221, 0.7) 0%, rgba(67, 55, 51, 0) 100%);
+  background-color: #433733; /* Fallback solid background color */
+}
+.choices-ranks label {
+  color: white;
+  background-color: var(--alternative-color);
+  border-radius: 8px;
+}
+.choices-ranks input[type="radio"]:checked+label {
+  background-color: white;
+  color: black;
+}
