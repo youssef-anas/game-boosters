@@ -81,7 +81,7 @@ class MobileLegendsDivisionOrder(models.Model):
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
-      self.order.name = f'LOL{self.order.id}'
+      self.order.name = f'MOBLEG{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
@@ -110,7 +110,7 @@ class MobileLegendsPlacementOrder(models.Model):
     self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:
-      self.order.name = f'mob-leg{self.order.id}'
+      self.order.name = f'MOBLEG{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)

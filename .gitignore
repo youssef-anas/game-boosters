@@ -1,5 +1,12 @@
 *.pyc
 /.env
+*.pyo
+.env
+
+
+
+**/__pycache__/
+**/migrations/
 
 /gameBoosterss/migrations/
 /gameBoosterss/__pycache__/

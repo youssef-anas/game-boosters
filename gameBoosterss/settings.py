@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
     'mobileLegends.apps.MobilelegendsConfig',
+    'honorOfKings.apps.HonorofkingsConfig',
     
     # Others
     'paypal.standard.ipn',
