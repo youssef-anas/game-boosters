@@ -17,7 +17,7 @@
     </div>
 
     <div class="container">
-        <div class="create-order container">
+        <div class="create-order">
             <div class="choise mb-3">
                 <input type="radio" id="division-boost" name="radio-group-type" checked>
                 <label for="division-boost" class="radio-btn" style="width: 147px;">Normal Rank</label>
@@ -27,27 +27,32 @@
 
             <div class="row gap-5">
                 <div class="col-6 choices-ranks">
+                    <!-- Current -->
                     <div class="current">
                         <div class="d-flex justift-content-center align-item-center">
-                            <div class="image">
-                                <img src="" alt="" class="current-rank-selected-img">
+                            <div class="image me-4">
+                                <img src="" alt="Current Rank Image" id="current-rank-selected-img" class="img-fluid" width="60" height="60">
                             </div>
                             <div class="text-white">
                                 <h5>Cuurent Rank</h5>
                                 <p>Select your current rank & information</p>
                             </div>
                         </div>
+
+                        <!-- Ranks -->
                         <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
                             {% for rank in ranks|slice:":8" %}
                             {% if not forloop.last %}
                             {% with mark=rank.mark %}
                             <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 2 %} checked {% endif %}>
-                            <label for="radio{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                            <label for="radio{{rank.id}}" class="me-2 mt-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
                             {% endwith %}
                             {% endif %}
                             {% endfor %}
                         </div>
-                        <div class="current-dcontainer d-flex flex-wrap justify-content-start align-items-center">
+
+                        <!-- Divisions -->
+                        <div class="current-dcontainer d-flex flex-wrap justify-content-start align-items-center mt-3">
                             <input type="radio" id="current-division0" name="radio-group-current-division" data-id="1" data-name="IV">
                             <label for="current-division0" class="me-2 py-2 px-3">IV</label>
                         
@@ -60,10 +65,125 @@
                             <input type="radio" id="current-division3" name="radio-group-current-division" data-id="4" data-name="I">
                             <label for="current-division3" class="me-2 py-2 px-3">I</label>
                         </div>
+
+                        <!-- Marks -->
+                        <div class="current-mark-container">
+                            <p class="text-white mt-4" style="font-size: 16px;">Ranked Marks</p>
+                            <div class="select-container">
+                                <select class="current-marks-select">
+                                  <option value="0" class="current-marks">0 Marks</option>
+                                  <option value="1" class="current-marks">1 Marks</option>
+                                  <option value="2" class="current-marks">2 Marks</option>
+                                  <option value="3" class="current-marks">3 Marks</option>
+                                  <option value="4" class="current-marks">4 Marks</option>
+                                  <option value="5" class="current-marks">5 Marks</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desired -->
+                    <div class="desired mt-4">
+                        <div class="d-flex justift-content-center align-item-center">
+                            <div class="image me-4">
+                                <img src="" alt="Desired Rank Image" id="desired-rank-selected-img" class="img-fluid" width="60" height="60">
+                            </div>
+                            <div class="text-white">
+                                <h5>Desired Rank</h5>
+                                <p>Select your desired rank & information</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Ranks -->
+                        <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
+                            {% for rank in ranks|slice:":8" %}
+                            {% with mark=rank.mark %}
+                            <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 3 %} checked {% endif %}>
+                            <label for="radio{{rank.id}}{{rank.id}}" class="me-2 mt-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
+                            {% endwith %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Divisions -->
+                        <div id="desired-division" class="desired-dcontainer flex-wrap justify-content-start align-items-center d-flex mt-3">
+                            <input type="radio" id="desired-division0" name="radio-group-desired-division" data-id="1" data-name="IV">
+                            <label for="desired-division0" class="me-2 py-2 px-3">IV</label>
+              
+                            <input type="radio" id="desired-division1" name="radio-group-desired-division" checked data-id="2"
+                              data-name="III">
+                            <label for="desired-division1" class="me-2 py-2 px-3">III</label>
+              
+                            <input type="radio" id="desired-division2" name="radio-group-desired-division" data-id="3" data-name="II">
+                            <label for="desired-division2" class="me-2 py-2 px-3">II</label>
+              
+                            <input type="radio" id="desired-division3" name="radio-group-desired-division" data-id="4" data-name="I">
+                            <label for="desired-division3" class="me-2 py-2 px-3">I</label>
+              
+                        </div>
+
+                        <!-- Servers -->
+                        <div class="server-container">
+                            <p class="text-white mt-4" style="font-size: 16px;">Server</p>
+                            <div class="select-container">
+                                <select class="servers-select">
+                                  <option value="North America">North America (NA)</option>
+                                  <option value="Europe">Europe (EU)</option>
+                                  <option value="Southeast Asia">Southeast Asia (SEA)</option>
+                                  <option value="Latin America">Latin America (LATAM)</option>
+                                  <option value="Brazil">Brazil (BR)</option>
+                                  <option value="Korea">Korea (KR)</option>
+                                  <option value="Japan">Japan (JP)</option>
+                                  <option value="Taiwan">Taiwan (TW)</option>
+                                  <option value="Oceania">Oceania (OCE)</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-6"></div>
+            </div>
+        </div>
+
+        <div class="motivation my-5">
+            <div class="text ps-5">
+                <h1>Do you dream Bigger?<br />Get your custom Order!</h1>
+                <a href="" class="custom-btn mt-4" style="width: 199px;"><i class="fa-solid fa-rocket"></i> Order Now</a>
+            </div>
+        </div>
+
+        <div class="feedback">
+            <h1 class="py-5 text-center">Trusted by Thousands<br />of Happy Customer</h1>
+        </div>
+
+        <div class="information row row-cols-4">
+            <div class="col text-center">
+                <div class="icon-image" style="background-color: var(--secondary-color);">
+                    <img src="{% static 'games/images/cash.png' %}" alt="" class="img-fluid" width="40" height="40">
+                </div>
+                <p class="fw-bold my-3 head">Cash Back</p>
+                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
+            </div>
+            <div class="col text-center">
+                <div class="icon-image" style="background-color: #DE4949;">
+                    <img src="{% static 'games/images/discount.png' %}" alt="" class="img-fluid" width="40" height="40">
+                </div>
+                <p class="fw-bold my-3 head">Discounts</p>
+                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
+            </div>
+            <div class="col text-center">
+                <div class="icon-image" style="background-color: var(--secondary-color);">
+                    <img src="{% static 'games/images/safety.png' %}" alt="" class="img-fluid" width="40" height="40">
+                </div>
+                <p class="fw-bold my-3 head">Safety</p>
+                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
+            </div>
+            <div class="col text-center">
+                <div class="icon-image" style="background-color: #DE4949;">
+                    <img src="{% static 'games/images/support.png' %}" alt="" class="img-fluid" width="40" height="40">
+                </div>
+                <p class="fw-bold my-3 head">Fast Support</p>
+                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
             </div>
         </div>
     </div>

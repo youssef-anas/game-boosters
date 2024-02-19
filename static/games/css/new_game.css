@@ -4,7 +4,7 @@
 }
 
 /* Start Diff Games */
-/* Start Base Design For Radio */
+/* Start Base Design For Form Element */
 input[type="radio"] {
   display: none;
 }
@@ -21,13 +21,55 @@ input[type="radio"]:disabled+label {
   color: whitesmoke;
   filter: grayscale(100%);
 }
-
-/* End Base Design For Radio */
+/* Custom Select */
+select {
+  /* Reset Select */
+  appearance: none;
+  outline: 10px var(--alternative-color);
+  border: 0;
+  box-shadow: none;
+  /* Personalize */
+  flex: 1;
+  padding: 0 1em;
+  color: #fff;
+  background-color: var(--alternative-color);
+  background-image: none;
+  cursor: pointer;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select wrapper */
+.select-container {
+  position: relative;
+  display: flex;
+  width: 176px;
+  height: 3em;
+  border-radius: var(--main-radius);
+  overflow: hidden;
+}
+/* Arrow */
+.select-container::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  background-color: var(--alternative-color);
+  transition: .25s all ease;
+  pointer-events: none;
+}
+/* Transition */
+.select-container:hover::after {
+  color: var(--secondary-color);
+}
+/* End Base Design For Form Element */
 .game-container {
   position: relative;
   background-color: var(--background-color);
 }
-
+/* Start Landing */
 .game-container .game-landing {
   width: 100%;
   height: 690px;
@@ -63,6 +105,8 @@ input[type="radio"]:disabled+label {
   font-size: 24px;
   font-weight: 300;
 }
+/* End Landing */
+/* Start Create Order */
 .create-order {
   position: relative;
   margin-top: -330px; /* Adjust this value as needed */
@@ -76,7 +120,7 @@ input[type="radio"]:disabled+label {
   background-color: #5B2418;
   color: var(--secondary-color);
 }
-.choices-ranks .current {
+.choices-ranks .current, .choices-ranks .desired {
   border-radius: 16px;
   padding: 30px; 
   background: 
@@ -87,9 +131,80 @@ input[type="radio"]:disabled+label {
 .choices-ranks label {
   color: white;
   background-color: var(--alternative-color);
-  border-radius: 8px;
+  border-radius: var(--main-radius);
 }
 .choices-ranks input[type="radio"]:checked+label {
   background-color: white;
   color: black;
 }
+/* End Create Order */
+/* Start Motivation */
+.game-container .motivation {
+  width: 1216px;
+  height: 448px;
+  border-radius: 16px;
+  background-image: url('./../images/motivation.jpg');
+  background-size: cover;
+  background-position: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.game-container .motivation::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
+}
+.game-container .motivation .text {
+  width: 47%;
+  position: relative;
+  z-index: 100;
+  letter-spacing: 2px;
+}
+.game-container .motivation .text h1 {
+  font-family: var(--heading-font);
+  font-size: 40px;
+  font-weight: 600;
+}
+.game-container .motivation .text a {
+  font-size: 16px;
+}
+/* End Motivation */
+
+/* Start Feedback */
+.feedback h1 {
+  font-family: var(--heading-font);
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+/* End Feedback */
+
+/* Start Information */
+.information .icon-image {
+  width: 79px;
+  height: 75.41px;
+  border-radius: 16px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.information p.head {
+  font-family: var(--heading-font);
+  font-size: 24px;
+  letter-spacing: 1px;
+}
+.information p:not(.head) {
+  font-weight: lighter;
+  font-size: 16px;
+}
+/* End Information */
