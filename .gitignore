@@ -1,5 +1,12 @@
 *.pyc
 /.env
+*.pyo
+.env
+
+
+
+**/__pycache__/
+**/migrations/
 
 /gameBoosterss/migrations/
 /gameBoosterss/__pycache__/
@@ -44,3 +51,6 @@
 
 /honorOfKings/migrations/
 /honorOfKings/__pycache__/
+
+/mobileLegends/migrations/
+/mobileLegends/__pycache__/

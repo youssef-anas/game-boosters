@@ -21,6 +21,7 @@ from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegends
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
+from mobileLegends.models import *
 from django.http import JsonResponse
 from accounts.controller.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -310,6 +311,14 @@ def customer_side(request):
     elif 'RL' in order.name and order.game_type == 'T':
         order = RocketLeagueTournamentOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'MOBLEG' in order.name and order.game_type == 'D':
+        order = MobileLegendsDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+    elif 'MOBLEG' in order.name and order.game_type == 'P': 
+        order = MobileLegendsPlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+        
+
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))

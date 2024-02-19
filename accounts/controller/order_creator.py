@@ -5,6 +5,7 @@ from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegends
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
+from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 from channels.layers import get_channel_layer
@@ -82,6 +83,15 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         choose_legends = bool(int(invoice_values[16]))
         speed_up_boost = bool(int(invoice_values[17]))
         Game = HearthstoneDivisionOrder
+
+    elif game_id == 8:
+        if type == 'D':
+            choose_champions = bool(int(invoice_values[16]))
+            Game = MobileLegendsDivisionOrder
+        elif type == 'p':
+            Game = MobileLegendsPlacementOrder
+
+
     # Rocket League
     elif game_id == 9:
         if type == 'D':
@@ -163,6 +173,12 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_legends=choose_legends,speed_up_boost=speed_up_boost)
+        # Mobile Legends - Division
+        elif game_id == 8 and type == 'D':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_champions=choose_champions)
+        # Mobile Legends - Placement
+        elif game_id == 8 and type == 'P':
+            order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=choose_champions)
         # Rocket League - Division
         elif game_id == 9 and type == 'D':
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, desired_rank_id=desired_rank, desired_division=desired_division, reached_rank_id=current_rank, reached_division=current_division, ranked_type=ranked_type)
@@ -208,6 +224,13 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks,choose_legends=choose_legends, speed_up_boost=speed_up_boost)
+        # Mobile Legends
+        elif game_id == 8 and type == 'D': 
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_champions=choose_champions)
+
+        elif game_id == 8 and type == 'P': 
+             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=choose_champions)
+
         # Rocket League - Division
         elif game_id == 9 and type == 'D':
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, desired_rank_id=desired_rank, desired_division=desired_division, reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, ranked_type=ranked_type)
