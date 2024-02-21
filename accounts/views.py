@@ -103,6 +103,7 @@ def register_view(request):
                 refresh_order_page()
                 async_task(update_database_task,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
+        form =  Registeration()
         return render(request, 'accounts/register.html', {'form': form})
     
     

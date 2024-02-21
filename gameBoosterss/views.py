@@ -49,7 +49,7 @@ def index(request):
       "id": 8,
       "name": "Mobile Legends",
       "image": "Mobile Legends.webp",
-      "link": ""
+      "link": "mobileLegends"
     },
     {
       "id": 9,
