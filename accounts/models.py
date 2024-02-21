@@ -119,7 +119,7 @@ class BaseOrder(models.Model):
     is_extended = models.BooleanField(default=False, blank=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
-    customer_server = models.IntegerField(choices=SERVER_CHOICES, blank=True, null=True)
+    customer_server = models.CharField(max_length=300, blank=True, null=True)
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
     payer_id = models.CharField(blank=True, null=True)

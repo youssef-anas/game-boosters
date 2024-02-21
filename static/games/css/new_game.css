@@ -2,8 +2,8 @@
 .game-landing.wildrift {
   background-image: url('./../images/wildrift_bg.jpg');
 }
-
 /* Start Diff Games */
+
 /* Start Base Design For Form Element */
 input[type="radio"] {
   display: none;
@@ -102,7 +102,7 @@ select::-ms-expand {
   letter-spacing: 3px;
 }
 .game-landing .heading p {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 300;
 }
 /* End Landing */
@@ -121,7 +121,7 @@ select::-ms-expand {
   color: var(--secondary-color);
 }
 .choices-ranks .current, .choices-ranks .desired {
-  border-radius: 16px;
+  border-radius: calc(var(--main-radius) * 2);;
   padding: 30px; 
   background: 
   linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
@@ -138,11 +138,180 @@ select::-ms-expand {
   color: black;
 }
 /* End Create Order */
+
+/* Start Complate Order */
+.complate-order .checkout {
+  background-color: #332A27;
+  border-top-left-radius: calc(var(--main-radius) * 2);
+  border-top-right-radius: calc(var(--main-radius) * 2);
+}
+.complate-order .checkout p:first-child {
+  font-size: 1.5rem;
+}
+.complate-order .checkout .from-to {
+  border-radius: var(--main-radius);
+  background-color: var(--background-color);
+}
+.complate-order .time {
+  background-color: #332A27;
+}
+.complate-order .payment {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+  linear-gradient(0deg, #332A27, #332A27);
+  border-bottom-left-radius: calc(var(--main-radius) * 2);
+  border-bottom-right-radius: calc(var(--main-radius) * 2);
+}
+.complate-order .payment .total-price .price {
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.complate-order .payment .pay-form {
+  margin-bottom: 0.9rem;
+}
+.complate-order .payment .pay-form .purchase button {
+  width: 275px;
+  padding: 10px;
+  border-radius: 48px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.complate-order .payment .pay-form .purchase .paypal-btn {
+  color: black;
+  background: #FFC439;
+}
+.complate-order .payment .pay-form .purchase .cryptomus-btn {
+  color: white;
+  background: #DE4949;
+}
+.complate-order .extra-charges {
+  background-color: var(--main-color);
+}
+.complate-order .extra-charges .switch-solo-duo {
+  background-color: var(--background-color);
+  border-radius: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.complate-order .extra-charges .switch-solo-duo .solo,
+.complate-order .extra-charges .switch-solo-duo .duo {
+  width: 49%;
+}
+.complate-order .extra-charges .switch-solo-duo .solo-boosting-label,
+.complate-order .extra-charges .switch-solo-duo .duo-boosting-label  {
+  width: 100%;
+  border-radius: 40px;
+  color: #FFFFFF80;
+}
+.complate-order .extra-charges .switch-solo-duo input[type="radio"]:checked+label,
+.complate-order .extra-charges .switch-solo-duo input[type="radio"]:checked+label {
+  color: white;
+  background-color: var(--alternative-color);
+}
+.complate-order .extra-charges .extra > div:not(:last-of-type) {
+  border-bottom: 0.2px solid #1E1814;
+}
+.complate-order .extra-charges .extra > div .info p > .percent {
+  padding: 0 8px;
+  border-radius: var(--main-radius);
+  background-color: #F26E3E80;
+  color: #F26E3E80;
+}
+/* The switch - the box around the slider */
+.complate-order .extra-charges .extra > div .choose .switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 24px;
+}
+/* Hide default HTML checkbox */
+.complate-order .extra-charges .extra > div .choose .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* The slider */
+.complate-order .extra-charges .extra > div .choose .slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1E1814;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.complate-order .extra-charges .extra > div .choose .slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.complate-order .extra-charges .extra > div .choose input:checked + .slider {
+  background-color: var(--secondary-color);
+}
+.complate-order .extra-charges .extra > div .choose input:focus + .slider {
+  box-shadow: 0 0 1px var(--secondary-color);
+}
+.complate-order .extra-charges .extra > div .choose input:checked + .slider:before {
+  -webkit-transform: translateX(32px);
+  -ms-transform: translateX(32px);
+  transform: translateX(32px);
+}
+/* Rounded sliders */
+.complate-order .extra-charges .extra > div .choose .slider.round {
+  border-radius: 34px;
+}
+.complate-order .extra-charges .extra > div .choose .slider.round:before {
+  border-radius: 50%;
+}
+.complate-order .extra-charges .discount form {
+  display: flex;
+  position: relative;
+}
+.complate-order .extra-charges .discount form input[type = "text"] {
+  width: calc(100% - 143px);
+  padding: 10px 20px;
+  background-color: var(--background-color);
+  border: none;
+  border-top-left-radius: var(--main-radius);
+  border-bottom-left-radius: var(--main-radius);
+  caret-color: var(--secondary-color);
+}
+.complate-order .extra-charges .discount form input[type = "submit"] {
+  Width: 143px;
+  padding: 10px 20px;
+  border: none;
+  background-color: var(--secondary-color);
+  border-top-right-radius: var(--main-radius);
+  border-bottom-right-radius: var(--main-radius);
+  color: white;
+}
+.complate-order .extra-charges .discount form ::placeholder {
+  color: #FFFFFF80;
+  padding-left: 20px;
+}
+.complate-order .extra-charges .discount form input:focus {
+  outline: none;
+  color: white;
+}
+/* End Complate Order */
+
 /* Start Motivation */
 .game-container .motivation {
-  width: 1216px;
   height: 448px;
-  border-radius: 16px;
+  border-radius: calc(var(--main-radius) * 2);;
   background-image: url('./../images/motivation.jpg');
   background-size: cover;
   background-position: 400px;
@@ -157,14 +326,12 @@ select::-ms-expand {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 16px;
+  border-radius: calc(var(--main-radius) * 2);;
   background: linear-gradient(90deg, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
 }
 .game-container .motivation .text {
-  width: 47%;
   position: relative;
   z-index: 100;
-  letter-spacing: 2px;
 }
 .game-container .motivation .text h1 {
   font-family: var(--heading-font);
@@ -181,7 +348,7 @@ select::-ms-expand {
   font-family: var(--heading-font);
   font-size: 48px;
   font-weight: 600;
-  letter-spacing: 2px;
+  
 }
 /* End Feedback */
 
@@ -189,7 +356,7 @@ select::-ms-expand {
 .information .icon-image {
   width: 79px;
   height: 75.41px;
-  border-radius: 16px;
+  border-radius: calc(var(--main-radius) * 2);
   text-align: center;
   display: flex;
   justify-content: center;
@@ -200,8 +367,7 @@ select::-ms-expand {
 }
 .information p.head {
   font-family: var(--heading-font);
-  font-size: 24px;
-  letter-spacing: 1px;
+  font-size: 1.5rem;
 }
 .information p:not(.head) {
   font-weight: lighter;

@@ -22,11 +22,14 @@ def get_order_result_by_rank(data,extend_order_id):
     select_booster = data['select_booster']
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
+    booster_champions = data['booster_champions']
+    server = data['server']
 
     duo_boosting_value = 0
     select_booster_value = 0
     turbo_boost_value = 0
     streaming_value = 0
+    booster_champions_value = 0
 
     boost_options = []
 
@@ -36,7 +39,7 @@ def get_order_result_by_rank(data,extend_order_id):
         duo_boosting_value = 1
 
     if select_booster:
-        total_percent += 0.05
+        total_percent += 0.10
         boost_options.append('SELECT BOOSTING')
         select_booster_value = 1
 
@@ -44,10 +47,17 @@ def get_order_result_by_rank(data,extend_order_id):
         total_percent += 0.20
         boost_options.append('TURBO BOOSTING')
         turbo_boost_value = 1
+
     if streaming:
         total_percent += 0.15
         boost_options.append('STREAMING')
         streaming_value = 1
+
+    if booster_champions:
+        total_percent += 0.0
+        boost_options.append('BOOSTER Champions')
+        booster_champions_value = 1
+
 
     # Read data from JSON file
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
@@ -72,7 +82,7 @@ def get_order_result_by_rank(data,extend_order_id):
             # get extend order 
             extend_order = BaseOrder.objects.get(id=extend_order_id)
             extend_order_price = extend_order.price
-            price = round((price - extend_order_price), 2)
+            price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
         except: ####
             pass
     booster_id = data['choose_booster']
@@ -81,7 +91,7 @@ def get_order_result_by_rank(data,extend_order_id):
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_champions_value}-{timezone.now()}'
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'

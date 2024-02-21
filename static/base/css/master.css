@@ -4,7 +4,6 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-
 :root {
   --main-color: #433733;
   --secondary-color: #F26E3E;
@@ -18,59 +17,47 @@
   --alternative-color-rgba: 76, 73, 116;
   --main-color-rgba: 61, 34, 98;
 }
-
 ::selection {
-  background: var(--alternative-color);
+  background: var(--secondary-color);
   color: white;
 }
-
 ::-moz-selection {
-  background-image: linear-gradient(to right, #37175E 0%, #582984 50%, #4A0774) !important;
+  background-color: var(--secondary-color);
   color: white;
 }
-
 ::-webkit-scrollbar {
   width: 15px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background-image: linear-gradient(to right, #37175E 0%, #582984 50%, #4A0774) !important;
+  background-color: var(--secondary-color);
 }
-
 @font-face {
   font-family: main-font;
   src: url('./../fonts/Helvetica-Now-Var.ttf') format('truetype');
 }
-
 @font-face {
   font-family: heading-font;
-  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Bold20.otf');
+  src: url('./../fonts/SharpGrotesk-SemiBold25.otf');
 }
-
 html {
   scroll-behavior: smooth;
 }
-
 body {
   font-family: main-font;
   background-color: var(--background-color);
   color: #fff;
 }
-
 a {
   text-decoration: none !important;
 }
-
 ul {
   list-style: none;
   margin: 0 !important;
   padding: 0;
 }
-
 /* End Global Rule */
 
 /* Start Nav */
@@ -81,7 +68,6 @@ ul {
   color: white;
   z-index: 100;
 }
-
 .nav .container {
   display: flex;
   justify-content: space-between;
@@ -89,7 +75,6 @@ ul {
   flex-wrap: wrap;
   position: relative;
 }
-
 .nav .logo {
   color: var(--secondary-color);
   font-size: 26px;
@@ -99,7 +84,6 @@ ul {
   justify-content: center;
   align-items: center;
 }
-
 @media (max-width: 1199px) {
   .nav .logo {
     width: 100%;
@@ -110,7 +94,6 @@ ul {
     justify-content: center;
   }
 }
-
 .nav .links, .footer .contact .links, .footer .contact .social  {
   display: flex;
 }
@@ -130,7 +113,7 @@ ul {
   font-size: 18px;
   transition: var(--main-transition);
 }
-.nav .links > li > a{
+.nav .links > li > a {
   height: 72px;
   padding: 0 20px;
 }
