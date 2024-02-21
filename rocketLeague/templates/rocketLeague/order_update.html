@@ -1,0 +1,29 @@
+<div class="updata-now">
+  <h5 class="my-4">Now Rank</h5>
+  <form action="{% url 'order.update.rating' %}" method="POST">
+    {% csrf_token %}
+    {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+    <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
+    <input type="hidden" name="order_game_id" value="{{ order.order.order.game_id }}">
+
+    <div class="mb-3">
+      <select class="form-select custom-select" required name="reached_rank" id="reached_rank">
+        {% for rank in rocketLeague_ranks %}
+        <option value="{{ rank.id }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="input-group mb-3">
+      <select class="form-select custom-select" required name="reached_division" id="reached_division">
+        <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>I</option>
+        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>II</option>
+        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
+      </select>
+    </div>
+
+    <div class="text-end">
+      <button type="submit" class="btn submit-btn">Update Rating</button>
+    </div>
+  </form>
+</div>

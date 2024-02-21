@@ -52,18 +52,6 @@ class WildRiftMark(models.Model):
     def __str__(self):
         return f"Mark {self.mark_number} for Tiers: {self.tier} in Rank: {self.rank.rank_name}"
     
-
-class WildRiftPlacement(models.Model):
-    name = models.CharField(max_length=25)
-    image = models.ImageField(upload_to='wildRift/images/', blank=True, null=True)
-    price = models.FloatField()
-
-    def __str__(self):
-        return self.name
-    
-    def get_image_url(self):
-        return f"/media/{self.image}"
-    
 class WildRiftDivisionOrder(models.Model):
     DIVISION_CHOICES = [
         (1, 'IV'),

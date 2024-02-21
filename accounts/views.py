@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from accounts.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from accounts.controller.forms import Registeration, ProfileEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages as NotifyMessage
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
@@ -18,8 +18,12 @@ from django.contrib.auth import authenticate, login , logout
 from wildRift.models import WildRiftDivisionOrder
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
+from tft.models import TFTDivisionOrder, TFTPlacementOrder
+from hearthstone.models import HearthstoneDivisionOrder
+from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
+from mobileLegends.models import *
 from django.http import JsonResponse
-from accounts.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order, refresh_order_page
 User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
@@ -28,6 +32,14 @@ from paypal.standard.forms import PayPalPaymentsForm
 import requests
 import secrets
 from pubg.models import PubgDivisionOrder
+from channels.db import database_sync_to_async
+from django_q.tasks import async_task
+from .controller.tasks import update_database_task
+import time
+from django.core.mail import send_mail
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+channel_layer = get_channel_layer()
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -74,6 +86,7 @@ def register_view(request):
             create_chat_with_admins(customer=request.user,orderId = order.order.id)
             create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
             refresh_order_page()
+            async_task(update_database_task,order.order.id)
             return redirect(reverse_lazy('accounts.customer_side'))
         if request.method == 'POST':
             form = Registeration(request.POST,request.FILES)
@@ -87,8 +100,8 @@ def register_view(request):
                 create_chat_with_admins(customer=request.user, orderId = order.order.id)
                 create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
                 refresh_order_page()
+                async_task(update_database_task,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
-        form = Registeration()
         return render(request, 'accounts/register.html', {'form': form})
     
     
@@ -247,7 +260,6 @@ def cancel_tip(request, token):
     request.session['success_tip'] = 'false'
     return redirect('accounts.customer_side')
 
-
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     order = BaseOrder.objects.filter(customer=customer).last()
@@ -257,7 +269,6 @@ def customer_side(request):
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
 
-    # Here ---> 
     if 'WR' in order.name:
         order = WildRiftDivisionOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_wf_player=True)
@@ -279,6 +290,35 @@ def customer_side(request):
     elif 'LOL' in order.name and order.game_type == 'P':
         order = LeagueOfLegendsPlacementOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
+    elif 'TFT' in order.name and order.game_type == 'D':
+        order = TFTDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
+    elif 'TFT' in order.name and order.game_type == 'P':
+        order = TFTPlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
+    elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
+        order = HearthstoneDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
+    elif 'RL' in order.name and order.game_type == 'D':
+        order = RocketLeagueRankedOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'P':
+        order = RocketLeaguePlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'S':
+        order = RocketLeagueSeasonalOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'RL' in order.name and order.game_type == 'T':
+        order = RocketLeagueTournamentOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    elif 'MOBLEG' in order.name and order.game_type == 'D':
+        order = MobileLegendsDivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+    elif 'MOBLEG' in order.name and order.game_type == 'P': 
+        order = MobileLegendsPlacementOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+        
+
 
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))
@@ -380,16 +420,50 @@ def customer_history(request):
 
 #     return JsonResponse({'message': 'Order submitted successfully'})
 
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 
-def update_order_price(request,order_id):
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        f"price_updates_{order_id}",
-        {
-            'type': 'update_price',
-            'price': BaseOrder.objects.get(id=order_id).actual_price,
-        }
-    )
-    pass
+
+
+
+# async def create_background_job_to_change_order_price(request, id):    
+#     # Run the background task asynchronously
+#     asyncio.create_task(my_background_task(id))
+#     return redirect(reverse('accounts.customer_side'))
+    
+
+# async def my_background_task(id):
+#     print(f"Task executed: order_id {id}")
+#     delays = [60, 180, 900, 1800]
+#     group_name = f"price_updates_{id}"
+#     channel_layer = get_channel_layer()
+#     async def send_price_update(delay, details):
+#         await asyncio.sleep(delay)
+#         print(f'price updated ... {delay}')
+#         order = await get_order(id)
+#         details = await database_sync_to_async(order.update_actual_price)()
+#         await channel_layer.group_send(
+#             group_name,
+#             {
+#                 'type': 'update_price',
+#                 'price': details['price'],
+#                 'time': details['time'],
+#             }
+#         )
+#         for delay in delays:
+#                 order = await get_order(id)
+#                 details = await database_sync_to_async(order.update_actual_price)()
+#                 if details['time'] == -1:
+#                     print(f"Breaking loop due to details['time'] = -1")
+#                     break
+#                 else:
+#                     await send_price_update(delay, details)
+# 
+# 
+# @database_sync_to_async
+# def get_order(id):
+#     return BaseOrder.objects.get(id=id)
+
+
+
+def test(request):
+    # return render(request, 'accounts/order_list.html')
+    return HttpResponse('Done')

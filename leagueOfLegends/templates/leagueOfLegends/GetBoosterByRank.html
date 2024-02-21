@@ -2,13 +2,13 @@
 {% load static %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-<link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
-<link href="{% static 'games/css/placement.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/new_game.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/new_placement.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
 <div class='body py-5'>
-<div class="container-fluid wild-rift">
+<div class="container-fluid game-container">
   <div class="container">
   {% if messages %}
     {% for message in messages %}
@@ -214,7 +214,7 @@
         <center>
           <!-- Division Form -->
           <form action= "http://127.0.0.1:8000/lol/paypal/" method="post"  id="purchaseForm" class="division-boost">
-            <input type="hidden" name="game_id" value="2">
+            <input type="hidden" name="game_id" value="4">
             <input type="hidden" name="game_type" value="D">
             <!-- Division -->
             <input type="hidden" name="current_rank" value="1">
@@ -239,7 +239,7 @@
 
           <!-- Placement Form -->
           <form action= "http://127.0.0.1:8000/lol/paypal/" method="post"  id="purchaseForm" class="placements-boost">
-            <input type="hidden" name="game_id" value="2">
+            <input type="hidden" name="game_id" value="4">
             <input type="hidden" name="game_type" value="P">
             <!-- Placement -->
             <input type="hidden" name="last_rank" value="0">

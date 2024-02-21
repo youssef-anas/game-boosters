@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from .forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -10,24 +10,26 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from booster.serializers import RatingSerializer, CanChooseMeSerializer
+from booster.controller.serializers import RatingSerializer, CanChooseMeSerializer
 User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from .forms import Registeration_Booster
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from wildRift.models import WildRiftDivisionOrder, WildRiftRank
 from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, ValorantRank
 from pubg.models import PubgDivisionOrder, PubgRank
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder, LeagueOfLegendsRank
+from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
+from hearthstone.models import HearthstoneDivisionOrder, HearthstoneRank
+from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder, RocketLeagueRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
 from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
 from django.http import HttpResponseBadRequest
 from itertools import chain
-from accounts.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order, refresh_order_page
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -83,7 +85,10 @@ def calm_order(request, game_name, id):
     if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
         (game_name == 'valorant' and request.user.booster.is_valo_player) or \
         (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
-        (game_name == 'lol' and request.user.booster.is_lol_player):
+        (game_name == 'lol' and request.user.booster.is_lol_player) or \
+        (game_name == 'tft' and request.user.booster.is_tft_player) or \
+        (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
+        (game_name == 'rocketLeague' and request.user.booster.is_rl_player)   :
         try:
             order.booster = request.user
             order.save()
@@ -139,15 +144,18 @@ def rate_page(request, order_id):
     return render(request,'booster/rating_page.html', context={'order':order})
 
 def booster_orders(request):
-    # component = None
     # Wildrift
+    wildrift_orders = []
     wildrift_ranks = None
     if request.user.booster.is_wf_player:
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         wildrift_ranks = WildRiftRank.objects.all()
+        wildrift_divide_number = [4, 6]
         
     # Valorant
+    valorant_division_orders = []
+    valorant_placement_orders = []
     valorant_ranks = None
     if request.user.booster.is_valo_player:
         valorant_division_orders = ValorantDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -155,15 +163,20 @@ def booster_orders(request):
         valorant_placement_orders = ValorantPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         valorant_ranks = ValorantRank.objects.all()
+        valorant_divide_number = [3, 5]
 
     # PUBG
+    pubg_division_orders = []   
     pubg_ranks = None
     if request.user.booster.is_pubg_player:
         pubg_division_orders = PubgDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         pubg_ranks = PubgRank.objects.all()
+        pubg_divide_number = [4, 5]
 
     # LOL
+    lol_division_orders = []
+    lol_placement_orders = []
     lol_ranks = None
     if request.user.booster.is_lol_player:
         lol_division_orders = LeagueOfLegendsDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
@@ -171,8 +184,48 @@ def booster_orders(request):
         lol_placement_orders = LeagueOfLegendsPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         lol_ranks = LeagueOfLegendsRank.objects.all()
+        lol_divide_number = [4, 6]
+
+    # TFT
+    tft_division_orders = []
+    tft_placement_orders = []
+    tft_ranks = None
+    if request.user.booster.is_tft_player:
+        tft_division_orders = TFTDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        tft_placement_orders = TFTPlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        tft_ranks = TFTRank.objects.all()
+        tft_divide_number = [4, 5]
+
+    # Hearthstone
+    hearthstone_orders = []
+    hearthstone_ranks = None
+    if request.user.booster.is_hearthstone_player:
+        hearthstone_orders = HearthstoneDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        hearthstone_ranks = HearthstoneRank.objects.all()
+        hearthstone_divide_number = [10, 3]
+    
+    # Rocket League
+    rocketLeague_division_orders = []
+    rocketLeague_placement_orders = []
+    rocketLeague_seasonal_orders = []
+    rocketLeague_tournament_orders = []
+    rocketLeague_ranks = None
+    if request.user.booster.is_rl_player:
+        rocketLeague_division_orders = RocketLeagueRankedOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        rocketLeague_placement_orders = RocketLeaguePlacementOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        rocketLeague_seasonal_orders = RocketLeagueSeasonalOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        rocketLeague_tournament_orders = RocketLeagueTournamentOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        rocketLeague_ranks = RocketLeagueRank.objects.all()
+        rocketLeague_divide_number = [3, 0]
      
-    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders))
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders, hearthstone_orders, rocketLeague_division_orders, rocketLeague_placement_orders, rocketLeague_seasonal_orders, rocketLeague_tournament_orders))
     
     
     orders_with_percentage = []
@@ -182,46 +235,73 @@ def booster_orders(request):
     for order in orders:
         percentage = 0
         now_price = 0
-        if order.order.game_type != 'P':
+        if order.order.game_type != 'P' and order.order.game_type != 'S' and order.order.game_type != 'T':
+
+            divide_number = [0, 0]
+            if int(order.order.game_id) == 1:
+                divide_number = wildrift_divide_number
+            elif int(order.order.game_id) == 2:
+                divide_number = valorant_divide_number
+            elif int(order.order.game_id) == 3:
+                divide_number = pubg_divide_number
+            elif int(order.order.game_id) == 4:
+                divide_number = lol_divide_number
+            elif int(order.order.game_id) == 5:
+                divide_number = tft_divide_number
+            elif int(order.order.game_id) == 6:
+                pass
+            elif int(order.order.game_id) == 7:
+                divide_number = hearthstone_divide_number
+            elif int(order.order.game_id) == 9:
+                divide_number = rocketLeague_divide_number
+
             with open(f'static/{order.order.game_name}/data/divisions_data.json', 'r') as file:
                 division_data = json.load(file)
                 division_price = [item for sublist in division_data for item in sublist]
                 division_price.insert(0,0)
-        
-            with open(f'static/{order.order.game_name}/data/marks_data.json', 'r') as file:
-                marks_data = json.load(file)
-                marks_price = [item for sublist in marks_data for item in sublist]
-                marks_price.insert(0,0)
 
-                current_rank = order.current_rank.id
-                current_division = order.current_division
+            marks_price = [0]
+            current_marks = 0
+            reached_marks = 0
+            if order.order.game_name != "rocketLeague":
+                with open(f'static/{order.order.game_name}/data/marks_data.json', 'r') as file:
+                    marks_data = json.load(file)
+                    marks_price = [item for sublist in marks_data for item in sublist]
+                    marks_price.insert(0,0)
+
                 current_marks = order.current_marks
-
-                reached_rank = order.reached_rank.id
-                reached_division = order.reached_division
                 reached_marks = order.reached_marks
 
-                start_division = ((current_rank-1) * 4) + current_division
-                now_division = ((reached_rank-1) * 4)+ reached_division
-                sublist_div = division_price[start_division:now_division]
+            current_rank = order.current_rank.id
+            current_division = order.current_division
+            
+            reached_rank = order.reached_rank.id
+            reached_division = order.reached_division
 
-                start_marks = (((current_rank-1) * 4) + current_marks + 1) + 1
-                now_marks = (((reached_rank-1) * 4) + reached_marks + 1) + 1
-                sublist_marks = marks_price[start_marks:now_marks]
+            print("Divide Number: ", divide_number)
+            start_division = ((current_rank-1) * divide_number[0]) + current_division
+            now_division = ((reached_rank-1) * divide_number[0]) + reached_division
+            sublist_div = division_price[start_division:now_division]
 
-                done_sum_div = sum(sublist_div)
-                done_sum_marks = sum(sublist_marks)
+            start_marks = (((current_rank-1) * divide_number[1]) + current_marks + 1) + 1
+            now_marks = (((reached_rank-1) * divide_number[1]) + reached_marks + 1) + 1
+            sublist_marks = marks_price[start_marks:now_marks]
 
-                done_sum = done_sum_div + done_sum_marks
+            done_sum_div = sum(sublist_div)
+            print("Divide Sum: ", done_sum_div)
+            done_sum_marks = sum(sublist_marks)
+            print("Marks Sum: ", done_sum_marks)
 
-                percentage = round((done_sum / order.order.price) * 100 , 2)
-                if percentage >= 100 :
-                    percentage = 100
+            done_sum = done_sum_div + done_sum_marks
 
-                now_price = round(order.order.actual_price * (percentage / 100) , 2)
+            percentage = round((done_sum / order.order.price) * 100 , 2)
+            if percentage >= 100 :
+                percentage = 100
 
-                order.order.money_owed = now_price
-                order.order.save()
+            now_price = round(order.order.actual_price * (percentage / 100) , 2)
+
+            order.order.money_owed = now_price
+            order.order.save()
 
         current_room = Room.get_specific_room(order.order.customer, order.order.id)
         if current_room is not None:
@@ -256,6 +336,9 @@ def booster_orders(request):
         'valorant_ranks': valorant_ranks,
         'pubg_ranks': pubg_ranks,
         'lol_ranks': lol_ranks,
+        'tft_ranks': tft_ranks,
+        'hearthstone_ranks': hearthstone_ranks,
+        'rocketLeague_ranks': rocketLeague_ranks
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -330,48 +413,61 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id = request.POST.get('order_game_id')
+        print('game_id: ', game_id)
         order = None
 
         if order_id:
             if int(game_id) == 1:
-                order = get_object_or_404(WildRiftDivisionOrder, order_id=order_id)
+                order = get_object_or_404(WildRiftDivisionOrder, order__id=order_id)
             elif int(game_id) == 2:
-                order = get_object_or_404(ValorantDivisionOrder, order_id=order_id)
+                order = get_object_or_404(ValorantDivisionOrder, order__id=order_id)
             elif int(game_id) == 3:
-                order = get_object_or_404(PubgDivisionOrder, order_id=order_id)
+                order = get_object_or_404(PubgDivisionOrder, order__id=order_id)
             elif int(game_id) == 4:
-                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order_id=order_id)
-            
-            try:
-                order.order.is_drop = True
-                order.order.is_done = True
+                order = get_object_or_404(LeagueOfLegendsDivisionOrder, order__id=order_id)
+            elif int(game_id) == 5:
+                order = get_object_or_404(TFTDivisionOrder, order__id=order_id)
+                print('Order: ', order)
+            elif int(game_id) == 7:
+                order = get_object_or_404(HearthstoneDivisionOrder, order__id=order_id)
+                print('Order: ', order)
+            elif int(game_id) == 9:
+                order = get_object_or_404(RocketLeagueRankedOrder, order__id=order_id)
+                print('Order: ', order)
+            # try:
+            order.order.is_drop = True
+            order.order.is_done = True
 
-                invoice = order.order.invoice.split('-')
-                invoice[3]= str(order.reached_rank.id) 
-                invoice[4]= str(order.reached_division )
+            invoice = order.order.invoice.split('-')
+            print('Old Invoice: ', invoice)
+            invoice[3]= str(order.reached_rank.id) 
+            invoice[4]= str(order.reached_division)
+            if int(game_id) != 9:
                 invoice[5]= str(order.reached_marks)
-                new_invoice = '-'.join(invoice)
-                payer_id = order.order.payer_id
-                customer = order.order.customer
-                
-                new_order = create_order(new_invoice,payer_id, customer, 'Continue', order.order.name)
-                new_order.order.actual_price = order.order.actual_price-order.order.money_owed
-                new_order.order.customer_gamename = order.order.customer_gamename
-                new_order.order.customer_password = order.order.customer_password
-                new_order.order.customer_server = order.order.customer_server
-                new_order.order.save()
-                order.order.save()
-                order.save()
-                return redirect(reverse_lazy('booster.orders'))
-            except:
-                return JsonResponse({'success': False})
+            else:
+                invoice[5] = '0'
+            new_invoice = '-'.join(invoice)
+            print('New Invoice: ', new_invoice)
+            payer_id = order.order.payer_id
+            customer = order.order.customer
+            
+            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
+            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
+            new_order.order.customer_gamename = order.order.customer_gamename
+            new_order.order.customer_password = order.order.customer_password
+            new_order.order.customer_server = order.order.customer_server
+            new_order.order.save()
+            order.order.save()
+            order.save()
+            return redirect(reverse_lazy('booster.orders'))
+            # except:
+            #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
 
 def update_rating(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         game_id  = request.POST.get('order_game_id')
-        print('Game ID: ', game_id)
         # Order Model & Rank Model
         OrderModel = None
         RankModel = None
@@ -387,19 +483,31 @@ def update_rating(request):
         elif int(game_id) == 4:
             OrderModel = LeagueOfLegendsDivisionOrder
             RankModel = LeagueOfLegendsRank
+        elif int(game_id) == 5:
+            OrderModel = TFTDivisionOrder
+            RankModel = TFTRank
+        elif int(game_id) == 7:
+            OrderModel = HearthstoneDivisionOrder
+            RankModel = HearthstoneRank
+        elif int(game_id) == 9:
+            OrderModel = RocketLeagueRankedOrder
+            RankModel = RocketLeagueRank
 
         try:
             reached_rank_id = request.POST.get('reached_rank')
             reached_division = request.POST.get('reached_division')
-            reached_marks = request.POST.get('reached_marks')
-            if reached_rank_id and order_id and reached_division and reached_marks:
+            if int(game_id) != 9:
+                reached_marks = request.POST.get('reached_marks')
+            if reached_rank_id and order_id and reached_division and (int(game_id) == 9 or reached_marks):
                 order = get_object_or_404(OrderModel, order__id=order_id)
+                print("Order: ", order)
                 reached_rank = get_object_or_404(RankModel, pk=reached_rank_id)
                 order.reached_rank = reached_rank
                 order.reached_division = reached_division 
-                order.reached_marks = reached_marks 
+                if int(game_id) != 9:
+                    order.reached_marks = reached_marks 
                 order.save()
                 return redirect(reverse_lazy('booster.orders'))
         except:
-            pass
+            return JsonResponse({'update success': False})
     return JsonResponse({'success': False})

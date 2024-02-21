@@ -130,7 +130,6 @@ class BaseOrder(models.Model):
     def update_actual_price(self):
         if self.status == 'Continue':
             return 'Continue'
-
         current_time = timezone.now()
         
         percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
@@ -145,18 +144,18 @@ class BaseOrder(models.Model):
 
             if time_difference <= 60:
                 self.actual_price = round(self.price * (percent1 / 100), 2)
-                return {'time':int(60-time_difference),'price':self.actual_price}
+                return {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
             elif time_difference <= 180:
                 self.actual_price = round(self.price * (percent2 / 100), 2)
-                return {'time':int(180-time_difference),'price':self.actual_price}
-            elif time_difference <= 190:
+                return {'time':int(180-time_difference),'price':self.actual_price,'progress':2}
+            elif time_difference <= 900:
                 self.actual_price = round(self.price * (percent3 / 100), 2)
-                return {'time':int(190-time_difference),'price':self.actual_price}
-            elif time_difference <= 200 :
+                return {'time':int(900-time_difference),'price':self.actual_price,'progress':3}
+            elif time_difference <= 1800 :
                 self.actual_price = round(self.price * (percent4 / 100), 2)
-                return {'time':int(200-time_difference),'price':self.actual_price}
+                return {'time':int(1800-time_difference),'price':self.actual_price,'progress':4}
             else:
-                return {'time':-1,'price':self.actual_price}
+                return {'time':-1,'price':self.actual_price,'progress':5}
         
 
     def save(self, *args, **kwargs):
@@ -172,13 +171,13 @@ class BaseOrder(models.Model):
             except:
                 Wallet.objects.create (
                     user=self.booster,
-                    money=self.money_owed
+                    money=round(self.money_owed, 3)
                 )
  
             if self.is_drop :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=self.money_owed,
+                    amount=round(self.money_owed, 3),
                     order=self,
                     status='Drop',  
                     type='DEPOSIT'
@@ -187,7 +186,7 @@ class BaseOrder(models.Model):
             else :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=self.money_owed,
+                    amount=round(self.money_owed, 3),
                     order=self,
                     status='Done',  
                     type='DEPOSIT'
@@ -207,19 +206,19 @@ class BaseOrder(models.Model):
             except: 
                 Wallet.objects.create (
                     user=self.customer,
-                    money=self.price
+                    money=round(self.price, 3)
                 )
             
             Transaction.objects.create (
                 user=self.customer,
-                amount=self.price,
+                amount=round(self.price, 3),
                 order=self,
                 status='New',  
                 type='WITHDRAWAL'
             )
 
     def __str__(self):
-        return f'{self.customer} have order - cost {self.price}'
+        return f'{self.customer} have [{self.game_name.upper()}] order - {self.details}'
 
 class Tip_data(models.Model):
     payer_id =models.CharField(max_length=50, null=True)

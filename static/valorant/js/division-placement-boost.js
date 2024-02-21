@@ -146,7 +146,7 @@ const initiallyCheckedIndexMark = Array.from(makrs_on_current_rank_checked).find
 
 // Read Values From Json File
 let divisionPrices = [0];
-let marks_price = [[0, 0, 0, 0, 0, 0]];
+let marks_price = [[0, 0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
     $.getJSON('/static/valorant/data/divisions_data.json', function (data) {

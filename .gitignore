@@ -1,5 +1,12 @@
 *.pyc
 /.env
+*.pyo
+.env
+
+
+
+**/__pycache__/
+**/migrations/
 
 /gameBoosterss/migrations/
 /gameBoosterss/__pycache__/
@@ -32,6 +39,21 @@
 
 /leagueOfLegends/migrations/
 /leagueOfLegends/__pycache__/
+
+/tft/migrations/
+/tft/__pycache__/
+
+/hearthstone/migrations/
+/hearthstone/__pycache__/
+
+/rocketLeague/migrations/
+/rocketLeague/__pycache__/
+
+/honorOfKings/migrations/
+/honorOfKings/__pycache__/
+
+/mobileLegends/migrations/
+/mobileLegends/__pycache__/
 
 /WorldOfWarcraft/migrations/
 /WorldOfWarcraft/__pycache__/

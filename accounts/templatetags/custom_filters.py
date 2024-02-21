@@ -61,3 +61,28 @@ def romanize_division_original(value):
     return 'IV'
   else:
     return value
+  
+@register.filter(name='ten_romanize_division')
+def ten_romanize_division(value):
+  if value == 1:
+    return 'X'
+  elif value == 2:
+    return 'IX'
+  elif value == 3:
+    return 'VIII'
+  elif value == 4:
+    return 'VII'
+  elif value == 5:
+    return 'VI'
+  elif value == 6:
+    return 'V'
+  elif value == 7:
+    return 'IV'
+  elif value == 8:
+    return 'III'
+  elif value == 9:
+    return 'II'
+  elif value == 10:
+    return 'I'
+  else:
+    return value

@@ -25,11 +25,12 @@ console.log(valuesToSet);
 const chooseBoosterValue = urlParams.get('choose_booster');
 let chooseBoosterInt = 0
 let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
-if (chooseBoosterValue != null){
+if (chooseBoosterValue != null) {
   chooseBoosterInt = parseInt(chooseBoosterValue, 10);
   autoSelectBooster.click()
 }
 // Set the value of the input field to the obtained 'choose-booster' value
+console.log(chooseBoosterInt)
 document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
 // Extra Charges Part
@@ -101,8 +102,9 @@ const radioButtonsCurrent = document.querySelectorAll('input[name="radio-group-c
 const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-desired"]');
 const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
 const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
-const makrs_on_current_rank_checked = document.querySelectorAll('input[name="radio-group-current-mark"]');4
-const makrs_on_current_rank = document.querySelectorAll('.current-mark-container');
+const makrs_on_current_rank_selected = document.querySelector('.current-marks-select');
+const makrs_on_current_rank = document.querySelectorAll('.current-marks');
+const server_select_element = document.querySelector('.servers-select');
 
 // Disable Functions
 function setRadioButtonStateWithDisable(radioButtons, values) {
@@ -137,7 +139,7 @@ const initiallyCheckedIndexDesired = Array.from(radioButtonsDesired).findIndex(r
 
 const initiallyCheckedIndexCurrentDivision = Array.from(radioButtonsCurrentDivision).findIndex(radio => radio.checked) + 1;
 const initiallyCheckedIndexDesiredDivision = Array.from(radioButtonsDesiredDivision).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndexMark = Array.from(makrs_on_current_rank_checked).findIndex(radio => radio.checked);
+const initiallyCheckedIndexMark = makrs_on_current_rank_selected.value;
 
 // Read Values From Json File
 let divisionPrices = [0];
@@ -172,6 +174,29 @@ Promise.all([
   var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
   var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
   var mark = 0
+  var selectedServer = server_select_element.value;
+
+  // Look Here:- I Want Get The Current & Desired Element Not Index
+  let currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
+  let desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
+
+  // Apply Extra Button
+  function setupApplyButtonClickEvent(button, percentage) {
+    Applybuttons[button].addEventListener('click', function () {
+      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
+      getResult();
+      getPrices();
+    });
+  }
+
+  // Setup click events for each button
+  for (const key in buttons) {
+    setupButtonClickEvent(buttons[key], key);
+  }
+  setupApplyButtonClickEvent('duoBoosting', 0.65);
+  setupApplyButtonClickEvent('selectBooster', 0.05);
+  setupApplyButtonClickEvent('turboBoost', 0.20);
+  setupApplyButtonClickEvent('streaming', 0.15);
 
   // Read Marks
   $.getJSON('/static/wildRift/data/marks_data.json', function (data) {
@@ -179,6 +204,7 @@ Promise.all([
     number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
     getResult();
   });
+
   if (extend_order) {
     let orderID = parseInt(extend_order, 10);
     document.getElementById('extendOrder').value = orderID; 
@@ -186,7 +212,7 @@ Promise.all([
     // Set the checked state for each group of radio buttons using the specified order
     setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
     setRadioButtonStateWithDisable(radioButtonsCurrentDivision, valuesToSet[1]-1);
-    setRadioButtonStateWithDisable(makrs_on_current_rank_checked, valuesToSet[2]);
+    setRadioButtonStateWithDisable(makrs_on_current_rank_selected, valuesToSet[2]);
     setRadioButtonState(radioButtonsDesired, valuesToSet[3]-1, true);
     setRadioButtonStateForDesiredDivision(radioButtonsDesiredDivision, valuesToSet[4]-1);
     current_rank = valuesToSet[0];
@@ -216,7 +242,7 @@ Promise.all([
     setCheckboxState(streamingApply, valuesToSetAdditional[3]);
   }
     
-  if(extend_order){
+  if(extend_order) {
     function getResult() {
       const startt = ((valuesToSet[3] - 1) * 4) + valuesToSet[4];
       const endd = ((desired_rank - 1) * 4) + desired_division-1;
@@ -233,7 +259,11 @@ Promise.all([
 
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
-      result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
+      result_with_mark = parseFloat(result_with_mark.toFixed(2));
+      
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+      $('#current-rank-selected-img').attr('src', $(currentElement).data('img'))
+      $('#desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
       const pricee = document.querySelector('.price-data.division-boost');
       pricee.innerHTML = `
@@ -266,7 +296,10 @@ Promise.all([
 
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
-      result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
+      result_with_mark = parseFloat(result_with_mark.toFixed(2));
+      
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+      $('#current-rank-selected-img').attr('src', currentElement.data('img'))
 
       const pricee = document.querySelector('.price-data.division-boost');
       pricee.innerHTML = `
@@ -280,6 +313,7 @@ Promise.all([
       $('input[name="marks"]').val(mark);
       $('input[name="desired_rank"]').val(desired_rank);
       $('input[name="desired_division"]').val(desired_division);
+      $('input[name="server"]').val(selectedServer);
       $('input[name="price"]').val(result_with_mark);
     }
   }
@@ -312,10 +346,16 @@ Promise.all([
         number_of_marks = -1;
     }
     makrs_on_current_rank.forEach(function (element, index) {
-      if (index <= number_of_marks) {
-        element.classList.remove('d-none');
-      } else {
-        element.classList.add('d-none');
+      if (number_of_marks == -1) {
+        $('.current-mark-container').addClass('d-none')
+      }
+      else {
+        $('.current-mark-container').removeClass('d-none')
+        if (index <= number_of_marks) {
+          element.classList.remove('d-none');
+        } else {
+          element.classList.add('d-none');
+        }
       }
     });
 
@@ -329,7 +369,11 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsCurrent).indexOf(radio);
       current_rank = selectedIndex + 1;
       current_rank_name = divisionRanks[current_rank];
-      makrs_on_current_rank_checked[0].checked = true; // make 0 mark is check
+
+      // Look Here:- When Current Rank Change Change Value So Image Changed 
+      currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
+
+      makrs_on_current_rank_selected.value = 0; // make 0 mark is check
       setMarkNumber();
       getResult();
     });
@@ -341,6 +385,10 @@ Promise.all([
       const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
       desired_rank = selectedIndex + 1;
       desired_rank_name = divisionRanks[desired_rank]
+
+      // Look Here:- When Desired Rank Change Change Value So Image Changed 
+      desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
+
       const desired_division_to_hide = document.getElementById('desired-division');
       if (desired_rank == 8) {
         desired_division_to_hide.classList.add('d-none');
@@ -375,34 +423,19 @@ Promise.all([
   });
 
   // Mark Changes
-  makrs_on_current_rank_checked.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(makrs_on_current_rank_checked).indexOf(radio);
-      number_of_mark = marks_price[current_rank][selectedIndex];
-      mark = selectedIndex
-      getResult();
-    });
+  makrs_on_current_rank_selected.addEventListener("change", function() {
+    const selectedIndex = this.value;
+    number_of_mark = marks_price[current_rank][selectedIndex];
+    mark = selectedIndex
+    getResult();
   });
 
-  // Apply Extra Button
-  function setupApplyButtonClickEvent(button, percentage) {
-    Applybuttons[button].addEventListener('click', function () {
-      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
-      getResult();
-      getPrices();
-    });
-  }
-
-  // Setup click events for each button
-  for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-  }
-  setupApplyButtonClickEvent('duoBoosting', 0.65);
-  setupApplyButtonClickEvent('selectBooster', 0.05);
-  setupApplyButtonClickEvent('turboBoost', 0.20);
-  setupApplyButtonClickEvent('streaming', 0.15);
+  // Server Changes
+  server_select_element.addEventListener("change", function() {
+    selectedServer = this.value
+    getResult();
+  });
 });
-
 
 // --------------------------- Placments Boost --------------------------
 const radioButtonsRank = $('input[name="radio-group-ranks"]');

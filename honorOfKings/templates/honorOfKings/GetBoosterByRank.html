@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<link href="{% static 'games/css/new_game.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/new_placement.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+
+{% endblock %}
+{% block script %}
+<script src="{% static 'games/js/main.js' %}"></script>
+<script src="{% static 'hok/js/division-placement-boost.js' %}"></script>
+{% endblock %}

@@ -8,7 +8,7 @@
   <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
   <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
   <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'base/css/master.css'%}"/>
+  <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
   <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
 
@@ -21,138 +21,46 @@
   <!-- Start Header -->
   <div class="nav" id="nav">
     <div class="container">
-      <a href="{% url 'homepage.index' %}" class="logo">Game Boosters</a>
-      <ul class="main-nav">
-        {% if request.user.id %}
+      <div class="row w-100 justify-content-start align-items-center">
 
-        {% if request.user.is_booster %}
+        <div class="col-3">
+          <a href="{% url 'homepage.index' %}" class="logo">
+            <img src="{% static 'base/images/logo.png' %}" class="img-fluid" width="250" height="200" alt="Logo">
+          </a>
+        </div>
 
-          <li>
-            <a class="text-white"  href="{% url 'edit.booster.profile' %}"> {{request.user.first_name}} {{request.user.last_name}}</a>
-          </li> 
+        <div class="col-7">
+          <ul class="links ">
 
-          <li>
-            <a href="{% url 'booster.orders' %}">Your Orders</a>
-          </li>
+            <li>
+              <a href="">Games</a>
+            </li>
 
-          <li>
-            <a href="{% url 'booster.history' %}">Your Money : {{request.user.wallet.money}}$</a>
-          </li>
+            <li>
+              <a href="">Store</a>
+            </li>
 
-        {% elif request.user.is_customer %}
+            <li>
+              <a href="">Boosters</a>
+            </li>
 
-        <li>
-          <a href="{% url 'edit.customer.profile' %}">{{request.user.first_name}} {{request.user.last_name}}</a>
-        </li>
+            <li>
+              <a href="">Reviews</a>
+            </li>
 
-        <li>
-          <a href="{% url 'customer.history' %}">WITHDRAWAL : {{request.user.wallet.money}}$</a>
-        </li>
-        {% endif %}
+            <li>
+              <a href="">How We Work</a>
+            </li>
+          </ul>
 
-        <li>
-          <a href="{% url 'account.logout' %}">Logout</a>
-        </li>
+        </div>
 
-        {% else %}
+        <div class="col-2 d-flex justify-content-end">
+          <a href="{% url 'account.login' %}" class="custom-btn" style="width: 114px;">Log In</a>
+        </div>
 
-        <li>
-          <a href="{% url 'account.login' %}">Log In</a>
-        </li>
-        <li>
-          <a href="{% url 'accounts.register' %}">Register</a>
-        </li>
+      </div>
 
-        {% endif %}
-        {% if request.user.is_booster %}
-        <li>
-          <a href="">Jobs</a>
-          <!-- Start Megamenu -->
-          <div class="mega-menu">
-            <div class="image">
-              <img src="{% static 'base/images/megamenu.webp' %}" alt="" />
-            </div>
-            <ul class="links">
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> League of Legends</a>
-              </li>
-              <li>
-                <a href="{% url 'orders.jobs' %}"><i class="fa-solid fa-gamepad"></i> Valorant</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> TFT</a>
-              </li>
-              <li>
-                <a href="{% url 'orders.jobs' %}"><i class="fa-solid fa-gamepad"></i> Wild Rift</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> Dota 2</a>
-              </li>
-            </ul>
-            <ul class="links">
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> Hearthstone</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> World of Warcraft</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> Mobile Legends</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> Pubg Mobile</a>
-              </li>
-              <li>
-                <a href=""><i class="fa-solid fa-gamepad"></i> Rocket League</a>
-              </li>
-            </ul>
-          </div>
-          <!-- End Megamenu -->
-        </li>
-        {% elif request.user.is_customer %}
-        <li>
-          <a href="">Orders</a>
-          <!-- Start Megamenu -->
-          <div class="mega-menu">
-            <div class="image">
-              <img src="{% static 'base/images/megamenu.webp' %}" alt="" />
-            </div>
-            <ul class="links">
-              {% for order in request.user.customer_orders.all %}
-              {% if not order.is_done %}
-                <li>
-                <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
-                </li>
-              {% endif %}
-              {% if forloop.last and order.is_done and not order.order_rated %}
-                <li>
-                  <a href="{% url 'accounts.customer_side' %}"><strong>Order: </strong>_{{ order.name }}</a>
-                </li>
-              {% endif %}
-              {% endfor %}
-            </ul>
-            <ul class="links">
-              <li>
-                <a href="#events"><i class="far fa-calendar-alt fa-fw"></i> Events</a>
-              </li>
-              <li>
-                <a href="#pricing"><i class="fas fa-server fa-fw"></i> Pricing Plans</a>
-              </li>
-              <li>
-                <a href="#video"><i class="far fa-play-circle fa-fw"></i> Top Videos</a>
-              </li>
-              <li>
-                <a href="#stats"><i class="far fa-chart-bar fa-fw"></i> Stats</a>
-              </li>
-              <li>
-                <a href="#discount"><i class="fas fa-percent fa-fw"></i> Request A Discount</a>
-              </li>
-            </ul>
-          </div>
-          <!-- End Megamenu -->
-        </li>
-        {% endif %}
-      </ul>
     </div>
   </div>
   <!-- End Header -->
@@ -163,74 +71,80 @@
   <!-- End Container -->
 
   <!-- Start Footer -->
-  <!-- Start Footer -->
   <div class="footer">
-    <div class="container">
-      <div class="box">
-        <h3>Game Booster</h3>
-        <ul class="social">
-          <li>
-            <a href="#" class="facebook">
-              <i class="fab fa-facebook-f"></i>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="twitter">
-              <i class="fab fa-twitter"></i>
-            </a>
-          </li>
-          <li>
-            <a href="#" class="youtube">
-              <i class="fab fa-youtube"></i>
-            </a>
-          </li>
-        </ul>
-        <p class="text">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Temporibus nulla rem, dignissimos iste aspernatur
-        </p>
-      </div>
-      <div class="box">
-        <ul class="links">
-          <li><a href="#">Important Link 1</a></li>
-          <li><a href="#">Important Link 2</a></li>
-          <li><a href="#">Important Link 3</a></li>
-          <li><a href="#">Important Link 4</a></li>
-          <li><a href="#">Important Link 5</a></li>
-        </ul>
-      </div>
-      <div class="box">
-        <div class="line">
-          <i class="fas fa-map-marker-alt fa-fw"></i>
-          <div class="info">Egypt, Giza, Inside The Sphinx, Room Number 220</div>
-        </div>
-        <div class="line">
-          <i class="far fa-clock fa-fw"></i>
-          <div class="info">Business Hours: From 10:00 To 18:00</div>
-        </div>
-        <div class="line">
-          <i class="fas fa-phone-volume fa-fw"></i>
-          <div class="info">
-            <span>+20123456789</span>
-            <span>+20198765432</span>
+
+    <div class="info">
+      <div class="container">
+        <div class="row justify-content-between align-items-center ">
+          <div class="col-md-2 ">
+            <img src="{% static 'base/images/logo.png' %}" class="img-fluid" width="300" alt="Logo">
+          </div>
+          <div class="col-10 text-white">
+            <p class="mb-0" style="font-size: 16px;">
+              MadBoost is an independent entity and is not endorsed or affiliated with Activision Blizzard, Riot Games, Electronic Arts, Amazon Games, or
+              Respawn Entertainment. The views and opinions expressed by Boosting Factory do not necessarily reflect those of the individuals officially involved
+              in producing or managing Heroes of the Storm, Valorant, Overwatch, Call of Duty, New World, and League of Legends. All trademarks and logos are
+              the property of their respective owners. All submitted art content remains the copyright of its original copyright holder.
+            </p>
           </div>
         </div>
       </div>
-      <!-- <div class="box footer-gallery">
-        <img src="imgs/gallery-01.png" alt="" />
-        <img src="imgs/gallery-02.png" alt="" />
-        <img src="imgs/gallery-03.jpg" alt="" />
-        <img src="imgs/gallery-04.png" alt="" />
-        <img src="imgs/gallery-05.jpg" alt="" />
-        <img src="imgs/gallery-06.png" alt="" />
-      </div> -->
     </div>
-    <p class="copyright">Made With &lt;3 By ITI Team</p>
+
+    <div class="contact py-4">
+      <div class="container">
+        <div class="row justify-content-between align-items-center">
+
+          <div class="col-9">
+            <ul class="links">
+              <li>
+                <a href="">Contact us</a>
+              </li>
+  
+              <li>
+                <a href="">Report</a>
+              </li>
+  
+              <li>
+                <a href="">Terms of Service</a>
+              </li>
+  
+              <li>
+                <a href="">Privacy Policy</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-3">
+            <ul class="social">
+              <li>
+                <a href="" class="facebook me-2">
+                  <i class="fa-brands fa-facebook"></i>
+                </a>
+              </li>
+              <li>
+                <a href="" class="instgram me-2">
+                  <i class="fa-brands fa-instagram"></i>
+                </a>
+              </li>
+              <li>
+                <a href="" class="discard">
+                  <i class="fa-brands fa-discord"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        <p class="mb-0 text-light">&copy; 2024 MadBoost - All Rights Reserved</p>
+      </div>
+    </div>
   </div>
   <!-- End Footer -->
-  <!-- End Footer -->
   <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
-  <script src="{% static  'base/js/base.js' %}"></script>
-  <script src="{% static  'base/js/script.js' %}"></script>
+  <!-- <script src="{% static  'base/js/base.js' %}"></script> -->
+  <!-- <script src="{% static  'base/js/script.js' %}"></script> -->
   <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>

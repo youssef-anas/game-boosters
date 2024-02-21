@@ -2,7 +2,7 @@
   background-image:url('../../../media/wildRift/images/backgrounds/wildrift10.jpg');
   position: relative;
 }
-.body::before{
+.body::before {
   content: "";
   width: 100%;
   height: 100%;
@@ -18,31 +18,7 @@
   background-color: var(--alternative-color) !important;
   color: white !important;
 }
-/* Hide the radio button */
-input[type="radio"] {
-  display: none;
-}
-/* Style the label to look like the radio button text */
-label {
-  display: inline-block;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 16px;
-  border: 1px solid #ccc; /* Optional border for styling */
-  border-radius: 4px;
-}
-/* Change label style when radio button is checked */
-input[type="radio"]:checked + label {
-  background-color: var(--secondary-color); /* Change the background color when checked */
-  color: white; /* Change the text color when checked */
-}
-input[type="radio"]:disabled + label {
-  color: whitesmoke;
-  filter: grayscale(100%);
-
-  /* Additional styles if needed */
-}
-.wild-rift {
+.game-container {
   color: white !important;
   position: relative;
 }
