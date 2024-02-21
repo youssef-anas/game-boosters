@@ -43,7 +43,7 @@ def index(request):
       "id": 7,
       "name": "World of Warcraft",
       "image": "World of Warcraft.jpg",
-      "link": ""
+      "link": "wow"
     },
     {
       "id": 8,

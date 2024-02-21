@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'wildRift.apps.WildriftConfig',
     'valorant.apps.ValorantConfig',
     'pubg.apps.PubgConfig',
+    'WorldOfWarcraft.apps.WorldofwarcraftConfig',
     'leagueOfLegends.apps.LeagueoflegendsConfig',
     'django_cleanup.apps.CleanupConfig',
     'accounts.apps.AccountsConfig',
