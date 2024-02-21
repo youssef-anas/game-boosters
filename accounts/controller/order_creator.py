@@ -24,6 +24,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     booster_id = int(invoice_values[12])
     extend_order_id = int(invoice_values[14])
     price = float(invoice_values[13])
+    server = str(invoice_values[15])
 
     if type == 'D' or type == 'A':
         current_rank =  int(invoice_values[3])
@@ -47,6 +48,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
 
     # Wildrift
     if game_id == 1:
+        booster_champions = bool(int(invoice_values[16]))
         Game = WildRiftDivisionOrder 
     # Volarent
     elif game_id == 2:
@@ -154,10 +156,10 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     print("Check Condition: ",status == 'New' or status == 'Continue')
     if status == 'New' or status == 'Continue':
         print('Booster: ', booster)
-        baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name)
+        baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server)
         # Wildrift Without Placement 
         if game_id == 1:
-            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks)
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, booster_champions=booster_champions)
         # Valorant - Division
         elif game_id == 2 and type == 'D':
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_agents=choose_agents)
@@ -211,7 +213,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
 
         # Wildrift Without Placement 
         if game_id == 1:
-            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks)
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, booster_champions=booster_champions)
         # Valorant - Division
         elif game_id == 2 and type == 'D':
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks, choose_agents=choose_agents)

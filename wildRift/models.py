@@ -79,6 +79,8 @@ class WildRiftDivisionOrder(models.Model):
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    booster_champions = models.BooleanField(default=False, blank=True)
+
 
     def send_discord_notification(self):
         if self.order.status == 'Extend':
@@ -131,4 +133,4 @@ class WildRiftDivisionOrder(models.Model):
     
     
     def get_rank_value(self, *args, **kwargs):
-        return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+        return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.booster_champions}"

@@ -9,10 +9,13 @@ class RankSerializer(serializers.Serializer):
     desired_rank = serializers.IntegerField(min_value=1, max_value=8)
     desired_division = serializers.IntegerField(min_value=1, max_value=4)
 
+    server = serializers.CharField(max_length=300)
+
     duo_boosting = serializers.BooleanField()
     select_booster = serializers.BooleanField()
     turbo_boost = serializers.BooleanField()
     streaming = serializers.BooleanField()
+    booster_champions = serializers.BooleanField()
 
     price = serializers.FloatField(min_value=10)
 

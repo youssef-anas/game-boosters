@@ -268,7 +268,7 @@ Promise.all([
       const pricee = document.querySelector('.price-data.division-boost');
       pricee.innerHTML = `
       <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${valuesToSet[2]} to ${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]] != 'master' ? divisionNames[valuesToSet[4]] : ''} </span></p>
-      <p class='fs-5 text-uppercase my-4'>Extend <span class='fw-bold'>From ${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
+      <p class='fs-5 text-uppercase my-4'>Extend <span class='fw-bold'>From   Marks ${mark} to   </span></p>
       <span class='fs-5 text-uppercase fw-bold'>Extra Cost: $${result_with_mark}</span>
     `;
 
@@ -295,17 +295,17 @@ Promise.all([
       }
 
       // Apply extra charges to the result
-      result_with_mark += result_with_mark * total_Percentage;
+      // result_with_mark += result_with_mark * total_Percentage;
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
       
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-      $('#current-rank-selected-img').attr('src', currentElement.data('img'))
+      $('.current-rank-selected-img').attr('src', $(currentElement).data('img'))
+      $('.desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      const pricee = document.querySelector('.price-data.division-boost');
-      pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4'>Boosting <span class='fw-bold'>From ${current_rank_name} ${current_division_name} Marks ${mark} to ${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''} </span></p>
-      <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result_with_mark}</span>
-    `;
+      $('.current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark} Marks`);
+      $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
+
+      $('.total-price #price').text(`$${result_with_mark}`)
 
       // From Value
       $('input[name="current_rank"]').val(current_rank);
