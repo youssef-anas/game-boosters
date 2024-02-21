@@ -21,12 +21,6 @@ class WoW_25_RPs_Price_2x2(models.Model):
 
   def __str__(self):
     return f"Price for 50 RPs is {self.price}"
-
-  
-# class WoWArenaBoostTypes(models.Model):
-  
-  
-  
   
   
 class WoWArenaBoostOrder(models.Model):
@@ -88,13 +82,13 @@ class WoWArenaBoostOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.validate_divition()
+    # self.validate_divition()
     self.order.game_id = 6
-    self.order.game_name = 'wow'
+    self.order.game_name = 'WOW'
     self.order.game_type = 'A'
     self.order.details = self.get_details()
     if not self.order.name:
-      self.order.name = f'Wow{self.order.id}'
+      self.order.name = f'WOW{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)

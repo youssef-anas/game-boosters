@@ -22,6 +22,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import *
+from WorldOfWarcraft.models import WoWArenaBoostOrder
 from django.http import JsonResponse
 from accounts.controller.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -260,6 +261,7 @@ def cancel_tip(request, token):
     request.session['success_tip'] = 'false'
     return redirect('accounts.customer_side')
 
+# TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     order = BaseOrder.objects.filter(customer=customer).last()
@@ -317,9 +319,11 @@ def customer_side(request):
     elif 'MOBLEG' in order.name and order.game_type == 'P': 
         order = MobileLegendsPlacementOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+    elif 'WOW' in order.name and order.game_type == 'A': 
+        order = WoWArenaBoostOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_wow_player=True)
         
-
-
+    print(order)
     if order.order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))
     # Chat with booster

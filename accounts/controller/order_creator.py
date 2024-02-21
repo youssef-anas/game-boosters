@@ -6,6 +6,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
+from WorldOfWarcraft.models import WoWArenaBoostOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 from channels.layers import get_channel_layer
@@ -24,7 +25,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     extend_order_id = int(invoice_values[14])
     price = float(invoice_values[13])
 
-    if type == 'D':
+    if type == 'D' or type == 'A':
         current_rank =  int(invoice_values[3])
         current_division = int(invoice_values[4])
         current_marks = int(invoice_values[5])
@@ -77,6 +78,14 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             Game = TFTDivisionOrder
         elif type == 'P':
             Game = TFTPlacementOrder
+    # WoW
+    elif game_id == 6:
+         # Extra Fields +
+        choose_agents = bool(int(invoice_values[16]))
+        if type == 'A':
+            Game = WoWArenaBoostOrder
+        # if type == 'B'
+        
     # HEARTHSTONE
     elif game_id == 7:
          # Extra Fields +
@@ -170,6 +179,9 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # TFT - Placement
         elif game_id == 5 and type == 'P':
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,speed_up_boost=speed_up_boost)
+        # WoW - Arena
+        elif game_id == 6 and type == 'A':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,choose_agents=choose_agents)
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks, choose_legends=choose_legends,speed_up_boost=speed_up_boost)
@@ -221,6 +233,9 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # TFT - Placement
         elif game_id == 5 and type == 'P':
             order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,speed_up_boost=speed_up_boost)
+        # LOL - Division
+        elif game_id == 6 and type == 'A':
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, choose_agents=choose_agents)
         # HEARTHSTONE
         elif game_id == 7:
             order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks,choose_legends=choose_legends, speed_up_boost=speed_up_boost)
