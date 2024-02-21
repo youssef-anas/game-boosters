@@ -83,13 +83,13 @@ class RocketLeagueRankedOrder(models.Model):
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "Rocket League",
         "description": (
             f"**Order ID:** {self.order.name}\n"
-            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} "
+            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n {self.get_ranked_type_display()} server USA" # change server next
         ),
-        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
     }
     data = {
@@ -147,7 +147,7 @@ class RocketLeaguePlacementOrder(models.Model):
             f"**Order ID:** {self.order.name}\n"
             f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
         ),
-        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
     }
     data = {

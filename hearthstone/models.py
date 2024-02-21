@@ -82,7 +82,7 @@ class HearthstoneDivisionOrder(models.Model):
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n server us" # change server next
         ),
         "color": 0x3498db,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 

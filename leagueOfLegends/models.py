@@ -80,13 +80,14 @@ class LeagueOfLegendsDivisionOrder(models.Model):
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209755185749168158/GQ9_GQrC5F8ktpEyMK0Qx_tszdrdpYCpVLzm1aY5D3SzFDzudxxQJHPTnaeq5LUnbRxf'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "LOL",
         "description": (
-            f"**Order ID:** {self.order.name}\n"
-            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            f"**Order ID:**  {self.order.name}\n"
+            f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
+            f"To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} \n"
+            f"**server:**  North East \n" # change server next
         ),
-        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "color": 0x800080,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
     }
     data = {
@@ -139,7 +140,7 @@ class LeagueOfLegendsPlacementOrder(models.Model):
     discord_webhook_url ='https://discordapp.com/api/webhooks/1209755185749168158/GQ9_GQrC5F8ktpEyMK0Qx_tszdrdpYCpVLzm1aY5D3SzFDzudxxQJHPTnaeq5LUnbRxf'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "LOL",
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
