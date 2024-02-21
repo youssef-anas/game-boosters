@@ -54,14 +54,14 @@ class WoWArenaBoostOrder(models.Model):
   def send_discord_notification(self):
     if self.order.status == 'Extend':
       return print('Extend Order')
-    discord_webhook_url = 'https://discord.com/api/webhooks/1193142919620743258/fMYJS3jtU3Z2g8gON6UuHj9GKc1NEVRzor-8P9iWIMgNkiZTELCVfJysmXspeVHaSQxt'
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209759469806821396/Sw69hAULnlb4XIEIclX_Ag-xCdinblnLcpr01UXtJDM2STpTw2hv8UqyD29qY2H01uXX'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
       "title": "World Of Warcraft",
       "description": (
         f"**Order ID:** {self.order.name}\n"
         f" From {self.current_division} RP"
-        f" To {self.desired_division} server us" # change server next
+        f" To {self.desired_division} RP server {self.order.customer_server}" # change server next
       ),
       "color": 0xFFA500,  # Hex color code for a Discord color
       "footer": {"text": f"{current_time}"}, 
@@ -92,7 +92,7 @@ class WoWArenaBoostOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
-    # self.send_discord_notification()
+    self.send_discord_notification()
 
   def get_details(self):
       return f"From {self.current_division} RP To {self.desired_division}"
