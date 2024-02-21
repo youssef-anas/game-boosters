@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from WorldOfWarcraft.views import *
 
 urlpatterns = [
   path('', wowGetBoosterByRank, name='wow'),
