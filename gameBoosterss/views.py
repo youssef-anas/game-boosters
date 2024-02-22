@@ -43,13 +43,13 @@ def index(request):
       "id": 7,
       "name": "World of Warcraft",
       "image": "World of Warcraft.jpg",
-      "link": ""
+      "link": "wow"
     },
     {
       "id": 8,
       "name": "Mobile Legends",
       "image": "Mobile Legends.webp",
-      "link": ""
+      "link": "mobileLegends"
     },
     {
       "id": 9,

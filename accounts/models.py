@@ -95,7 +95,8 @@ class BaseOrder(models.Model):
     ]
     GAME_TYPE = [
         ('D', 'Division'),
-        ('P', 'Placement')
+        ('P', 'Placement'),
+        ('A', 'Arena')       
     ]
     name = models.CharField(max_length=30, null = True)
     details = models.CharField(max_length=300, default='no details')

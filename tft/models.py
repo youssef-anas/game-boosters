@@ -71,6 +71,37 @@ class TFTDivisionOrder(models.Model):
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
 
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209763323248123964/7Y2ne1v618CoPWp9WTEVZnawLO_EO42Lf5MbmyU3uABhnEaMRr56xbNFOoCgyn-x0oQA'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "TFT",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
+            f"To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+        ),
+        "color": 0x8a2be2,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
   speed_up_boost = models.BooleanField(default=True, blank=True, null=True)
 
   def save_with_processing(self, *args, **kwargs):
@@ -83,7 +114,7 @@ class TFTDivisionOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
-    # self.send_discord_notification()
+    self.send_discord_notification()
     
   def get_details(self):
     return f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} {'0-20' if self.current_marks == 0 else ('21-40' if self.current_marks == 1 else ('41-60' if self.current_marks == 2 else ('61-80' if self.current_marks == 3 else '81-100')))} LP To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
@@ -102,6 +133,36 @@ class TFTPlacementOrder(models.Model):
 
   speed_up_boost = models.BooleanField(default=False, blank=True, null=True)
 
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209763323248123964/7Y2ne1v618CoPWp9WTEVZnawLO_EO42Lf5MbmyU3uABhnEaMRr56xbNFOoCgyn-x0oQA'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Rift",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
+        ),
+        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 5
     self.order.game_name = 'tft'
@@ -112,6 +173,7 @@ class TFTPlacementOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
 
   def get_details(self):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"

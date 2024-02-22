@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'pubg.apps.PubgConfig',
     'tft.apps.TftConfig',
     'hearthstone.apps.HearthstoneConfig',
+    'WorldOfWarcraft.apps.WorldofwarcraftConfig',
     'leagueOfLegends.apps.LeagueoflegendsConfig',
     'rocketLeague.apps.RocketleagueConfig',
     'django_cleanup.apps.CleanupConfig',

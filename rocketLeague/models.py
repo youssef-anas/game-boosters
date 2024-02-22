@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder, Wallet
-from accounts.templatetags.custom_filters import romanize_division_original
+from accounts.templatetags.custom_filters import romanize_division_original, romanize_division
 import requests
 
 # Create your models here.
@@ -76,6 +76,38 @@ class RocketLeagueRankedOrder(models.Model):
   reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+  
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Rocket League",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} "
+            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n {self.get_ranked_type_display()} server USA" # change server next
+        ),
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
@@ -87,6 +119,8 @@ class RocketLeagueRankedOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
+
     
   def get_details(self):
     return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
@@ -102,6 +136,35 @@ class RocketLeaguePlacementOrder(models.Model):
   last_rank = models.ForeignKey(RocketLeaguePlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
   number_of_match = models.IntegerField(default=10)
 
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Rift",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
+        ),
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
     self.order.game_name = 'rocketLeague'
@@ -112,6 +175,8 @@ class RocketLeaguePlacementOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
+
 
   def get_details(self):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"

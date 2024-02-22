@@ -15,6 +15,7 @@ urlpatterns = [
     path('valorant/', include('valorant.urls')),
     path('lol/', include('leagueOfLegends.urls')),
     path('pubg/', include('pubg.urls')),
+    path('wow/', include('WorldOfWarcraft.urls')),
     path('tft/', include('tft.urls')),
     path('hearthstone/', include('hearthstone.urls')),
     path('rocketLeague/', include('rocketLeague.urls')),
