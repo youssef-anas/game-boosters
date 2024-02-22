@@ -147,33 +147,35 @@ Promise.all([
     if (valuesToSetAdditional[0]) {
       document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').checked = true;
       $('input#duoBoosting').val(true)
+      document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').disabled = true;
+      document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').disabled = true;
     } else {
       document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').checked = true;
       $('input#duoBoosting').val(false)
     }
-
-    document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').disabled = true;
-    document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').disabled = true;
 
     // Extra Buttons
     extraOptions.forEach(function (checkbox, index) {
       if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
+        $(checkbox).prop('disabled', true)
       } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
+        $(checkbox).prop('disabled', true)
       } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
+        $(checkbox).prop('disabled', true)
       } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
+        $(checkbox).prop('disabled', true)
       } else {
         checkbox.checked = false
         $(`input#${checkbox.value}`).val(false)
       } 
-      $(checkbox).prop('disabled', true)
     });
 
   }
@@ -239,6 +241,9 @@ Promise.all([
 
       $('.current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark} Marks`);
       $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
+
+      $('.current').removeClass().addClass(`current ${current_rank_name}`)
+      $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
       $('.total-price #price').text(`$${result_with_mark}`)
 

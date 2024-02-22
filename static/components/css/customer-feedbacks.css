@@ -1,0 +1,74 @@
+/* Start Feedback */
+.feedbacks h1 {
+  font-family: var(--heading-font);
+  font-size: 48px;
+  font-weight: 600;
+}
+.feedbacks .feedback {
+  background-color: var(--main-color);
+  border-radius: calc(var(--main-radius) * 2);
+  height: 240px;
+  overflow: hidden;
+}
+.feedback .customer-image img {
+  width: 56px;
+  height: 56px;
+  border-radius: calc(var(--main-radius) * 2);
+}
+.feedback .customer-info .rate {
+  padding: 0 9px;
+  border-radius: var(--main-radius);
+  background-color: #14151F;
+}
+.feedback .customer-info .rate p span i {
+  color: #F26E3E;
+  font-size: 14px;
+}
+/* Swiper Class */
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  content: '';
+}
+.swiper-button-next,
+.swiper-button-prev {
+  width: initial;
+  height: initial;
+  font-size: 1.5rem;
+  color: white;
+  display: none;
+  top: initial;
+  margin-top: initial;
+  bottom: 0;
+  z-index: 12;
+  font-weight: lighter;
+}
+.swiper-button-next i,
+.swiper-button-prev i {
+  background-color: var(--background-color);
+  padding: 3px;
+}
+.swiper-button-prev {
+  left: calc(50% - 50px);
+}
+.swiper-button-next {
+  right: calc(50% - 50px);;
+}
+.swiper-pagination-bullet {
+  background: #D9D9D980;
+  opacity: 1;
+  font-weight: lighter;
+}
+.swiper-pagination-bullet-active {
+  background: #D9D9D9;
+}
+
+/*=============== BREAKPOINTS ===============*/
+
+/* For medium devices */
+@media screen and (min-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    display: block;
+  }
+}
+/* End Feedback */

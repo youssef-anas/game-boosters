@@ -385,7 +385,8 @@ def customer_history(request):
     history = Transaction.objects.filter(user=request.user)
     return render(request, 'accounts/customer_histoty.html', context={'history' : history})
 
-
+def payment_canceled(request):
+    return HttpResponse('payment canceled')
 
 
 

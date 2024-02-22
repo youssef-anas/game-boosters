@@ -2,8 +2,18 @@
 {% load static %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-<link href="{% static 'games/css/new_game.css'%}" rel="stylesheet" />
-<link href="{% static 'games/css/new_placement.css'%}" rel="stylesheet" />
+<!-- SWIPER CSS -->
+<link href="{% static 'swiper/css/swiper-bundle.min.css'%}" rel="stylesheet">
+<!-- OUR STYLE -->
+<link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
+<!-- WILD RIFT RANKS COLORS -->
+<link href="{% static 'wildRift/css/ranks-colors.css'%}" rel="stylesheet" />
+<!-- STYLE FEEDBACK -->
+<link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
+<!-- STYLE MOTIVATION -->
+<link href="{% static 'components/css/motivation.css'%}" rel="stylesheet" />
+<!-- STYLE INFORMATION -->
+<link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
@@ -28,7 +38,7 @@
             <div class="row row-cols-2 justify-content-between gab-5">
                 <div class="choices-ranks">
                     <!-- Current -->
-                    <div class="current">
+                    <div class="current" id="current">
                         <div class="d-flex justift-content-center align-item-center">
                             <div class="image me-4">
                                 <img src="" alt="Current Rank Image" class="current-rank-selected-img" class="img-fluid" width="60" height="60">
@@ -83,7 +93,7 @@
                     </div>
 
                     <!-- Desired -->
-                    <div class="desired mt-4">
+                    <div class="desired" id="desired">
                         <div class="d-flex justift-content-center align-item-center">
                             <div class="image me-4">
                                 <img src="" alt="Desired Rank Image" class="desired-rank-selected-img" class="img-fluid" width="60" height="60">
@@ -289,51 +299,22 @@
             </div>
         </div>
 
-        <div class="motivation my-5">
-            <div class="text ps-5">
-                <h1>Do you dream Bigger?<br />Get your custom Order!</h1>
-                <a href="" class="custom-btn mt-4" style="width: 199px;"><i class="fa-solid fa-rocket"></i> Order Now</a>
-            </div>
-        </div>
+        <!-- Import Motivation -->
+        {% include 'components/motivation.html' %}
 
-        <div class="feedback">
-            <h1 class="py-5 text-center">Trusted by Thousands<br />of Happy Customer</h1>
-        </div>
+        <!-- Import Feedback Component -->
+        {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
 
-        <div class="information row row-cols-4">
-            <div class="col text-center">
-                <div class="icon-image" style="background-color: var(--secondary-color);">
-                    <img src="{% static 'games/images/cash.png' %}" alt="" class="img-fluid" width="40" height="40">
-                </div>
-                <p class="fw-bold my-3 head">Cash Back</p>
-                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
-            </div>
-            <div class="col text-center">
-                <div class="icon-image" style="background-color: #DE4949;">
-                    <img src="{% static 'games/images/discount.png' %}" alt="" class="img-fluid" width="40" height="40">
-                </div>
-                <p class="fw-bold my-3 head">Discounts</p>
-                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
-            </div>
-            <div class="col text-center">
-                <div class="icon-image" style="background-color: var(--secondary-color);">
-                    <img src="{% static 'games/images/safety.png' %}" alt="" class="img-fluid" width="40" height="40">
-                </div>
-                <p class="fw-bold my-3 head">Safety</p>
-                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
-            </div>
-            <div class="col text-center">
-                <div class="icon-image" style="background-color: #DE4949;">
-                    <img src="{% static 'games/images/support.png' %}" alt="" class="img-fluid" width="40" height="40">
-                </div>
-                <p class="fw-bold my-3 head">Fast Support</p>
-                <p>Lorem ipsum dolor sit amet,<br />consectetur adipiscing elit.</p>
-            </div>
-        </div>
+        <!-- Import Information Component -->
+        {% include 'components/information.html' %}
     </div>
 </div>
 {% endblock %}
 {% block script %}
+<!-- SWIPER JS -->
+<script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
+<!-- OUR SCRIPTS -->
 <script src="{% static 'games/js/main.js' %}"></script>
 <script src="{% static 'wildRift/js/division-placement-boost.js' %}"></script>
+<script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
 {% endblock %}

@@ -11,7 +11,7 @@ import json
 from wildRift.controller.serializers import RankSerializer
 from django.http import HttpResponse
 from wildRift.controller.order_information import *
-
+from booster.models import Rating
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
@@ -42,10 +42,14 @@ def wildRiftGetBoosterByRank(request):
         json.dump(marks_data, json_file)
 
     divisions_list = list(divisions.values())
+
+    # Feedbacks
+    feedbaccks = Rating.objects.filter(order__game_name = "wildRift")
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
-        "order":order,
+        "order": order,
+        "feedbacks": feedbaccks,
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
@@ -74,12 +78,12 @@ def view_that_asks_for_money(request):
                     "invoice": order_info['invoice'],
                     "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
                     "return": request.build_absolute_uri(f"/accounts/register/"),
-                    "cancel_return": request.build_absolute_uri(f"/wildRift/payment-canceled/"),
+                    "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
                 }
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
                 context = {"form": form}
-                return render(request, "wildRift/paypal.html", context,status=200)
+                return render(request, "accounts/paypal.html", context,status=200)
             # return JsonResponse({'error': serializer.errors}, status=400)
             messages.error(request, 'Ensure this value is greater than or equal to 10')
             return redirect(reverse_lazy('wildrift'))
@@ -87,6 +91,3 @@ def view_that_asks_for_money(request):
             return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-def payment_canceled(request):
-    return HttpResponse('payment canceled')

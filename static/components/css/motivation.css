@@ -1,0 +1,34 @@
+/* Start Motivation */
+.game-container .motivation {
+  height: 448px;
+  border-radius: calc(var(--main-radius) * 2);;
+  background-image: url('./../images/motivation.jpg');
+  background-size: cover;
+  background-position: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.game-container .motivation::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: calc(var(--main-radius) * 2);;
+  background: linear-gradient(90deg, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
+}
+.game-container .motivation .text {
+  position: relative;
+  z-index: 100;
+}
+.game-container .motivation .text h1 {
+  font-family: var(--heading-font);
+  font-size: 40px;
+  font-weight: 600;
+}
+.game-container .motivation .text a {
+  font-size: 16px;
+}
+/* End Motivation */
