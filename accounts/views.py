@@ -473,3 +473,25 @@ def payment_canceled(request):
 def test(request):
     # return render(request, 'accounts/order_list.html')
     return HttpResponse('Done')
+
+
+from accounts.models import PromoCode
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from accounts.controller.serializers import PromoCodeSerializer
+
+class PromoCodeAPIView(APIView):
+    def post(self, request):
+        code = request.data.get('code', None)
+        if code is None:
+            return Response({"error": "Promo code is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            promo_code = PromoCode.objects.get(code=code)
+            serializer = PromoCodeSerializer(promo_code)
+            if serializer.data['is_active']:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"error": "Promo Code Is Expired"}, status=status.HTTP_400_BAD_REQUEST)
+        except PromoCode.DoesNotExist:
+            return Response({"error": "Promo Code Not Found"}, status=status.HTTP_404_NOT_FOUND)

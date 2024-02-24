@@ -25,4 +25,6 @@ urlpatterns = [
     # path('create_job/<int:id>/',create_background_job_to_change_order_price,name='create_job')
     # path('order-list/', order_list, name='order.list'),
     # path('create_order/', submit_order, name='order.create'),
+    path('promo-codes/', PromoCodeAPIView.as_view(), name='promo_code_detail'),
+    
 ]

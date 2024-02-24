@@ -81,11 +81,11 @@ class MobileLegendsDivisionOrder(models.Model):
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209760345074171955/r_wFIUaPEIQevGJ1WYj0oVyHNNm_5mtM5g5mB-Ctzq8_npLbfGMrNhFA-2W_CwUXhTj1'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "Mobile Legends",
         "description": (
             f"**Order ID:** {self.order.name}\n"
-            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f" {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+            f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
+            f"To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} \n server USA" # change server next
         ),
         "color": 0x3498db,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
@@ -141,7 +141,7 @@ class MobileLegendsPlacementOrder(models.Model):
     discord_webhook_url ='https://discordapp.com/api/webhooks/1209760345074171955/r_wFIUaPEIQevGJ1WYj0oVyHNNm_5mtM5g5mB-Ctzq8_npLbfGMrNhFA-2W_CwUXhTj1'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "Mobile Legends",
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
