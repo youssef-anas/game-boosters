@@ -483,7 +483,7 @@ from accounts.controller.serializers import PromoCodeSerializer
 
 class PromoCodeAPIView(APIView):
     def post(self, request):
-        code = request.data.get('code', None)
+        code = request.data.get('code', None).lower() 
         if code is None:
             return Response({"error": "Promo code is required"}, status=status.HTTP_400_BAD_REQUEST)
         

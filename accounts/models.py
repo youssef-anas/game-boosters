@@ -376,8 +376,8 @@ class TokenForPay(models.Model):
 
 class PromoCode(models.Model):
     code                = models.CharField(max_length=50, unique=True)
-    description         = models.TextField(null=True)
-    discount_amount     = models.DecimalField(max_digits=10, decimal_places=2)
+    description         = models.CharField(null=True, max_length=50)
+    discount_amount     = models.FloatField()
     is_active           = models.BooleanField(default=True)
     expiration_date     = models.DateField()
     max_uses            = models.PositiveIntegerField(default=1)

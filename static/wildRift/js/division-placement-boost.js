@@ -463,6 +463,7 @@ Promise.all([
           });
           
       } else {
+          $('input[id="promo_send"]').val('null');
           promoDetails.text('Please enter a discount code');
           promoDetails.css('color', 'red');
           discount_amount = 0;

@@ -4,6 +4,7 @@ import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from accounts.models import PromoCode
 
 User = get_user_model()
 
@@ -11,7 +12,6 @@ division_names = ['','IV','III','II','I']
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
 def get_order_result_by_rank(data,extend_order_id):
-    print('Data: ', data)
     current_rank = data['current_rank']
     current_division = data['current_division']
     marks = data['marks']
@@ -24,12 +24,14 @@ def get_order_result_by_rank(data,extend_order_id):
     streaming = data['streaming']
     booster_champions = data['booster_champions']
     server = data['server']
+    promo_code = data['promo_code']
 
     duo_boosting_value = 0
     select_booster_value = 0
     turbo_boost_value = 0
     streaming_value = 0
     booster_champions_value = 0
+    promo_code_amount = 0
 
     boost_options = []
 
@@ -58,6 +60,13 @@ def get_order_result_by_rank(data,extend_order_id):
         boost_options.append('BOOSTER Champions')
         booster_champions_value = 1
 
+    if promo_code != 'null':   
+        try:
+            promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+            promo_code_amount = promo_code_obj.discount_amount
+        except PromoCode.DoesNotExist:
+            promo_code_amount = 0
+    
 
     # Read data from JSON file
     with open('static/wildRift/data/divisions_data.json', 'r') as file:
@@ -76,6 +85,7 @@ def get_order_result_by_rank(data,extend_order_id):
     total_sum = sum(sublist)
     price = total_sum - marks_price
     price += (price * total_percent)
+    price -= price * (promo_code_amount/100)
     price = round(price, 2)
     if extend_order_id > 0:
         try:
