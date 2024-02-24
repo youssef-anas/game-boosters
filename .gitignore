@@ -57,3 +57,6 @@
 
 /WorldOfWarcraft/migrations/
 /WorldOfWarcraft/__pycache__/
+
+/dota2/migrations/
+/dota2/__pycache__/
