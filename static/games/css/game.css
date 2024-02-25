@@ -340,6 +340,7 @@ select::-ms-expand {
   border-top-left-radius: var(--main-radius);
   border-bottom-left-radius: var(--main-radius);
   caret-color: var(--secondary-color);
+  color: white;
 }
 .complate-order .extra-charges .discount form input[type = "submit"] {
   Width: 143px;

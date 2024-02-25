@@ -439,34 +439,37 @@ Promise.all([
       $('input[id="promo_send"]').val(discountCode);
 
       if (discountCode) {
-          const csrfToken = getCookie('csrftoken');
-          $.ajax({
-              url: '/accounts/promo-codes/',
-              type: 'POST',
-              headers: {
-                  'X-CSRFToken': csrfToken
-              },
-              contentType: 'application/json',
-              data: JSON.stringify({ code: discountCode }),
-              success: function(data) {
-                  promoDetails.text(data.description);
-                  promoDetails.css('color', 'green');
-                  discount_amount = data.discount_amount;
-                  getResult();
-              },
-              error: function(xhr, textStatus, errorThrown) {
-                promoDetails.text(xhr.responseJSON.error);
-                promoDetails.css('color', 'red');
-                discount_amount = 0;
-                getResult();
-              }
-          });
+        const csrfToken = getCookie('csrftoken');
+        $.ajax({
+          url: '/accounts/promo-codes/',
+          type: 'POST',
+          headers: {
+            'X-CSRFToken': csrfToken
+          },
+          contentType: 'application/json',
+          data: JSON.stringify({ code: discountCode }),
+          success: function(data) {
+            promoDetails.css('visibility', 'visible');
+            promoDetails.text(data.description);
+            promoDetails.css('color', 'green');
+            discount_amount = data.discount_amount;
+            getResult();
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            promoDetails.css('visibility', 'visible');
+            promoDetails.text(xhr.responseJSON.error);
+            promoDetails.css('color', 'red');
+            discount_amount = 0;
+            getResult();
+          }
+        });
           
       } else {
-          promoDetails.text('Please enter a discount code');
-          promoDetails.css('color', 'red');
-          discount_amount = 0;
-          getResult();
+        promoDetails.css('visibility', 'visible');
+        promoDetails.text('Please enter a discount code');
+        promoDetails.css('color', 'red');
+        discount_amount = 0;
+        getResult();
       }
   });
 
