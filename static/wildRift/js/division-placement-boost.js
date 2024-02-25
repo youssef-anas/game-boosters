@@ -4,6 +4,7 @@
 const orderContainer = document.getElementById('order-container');
 const urlParams = new URLSearchParams(window.location.search);
 const extend_order = urlParams.get('extend');
+let discount_amount = 0
 
 // Access the data attribute and convert it to a JavaScript variable
 const orderValue = orderContainer.dataset.order;
@@ -195,6 +196,9 @@ Promise.all([
 
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
+      // Apply promo code 
+      result_with_mark -= result_with_mark * (discount_amount/100 )
+
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
 
       let currentElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (divisionRanks[valuesToSet[3]]).toLowerCase());
@@ -233,6 +237,9 @@ Promise.all([
 
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
+      // Apply promo code 
+      result_with_mark -= result_with_mark * (discount_amount/100 )
+
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
       
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
@@ -419,4 +426,64 @@ Promise.all([
       getResult()
     })
   });
+  
+ 
+  const form = document.querySelector('.discount form');
+
+  form.addEventListener('submit', function(event) {
+      event.preventDefault();
+  
+      const discountInput = document.querySelector('input[name="discount"]');
+      const discountCode = discountInput.value.trim();
+      const promoDetails = $('#promo-details h6');
+      $('input[id="promo_send"]').val(discountCode);
+
+      if (discountCode) {
+          const csrfToken = getCookie('csrftoken');
+          $.ajax({
+              url: '/accounts/promo-codes/',
+              type: 'POST',
+              headers: {
+                  'X-CSRFToken': csrfToken
+              },
+              contentType: 'application/json',
+              data: JSON.stringify({ code: discountCode }),
+              success: function(data) {
+                  promoDetails.text(data.description);
+                  promoDetails.css('color', 'green');
+                  discount_amount = data.discount_amount;
+                  getResult();
+              },
+              error: function(xhr, textStatus, errorThrown) {
+                promoDetails.text(xhr.responseJSON.error);
+                promoDetails.css('color', 'red');
+                discount_amount = 0;
+                getResult();
+              }
+          });
+          
+      } else {
+          promoDetails.text('Please enter a discount code');
+          promoDetails.css('color', 'red');
+          discount_amount = 0;
+          getResult();
+      }
+  });
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          // Check if the cookie name matches the CSRF cookie name
+          if (cookie.startsWith(name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+
 });

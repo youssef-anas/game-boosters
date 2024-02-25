@@ -63,6 +63,12 @@ def index(request):
       "image": "Rocket League.webp",
       "link": "rocketLeague"
     },
+    {
+      "id": 11,
+      "name": "Dota 2",
+      "image": "Dota2.webp",
+      "link": "dota2"
+    },
   ]
 
   return render(request, 'homepage/index.html', context={"games": games})
