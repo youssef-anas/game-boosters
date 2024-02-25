@@ -4,6 +4,7 @@
 const orderContainer = document.getElementById('order-container');
 const urlParams = new URLSearchParams(window.location.search);
 const extend_order = urlParams.get('extend');
+let discount_amount = 0
 
 // Access the data attribute and convert it to a JavaScript variable
 const orderValue = orderContainer.dataset.order;
@@ -32,70 +33,6 @@ if (chooseBoosterValue != null) {
 // Set the value of the input field to the obtained 'choose-booster' value
 document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
-// Extra Charges Part
-// Buttons 
-const buttons = {
-  duoBoosting: document.querySelector('#duoBoostingButton'),
-  selectBooster: document.querySelector('#selectBoosterButton'),
-  turboBoost: document.querySelector('#turboBoostButton'),
-  chooseAgents: document.querySelector('#chooseAgentsButton'),
-  streaming: document.querySelector('#streamingButton'),
-};
-
-// Content
-const contents = {
-  duoBoosting: document.querySelector('.duoBoostingContent'),
-  selectBooster: document.querySelector('.selectBoosterContent'),
-  turboBoost: document.querySelector('.turboBoostContent'),
-  chooseAgents: document.querySelector('.chooseAgentsContent'),
-  streaming: document.querySelector('.streamingContent'),
-};
-
-// Apply
-const Applybuttons = {
-  duoBoosting: document.querySelector('#duoBoostingApplyButton'),
-  selectBooster: document.querySelector('#selectBoosterApplyButton'),
-  turboBoost: document.querySelector('#turboBoostApplyButton'),
-  chooseAgents: document.querySelector('#chooseAgentsApplyButton'),
-  streaming: document.querySelector('#streamingApplyButton'),
-};
-
-// Toggle Function
-function toggleContent(content) {
-  for (const key in contents) {
-    contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
-  }
-}
-
-// Toggle click event
-function setupButtonClickEvent(button, content) {
-  button.addEventListener('click', function () {
-    toggleContent(content);
-  });
-}
-
-// Update Percentege
-function updateTotalPercentage(percentage, add = true, button) {
-  let buttonOldName = buttons[button].innerHTML
-  if (add) {
-    total_Percentage += percentage;
-    $(`.division-boost #${button}`).val(true);
-    $(`.placements-boost #${button}`).val(true);
-    buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
-    Applybuttons[button].innerHTML = 'Cancel'
-    Applybuttons[button].classList.remove('applyButton');
-    Applybuttons[button].classList.add('cancelButton');
-  } else {
-    $(`.division-boost #${button}`).val(false);
-    $(`.placements-boost #${button}`).val(false);
-    total_Percentage -= percentage;
-    buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
-    Applybuttons[button].innerHTML = 'Apply'
-    Applybuttons[button].classList.remove('cancelButton');
-    Applybuttons[button].classList.add('applyButton');
-  }
-}
-
 // Additional Initial Percent
 var total_Percentage = 0;
 
@@ -106,8 +43,9 @@ const radioButtonsCurrent = document.querySelectorAll('input[name="radio-group-c
 const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-desired"]');
 const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
 const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
-const makrs_on_current_rank_checked = document.querySelectorAll('input[name="radio-group-current-mark"]');
-const makrs_on_current_rank = document.querySelectorAll('.current-mark-container');
+const makrs_on_current_rank_selected = document.querySelector('.current-marks-select');
+const makrs_on_current_rank = document.querySelectorAll('.current-marks');
+const server_select_element = document.querySelector('.servers-select');
 
 // Disable Functions
 function setRadioButtonStateWithDisable(radioButtons, values) {
@@ -142,7 +80,7 @@ const initiallyCheckedIndexDesired = Array.from(radioButtonsDesired).findIndex(r
 
 const initiallyCheckedIndexCurrentDivision = Array.from(radioButtonsCurrentDivision).findIndex(radio => radio.checked) + 1;
 const initiallyCheckedIndexDesiredDivision = Array.from(radioButtonsDesiredDivision).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndexMark = Array.from(makrs_on_current_rank_checked).findIndex(radio => radio.checked);
+const initiallyCheckedIndexMark = makrs_on_current_rank_selected.value;
 
 // Read Values From Json File
 let divisionPrices = [0];
@@ -176,7 +114,12 @@ Promise.all([
   var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
   var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
   var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
-  var mark = 0
+  var mark = 0;
+  var selectedServer = server_select_element.value;
+
+  // Look Here:- I Want Get The Current & Desired Element Not Index
+  let currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
+  let desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
 
   // Apply Extra Button
   function setupApplyButtonClickEvent(button, percentage) {

@@ -31,7 +31,6 @@ if (chooseBoosterValue != null) {
   autoSelectBooster.click()
 }
 // Set the value of the input field to the obtained 'choose-booster' value
-console.log(chooseBoosterInt)
 document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
 let total_Percentage = 0;
