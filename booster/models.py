@@ -11,9 +11,9 @@ from mobileLegends.models import MobileLegendsRank
 from WorldOfWarcraft.models import WoWRank
 from overwatch2.models import Overwatch2Rank
 
-class Rating(models.Model):
+class OrderRating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
-    booster = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_received')
+    booster = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_received', limit_choices_to={'is_booster': True})
     rate = models.IntegerField(default=0)
     text = models.TextField(null=True, max_length=500)
     game = models.IntegerField(default=1)
@@ -33,7 +33,7 @@ class Rating(models.Model):
     
 
 class Booster(models.Model):
-    booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True)
+    booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
     image = models.ImageField(null=True,upload_to='media/booster/', blank= True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)

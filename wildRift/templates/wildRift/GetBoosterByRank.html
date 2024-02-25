@@ -271,7 +271,7 @@
                         </div>
 
                         <div class="pay-form">
-                            <form action="http://127.0.0.1:8000/wildRift/paypal/" method="post" id="purchaseForm">
+                            <form action="{% url 'wildRift-paypal-redirect' %}" method="post" id="purchaseForm">
                                 <input type="hidden" name="game_id" value="0">
                                 <input type="hidden" name="current_rank" value="1">
                                 <input type="hidden" name="current_division" value="1">
