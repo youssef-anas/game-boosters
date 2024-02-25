@@ -1,0 +1,87 @@
+from django.shortcuts import render, redirect
+from django.urls import reverse, reverse_lazy
+from django.contrib import messages
+from paypal.standard.forms import PayPalPaymentsForm
+from django.http import JsonResponse
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from overwatch2.models import Overwatch2Rank, Overwatch2Tier, Overwatch2Mark, Overwatch2DivisionOrder
+import json
+from overwatch2.controller.serializers import RankSerializer
+from overwatch2.controller.order_information import *
+from booster.models import Rating
+
+@csrf_exempt
+def overwatch2GetBoosterByRank(request):
+    extend_order = request.GET.get('extend')
+    try:
+        order = Overwatch2DivisionOrder.objects.get(order_id=extend_order)
+    except:
+        order = None
+    ranks = Overwatch2Rank.objects.all().order_by('id')
+    divisions  = Overwatch2Tier.objects.all().order_by('id')
+    marks = Overwatch2Mark.objects.all().order_by('id')
+
+    divisions_data = [
+        [division.from_IV_to_III] if division.rank.rank_name == 'master' else
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+        for division in divisions
+    ]
+
+    marks_data = [
+        [0,mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
+        for mark in marks
+    ]
+
+    with open('static/overwatch2/data/divisions_data.json', 'w') as json_file:
+        json.dump(divisions_data, json_file)
+
+    with open('static/overwatch2/data/marks_data.json', 'w') as json_file:
+        json.dump(marks_data, json_file)
+
+    divisions_list = list(divisions.values())
+
+    # Feedbacks
+    feedbaccks = Rating.objects.filter(order__game_name = "overwatch2")
+    context = {
+        "ranks": ranks,
+        "divisions": divisions_list,
+        "order": order,
+        "feedbacks": feedbaccks,
+    }
+    return render(request,'overwatch2/GetBoosterByRank.html', context)
+
+def view_that_asks_for_money(request):
+    if request.method == 'POST':
+        if request.user.is_authenticated :
+            if request.user.is_booster:
+                messages.error(request, "You are a booster!, You can't make order.")
+                return redirect(reverse_lazy('overwatch2'))
+            
+        try:
+            serializer = RankSerializer(data=request.POST) 
+            print('request POST', request.POST)
+            if serializer.is_valid():
+                extend_order_id = serializer.validated_data['extend_order']
+                order_info = get_order_result_by_rank(serializer.validated_data,extend_order_id)
+                request.session['invoice'] = order_info['invoice']
+
+                paypal_dict = {
+                    "business": settings.PAYPAL_EMAIL,
+                    "amount": order_info['price'],
+                    "item_name": order_info['name'],
+                    "invoice": order_info['invoice'],
+                    "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+                    "return": request.build_absolute_uri(f"/accounts/register/"),
+                    "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
+                }
+                # Create the instance.
+                form = PayPalPaymentsForm(initial=paypal_dict)
+                context = {"form": form}
+                return render(request, "accounts/paypal.html", context,status=200)
+            messages.error(request, serializer.errors)
+            return redirect(reverse_lazy('overwatch2'))
+        except Exception as e:
+            return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
+
+    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

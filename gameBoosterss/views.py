@@ -65,9 +65,21 @@ def index(request):
     },
     {
       "id": 11,
-      "name": "Dota 2",
-      "image": "Dota2.webp",
-      "link": "dota2"
+      "name": "Honer Of King",
+      "image": " ",
+      "link": "hok"
+    },
+    {
+      "id": 12,
+      "name": "Overwatch 2",
+      "image": " ",
+      "link": "overwatch2"
+    },
+    {
+      "id": 13,
+      "name": "CS GO 2",
+      "image": " ",
+      "link": "csgo2"
     },
   ]
 

@@ -67,6 +67,8 @@ INSTALLED_APPS = [
     'mobileLegends.apps.MobilelegendsConfig',
     'honorOfKings.apps.HonorofkingsConfig',
     'dota2.apps.Dota2Config',
+    'overwatch2.apps.Overwatch2Config',
+    'csgo2.apps.Csgo2Config',
     
     # Others
     'paypal.standard.ipn',

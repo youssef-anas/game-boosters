@@ -23,6 +23,7 @@ from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import *
 from WorldOfWarcraft.models import WoWArenaBoostOrder
+from overwatch2.models import Overwatch2DivisionOrder
 from django.http import JsonResponse
 from accounts.controller.order_creator import create_order, refresh_order_page
 User = get_user_model()
@@ -41,6 +42,13 @@ from django.core.mail import send_mail
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
+
+#api
+from accounts.models import PromoCode
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from accounts.controller.serializers import PromoCodeSerializer
 
 @csrf_exempt
 def send_activation_email(user, request):
@@ -323,6 +331,9 @@ def customer_side(request):
     elif 'WOW' in order.name and order.game_type == 'A': 
         order = WoWArenaBoostOrder.objects.get(order__id=id)
         boosters = Booster.objects.filter(can_choose_me=True, is_wow_player=True)
+    elif 'OVW2' in order.name and order.game_type == 'D': 
+        order = Overwatch2DivisionOrder.objects.get(order__id=id)
+        boosters = Booster.objects.filter(can_choose_me=True, is_overwatch2_player=True )    
         
     print(order)
     if order.order.is_done:
@@ -474,12 +485,6 @@ def test(request):
     # return render(request, 'accounts/order_list.html')
     return HttpResponse('Done')
 
-
-from accounts.models import PromoCode
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from accounts.controller.serializers import PromoCodeSerializer
 
 class PromoCodeAPIView(APIView):
     def post(self, request):

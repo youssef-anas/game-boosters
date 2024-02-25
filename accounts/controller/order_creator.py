@@ -7,6 +7,7 @@ from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from WorldOfWarcraft.models import WoWArenaBoostOrder
+from overwatch2.models import Overwatch2DivisionOrder
 from accounts.models import BaseUser, BaseOrder
 from django.shortcuts import get_object_or_404
 from channels.layers import get_channel_layer
@@ -53,7 +54,6 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
     # Volarent
     elif game_id == 2:
         # Extra Fields +
-        print('Choose Agents: ', invoice_values[16])
         choose_agents = bool(int(invoice_values[16]))
         if type == 'D':
             Game = ValorantDivisionOrder
@@ -113,10 +113,24 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         elif type == 'S':
             Game = RocketLeagueSeasonalOrder
         elif type == 'T':
-            Game = RocketLeagueTournamentOrder
-    # Other Games
-    elif game_id == 10:
-        Game = 'anoter model' # for future work
+            Game = RocketLeagueTournamentOrder   
+
+
+
+    # TODO sara kamal game id 10 dota2        
+            
+    # TODO sarah mohamed game id 11 Honer Of King        
+
+
+    # overwatch2
+    elif game_id == 12 :
+        if type == 'D':
+            Game = Overwatch2DivisionOrder
+
+
+    # TODO cs go2 game here and last game        
+    elif game_id == 0:
+        Game = 'anoter model' # for future work #
     else:
         pass
 
@@ -153,7 +167,6 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
 
     except BaseOrder.DoesNotExist:
         extend_order = None
-    print("Check Condition: ",status == 'New' or status == 'Continue')
     if status == 'New' or status == 'Continue':
         print('Booster: ', booster)
         baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server)
@@ -205,6 +218,16 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # Rocket League - Tournament
         elif game_id == 9 and type == 'T':
             order = Game.objects.create(order=baseOrder,current_league_id=current_league)
+        # TODO sara kamal Doat2          ########
+        if game_id == 10:
+            pass
+        #TODO sarah mohamed Honer Of King #########
+        if game_id == 11:
+            pass
+        # Overwatch Division 
+        if game_id == 12:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank_id=current_rank, reached_division=current_division,reached_marks=current_marks)
+          
 
 
     elif status == 'Extend':
@@ -260,6 +283,16 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         # Rocket League - Tournament
         elif game_id == 9 and type == 'T':
             order = Game.objects.create(order=baseOrder,current_league_id=current_league)
+        # TODO sara kamal Doat2      TODO       ########
+        if game_id == 10:
+            pass
+        #TODO sarah mohamed Honer Of King      TODO      #########
+        if game_id == 11:
+            pass
+        # Overwatch Division 
+        if game_id == 12:
+            order = Game.objects.create(order=baseOrder,current_rank_id=current_rank,current_division=current_division, current_marks=current_marks,desired_rank_id=desired_rank, desired_division=desired_division,reached_rank=extend_order_game_reached_rank, reached_division=extend_order_game_reached_division, reached_marks=extend_order_game_reached_marks)
+  
 
     order.save_with_processing()
     baseOrder.customer_wallet()
