@@ -93,7 +93,6 @@ select::-ms-expand {
   top: 30%;
   text-align: center;
   color: white;
-  z-index: 110;
 }
 .game-landing .heading h1 {
   font-weight: bolder;
@@ -101,9 +100,19 @@ select::-ms-expand {
   font-family: var(--heading-font);
   letter-spacing: 3px;
 }
+@media (max-width: 1199px) {
+  .game-landing .heading h1 {
+    font-size: 32px !important;
+  }
+}
 .game-landing .heading p {
   font-size: 1.5rem;
   font-weight: 300;
+}
+@media (max-width: 1199px) {
+  .game-landing .heading p {
+    font-size: 16px;
+  }
 }
 /* End Landing */
 /* Start Create Order */
@@ -121,15 +130,43 @@ select::-ms-expand {
   color: var(--secondary-color);
 }
 .choices-ranks #current, .choices-ranks #desired {
-  border-radius: calc(var(--main-radius) * 2);;
+  border-radius: calc(var(--main-radius) * 2);
   padding: 30px;
   background-color: #433733; /* Fallback solid background color */
   margin-bottom: 2rem;
+}
+@media (max-width: 1199px) {
+  .choices-ranks #current .image img, .choices-ranks #desired .image img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .choices-ranks #current .text h5, .choices-ranks #desired .text h5 {
+    font-size: 16px;
+  }
+  .choices-ranks #current .text p, .choices-ranks #desired .text p {
+    font-size: 8px;
+  }
 }
 .choices-ranks label {
   color: white;
   background-color: var(--alternative-color);
   border-radius: var(--main-radius);
+}
+@media (max-width: 1199px) { 
+  .choices-ranks label {
+    width: 50px !important;
+    height: 50px !important;
+    margin-right: 30px !important;
+    margin-bottom: 16px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (max-width: 340px) { 
+  .choices-ranks label {
+    margin-right: 20px !important;
+  }
 }
 .choices-ranks input[type="radio"]:checked+label {
   background-color: white;
@@ -143,15 +180,18 @@ select::-ms-expand {
   border-top-left-radius: calc(var(--main-radius) * 2);
   border-top-right-radius: calc(var(--main-radius) * 2);
 }
+@media (max-width: 1199px) { 
+  .complate-order .checkout {
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+}
 .complate-order .checkout p:first-child {
   font-size: 1.5rem;
 }
 .complate-order .checkout .from-to {
   border-radius: var(--main-radius);
   background-color: var(--background-color);
-}
-.complate-order .time {
-  background-color: #332A27;
 }
 .complate-order .payment {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
@@ -163,11 +203,14 @@ select::-ms-expand {
   font-weight: 700;
   font-size: 1.5rem;
 }
+.complate-order .time {
+  background-color: #332A27;
+}
 .complate-order .payment .pay-form {
   margin-bottom: 1.1rem;
 }
 .complate-order .payment .pay-form .purchase button {
-  width: 275px;
+  width: 256px;
   padding: 10px;
   border-radius: 48px;
   text-align: center;
@@ -185,6 +228,17 @@ select::-ms-expand {
 .complate-order .payment .pay-form .purchase .cryptomus-btn {
   color: white;
   background: #DE4949;
+}
+@media (max-width: 1199px) {
+  .complate-order .payment .pay-form .purchase button {
+    width: 167px !important;
+    font-size: 8px;
+    padding: 7px;
+  }
+  .complate-order .payment .pay-form .purchase button img {
+    width: 75px;
+    height: 30px;
+  }
 }
 .complate-order .extra-charges {
   background-color: var(--main-color);

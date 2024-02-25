@@ -1,15 +1,37 @@
 .custom-btn {
-  display: inline-block;
-  padding: 10px 0px;
+  padding: 7px 20px;
   border-radius: 32px;
-  font-size: 20px;
   text-align: center;
-  color: white;
-  background-color: var(--secondary-color);
   font-family: var(--heading-font) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  border: 5px solid var(--secondary-color);
+}
+
+/* Medium */
+@media (max-width: 1199px) {
+  .custom-btn {
+    width: 125px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 992px) {
+  .custom-btn {
+    width: 100px;
+    font-size: 10px;
+  }
 }
 .custom-btn:hover {
   color: white;
+}
+.custom-btn.filled {
+  color: white;
+  background-color: var(--secondary-color);
+}
+.custom-btn.outline {
+  color: var(--secondary-color);
 }
 
 /* .custom-input:not([type='radio']) {
