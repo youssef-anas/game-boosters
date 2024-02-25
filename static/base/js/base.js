@@ -1,9 +1,7 @@
-// $(document).ready(function() {
-//   $(window).scroll(function() {
-//     if ($(document).scrollTop() > 50) {
-//       $('.navbar').addClass('scrolled');
-//     } else {
-//       $('.navbar').removeClass('scrolled');
-//     }
-//   });
-// });
+$(document).ready(function() {
+  $toggleMenu = $('.main-nav .toggle-menu');
+  $links = $('.main-nav .links');
+  $toggleMenu.click(function() {
+    $links.toggleClass('shown')
+  })
+});

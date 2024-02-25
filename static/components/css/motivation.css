@@ -9,6 +9,19 @@
   display: flex;
   align-items: center;
 }
+@media (max-width: 1199px) {
+  .game-container .motivation {
+    background-position: 300px;
+  }
+}
+@media (max-width: 767px) {
+  .game-container .motivation {
+    height: 696px;
+    background-position-y: -75px;
+    background-position-x: -340px;
+    align-items: flex-end;
+  }
+}
 .game-container .motivation::after {
   content: "";
   width: 100%;
@@ -16,8 +29,18 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: calc(var(--main-radius) * 2);;
+  border-radius: calc(var(--main-radius) * 2);
   background: linear-gradient(90deg, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
+}
+@media (max-width: 1199px) {
+  .game-container .motivation::after {
+    background: linear-gradient(90deg, #433733 55.03%, rgba(106, 73, 36, 0.5) 75.82%);
+  }
+}
+@media (max-width: 767px) {
+  .game-container .motivation::after {
+    background: linear-gradient(to top, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
+  }
 }
 .game-container .motivation .text {
   position: relative;
@@ -30,5 +53,18 @@
 }
 .game-container .motivation .text a {
   font-size: 16px;
+}
+@media (max-width: 767px) {
+  .game-container .motivation .text h1 {
+    line-height: 1.5;
+    font-size: 24px;
+  }
+  .game-container .motivation .text h1 br {
+    margin-top: 32px;
+  }
+  .game-container .motivation .text a {
+    display: block;
+    width: 100% !important;
+  }
 }
 /* End Motivation */

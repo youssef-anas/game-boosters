@@ -4,11 +4,27 @@
   font-size: 48px;
   font-weight: 600;
 }
+@media (max-width: 1199px) {
+  .feedbacks h1 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 767px) {
+  .feedbacks h1 {
+    font-size: 21px;
+    line-height: 2;
+  }
+}
 .feedbacks .feedback {
   background-color: var(--main-color);
   border-radius: calc(var(--main-radius) * 2);
-  height: 240px;
+  height: 260px;
   overflow: hidden;
+}
+@media (max-width: 992px) {
+  .feedbacks .feedback {
+    height: 240px;
+  }
 }
 .feedback .customer-image img {
   width: 56px;
@@ -35,7 +51,6 @@
   height: initial;
   font-size: 1.5rem;
   color: white;
-  display: none;
   top: initial;
   margin-top: initial;
   bottom: 0;
@@ -61,14 +76,3 @@
 .swiper-pagination-bullet-active {
   background: #D9D9D9;
 }
-
-/*=============== BREAKPOINTS ===============*/
-
-/* For medium devices */
-@media screen and (min-width: 768px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: block;
-  }
-}
-/* End Feedback */
