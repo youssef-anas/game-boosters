@@ -9,7 +9,7 @@ from overwatch2.models import Overwatch2Rank, Overwatch2Tier, Overwatch2Mark, Ov
 import json
 from overwatch2.controller.serializers import RankSerializer
 from overwatch2.controller.order_information import *
-from booster.models import Rating
+from booster.models import OrderRating
 
 @csrf_exempt
 def overwatch2GetBoosterByRank(request):
@@ -42,7 +42,7 @@ def overwatch2GetBoosterByRank(request):
     divisions_list = list(divisions.values())
 
     # Feedbacks
-    feedbaccks = Rating.objects.filter(order__game_name = "overwatch2")
+    feedbaccks = OrderRating.objects.filter(order__game_name = "overwatch2")
     context = {
         "ranks": ranks,
         "divisions": divisions_list,

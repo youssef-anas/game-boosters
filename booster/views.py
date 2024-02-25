@@ -3,7 +3,7 @@ from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEdi
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from booster.models import Rating
+from booster.models import OrderRating
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -103,7 +103,7 @@ def calm_order(request, game_name, id):
 
 def profile_booster_view(request, booster_id):
     booster = get_object_or_404(User, id=booster_id,is_booster = True)
-    ratings = Rating.objects.filter(booster=booster_id).order_by('-created_at')
+    ratings = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
     total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
     rate_count = ratings.count()
     customer_reviews = total_ratings / rate_count if rate_count > 0 else 0
@@ -129,7 +129,7 @@ def get_rate(request, order_id):
         if request.method == 'POST':
             serializer = RatingSerializer(data=request.POST)
             if serializer.is_valid():
-                existing_rating = Rating.objects.filter(order=order_obj).first()
+                existing_rating = OrderRating.objects.filter(order=order_obj).first()
                 if existing_rating:
                     return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
                 serializer.save(order=order_obj)

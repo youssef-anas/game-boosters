@@ -11,7 +11,7 @@ import json
 from wildRift.controller.serializers import RankSerializer
 from django.http import HttpResponse
 from wildRift.controller.order_information import *
-from booster.models import Rating
+from booster.models import OrderRating
 
 @csrf_exempt
 def wildRiftGetBoosterByRank(request):
@@ -44,7 +44,7 @@ def wildRiftGetBoosterByRank(request):
     divisions_list = list(divisions.values())
 
     # Feedbacks
-    feedbaccks = Rating.objects.filter(order__game_name = "wildRift")
+    feedbaccks = OrderRating.objects.filter(order__game_name = "wildRift")
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
