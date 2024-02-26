@@ -31,7 +31,6 @@ if (chooseBoosterValue != null) {
   autoSelectBooster.click()
 }
 // Set the value of the input field to the obtained 'choose-booster' value
-console.log(chooseBoosterInt)
 document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
 let total_Percentage = 0;
@@ -209,6 +208,9 @@ Promise.all([
 
       $('.current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark} Marks`);
       $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
+
+      $('.current').removeClass().addClass(`current ${current_rank_name}`)
+      $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
       $('.total-price #price').text(`$${result_with_mark}`)
 

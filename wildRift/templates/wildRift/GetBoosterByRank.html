@@ -6,6 +6,7 @@
 <link href="{% static 'swiper/css/swiper-bundle.min.css'%}" rel="stylesheet">
 <!-- OUR STYLE -->
 <link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
+<link href="{% static 'games/css/division.css'%}" rel="stylesheet" />
 <!-- WILD RIFT RANKS COLORS -->
 <link href="{% static 'wildRift/css/ranks-colors.css'%}" rel="stylesheet" />
 <!-- STYLE FEEDBACK -->
@@ -31,12 +32,13 @@
             <div class="choise mb-3">
                 <input type="radio" id="division-boost" name="radio-group-type" checked>
                 <label for="division-boost" class="radio-btn" style="width: 147px;">Normal Rank</label>
-                <input type="radio" id="placements-boost" name="radio-group-type">
-                <label for="placements-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 173px;">Legendary Rank</label>
+                <input type="radio" id="legendary-boost" name="radio-group-type">
+                <label for="legendary-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 173px;">Legendary Rank</label>
             </div>
 
             <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5">
-                <div class="choices-ranks">
+
+                <div class="choices-ranks division-boost">
                     <!-- Current -->
                     <div class="current" id="current">
                         <div class="d-flex justift-content-center align-item-center">

@@ -2,6 +2,9 @@
 .game-landing.wildrift {
   background-image: url('./../images/wildrift_bg.jpg');
 }
+.game-landing.valorant {
+  background-image: url('./../images/valorant_bg.jpg');
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */
@@ -128,49 +131,6 @@ select::-ms-expand {
 .choise input[type="radio"]:checked+label {
   background-color: #5B2418;
   color: var(--secondary-color);
-}
-.choices-ranks #current, .choices-ranks #desired {
-  border-radius: calc(var(--main-radius) * 2);
-  padding: 30px;
-  background-color: #433733; /* Fallback solid background color */
-  margin-bottom: 2rem;
-}
-@media (max-width: 1199px) {
-  .choices-ranks #current .image img, .choices-ranks #desired .image img {
-    width: 40px !important;
-    height: 40px !important;
-  }
-  .choices-ranks #current .text h5, .choices-ranks #desired .text h5 {
-    font-size: 16px;
-  }
-  .choices-ranks #current .text p, .choices-ranks #desired .text p {
-    font-size: 8px;
-  }
-}
-.choices-ranks label {
-  color: white;
-  background-color: var(--alternative-color);
-  border-radius: var(--main-radius);
-}
-@media (max-width: 1199px) { 
-  .choices-ranks label {
-    width: 50px !important;
-    height: 50px !important;
-    margin-right: 30px !important;
-    margin-bottom: 16px !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-@media (max-width: 340px) { 
-  .choices-ranks label {
-    margin-right: 20px !important;
-  }
-}
-.choices-ranks input[type="radio"]:checked+label {
-  background-color: white;
-  color: black;
 }
 /* End Create Order */
 
@@ -304,8 +264,8 @@ select::-ms-expand {
   content: "";
   height: 16px;
   width: 16px;
-  left: 4px;
-  bottom: 4px;
+  left: 4.5px;
+  bottom: 3.6px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
