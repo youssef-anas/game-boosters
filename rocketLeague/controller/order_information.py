@@ -82,7 +82,7 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-D-{current_rank}-{current_division}-{0}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{ranked_type}-{timezone.now()}'
+  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-?-{timezone.now()}-?-?-{ranked_type}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -155,7 +155,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -226,7 +226,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -296,7 +296,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-T-{current_league}-{0}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

@@ -48,6 +48,9 @@ class Booster(models.Model):
     is_mobleg_player = models.BooleanField(default=False)
     is_wow_player = models.BooleanField(default=False)
     is_overwatch2_player = models.BooleanField(default=False)
+    is_dota2_player = models.BooleanField(default=False)
+    is_hok_player = models.BooleanField(default=False)
+    is_csgo2_player = models.BooleanField(default=False)
     achived_rank_wr = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank')
     achived_rank_valo = models.ForeignKey(ValorantRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank')
     achived_rank_pubg = models.ForeignKey(PubgRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank')
@@ -58,7 +61,12 @@ class Booster(models.Model):
     achived_rank_modleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
     achived_rank_wow = models.ForeignKey(WoWRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank')
     achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
-
+    
+    
+    # achived_rank_dota2= models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')
+    # achived_rank_hok = models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='hok_rank')
+    # achived_rank_csgo2 = models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
+    
     def __str__(self):
         return f'{self.booster.username}'
     

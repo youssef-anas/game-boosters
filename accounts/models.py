@@ -6,6 +6,8 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 # from wildRift.models import WildRiftRank
 import secrets
 
@@ -108,13 +110,13 @@ class BaseOrder(models.Model):
     money_owed = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='New', null=True, blank=True)
-    customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.CASCADE, default=None, related_name='customer_orders')
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+    customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.DO_NOTHING, default=None, related_name='customer_orders', limit_choices_to= {'is_customer': True})
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.DO_NOTHING, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
     duo_boosting = models.BooleanField(default=False, blank=True)
     select_booster = models.BooleanField(default=False, blank=True)
     turbo_boost = models.BooleanField(default=False, blank=True)
     streaming = models.BooleanField(default=False, blank=True)
-    finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True)
+    finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True) # TODO not wildRift folder 
     is_done = models.BooleanField(default=False, blank=True)
     is_drop = models.BooleanField(default=False, blank=True)
     is_extended = models.BooleanField(default=False, blank=True)
@@ -126,6 +128,11 @@ class BaseOrder(models.Model):
     payer_id = models.CharField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # this wiall save relation of order (:
+    content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null= True)
+    object_id = models.PositiveIntegerField(null =True)
+    related_order = GenericForeignKey('content_type', 'object_id')
 
     def update_actual_price(self):
         if self.status == 'Continue':
@@ -259,9 +266,9 @@ class Room(models.Model):
     slug = models.SlugField(max_length=100, unique=True)
     created_on = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='customer_room', limit_choices_to={'is_booster': False})
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='booster_room', limit_choices_to={'is_booster': True} ) 
-    order = models.ForeignKey(BaseOrder,null=True , blank=True, on_delete=models.CASCADE, default=None, related_name='rooms') 
+    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='customer_room', limit_choices_to={'is_booster': False})
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='booster_room', limit_choices_to={'is_booster': True} ) 
+    order = models.ForeignKey(BaseOrder,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='rooms') 
 
     def __str__(self):
         return "Room : "+ self.name + " | Id : " + self.slug

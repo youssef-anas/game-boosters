@@ -25,7 +25,8 @@ from mobileLegends.models import *
 from WorldOfWarcraft.models import WoWArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder
 from django.http import JsonResponse
-from accounts.controller.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order
+from accounts.controller.utils import refresh_order_page
 User = get_user_model()
 from booster.models import Booster
 from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
@@ -35,6 +36,7 @@ import requests
 import secrets
 from pubg.models import PubgDivisionOrder
 from channels.db import database_sync_to_async
+from accounts.controller.utils import get_boosters
 from django_q.tasks import async_task
 from .controller.tasks import update_database_task
 import time
@@ -252,11 +254,14 @@ def success_tip(request,token):
         tip_data = Tip_data.objects.create(invoice=invoice, payer_id=payer_id)
         booster_instance = BaseUser.objects.get(username=booster)
         Transaction.objects.create(user=booster_instance, amount=tip, order_id=order_id, notice=notice, tip=tip_data, status='Tip', type='DEPOSIT')
+        # TODO {ask ahmed about add tip money on user wallet}
         try: 
             booster_wallet = booster_instance.wallet
             booster_wallet.money += tip
             booster_wallet.save()
         except: 
+
+            # TODO {fix} this now work here because alredy user get wallet
             Wallet.objects.create (
                 user=booster_instance,
                 money=tip
@@ -273,75 +278,80 @@ def cancel_tip(request, token):
 # TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
-    order = BaseOrder.objects.filter(customer=customer).last()
-    id = order.id
-    admins_chat_slug = f'roomFor-{request.user.username}-admins-{order.name}'
+    base_order = BaseOrder.objects.filter(customer=customer).last()
+    id = base_order.id
+    admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
 
-    if 'WR' in order.name:
-        order = WildRiftDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_wf_player=True)
-    elif 'Valo' in order.name and order.game_type == 'D':
-        order = ValorantDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
-    elif 'Valo' in order.name and order.game_type == 'P':
-        order = ValorantPlacementOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
-    elif 'Pubg' in order.name:
-        order = PubgDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
-    elif 'Pubg' in order.name:
-        order = PubgDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
-    elif 'LOL' in order.name and order.game_type == 'D':
-        order = LeagueOfLegendsDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
-    elif 'LOL' in order.name and order.game_type == 'P':
-        order = LeagueOfLegendsPlacementOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
-    elif 'TFT' in order.name and order.game_type == 'D':
-        order = TFTDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
-    elif 'TFT' in order.name and order.game_type == 'P':
-        order = TFTPlacementOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
-    elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
-        order = HearthstoneDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
-    elif 'RL' in order.name and order.game_type == 'D':
-        order = RocketLeagueRankedOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    elif 'RL' in order.name and order.game_type == 'P':
-        order = RocketLeaguePlacementOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    elif 'RL' in order.name and order.game_type == 'S':
-        order = RocketLeagueSeasonalOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    elif 'RL' in order.name and order.game_type == 'T':
-        order = RocketLeagueTournamentOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    elif 'MOBLEG' in order.name and order.game_type == 'D':
-        order = MobileLegendsDivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
-    elif 'MOBLEG' in order.name and order.game_type == 'P': 
-        order = MobileLegendsPlacementOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
-    elif 'WOW' in order.name and order.game_type == 'A': 
-        order = WoWArenaBoostOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_wow_player=True)
-    elif 'OVW2' in order.name and order.game_type == 'D': 
-        order = Overwatch2DivisionOrder.objects.get(order__id=id)
-        boosters = Booster.objects.filter(can_choose_me=True, is_overwatch2_player=True )    
-        
-    print(order)
-    if order.order.is_done:
-        return redirect(reverse_lazy('rate.page', kwargs={'order_id': order.order.id}))
+
+
+
+    # if 'WR' in order.name:
+    #     order = WildRiftDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_wf_player=True)
+    # elif 'Valo' in order.name and order.game_type == 'D':
+    #     order = ValorantDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
+    # elif 'Valo' in order.name and order.game_type == 'P':
+    #     order = ValorantPlacementOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
+    # elif 'Pubg' in order.name:
+    #     order = PubgDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
+    # elif 'Pubg' in order.name:
+    #     order = PubgDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
+    # elif 'LOL' in order.name and order.game_type == 'D':
+    #     order = LeagueOfLegendsDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
+    # elif 'LOL' in order.name and order.game_type == 'P':
+    #     order = LeagueOfLegendsPlacementOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
+    # elif 'TFT' in order.name and order.game_type == 'D':
+    #     order = TFTDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
+    # elif 'TFT' in order.name and order.game_type == 'P':
+    #     order = TFTPlacementOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
+    # elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
+    #     order = HearthstoneDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
+    # elif 'RL' in order.name and order.game_type == 'D':
+    #     order = RocketLeagueRankedOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    # elif 'RL' in order.name and order.game_type == 'P':
+    #     order = RocketLeaguePlacementOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    # elif 'RL' in order.name and order.game_type == 'S':
+    #     order = RocketLeagueSeasonalOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    # elif 'RL' in order.name and order.game_type == 'T':
+    #     order = RocketLeagueTournamentOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
+    # elif 'MOBLEG' in order.name and order.game_type == 'D':
+    #     order = MobileLegendsDivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+    # elif 'MOBLEG' in order.name and order.game_type == 'P': 
+    #     order = MobileLegendsPlacementOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
+    # elif 'WOW' in order.name and order.game_type == 'A': 
+    #     order = WoWArenaBoostOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_wow_player=True)
+    # elif 'OVW2' in order.name and order.game_type == 'D': 
+    #     order = Overwatch2DivisionOrder.objects.get(order__id=id)
+    #     boosters = Booster.objects.filter(can_choose_me=True, is_overwatch2_player=True )
+
+    game_order = base_order.related_order
+    boosters = get_boosters(base_order.game_id)    
+    
+    if game_order.order.is_done:
+        return redirect(reverse_lazy('rate.page', kwargs={'order_id': game_order.order.id}))
     # Chat with booster
     slug = request.GET.get('booster_slug') or None
     if not slug:
-        specific_room = Room.get_specific_room(request.user, order.order.id)
+        specific_room = Room.get_specific_room(request.user, game_order.order.id)
         slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)
@@ -352,7 +362,7 @@ def customer_side(request):
             'messages':messages,
             'room':room,
             'boosters':boosters,
-            'order':order,
+            'order':game_order,
             'admins_room':admins_room,
             'admins_room_name':admins_room,
             'admins_messages':admins_messages,
@@ -365,7 +375,7 @@ def customer_side(request):
             'messages':None,
             'room':None,
             'boosters':boosters,
-            'order':order,
+            'order':game_order,
             'admins_room':admins_room,
             'admins_room_name':admins_room,
             'admins_messages':admins_messages,

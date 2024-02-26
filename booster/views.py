@@ -29,7 +29,8 @@ import json
 from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
 from django.http import HttpResponseBadRequest
 from itertools import chain
-from accounts.controller.order_creator import create_order, refresh_order_page
+from accounts.controller.order_creator import create_order
+from accounts.controller.utils import refresh_order_page
 
 def register_booster_view(request):
     form = Registeration_Booster()
