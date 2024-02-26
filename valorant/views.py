@@ -10,7 +10,7 @@ from valorant.models import *
 from valorant.controller.serializers import DivisionSerializer, PlacementSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from valorant.controller.order_information import *
-from booster.models import Rating
+from booster.models import OrderRating
 
 # Create your views here.
 @csrf_exempt
@@ -52,7 +52,7 @@ def valorantGetBoosterByRank(request):
   divisions_list = list(divisions.values())
 
   # Feedbacks
-  feedbaccks = Rating.objects.filter(order__game_name = "valorant")
+  feedbaccks = OrderRating.objects.filter(order__game_name = "valorant")
   context = {
     "ranks": ranks,
     "divisions": divisions_list,

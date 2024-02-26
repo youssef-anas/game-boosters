@@ -209,6 +209,9 @@ Promise.all([
       $('.current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark} Marks`);
       $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
 
+      $('.current').removeClass().addClass(`current ${current_rank_name}`)
+      $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
+
       $('.total-price #price').text(`$${result_with_mark}`)
 
       // From Value

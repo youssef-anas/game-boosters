@@ -11,13 +11,17 @@ class DivisionSerializer(serializers.Serializer):
     select_booster = serializers.BooleanField()
     turbo_boost = serializers.BooleanField()
     streaming = serializers.BooleanField()
-    choose_agents = serializers.BooleanField()
+    booster_agents = serializers.BooleanField()
+
+    server = serializers.CharField(max_length=300)
 
     price = serializers.FloatField(min_value=10)
 
     choose_booster = serializers.IntegerField()
 
     extend_order = serializers.IntegerField()
+
+    promo_code = serializers.CharField()
 
 
 class PlacementSerializer(serializers.Serializer):

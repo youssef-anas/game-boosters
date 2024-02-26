@@ -59,7 +59,7 @@ def view_that_asks_for_money(request):
         if request.user.is_authenticated :
             if request.user.is_booster:
                 messages.error(request, "You are a booster!, You can't make order.")
-                return redirect(reverse_lazy('wildrift'))
+                return redirect(reverse_lazy('wildRift'))
         
         print('request POST:  ', request.POST)
         try:
@@ -86,7 +86,7 @@ def view_that_asks_for_money(request):
                 return render(request, "accounts/paypal.html", context,status=200)
             # return JsonResponse({'error': serializer.errors}, status=400)
             messages.error(request, 'Ensure this value is greater than or equal to 10')
-            return redirect(reverse_lazy('wildrift'))
+            return redirect(reverse_lazy('wildRift'))
         except Exception as e:
             return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

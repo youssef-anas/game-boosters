@@ -4,11 +4,11 @@
   background-color: #433733; /* Fallback solid background color */
   margin-bottom: 2rem;
 }
-.choices-ranks #current .image img, .choices-ranks #desired .image img {
-  width: 40px !important;
-  height: 40px !important;
-}
 @media (max-width: 1199px) {
+  .choices-ranks #current .image img, .choices-ranks #desired .image img {
+    width: 40px !important;
+    height: 40px !important;
+  }
   .choices-ranks #current .text h5, .choices-ranks #desired .text h5 {
     font-size: 16px;
   }
