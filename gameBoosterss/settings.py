@@ -199,7 +199,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','.vercel.app']
+
 
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
 PAYPAL_TEST = True

@@ -172,7 +172,6 @@ def choose_booster(request):
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
             booster = get_object_or_404(BaseUser, id=chosen_booster_id)
-            print(f'$$$$$$$$$$$$$$$$${booster}')
             order.booster = booster
             order.save()
             create_chat_with_booster(request.user,booster,order_id)
@@ -284,65 +283,6 @@ def customer_side(request):
     # Chat with admins
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
-
-
-
-
-    # if 'WR' in order.name:
-    #     order = WildRiftDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_wf_player=True)
-    # elif 'Valo' in order.name and order.game_type == 'D':
-    #     order = ValorantDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
-    # elif 'Valo' in order.name and order.game_type == 'P':
-    #     order = ValorantPlacementOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_valo_player=True)
-    # elif 'Pubg' in order.name:
-    #     order = PubgDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
-    # elif 'Pubg' in order.name:
-    #     order = PubgDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_pubg_player=True)
-    # elif 'LOL' in order.name and order.game_type == 'D':
-    #     order = LeagueOfLegendsDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
-    # elif 'LOL' in order.name and order.game_type == 'P':
-    #     order = LeagueOfLegendsPlacementOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_lol_player=True)
-    # elif 'TFT' in order.name and order.game_type == 'D':
-    #     order = TFTDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
-    # elif 'TFT' in order.name and order.game_type == 'P':
-    #     order = TFTPlacementOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_tft_player=True)
-    # elif 'HEARTHSTONE' in order.name and order.game_type == 'D':
-    #     order = HearthstoneDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_hearthstone_player=True)
-    # elif 'RL' in order.name and order.game_type == 'D':
-    #     order = RocketLeagueRankedOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    # elif 'RL' in order.name and order.game_type == 'P':
-    #     order = RocketLeaguePlacementOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    # elif 'RL' in order.name and order.game_type == 'S':
-    #     order = RocketLeagueSeasonalOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    # elif 'RL' in order.name and order.game_type == 'T':
-    #     order = RocketLeagueTournamentOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_rl_player=True)
-    # elif 'MOBLEG' in order.name and order.game_type == 'D':
-    #     order = MobileLegendsDivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
-    # elif 'MOBLEG' in order.name and order.game_type == 'P': 
-    #     order = MobileLegendsPlacementOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_mobleg_player=True)
-    # elif 'WOW' in order.name and order.game_type == 'A': 
-    #     order = WoWArenaBoostOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_wow_player=True)
-    # elif 'OVW2' in order.name and order.game_type == 'D': 
-    #     order = Overwatch2DivisionOrder.objects.get(order__id=id)
-    #     boosters = Booster.objects.filter(can_choose_me=True, is_overwatch2_player=True )
-
     game_order = base_order.related_order
     boosters = get_boosters(base_order.game_id)    
     
