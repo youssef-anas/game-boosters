@@ -1,6 +1,9 @@
 from time import sleep
 from accounts.models import BaseOrder
 
+
+# TODO add condition here to if order allredy end job or turbo boosting order
+
 def get_details(item_id):
     order = BaseOrder.objects.get(id=item_id)
     details = order.update_actual_price()

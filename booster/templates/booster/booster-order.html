@@ -329,8 +329,8 @@
                         {% for message in order.messages %}
                         {{message.created_on|json_script:"message_time"}}
                         <div
-                          class="chat-message {% if message.user == request.user %} userMessage {% else %} {% if message.msg_type == 'tip' %} tip-message {%else%} otherMessage {% endif %} {% endif %}" style="background-color: transparent !important;">
-                          {% if message.msg_type == 'tip' %}
+                          class="chat-message {% if message.user == request.user %} userMessage {% else %} {% if message.msg_type == 2 %} tip-message {%else%} otherMessage {% endif %} {% endif %}" style="background-color: transparent !important;">
+                          {% if message.msg_type == 2 %}
                           <h4><span class="badge" style="background-color: var(--secondary-color);">{{ message.content }}</span></h4>
                           <!-- <div class="mb-1">{{ message.content }}</div> -->
                           {% else %}

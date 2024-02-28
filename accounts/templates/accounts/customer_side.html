@@ -187,8 +187,8 @@
                     <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
                       {% for message in messages %}
                       <div
-                        class="chat-message {% if message.user == request.user %} {% if message.msg_type == 'tip' %} tip-message {%else%} userMessage {% endif %} {% else %} otherMessage {% endif %}" style="background-color: transparent !important;">
-                        {% if message.msg_type == 'tip' %}
+                        class="chat-message {% if message.user == request.user %} {% if message.msg_type == 2 %} tip-message {%else%} userMessage {% endif %} {% else %} otherMessage {% endif %}" style="background-color: transparent !important;">
+                        {% if message.msg_type == 2 %}
                         <h4><span class="badge" style="background-color: var(--secondary-color);">{{ message.content }}</span></h4>
                           <!-- <div class="mb-1 message-tip"></div> -->
                         {% else %}

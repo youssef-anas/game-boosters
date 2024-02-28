@@ -304,7 +304,7 @@ def booster_orders(request):
             order.order.money_owed = now_price
             order.order.save()
 
-        current_room = Room.get_specific_room(order.order.customer, order.order.id)
+        current_room = Room.get_specific_room(order.order.customer, order.order.name)
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug

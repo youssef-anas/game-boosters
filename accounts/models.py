@@ -4,7 +4,6 @@ from django_countries.fields import CountryField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -122,33 +121,35 @@ class BaseOrder(models.Model):
     is_extended = models.BooleanField(default=False, blank=True)
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
-    customer_server = models.CharField(max_length=300, blank=True, null=True)
+    customer_server = models.CharField(max_length=300, blank=True, null=True)   # TODO make it interger filed and relational choise
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
     payer_id = models.CharField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # this wiall save relation of order (:
+    # this will save relation of order (:
     content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null= True)
     object_id = models.PositiveIntegerField(null =True)
     related_order = GenericForeignKey('content_type', 'object_id')
 
     def update_actual_price(self):
         if self.status == 'Continue':
-            return 'Continue'
+            return {'time':-1,'price':self.actual_price,'progress':5}
         current_time = timezone.now()
         
+        # TODO make this numbers in json file to stop calling db every time
         percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
         percent2 = BoosterPercent.objects.get(pk=1).booster_percent2
         percent3 = BoosterPercent.objects.get(pk=1).booster_percent3
         percent4 = BoosterPercent.objects.get(pk=1).booster_percent4
         
+
+        # TODO add turbo_boost here to be the max and ignore it from tasks
         if not self.created_at:
             self.actual_price = round(self.price * (percent1 / 100) , 2)
         else:
             time_difference = (current_time - self.created_at).total_seconds()
-
             if time_difference <= 60:
                 self.actual_price = round(self.price * (percent1 / 100), 2)
                 return {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
@@ -228,11 +229,19 @@ class BaseOrder(models.Model):
         return f'{self.customer} have [{self.game_name.upper()}] order - {self.details}'
 
 class Tip_data(models.Model):
-    payer_id =models.CharField(max_length=50, null=True)
-    invoice = models.TextField(max_length=50, null= True)
+    payer_id            = models.CharField(max_length=50, null=True)
+    invoice             = models.TextField(max_length=50)
+
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
 
     def __str__(self) -> str:
         return self.payer_id    
+    
+    @classmethod
+    def create_tip(cls, invoice, payer_id) :
+        return cls.objects.create(invoice=invoice, payer_id=payer_id)
+        
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
@@ -246,14 +255,14 @@ class Transaction(models.Model):
         ('Done', 'Done'),
         ('Tip', 'Tip')
     ]
-    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(BaseUser, on_delete=models.DO_NOTHING)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    order = models.ForeignKey(BaseOrder, on_delete=models.CASCADE, related_name='from_order')
+    order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
     notice = models.TextField(default='_')
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
-    tip = models.OneToOneField(Tip_data, related_name='tip', on_delete=models.DO_NOTHING, null=True)
+    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.DO_NOTHING, null=True) 
 
     def __str__(self):
         return f'{self.user.username} {self.type} {self.amount}$'
@@ -264,63 +273,82 @@ class Transaction(models.Model):
 class Room(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
-    created_on = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(BaseUser, blank=True, on_delete=models.DO_NOTHING, default=None, related_name='customer_room', limit_choices_to={'is_booster': False})
+    booster = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.SET_NULL, default=None, related_name='booster_room', limit_choices_to={'is_booster': True} ) 
+    order_name = models.CharField(max_length=50)
     active = models.BooleanField(default=True)
-    customer = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='customer_room', limit_choices_to={'is_booster': False})
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='booster_room', limit_choices_to={'is_booster': True} ) 
-    order = models.ForeignKey(BaseOrder,null=True , blank=True, on_delete=models.SET_NULL, default=None, related_name='rooms') 
+    is_for_admins = models.BooleanField(null=False)
+
+    created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['name', 'customer']]
+
 
     def __str__(self):
-        return "Room : "+ self.name + " | Id : " + self.slug
+        return self.slug
     
     @classmethod
-    def create_room_with_booster(cls,customer,booster,orderId):
-        order_name = BaseOrder.objects.get(id = orderId).name
-        room = cls(
-                name=f'{customer}-{order_name}',
-                slug=f'roomFor-{customer}-{order_name}',
-                customer=customer,
-                booster=booster,
-                order_id=orderId
-            )
-        room.save()
-        return room
+    def get_specific_room(cls,customer,order_name):
+        slug = f'roomFor-{customer}-{order_name}'
+        try :
+            room = cls.objects.get(slug=slug)
+        except cls.DoesNotExist:
+            room = None
+        return room    
     
     @classmethod
-    def create_room_with_admins(cls,customer,orderId):
-        order_name = BaseOrder.objects.get(id = orderId).name
-        room = cls(
-                name=f'{customer}-admins-{order_name}',
-                slug=f'roomFor-{customer}-admins-{order_name}',
-                customer=customer,
-                booster=None,
-                order_id=orderId
-            )
-        room.save()
+    def get_specific_admins_room(cls,customer,order_name):
+        slug=f'roomFor-{customer}-admins-{order_name}'
+        try :
+            room = cls.objects.get(slug=slug)
+        except cls.DoesNotExist:
+            room = None
+        return room    
+
+    @classmethod
+    def create_room_with_booster(cls,customer,booster,order_name):
+        room = cls.get_specific_room(customer,order_name)
+        if not room :
+            room = cls.objects.create(
+                    name=f'{customer}-{order_name}',
+                    slug=f'roomFor-{customer}-{order_name}',
+                    customer=customer,
+                    booster=booster,
+                    order_name=order_name,
+                    is_for_admins = False,
+                )
+        return room  
+    
+    @classmethod
+    def create_room_with_admins(cls,customer,order_name):
+        room = cls.get_specific_admins_room(customer,order_name)
+        if not room :
+            room = cls.objects.create(
+                    name=f'{customer}-admins-{order_name}',
+                    slug=f'roomFor-{customer}-admins-{order_name}',
+                    customer=customer,
+                    booster=None,
+                    order_name=order_name,
+                    is_for_admins = True,
+                )
         return room
     
     @classmethod
     def get_all_rooms(cls):
         return cls.objects.all().order_by('-created_on')
     
-    @classmethod
-    def get_specific_room(cls,customer,orderId):
-        order_name = BaseOrder.objects.get(id = orderId).name
-        return cls.objects.filter(name=f'{customer}-{order_name}').first()
     
     @classmethod
-    def get_specific_admins_room(cls,customer,orderId):
-        order_name = BaseOrder.objects.get(id = orderId).name
-        return cls.objects.filter(name=f'{customer}-admins-{order_name}').first()
-    
-    def close_the_room(self, slug):
-        room = Room.objects.filter(slug=slug).first()
+    def close_the_room(cls, slug):
+        room = cls.objects.get(slug=slug) 
         if room:
             room.active = False
             room.save()
-    
-    def reOpen_the_room(self, slug):
-        room = Room.objects.filter(slug=slug).first()
+
+    @classmethod
+    def reOpen_the_room(cls, slug):
+        room = cls.objects.get(slug=slug)
         if room:
             room.active = True
             room.save()
@@ -328,15 +356,15 @@ class Room(models.Model):
     
 
 class Message(models.Model):
-    MSG_TYPE = [
-        ('normal', 'normal'),
-        ('tip', 'tip'),
-    ]
+    MSG_TYPE = (
+        (1, 'normal'),
+        (2, 'tip'),
+    )
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     content = models.TextField()
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
-    msg_type = models.CharField(choices=MSG_TYPE, blank=True, null=True, default='normal')
+    msg_type = models.IntegerField(choices=MSG_TYPE, default=1)
 
     def __str__(self):
         return "Message is :- "+ self.content
@@ -353,14 +381,17 @@ class Message(models.Model):
             content=content,
             room=room,
             created_on=timezone.now(),
-            msg_type='tip'
+            msg_type= 2
         )
         return new_message
     
 
 class TokenForPay(models.Model):
-    user = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
-    token = models.TextField(max_length=40, unique=True)
+    user                = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
+    token               = models.TextField(max_length=40, unique=True)
+
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username}'s token"

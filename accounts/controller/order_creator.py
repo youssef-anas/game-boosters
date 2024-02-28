@@ -42,6 +42,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
             ranked_type = int(invoice_values[18])  
         except:
             ranked_type = None
+            
         try:
             booster = BaseUser.objects.get(id=booster_id, is_booster =True)
         except BaseUser.DoesNotExist:

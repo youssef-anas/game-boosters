@@ -28,7 +28,7 @@ class SetUp(TestCase):
     HearthstoneMark(rank_id = 2, marks_3 = 0, marks_2 = 0.53, marks_1 = 0.54),
     HearthstoneMark(rank_id = 3, marks_3 = 0, marks_2 = 0.55, marks_1 = 0.56),
     HearthstoneMark(rank_id = 4, marks_3 = 0, marks_2 = 0.57, marks_1 = 0.58),
-    HearthstoneMark(rank_id = 4, marks_3 = 0, marks_2 = 0.59, marks_1 = 0.6),
+    HearthstoneMark(rank_id = 5, marks_3 = 0, marks_2 = 0.59, marks_1 = 0.6),
   ]
 
   ranks_queryset = HearthstoneRank.objects.bulk_create(ranks)

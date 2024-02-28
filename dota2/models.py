@@ -1,7 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder
 import requests
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 class Dota2Rank(models.Model):
@@ -24,10 +23,10 @@ class Dota2_50_MMR_Price(models.Model):
   
   
 class Dota2RankBoostOrder(models.Model):
-  Role = [
+  ROLE = (
         (1, 'Core'),
         (2, 'Support'),
-    ]
+  )
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='dota2_division_order')
   current_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_current_rank')
   reached_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_reached_rank')
@@ -39,7 +38,7 @@ class Dota2RankBoostOrder(models.Model):
   
   created_at = models.DateTimeField(auto_now_add =True)
   choose_agents = models.BooleanField(default=True, blank=True, null=True)
-  role = models.CharField(max_length=100, choices=Role, default=1, null=True, blank=True)
+  role = models.IntegerField(choices=ROLE, null=True, blank=True)
 
 
   def validate_divition(self):

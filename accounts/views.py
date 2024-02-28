@@ -72,30 +72,23 @@ def send_activation_email(user, request):
     # Send the email
     send_mail(subject, message, 'your@example.com', [user.email])
 
-def create_chat_with_booster(customer,booster,orderId):
-    isRoomExist = Room.get_specific_room(customer,orderId)
-    if not isRoomExist:
-        return Room.create_room_with_booster(customer,booster,orderId)
-    else:
-        return isRoomExist
-    
-def create_chat_with_admins(customer,orderId):
-    isRoomExist = Room.get_specific_admins_room(customer,orderId)
-    if not isRoomExist:
-        return Room.create_room_with_admins(customer,orderId)
-    else:
-        return isRoomExist
-
-@csrf_exempt
 def register_view(request):
     invoice = request.session.get('invoice')
     payer_id = request.GET.get('PayerID')
-    
+
     if invoice:
+        invoice_values = invoice.split('-')
+        booster_id = int(invoice_values[12])
+        if booster_id <= 0 :
+            try:
+                booster = BaseUser.objects.get(id=booster_id, is_booster =True)
+            except BaseUser.DoesNotExist:
+                booster = None
         if request.user.is_authenticated:
             order = create_order(invoice, payer_id, request.user)
-            create_chat_with_admins(customer=request.user,orderId = order.order.id)
-            create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
+            print(order)
+            Room.create_room_with_admins(request.user, order.order.name)
+            Room.create_room_with_booster(request.user, booster, order.order.name)
             refresh_order_page()
             async_task(update_database_task,order.order.id)
             return redirect(reverse_lazy('accounts.customer_side'))
@@ -108,13 +101,14 @@ def register_view(request):
                 # Send activation email
                 # send_activation_email(user, request)
                 # return render(request, 'accounts/activation_sent.html')
-                create_chat_with_admins(customer=request.user, orderId = order.order.id)
-                create_chat_with_booster(customer=request.user,booster=None,orderId = order.order.id)
+                Room.create_room_with_admins(request.user, order.order.name)
+                Room.create_room_with_booster(request.user,booster, order.order.name)
                 refresh_order_page()
                 async_task(update_database_task,order.order.id)
                 return redirect(reverse_lazy('accounts.customer_side'))
         form =  Registeration()
         return render(request, 'accounts/register.html', {'form': form})
+    return HttpResponse("error in invoice")
     
     
 @login_required
@@ -165,6 +159,7 @@ def logout_view(request):
 
 def choose_booster(request):
     if request.method == 'POST':
+        # TODO make it in kwrgs better than POST data
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
         print(chosen_booster_id)
@@ -174,12 +169,13 @@ def choose_booster(request):
             booster = get_object_or_404(BaseUser, id=chosen_booster_id)
             order.booster = booster
             order.save()
-            create_chat_with_booster(request.user,booster,order_id)
+            Room.create_room_with_booster(request.user,booster,order.name)
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
 def set_customer_data(request):
     if request.method == 'POST':
+        # TODO use serializer better to validate data
         order_id = request.POST.get('order_id')
         customer_gamename = request.POST.get('gamename')
         customer_server = request.POST.get('server')
@@ -194,7 +190,7 @@ def set_customer_data(request):
                 order.customer_password = customer_password
             order.save()
             if booster:
-                create_chat_with_booster(User,booster,order_id)
+                Room.create_room_with_booster(User,booster,order.name)
                 return redirect(reverse_lazy('accounts.customer_side'))
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
@@ -207,7 +203,7 @@ def tip_booster(request):
         booster = request.POST.get('booster')
         user = str(request.user.username)
         time = str(timezone.now())
-        token = secrets.token_hex(5)
+        token = secrets.token_hex(14)
         token_with_data = '-'.join([user, tip, order_id, booster, token])
         token_for_pay, created = TokenForPay.objects.get_or_create(user=request.user, defaults={'token': token_with_data})
         
@@ -239,35 +235,26 @@ def success_tip(request,token):
     username = splited_token[0]
     tip = int(splited_token[1])
     order_id = int(splited_token[2])
+    order = BaseOrder.objects.get(id = order_id)
     booster = splited_token[3]
     payer_id = request.GET.get("PayerID")
     notice = f'Tip from {username}'
     invoice = request.session.get('invoice', 'unknown')
     if request.user == token_with_data.user and request.user.username == username and payer_id:
-        room = Room.get_specific_room(request.user, order_id)
+        room = Room.get_specific_room(request.user, order.name)
         msg = f'{request.user.first_name} Tips {booster} with {tip}$'
         Message.create_tip_message(request.user,msg,room)
         token_with_data.delete()
         if invoice != 'unknown':
             request.session.pop('invoice')
-        tip_data = Tip_data.objects.create(invoice=invoice, payer_id=payer_id)
+        tip_data = Tip_data.create_tip(invoice, payer_id)
         booster_instance = BaseUser.objects.get(username=booster)
         Transaction.objects.create(user=booster_instance, amount=tip, order_id=order_id, notice=notice, tip=tip_data, status='Tip', type='DEPOSIT')
-        # TODO {ask ahmed about add tip money on user wallet}
-        try: 
-            booster_wallet = booster_instance.wallet
-            booster_wallet.money += tip
-            booster_wallet.save()
-        except: 
-
-            # TODO {fix} this now work here because alredy user get wallet
-            Wallet.objects.create (
-                user=booster_instance,
-                money=tip
-            )
-
+        booster_wallet = booster_instance.wallet
+        booster_wallet.money += tip
+        booster_wallet.save()
         return redirect('accounts.customer_side')
-    return HttpResponse("error while adding tip to bosster")
+    return HttpResponse("error while adding tip to bosster, check your wallet and call page admin")
 
 def cancel_tip(request, token):
     TokenForPay.delete_token(token)
@@ -275,24 +262,23 @@ def cancel_tip(request, token):
     return redirect('accounts.customer_side')
 
 # TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
+@login_required
 def customer_side(request):
     customer = BaseUser.objects.get(id = request.user.id)
     base_order = BaseOrder.objects.filter(customer=customer).last()
-    id = base_order.id
-    admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
-    # Chat with admins
-    admins_room = Room.objects.get(slug=admins_chat_slug)
-    admins_messages=Message.objects.filter(room=Room.objects.get(slug=admins_chat_slug))
-    game_order = base_order.related_order
-    boosters = get_boosters(base_order.game_id)    
+    if base_order.is_done:
+        return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
+    boosters = get_boosters(base_order.game_id)     
     
-    if game_order.order.is_done:
-        return redirect(reverse_lazy('rate.page', kwargs={'order_id': game_order.order.id}))
+    # Chat with admins
+    admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
+    admins_room = Room.objects.get(slug=admins_chat_slug)
+    admins_messages = Message.objects.filter(room=admins_room)
+    game_order = base_order.related_order
+    
     # Chat with booster
-    slug = request.GET.get('booster_slug') or None
-    if not slug:
-        specific_room = Room.get_specific_room(request.user, game_order.order.id)
-        slug = specific_room.slug if specific_room else None
+    specific_room = Room.get_specific_room(request.user, base_order.name)
+    slug = specific_room.slug if specific_room else None
     if slug:
         room = Room.objects.get(slug=slug)
         messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
@@ -308,21 +294,9 @@ def customer_side(request):
             'admins_messages':admins_messages,
             'admins_chat_slug':admins_chat_slug
         }    
-    else:
-        context = {
-            'user':User,
-            "slug":None,
-            'messages':None,
-            'room':None,
-            'boosters':boosters,
-            'order':game_order,
-            'admins_room':admins_room,
-            'admins_room_name':admins_room,
-            'admins_messages':admins_messages,
-            'admins_chat_slug':admins_chat_slug
-        } 
-    template_name = 'accounts/customer_side.html'
-    return render(request, template_name, context)
+        template_name = 'accounts/customer_side.html'
+        return render(request, template_name, context)
+    return  HttpResponse("error on creating chat")
 
 @login_required
 def edit_customer_profile(request):

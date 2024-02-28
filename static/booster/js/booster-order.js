@@ -155,7 +155,7 @@ function chat(booster_room_name, roomName, orderId) {
     if (data.username === user) {
       div.classList.add("chat-message", "userMessage");
     } else {
-      if (data.message.msg_type == 'tip') {
+      if (data.message.msg_type == 2) {
         div.classList.add("tip-message");
       } else {
         div.classList.add("chat-message", "otherMessage");

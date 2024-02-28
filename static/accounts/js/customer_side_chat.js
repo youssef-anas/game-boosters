@@ -201,7 +201,7 @@ chatSocket.onmessage = function (e) {
 
     // Add class based on user authentication
     if (data.username === user) {
-        if (data.message.msg_type == 'tip') {
+        if (data.message.msg_type == 2) {
             div.classList.add("tip-message");
         } else {
             div.classList.add("chat-message", "userMessage");
