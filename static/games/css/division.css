@@ -17,6 +17,7 @@
   }
 }
 .choices-ranks label {
+  margin-right: 16px !important;
   color: white;
   background-color: var(--alternative-color);
   border-radius: var(--main-radius);

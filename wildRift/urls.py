@@ -4,5 +4,6 @@ from wildRift.views import *
 
 urlpatterns = [
     path('', wildRiftGetBoosterByRank, name='wildRift'),
-    path('paypal/', view_that_asks_for_money, name='wildRift-paypal-redirect'),
+    path('paypal/', pay_with_paypal, name='wildRift-paypal-redirect'),
+    path('cryptomus/', pay_with_cryptomus, name='wildRift-cryptomus-redirect'),
 ]

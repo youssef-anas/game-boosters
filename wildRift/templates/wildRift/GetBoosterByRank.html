@@ -29,6 +29,17 @@
 
     <div class="container">
         <div class="create-order">
+            <!-- Errors -->
+            {% if messages %}
+                {% for message in messages %}
+                <div class="py-3 mx-auto message-container">
+                    <div class="alert {{ message.tags }} alert-dismissible mb-0 error-message" role="alert" >
+                    {{ message }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+
             <div class="choise mb-3">
                 <input type="radio" id="division-boost" name="radio-group-type" checked>
                 <label for="division-boost" class="radio-btn" style="width: 147px;">Normal Rank</label>
@@ -36,7 +47,7 @@
                 <label for="legendary-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 173px;">Legendary Rank</label>
             </div>
 
-            <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5">
+            <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5" id="OrderNow">
 
                 <div class="choices-ranks division-boost">
                     <!-- Current -->
@@ -273,7 +284,12 @@
                         </div>
 
                         <div class="pay-form">
-                            <form action="{% url 'wildRift-paypal-redirect' %}" method="post" id="purchaseForm">
+                            <!-- URLs -->
+                            <div id="urls"
+                                data-paypal-url="{% url 'wildRift-paypal-redirect' %}"
+                                data-cryptomus-url="{% url 'wildRift-cryptomus-redirect' %}">
+                            </div>
+                            <form action="" method="post" id="purchaseForm" class="purchaseForm active">
                                 <input type="hidden" name="game_id" value="0">
                                 <input type="hidden" name="current_rank" value="1">
                                 <input type="hidden" name="current_division" value="1">
@@ -293,10 +309,10 @@
                                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                                 <div class="purchase d-flex justify-content-between align-items-center">
                                     <!-- Paypal -->
-                                    <button id="paypal-btn" type="submit" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                                    <button id="paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
 
                                     <!-- Cryptomus -->
-                                    <button id="cryptomus-btn" type="submit" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                                    <button id="cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
                                 </div>
                             </form>
                         </div>
@@ -320,6 +336,7 @@
 <!-- SWIPER JS -->
 <script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
 <!-- OUR SCRIPTS -->
+<script src="{% static 'games/js/pay-action.js' %}"></script>
 <script src="{% static 'wildRift/js/division-placement-boost.js' %}"></script>
 <script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
 {% endblock %}

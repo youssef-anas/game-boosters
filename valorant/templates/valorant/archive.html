@@ -84,12 +84,7 @@
               <!-- Previous Season Rank  -->
               <div class="col-lg-5 col-12 mb-lg-0 mb-5">
                   <h5 class="mb-4">Previous Season Rank</h5>
-                  <div class="ranks d-flex justify-content-start align-items-center flex-wrap">
-                      {% for rank in placements %}
-                      <input type="radio" id="rank{{rank.id}}" name="radio-group-ranks" data-id="{{rank.id}}" data-price="{{rank.price}}" {% if forloop.counter0 == 0 %} checked {% endif %}>
-                      <label for="rank{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
-                      {% endfor %}
-                  </div>
+                  
               </div>
 
               <!-- Games Count -->
