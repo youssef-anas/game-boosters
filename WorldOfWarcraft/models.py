@@ -1,7 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder
 import requests
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 class WoWRank(models.Model):
@@ -29,16 +28,9 @@ class WoWArenaBoostOrder(models.Model):
   current_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_current_rank')
   reached_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_reached_rank')
   desired_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_desired_rank')
-  
-  current_division = models.IntegerField(
-        default=0
-  )
-  reached_division = models.IntegerField(
-        default=0
-  )
-  desired_division = models.IntegerField(
-        default=25
-  )
+  current_division = models.IntegerField(default=0)
+  reached_division = models.IntegerField(default=0)
+  desired_division = models.IntegerField(default=25)
   created_at = models.DateTimeField(auto_now_add =True)
   choose_agents = models.BooleanField(default=True, blank=True, null=True)
 
@@ -48,7 +40,7 @@ class WoWArenaBoostOrder(models.Model):
         raise ValidationError("Current division must be between 0 and 2200.")
     else:
       if not (self.current_division > 0 and self.current_division <= 2500):
-        raise ValidationError("Current division must be between 0 and 2200.")
+        raise ValidationError("Current division must be between 0 and 2500.")
         
     
   def send_discord_notification(self):

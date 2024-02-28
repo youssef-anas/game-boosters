@@ -79,7 +79,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'tft-5-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{speed_up_boost_value}'
+  invoice = f'tft-5-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-?-{speed_up_boost_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -143,7 +143,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'tft-5-P-{last_rank}-{number_of_match}-none-none-none-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{speed_up_boost_value}'
+  invoice = f'tft-5-P-{last_rank}-{number_of_match}-?-?-?-0-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-?-{speed_up_boost_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

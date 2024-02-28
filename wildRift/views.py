@@ -61,7 +61,6 @@ def pay_with_paypal(request):
                 messages.error(request, "You are a booster!, You can't make order.")
                 return redirect(reverse_lazy('wildRift'))
         
-        print('request POST:  ', request.POST)
         try:
             serializer = RankSerializer(data=request.POST) 
             print('request POST', request.POST)
