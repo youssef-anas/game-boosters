@@ -146,7 +146,7 @@ select::-ms-expand {
     padding-bottom: 2.5rem !important;
   }
 }
-.complate-order .checkout p:first-child {
+.complate-order .checkout > p:first-of-type {
   font-size: 1.5rem;
 }
 .complate-order .checkout .from-to {

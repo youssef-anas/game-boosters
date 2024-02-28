@@ -44,7 +44,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -89,14 +89,12 @@ def get_division_order_result_by_rank(data,extend_order_id):
   price += (price * total_percent)
   price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
       price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
-      print('Price', price)
     except:
       pass
 
@@ -124,13 +122,17 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_agents = data['choose_agents']
+  booster_agents = data['booster_agents']
+
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_agents_value = 0
+  booster_agents_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -140,7 +142,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -154,10 +156,17 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_agents:
+  if booster_agents:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_agents_value = 1
+    booster_agents_value = 1
+
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
 
   # Read data from JSON file
   with open('static/valorant/data/placements_data.json', 'r') as file:
@@ -166,15 +175,14 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Placement Price: ', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
     except:
       pass
 
@@ -184,7 +192,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_agents_value}'
+  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{server}-{booster_agents_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

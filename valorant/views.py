@@ -64,7 +64,7 @@ def valorantGetBoosterByRank(request):
 
 # Paypal
 @csrf_exempt
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -84,9 +84,11 @@ def view_that_asks_for_money(request):
         extend_order_id = serializer.validated_data['extend_order']
         # Division
         if request.POST.get('game_type') == 'D':
+          print('Sorry, I am Here')
           order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Placement
         elif request.POST.get('game_type') == 'P':
+          print('I am Here')
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
         request.session['invoice'] = order_info['invoice']
@@ -104,10 +106,20 @@ def view_that_asks_for_money(request):
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
         return render(request, "accounts/paypal.html", context,status=200)
-      # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
-      return redirect(reverse_lazy('valorant'))
+      return JsonResponse({'error': serializer.errors}, status=400)
+      # messages.error(request, 'Ensure this value is greater than or equal to 10')
+      # return redirect(reverse_lazy('valorant'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
+# Cryptomus
+@csrf_exempt
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

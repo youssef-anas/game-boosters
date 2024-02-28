@@ -1,3 +1,49 @@
+function getDivisionPrice() {
+  const startRank = ((current_rank - 1) * 3) + current_division;
+  const endRank = ((desired_rank - 1) * 3) + desired_division - 1;
+  const slicedArray = sliceArray(divisionPrices, startRank, endRank);
+  const result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+  let result_with_mark = result
+
+  if (result !== 0) {
+    result_with_mark = result - number_of_mark;
+  }
+
+  // Apply extra charges to the result
+  result_with_mark += result_with_mark * total_Percentage;
+  // Apply promo code 
+  result_with_mark -= result_with_mark * (discount_amount/100 )
+
+  result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
+
+  // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+  $('.current-rank-selected-img').attr('src', $(currentElement).data('img'))
+  $('.desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
+
+  $('.current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR`);
+  $('.desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
+
+  $('.current').removeClass().addClass(`current ${current_rank_name}`)
+  $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
+
+  $('.total-price #price').text(`$${result_with_mark}`)
+
+  // From Value
+  if ($('.division-boost input[name="game_type"]').val() == 'D') {
+    $('.division-boost input[name="current_rank"]').val(current_rank);
+    $('.division-boost input[name="current_division"]').val(current_division);
+    $('.division-boost input[name="marks"]').val(mark);
+    $('.division-boost input[name="desired_rank"]').val(desired_rank);
+    $('.division-boost input[name="desired_division"]').val(desired_division);
+    $('.division-boost input[name="server"]').val(selectedDivsionServer);
+    $('.division-boost input[name="price"]').val(result_with_mark);
+  }
+}
+
+
+
+
 var total_Percentage = 0;
 // Assume you have a reference to the HTML element
 // const orderContainer = document.getElementById('order-container');

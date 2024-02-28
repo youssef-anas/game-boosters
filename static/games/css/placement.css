@@ -1,83 +1,67 @@
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none; 
-  width: 100%;
-  cursor: pointer;
-  outline: none;
-  border-radius: 15px;
-  height: 6px;
-  background: var(--secondary-color);
+.placements-boost #pervious, .placements-boost #matches-amount {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: #433733; /* Fallback solid background color */
+  margin-bottom: 3rem;
+  min-height: 346px;
 }
-
-/* Thumb: webkit */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none; 
-  height: 30px;
-  width: 30px;
-/*   background-color: #f50; remove this*/
-  background-image: url("https://ibaslogic.github.io/hosted-assets/smile.png");
-  background-size: cover;
-  border-radius: 50%;
-  border: none;
-  transition: .2s ease-in-out;
-  /*  rotate thumb  */
-  transform: rotateZ(var(--thumb-rotate, 0deg));
+@media (max-width: 1199px) {
+  .placements-boost #pervious, .placements-boost #matches-amount {
+    min-height: 438px;
+  }
 }
-
-/* Thumb: Firefox */
-input[type="range"]::-moz-range-thumb {
-  height: 30px;
-  width: 30px;
-/*   background-color: #f50; */
-  background-image: url("https://ibaslogic.github.io/hosted-assets/smile.png");
-  background-size: cover;
-  border-radius: 50%;
-  border: none;
-  transition: .2s ease-in-out;
-  /*  rotate thumb  */
-  transform: rotateZ(var(--thumb-rotate, 0deg));
+@media (max-width: 767px) {
+  .placements-boost #pervious, .placements-boost #matches-amount {
+    min-height: 346px;
+  }
 }
-
-/* Hover, active & focus Thumb: Webkit */
-input[type="range"]::-webkit-slider-thumb:hover {
-  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+.placements-boost #matches-amount {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #7F999E 0%, #43373300 100%);
 }
-input[type="range"]:active::-webkit-slider-thumb {
-  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+.placements-boost #matches-amount .num-of-match {
+  font-size: 48px;
+  font-weight: 800;
 }
-input[type="range"]:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+@media (max-width: 1199px) {
+  .placements-boost #pervious .image img {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .placements-boost #pervious .text h5, .placements-boost #matches-amount .text h5 {
+    font-size: 16px;
+  }
+  .placements-boost #pervious .text p, .placements-boost #matches-amount .text p {
+    font-size: 8px;
+  }
 }
-
-/* Hover, active & focus Thumb: Firfox */
-
-input[type="range"]::-moz-range-thumb:hover {
-  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
-}
-input[type="range"]:active::-moz-range-thumb {
-  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
-}
-input[type="range"]:focus::-moz-range-thumb {
-  box-shadow: 0 0 0 13px rgba(255,85,0, .2)    
-}
-
-/*=============
-Aesthetics 
-=========================*/
-
-.range {
+.placements-boost label {
+  margin-right: 16px !important;
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 1rem;
-  max-width: 500px;
-  height: 4rem;
-  width: 80%;
-  padding: 0px 10px;
+  color: white;
+  background-color: var(--alternative-color);
+  border-radius: var(--main-radius);
 }
-
-.value, .game-count-value, .number-win-value {
-  font-size: 26px;    
-  width: 50px;
-  text-align: center;
+@media (max-width: 1199px) { 
+  .placements-boost label {
+    width: 60px !important;
+    height: 60px !important;
+    margin-right: 50px !important;
+    margin-bottom: 20px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (max-width: 340px) { 
+  .placements-boost label {
+    margin-right: 20px !important;
+  }
+}
+.placements-boost input[type="radio"]:checked+label {
+  background-color: white;
+  color: black;
 }

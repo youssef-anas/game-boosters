@@ -2,6 +2,7 @@
 <div class="feedbacks">
   <h1 class="py-md-5 py-3 text-center">Trusted by Thousands<br />of Happy Customer</h1>
   <div class="swiper mb-5">
+    {% if feedbacks %}
     <div class="swiper-wrapper py-5 mb-3">
       {% for feedback in feedbacks %}
         <div class="swiper-slide feedback p-4">
@@ -24,6 +25,7 @@
           <p>{{feedback.text}}</p>
         </div>
       {% endfor %}
+     
     </div>
 
     <!-- Navigation Buttons -->
@@ -37,6 +39,6 @@
 
     <!-- Pagination -->
     <div class="swiper-pagination"></div>
-    
+    {% endif %}
   </div>
 </div>
