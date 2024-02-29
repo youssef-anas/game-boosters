@@ -5,6 +5,11 @@
 .game-landing.valorant {
   background-image: url('./../images/valorant_bg.jpg');
 }
+.game-landing.honorOfKings {
+  background-image: url('./../images/honorofkings_bg.jpg');
+  background-position-y: -160px;
+  background-repeat: space;
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

@@ -144,7 +144,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
                 pass
             #TODO sarah mohamed Honer Of King #########
             if game_id == 11:
-                pass
+                order = Game.objects.create(**default_fields)
             # Overwatch Division 
             if game_id == 12 and type == 'D':
                 order = Game.objects.create(**default_fields)
@@ -222,7 +222,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
                 pass
             #TODO sarah mohamed Honer Of King      TODO      #########
             if game_id == 11:
-                pass
+                order = Game.objects.create(**extend_fields)
             # Overwatch Division 
             if game_id == 12 and type == 'D':
                 order = Game.objects.create(**extend_fields)

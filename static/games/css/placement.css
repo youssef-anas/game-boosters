@@ -37,6 +37,8 @@
   }
 }
 .placements-boost label {
+  width: 46px !important;
+  height: 46px !important;
   margin-right: 16px !important;
   display: flex;
   justify-content: center;

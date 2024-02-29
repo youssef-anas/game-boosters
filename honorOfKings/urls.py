@@ -5,5 +5,5 @@ from honorOfKings.views import *
 urlpatterns = [
   path('', honerOfKingeGetBoosterByRank, name='hok'),
   path('paypal/', view_that_asks_for_money, name='hok-paypal-redirect'),
-  path('payment-canceled/', payment_canceled ,name='hok.payment.canceled'),
+  path('cryptomus/', pay_with_cryptomus, name='hok-cryptomus-redirect'),
 ]

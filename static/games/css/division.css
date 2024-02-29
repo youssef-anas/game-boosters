@@ -3,6 +3,7 @@
   padding: 30px;
   background-color: #433733; /* Fallback solid background color */
   margin-bottom: 2rem;
+  min-height: 354px;
 }
 @media (max-width: 1199px) {
   .choices-ranks #current .image img, .choices-ranks #desired .image img {
@@ -17,10 +18,15 @@
   }
 }
 .choices-ranks label {
+  width: 46px !important;
+  height: 46px !important;
   margin-right: 16px !important;
   color: white;
   background-color: var(--alternative-color);
   border-radius: var(--main-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media (max-width: 1199px) { 
   .choices-ranks label {

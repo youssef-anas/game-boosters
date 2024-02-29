@@ -23,6 +23,7 @@ urlpatterns = [
     path('dota2/', include('dota2.urls')),
     path('overwatch2/', include('overwatch2.urls')),
     path('csgo2/', include('csgo2.urls')),
+    path('hok/', include('honorOfKings.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

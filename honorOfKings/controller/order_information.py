@@ -3,11 +3,12 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 import json
 from honorOfKings.models import *
+from accounts.models import PromoCode
 
 User = get_user_model()
 
 division_names = ['','V','IV','III','II','I']
-rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'MASTER']
+rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'KING']
 
 def get_division_order_result_by_rank(data,extend_order_id):
   print('Data: ', data)
@@ -19,15 +20,20 @@ def get_division_order_result_by_rank(data,extend_order_id):
   desired_division = data['desired_division']
 
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
-  choose_legends = data['choose_legends']
+  turbo_boost = data['turbo_boost']
   streaming = data['streaming']
+
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
-  choose_legends_value = 0
+  turbo_boost_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -37,7 +43,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
   
@@ -46,10 +52,17 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_legends:
-    total_percent += 0.0
-    boost_options.append('CHOOSE LEGENDS')
-    choose_legends_value = 1
+  if turbo_boost:
+    total_percent += 0.20
+    boost_options.append('TURBO BOOSTING')
+    turbo_boost_value = 1
+
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
 
   # Read data from JSON file
   with open('static/hok/data/divisions_data.json', 'r') as file:
@@ -59,15 +72,16 @@ def get_division_order_result_by_rank(data,extend_order_id):
   ##
   with open('static/hok/data/marks_data.json', 'r') as file:
     marks_data = json.load(file)
-    marks_data.insert(0,[0,0,0])
+    marks_data.insert(0,[0,0,0,0])
   ##    
-  start_division = ((current_rank-1) * 10) + current_division
-  end_division = ((desired_rank-1) * 10)+ desired_division
+  start_division = ((current_rank-1) * 5) + current_division
+  end_division = ((desired_rank-1) * 5) + desired_division
   marks_price = marks_data[current_rank][marks]
   sublist = flattened_data[start_division:end_division ]
   total_sum = sum(sublist)
   price = total_sum - marks_price
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
   print('Price', price)
 
@@ -75,8 +89,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round((price) - (extend_order_price), 2)
     except:
       pass
 
@@ -86,7 +99,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'hok-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_legends_value}-{timezone.now()}'
+  invoice = f'hok-11-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

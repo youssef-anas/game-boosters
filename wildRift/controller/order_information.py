@@ -17,12 +17,15 @@ def get_order_result_by_rank(data,extend_order_id):
     marks = data['marks']
     desired_rank = data['desired_rank']
     desired_division = data['desired_division']
+
     total_percent = 0
+
     duo_boosting = data['duo_boosting']
     select_booster = data['select_booster']
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
     booster_champions = data['booster_champions']
+    
     server = data['server']
     promo_code = data['promo_code']
 

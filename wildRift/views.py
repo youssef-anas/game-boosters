@@ -31,7 +31,7 @@ def wildRiftGetBoosterByRank(request):
     ]
 
     marks_data = [
-        [0,mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
+        [0,mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5, mark.mark_6]
         for mark in marks
     ]
 
@@ -44,12 +44,12 @@ def wildRiftGetBoosterByRank(request):
     divisions_list = list(divisions.values())
 
     # Feedbacks
-    feedbaccks = OrderRating.objects.filter(order__game_name = "wildRift")
+    feedbacks = OrderRating.objects.filter(order__game_name = "wildRift")
     context = {
         "ranks": ranks,
         "divisions": divisions_list,
         "order": order,
-        "feedbacks": feedbaccks,
+        "feedbacks": feedbacks,
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
@@ -63,10 +63,10 @@ def pay_with_paypal(request):
         
         try:
             serializer = RankSerializer(data=request.POST) 
-            print('request POST', request.POST)
+            
             if serializer.is_valid():
                 extend_order_id = serializer.validated_data['extend_order']
-                print(extend_order_id)
+                
                 order_info = get_order_result_by_rank(serializer.validated_data,extend_order_id)
                 request.session['invoice'] = order_info['invoice']
 

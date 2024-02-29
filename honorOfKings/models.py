@@ -1,6 +1,6 @@
 from django.db import models
 from accounts.models import BaseOrder, Wallet
-from accounts.templatetags.custom_filters import romanize_division
+from accounts.templatetags.custom_filters import five_romanize_division
 
 # Create your models here.
 class HonorOfKingsRank(models.Model):
@@ -29,11 +29,9 @@ class HonorOfKingsMark(models.Model):
   star_1 = models.FloatField(default=0)
   star_2 = models.FloatField(default=0)
   star_3 = models.FloatField(default=0)
-  star_4 = models.FloatField(default=0)
-  star_5 = models.FloatField(default=0)
 
   def __str__(self):
-    return f"{self.rank} -> Stars 1: {self.start_1}, Stars 2: {self.start_2}, Stars 3: {self.start_3}, Stars 4: {self.start_4}, Stars 5: {self.start_5}"
+    return f"{self.rank} -> Star 1: {self.star_1}, Star 2: {self.star_2}, Star 3: {self.star_3}"
   
 class HonorOfKingsDivisionOrder(models.Model):
   DIVISION_CHOICES = [
@@ -44,11 +42,10 @@ class HonorOfKingsDivisionOrder(models.Model):
     (5, 'I'),
   ]
   MARKS_CHOISES = [
-    (0, '1'),
-    (1, '2'),
-    (2, '3'),
-    (3, '4'),
-    (4, '5'),
+    (0, '0 Stars'),
+    (1, '1 Stars'),
+    (2, '2 Stars'),
+    (3, '3 Stars'),
   ]
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='hok_division_order')
   current_rank = models.ForeignKey(HonorOfKingsRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
@@ -62,7 +59,7 @@ class HonorOfKingsDivisionOrder(models.Model):
   created_at = models.DateTimeField(auto_now_add =True)
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 7
+    self.order.game_id = 11
     self.order.game_name = 'hok'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
@@ -74,10 +71,10 @@ class HonorOfKingsDivisionOrder(models.Model):
     # self.send_discord_notification()
     
   def get_details(self):
-    return f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} {'3' if self.current_marks == 0 else ('2' if self.current_marks == 1 else '1')} STAR To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
+    return f"From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} {self.current_marks} Stars To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)}"
 
   def __str__(self):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.streaming}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming}"

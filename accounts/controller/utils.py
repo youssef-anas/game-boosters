@@ -9,6 +9,7 @@ from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOr
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from WorldOfWarcraft.models import WoWArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder
+from honorOfKings.models import HonorOfKingsDivisionOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
 from channels.layers import get_channel_layer
@@ -80,7 +81,7 @@ def get_game(id, type) -> Model:
         8: check_mobleg_type(type),
         9: check_rl_type(type),
         10: 'dota2',
-        11: 'hok',
+        11: HonorOfKingsDivisionOrder,
         12: Overwatch2DivisionOrder,
         13: 'csgo2',
     }
@@ -105,7 +106,7 @@ def get_boosters(id):
     11: {'can_choose_me': True, 'is_hok_player': True},
     12: {'can_choose_me': True, 'is_overwatch2_player': True},
     13: {'can_choose_me': True, 'is_csgo2_player': True},
-        }
+    }
     filters = filter_conditions.get(id, {})
     boosters = Booster.objects.filter(**filters)
     return boosters

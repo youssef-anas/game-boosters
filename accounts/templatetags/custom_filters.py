@@ -86,3 +86,18 @@ def ten_romanize_division(value):
     return 'I'
   else:
     return value
+  
+@register.filter(name='five_romanize_division')
+def five_romanize_division(value):
+  if value == 1:
+    return 'V'
+  elif value == 2:
+    return 'IV'
+  elif value == 3:
+    return 'III'
+  elif value == 4:
+    return 'II'
+  elif value == 2:
+    return 'I'
+  else:
+    return value

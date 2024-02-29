@@ -83,7 +83,7 @@ const initiallyCheckedIndexMark = makrs_on_current_rank_selected.value;
 
 // Read Values From Json File
 let divisionPrices = [0];
-let marks_price = [[0, 0, 0, 0, 0, 0]];
+let marks_price = [[0, 0, 0, 0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
     $.getJSON('/static/wildRift/data/divisions_data.json', function (data) {
@@ -340,12 +340,12 @@ Promise.all([
 
       const desired_division_to_hide = document.getElementById('desired-division');
       if (desired_rank == 8) {
-        desired_division_to_hide.classList.add('d-none');
+        desired_division_to_hide.style.visibility = "hidden";
         let desired_division_IV = document.getElementById("desired-division0")
         desired_division_IV.checked = true;
       }
       else {
-        desired_division_to_hide.classList.remove('d-none');
+        desired_division_to_hide.style.visibility = "visible";
       }
       getResult();
     });
