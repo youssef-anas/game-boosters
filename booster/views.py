@@ -23,6 +23,7 @@ from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegends
 from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
 from hearthstone.models import HearthstoneDivisionOrder, HearthstoneRank
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder, RocketLeagueRank
+from honorOfKings.models import HonorOfKingsDivisionOrder, HonorOfKingsRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -89,7 +90,8 @@ def calm_order(request, game_name, id):
         (game_name == 'lol' and request.user.booster.is_lol_player) or \
         (game_name == 'tft' and request.user.booster.is_tft_player) or \
         (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
-        (game_name == 'rocketLeague' and request.user.booster.is_rl_player)   :
+        (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
+        (game_name == 'hok' and request.user.booster.is_hok_player) :
         try:
             order.booster = request.user
             order.save()
@@ -152,7 +154,7 @@ def booster_orders(request):
         wildrift_orders = WildRiftDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
 
         wildrift_ranks = WildRiftRank.objects.all()
-        wildrift_divide_number = [4, 6]
+        wildrift_divide_number = [4, 7]
         
     # Valorant
     valorant_division_orders = []
@@ -225,8 +227,17 @@ def booster_orders(request):
 
         rocketLeague_ranks = RocketLeagueRank.objects.all()
         rocketLeague_divide_number = [3, 0]
+
+    # HOK
+    hok_orders = []
+    hok_ranks = None
+    if request.user.booster.is_hok_player:
+        hok_orders = HonorOfKingsDivisionOrder.objects.filter(order__booster=request.user,order__is_done=False).order_by('order__id')
+
+        hok_ranks = HonorOfKingsRank.objects.all()
+        hok_divide_number = [5, 4]
      
-    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders, hearthstone_orders, rocketLeague_division_orders, rocketLeague_placement_orders, rocketLeague_seasonal_orders, rocketLeague_tournament_orders))
+    orders = list(chain(wildrift_orders, valorant_division_orders, valorant_placement_orders, pubg_division_orders, lol_division_orders, lol_placement_orders, tft_division_orders, tft_placement_orders, hearthstone_orders, rocketLeague_division_orders, rocketLeague_placement_orders, rocketLeague_seasonal_orders, rocketLeague_tournament_orders, hok_orders))
     
     
     orders_with_percentage = []
@@ -255,6 +266,8 @@ def booster_orders(request):
                 divide_number = hearthstone_divide_number
             elif int(order.order.game_id) == 9:
                 divide_number = rocketLeague_divide_number
+            elif int(order.order.game_id) == 11:
+                divide_number = hok_divide_number
 
             with open(f'static/{order.order.game_name}/data/divisions_data.json', 'r') as file:
                 division_data = json.load(file)
@@ -339,7 +352,8 @@ def booster_orders(request):
         'lol_ranks': lol_ranks,
         'tft_ranks': tft_ranks,
         'hearthstone_ranks': hearthstone_ranks,
-        'rocketLeague_ranks': rocketLeague_ranks
+        'rocketLeague_ranks': rocketLeague_ranks,
+        'hok_ranks': hok_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -428,12 +442,12 @@ def drop_order(request):
                 order = get_object_or_404(LeagueOfLegendsDivisionOrder, order__id=order_id)
             elif int(game_id) == 5:
                 order = get_object_or_404(TFTDivisionOrder, order__id=order_id)
-                print('Order: ', order)
             elif int(game_id) == 7:
                 order = get_object_or_404(HearthstoneDivisionOrder, order__id=order_id)
-                print('Order: ', order)
             elif int(game_id) == 9:
                 order = get_object_or_404(RocketLeagueRankedOrder, order__id=order_id)
+            elif int(game_id) == 11:
+                order = get_object_or_404(HonorOfKingsDivisionOrder, order__id=order_id)
                 print('Order: ', order)
             # try:
             order.order.is_drop = True
@@ -493,6 +507,9 @@ def update_rating(request):
         elif int(game_id) == 9:
             OrderModel = RocketLeagueRankedOrder
             RankModel = RocketLeagueRank
+        elif int(game_id) == 11:
+            OrderModel = HonorOfKingsDivisionOrder
+            RankModel = HonorOfKingsRank
 
         try:
             reached_rank_id = request.POST.get('reached_rank')

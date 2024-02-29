@@ -104,10 +104,16 @@
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
                 {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division }}</p>
+
                 {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division_original }}</p>
+
                 {% elif order.order.order.game_name == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|ten_romanize_division}}</p>
+
+                {% elif order.order.order.game_name == 'hok' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|five_romanize_division}}</p>
+
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -126,6 +132,9 @@
                 {% elif order.order.order.game_name == 'hearthstone' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 3 STAR {% elif order.order.current_marks == 1 %} 2 STAR {% elif order.order.current_marks == 2 %} 1 STAR {% endif %} </span>
 
+                {% elif order.order.order.game_name == 'hok' %}
+                <span class="text-secondary" style="font-size: 12px;">{{order.order.current_marks}} Stars</span>
+
                 {% endif %}
                 <!-- Here Sara Check Marks For Pubg -->
               </div>
@@ -140,10 +149,16 @@
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
                 {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division }}</p>
+
                 {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division_original }}</p>
+
                 {% elif order.order.order.game_name == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|ten_romanize_division }}</p>
+
+                {% elif order.order.order.game_name == 'hok' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|five_romanize_division }}</p>
+
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -162,6 +177,9 @@
                 {% elif order.order.order.game_name == 'hearthstone' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 3 STAR {% elif order.order.reached_marks == 1 %} 2 STAR {% elif order.order.reached_marks == 2 %} 1 STAR {% endif %} </span>
 
+                {% elif order.order.order.game_name == 'hok' %}
+                <span class="text-secondary" style="font-size: 12px;">{{order.order.reached_marks}} Stars</span>
+
                 {% endif %}
                 <!-- Here Sara Check Marks For Pubg -->
               </div>
@@ -176,10 +194,16 @@
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
                 {% if order.order.order.game_name == 'wildRift' or order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division }}</p>
+
                 {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division_original }}</p>
+
                 {% elif order.order.order.game_name == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|ten_romanize_division }}</p>
+
+                {% elif order.order.order.game_name == 'hok' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|five_romanize_division }}</p>
+
                 {% endif %}
               </div>
             </div>
@@ -214,18 +238,27 @@
             <!-- Here We Change Update Component Depend On Game -->
             {% if order.order.order.game_name == 'wildRift' %}
               {% include 'wildrift/order_update.html' with wildrift_ranks=wildrift_ranks %}
+
             {% elif order.order.order.game_name == 'valorant' %}
               {% include 'valorant/order_update.html' with valorant_ranks=valorant_ranks %}
+
             {% elif order.order.order.game_name == 'lol' %}
               {% include 'leagueOfLegends/order_update.html' with lol_ranks=lol_ranks %}
+
             {% elif order.order.order.game_name == 'pubg' %}
               {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
+
             {% elif order.order.order.game_name == 'tft' %}
               {% include 'tft/order_update.html' with tft_ranks=tft_ranks %}
+
             {% elif order.order.order.game_name == 'hearthstone' %}
               {% include 'hearthstone/order_update.html' with hearthstone_ranks=hearthstone_ranks %}
+
             {% elif order.order.order.game_name == 'rocketLeague' %}
               {% include 'rocketLeague/order_update.html' with rocketLeague_ranks=rocketLeague_ranks %}
+            
+            {% elif order.order.order.game_name == 'hok' %}
+              {% include 'honorOfKings/order_update.html' with hok_ranks=hok_ranks %} 
             {% endif %}
             
             {% elif order.order.order.game_type == 'P' %}
@@ -282,10 +315,10 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: var(--secondary-color); !important"></button>
                     </div>
                     <div class="modal-body">
-
-                      <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data">
+                      <p id="image-over-size-error" class="text-danger"></p>
+                      <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data" id="complete-image-upload">
                         {% csrf_token %}
-                        {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+                        {% if error %} <p class="error text-danger">{{error}}</p> {% endif %}
                         <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
 
                         <!-- Image preview -->
@@ -395,4 +428,5 @@
   var currentSocket = null
 </script>
 <script src="{% static 'booster/js/booster-order.js' %}"></script>
+<script src="{% static 'booster/js/image-size.js' %}"></script>
 {% endblock %}

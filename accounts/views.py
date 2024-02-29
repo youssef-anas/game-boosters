@@ -15,15 +15,6 @@ from django.utils import timezone
 from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
-from wildRift.models import WildRiftDivisionOrder
-from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
-from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
-from tft.models import TFTDivisionOrder, TFTPlacementOrder
-from hearthstone.models import HearthstoneDivisionOrder
-from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
-from mobileLegends.models import *
-from WorldOfWarcraft.models import WoWArenaBoostOrder
-from overwatch2.models import Overwatch2DivisionOrder
 from django.http import JsonResponse
 from accounts.controller.order_creator import create_order
 from accounts.controller.utils import refresh_order_page
@@ -178,14 +169,12 @@ def set_customer_data(request):
         # TODO use serializer better to validate data
         order_id = request.POST.get('order_id')
         customer_gamename = request.POST.get('gamename')
-        customer_server = request.POST.get('server')
         customer_password = request.POST.get('password')
         booster = request.POST.get('chosen_booster_id')
         request.POST.get('admins_chat_slug')
-        if customer_gamename and order_id and customer_server:
+        if customer_gamename and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
             order.customer_gamename = customer_gamename
-            order.customer_server = customer_server 
             if customer_password :
                 order.customer_password = customer_password
             order.save()
