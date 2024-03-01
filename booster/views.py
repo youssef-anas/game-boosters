@@ -23,6 +23,7 @@ from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegends
 from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
 from hearthstone.models import HearthstoneDivisionOrder, HearthstoneRank
 from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder, RocketLeagueRank
+from honorOfKings.models import HonorOfKingsDivisionOrder, HonorOfKingsRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -90,7 +91,8 @@ def calm_order(request, game_name, id):
         (game_name == 'lol' and request.user.booster.is_lol_player) or \
         (game_name == 'tft' and request.user.booster.is_tft_player) or \
         (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
-        (game_name == 'rocketLeague' and request.user.booster.is_rl_player)   :
+        (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
+        (game_name == 'hok' and request.user.booster.is_hok_player) :
         try:
             order.booster = request.user
             order.save()
@@ -204,6 +206,7 @@ def booster_orders(request):
     hearthstone_ranks = HearthstoneRank.objects.all()  
     rocketLeague_ranks = RocketLeagueRank.objects.all()  
     lol_ranks = LeagueOfLegendsRank.objects.all()  
+    hok_ranks = HonorOfKingsRank.objects.all()
  
     context = {
         'orders': orders_with_percentage,
@@ -213,7 +216,8 @@ def booster_orders(request):
         'lol_ranks': lol_ranks,
         'tft_ranks': tft_ranks,
         'hearthstone_ranks': hearthstone_ranks,
-        'rocketLeague_ranks': rocketLeague_ranks
+        'rocketLeague_ranks': rocketLeague_ranks,
+        'hok_ranks': hok_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 

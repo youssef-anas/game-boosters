@@ -29,9 +29,11 @@
   align-items: center;
 }
 @media (max-width: 1199px) { 
-  .choices-ranks label {
+  .game-landing:not(.honorOfKings) .choices-ranks label {
     width: 50px !important;
     height: 50px !important;
+  }
+  .choices-ranks label {
     margin-right: 30px !important;
     margin-bottom: 16px !important;
     display: flex;
