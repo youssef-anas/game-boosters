@@ -8,11 +8,23 @@
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank">
-        {% for rank in valorant_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+        
+        <option value=1 {% if order.order.reached_rank|lower == 'iron' %} selected {% endif %}>iron</option>
+
+        <option value=2 {% if order.order.reached_rank|lower == 'bronze' %} selected {% endif %}>bronze</option>
+
+        <option value=3 {% if order.order.reached_rank|lower == 'silver' %} selected {% endif %}>silver</option>
+
+        <option value=4 {% if order.order.reached_rank|lower == 'gold' %} selected {% endif %}>gold</option>
+
+        <option value=5 {% if order.order.reached_rank|lower == 'platinum' %} selected {% endif %}>platinum</option>
+
+        <option value=6 {% if order.order.reached_rank|lower == 'diamond' %} selected {% endif %}>diamond</option>
+
+        <option value=7 {% if order.order.reached_rank|lower == 'ascendant' %} selected {% endif %}>ascendant</option>
+
+        <option value=8 {% if order.order.reached_rank|lower == 'immortal' %} selected {% endif %}>immortal</option>
+
       </select>
     </div>
 

@@ -151,7 +151,6 @@ def booster_orders(request):
     refresh_orders = BaseOrder.objects.filter(booster=None, is_done=False, is_drop =False)
     for refresh_order in refresh_orders:
         refresh_order.update_actual_price()
-    # Wildrift
         
     orders = BaseOrder.objects.filter(booster= request.user, is_done= False).order_by('id')
     if not orders:
@@ -199,25 +198,19 @@ def booster_orders(request):
             orders_with_percentage.append(order_data)
     print('game', game)   
 
-    wildrift_ranks = WildRiftRank.objects.all()  
-    valorant_ranks = ValorantRank.objects.all()  
     pubg_ranks = PubgRank.objects.all()  
     tft_ranks = TFTRank.objects.all()  
     hearthstone_ranks = HearthstoneRank.objects.all()  
     rocketLeague_ranks = RocketLeagueRank.objects.all()  
     lol_ranks = LeagueOfLegendsRank.objects.all()  
-    hok_ranks = HonorOfKingsRank.objects.all()
  
     context = {
         'orders': orders_with_percentage,
-        'wildrift_ranks': wildrift_ranks,
-        'valorant_ranks': valorant_ranks,
         'pubg_ranks': pubg_ranks,
         'lol_ranks': lol_ranks,
         'tft_ranks': tft_ranks,
         'hearthstone_ranks': hearthstone_ranks,
         'rocketLeague_ranks': rocketLeague_ranks,
-        'hok_ranks': hok_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 

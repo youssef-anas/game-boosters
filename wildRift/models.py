@@ -1,13 +1,11 @@
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.db import models
 from django.conf import settings
-from django.core.validators import MinValueValidator, MaxLengthValidator
 from django.db.models.signals import post_migrate
 from django.dispatch import receiver
-from accounts.models import BaseOrder, Wallet
+from accounts.models import BaseOrder
 from accounts.templatetags.custom_filters import romanize_division
 import requests
-from django.utils import timezone
 import json
 
 User = settings.AUTH_USER_MODEL
@@ -212,8 +210,8 @@ class WildRiftDivisionOrder(models.Model):
         if percent_for_view > 100:
             percent_for_view = 100
 
-        # if booster_price > actual_price:
-        #     booster_price = actual_price
+        if booster_price > actual_price:
+            booster_price = actual_price
 
 
         return {"booster_price":booster_price, 'percent_for_view':percent_for_view}

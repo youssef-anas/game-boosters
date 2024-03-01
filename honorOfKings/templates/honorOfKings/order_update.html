@@ -8,21 +8,29 @@
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank">
-        {% for rank in hok_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+        
+        <option value=1 {% if order.order.reached_rank|lower == 'bronze' %} selected {% endif %}>bronze</option>
+
+        <option value=2 {% if order.order.reached_rank|lower == 'silver' %} selected {% endif %}>silver</option>
+
+        <option value=3 {% if order.order.reached_rank|lower == 'gold' %} selected {% endif %}>gold</option>
+
+        <option value=4 {% if order.order.reached_rank|lower == 'platinum' %} selected {% endif %}>platinum</option>
+
+        <option value=5 {% if order.order.reached_rank|lower == 'diamond' %} selected {% endif %}>diamond</option>
+
+        <option value=6 {% if order.order.reached_rank|lower == 'king' %} selected {% endif %}>king</option>
+
       </select>
     </div>
 
     <div class="input-group mb-3">
       <select class="form-select custom-select" required name="reached_division" id="reached_division">
-        <option value="1" {% if order.order.reached_division == 6 %}selected{% endif %}>V</option>
-        <option value="2" {% if order.order.reached_division == 7 %}selected{% endif %}>IV</option>
-        <option value="3" {% if order.order.reached_division == 8 %}selected{% endif %}>III</option>
-        <option value="4" {% if order.order.reached_division == 9 %}selected{% endif %}>II</option>
-        <option value="5" {% if order.order.reached_division == 10 %}selected{% endif %}>I</option>
+        <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>V</option>
+        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>IV</option>
+        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
+        <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>II</option>
+        <option value="5" {% if order.order.reached_division == 5 %}selected{% endif %}>I</option>
       </select>
     </div>
 
@@ -31,7 +39,7 @@
         <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 Stars</option>
         <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>1 Stars</option>
         <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>2 Stars</option>
-        <option value="3" {% if order.order.reached_marks == 2 %}selected{% endif %}>3 Stars</option>
+        <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>3 Stars</option>
       </select>
     </div>
 

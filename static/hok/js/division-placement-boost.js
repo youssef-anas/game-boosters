@@ -178,8 +178,8 @@ Promise.all([
     
   if(extend_order) {
     function getResult() {
-      const startt = ((valuesToSet[3] - 1) * 4) + valuesToSet[4];
-      const endd = ((desired_rank - 1) * 4) + desired_division-1;
+      const startt = ((valuesToSet[3] - 1) * 5) + valuesToSet[4];
+      const endd = ((desired_rank - 1) * 5) + desired_division-1;
       const slicedArray = sliceArray(divisionPrices, startt, endd);
       const summ = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 

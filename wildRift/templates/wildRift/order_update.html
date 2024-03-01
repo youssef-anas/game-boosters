@@ -7,32 +7,42 @@
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank_wildrift">
-        {% for rank in wildrift_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+        <option value=1 data-mark=2 {% if order.order.reached_rank|lower == 'iron' %} selected {% endif %}>iron</option>
+
+        <option value=2 data-mark=3 {% if order.order.reached_rank|lower == 'bronze' %} selected {% endif %}>bronze</option>
+
+        <option value=3 data-mark=3 {% if order.order.reached_rank|lower == 'silver' %} selected {% endif %}>silver</option>
+
+        <option value=4 data-mark=4 {% if order.order.reached_rank|lower == 'gold' %} selected {% endif %}>gold</option>
+
+        <option value=5 data-mark=4 {% if order.order.reached_rank|lower == 'platinum' %} selected {% endif %}>platinum</option>
+
+        <option value=6 data-mark=5 {% if order.order.reached_rank|lower == 'emerald' %} selected {% endif %}>emerald</option>
+
+        <option value=7 data-mark=6 {% if order.order.reached_rank|lower == 'diamond' %} selected {% endif %}>diamond</option>
+
+        <option value=8 data-mark=-1 {% if order.order.reached_rank|lower == 'master' %} selected {% endif %}>master</option>
       </select>
     </div>
 
     <div class="input-group mb-3">
       <select class="form-select custom-select" required name="reached_division" id="reached_division_wildrift">
-        <option value="1">IV</option>
-        <option value="2">III</option>
-        <option value="3">II</option>
-        <option value="4">I</option>
+        <option value="1" {% if order.order.reached_division == 1 and order.order.reached_rank|lower != "master" %}selected{% endif %}>IV</option>
+        <option value="2" {% if order.order.reached_division == 2 and order.order.reached_rank|lower != "master" %}selected{% endif %}>III</option>
+        <option value="3" {% if order.order.reached_division == 3 and order.order.reached_rank|lower != "master" %}selected{% endif %}>II</option>
+        <option value="4" {% if order.order.reached_division == 4 and order.order.reached_rank|lower != "master" %}selected{% endif %}>I</option>
       </select>
     </div>
 
     <div class="input-group mb-3">
       <select class="form-select custom-select" required name="reached_marks" id="reached_marks_wildrift">
-        <option value="0">0 Mark</option>
-        <option value="1">1 Marks</option>
-        <option value="2" >2 Marks</option>
-        <option value="3" >3 Marks</option>
-        <option value="4" >4 Marks</option>
-        <option value="5">5 Marks</option>
-        <option value="6" >6 Marks</option>
+        <option value="0" {% if order.order.reached_marks == 0 and order.order.reached_rank|lower != "master" %}selected{% endif %}>0 Mark</option>
+        <option value="1" {% if order.order.reached_marks == 1 and order.order.reached_rank|lower != "master" %}selected{% endif %}>1 Marks</option>
+        <option value="2" {% if order.order.reached_marks == 2 and order.order.reached_rank|lower != "master" %}selected{% endif %}>2 Marks</option>
+        <option value="3" {% if order.order.reached_marks == 3 and order.order.reached_rank|lower != "master" %}selected{% endif %}>3 Marks</option>
+        <option value="4" {% if order.order.reached_marks == 4 and order.order.reached_rank|lower != "master" %}selected{% endif %}>4 Marks</option>
+        <option value="5" {% if order.order.reached_marks == 5 and order.order.reached_rank|lower != "master" %}selected{% endif %}>5 Marks</option>
+        <option value="6" {% if order.order.reached_marks == 6 and order.order.reached_rank|lower != "master" %}selected{% endif %}>6 Marks</option>
       </select>
     </div>
 
