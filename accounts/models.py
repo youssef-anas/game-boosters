@@ -125,6 +125,7 @@ class BaseOrder(models.Model):
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
     payer_id = models.CharField(blank=True, null=True)
+    promo_code = models.FloatField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -134,7 +135,7 @@ class BaseOrder(models.Model):
     related_order = GenericForeignKey('content_type', 'object_id')
 
     def update_actual_price(self):
-        if self.status == 'Continue':
+        if self.status == 'Continue' or self.status == 'Extend':
             return {'time':-1,'price':self.actual_price,'progress':5}
         current_time = timezone.now()
         
@@ -152,19 +153,20 @@ class BaseOrder(models.Model):
             time_difference = (current_time - self.created_at).total_seconds()
             if time_difference <= 60:
                 self.actual_price = round(self.price * (percent1 / 100), 2)
-                return {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
+                data = {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
             elif time_difference <= 180:
                 self.actual_price = round(self.price * (percent2 / 100), 2)
-                return {'time':int(180-time_difference),'price':self.actual_price,'progress':2}
+                data = {'time':int(180-time_difference),'price':self.actual_price,'progress':2}
             elif time_difference <= 900:
                 self.actual_price = round(self.price * (percent3 / 100), 2)
-                return {'time':int(900-time_difference),'price':self.actual_price,'progress':3}
+                data = {'time':int(900-time_difference),'price':self.actual_price,'progress':3}
             elif time_difference <= 1800 :
                 self.actual_price = round(self.price * (percent4 / 100), 2)
-                return {'time':int(1800-time_difference),'price':self.actual_price,'progress':4}
+                data = {'time':int(1800-time_difference),'price':self.actual_price,'progress':4}
             else:
-                return {'time':-1,'price':self.actual_price,'progress':5}
-        
+                data = {'time':-1,'price':self.actual_price,'progress':5}
+        self.save()        
+        return data    
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

@@ -262,6 +262,9 @@ Promise.all([
       $('input[name="marks"]').val(mark);
       $('input[name="desired_rank"]').val(desired_rank);
       $('input[name="desired_division"]').val(desired_division);
+      if (desired_rank == 8){
+        $('input[name=desired_division]').val(1)
+      }
       $('input[name="server"]').val(selectedServer);
       $('input[name="price"]').val(result_with_mark);
     }
@@ -342,7 +345,8 @@ Promise.all([
       if (desired_rank == 8) {
         desired_division_to_hide.style.visibility = "hidden";
         let desired_division_IV = document.getElementById("desired-division0")
-        desired_division_IV.checked = true;
+        desired_division_IV.checked = true; 
+        desired_division_IV.setAttribute("checked", "checked");
       }
       else {
         desired_division_to_hide.style.visibility = "visible";

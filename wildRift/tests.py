@@ -28,6 +28,9 @@ class SetUp(TestCase):
     WildRiftTier(rank_id = 6, from_IV_to_III = 27.78, from_III_to_II = 27.78, from_II_to_I = 27.78, from_I_to_IV_next = 206.15),
 
     WildRiftTier(rank_id = 7, from_IV_to_III = 48.12, from_III_to_II = 53.45, from_II_to_I = 76.8, from_I_to_IV_next = 85.32),
+
+    WildRiftTier(rank_id = 8, from_IV_to_III =  85.32)
+
   ]
 
   marks = [

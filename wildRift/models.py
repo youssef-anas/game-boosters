@@ -8,6 +8,7 @@ from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
 import requests
 from django.utils import timezone
+import json
 
 User = settings.AUTH_USER_MODEL
 
@@ -134,3 +135,85 @@ class WildRiftDivisionOrder(models.Model):
     
     def get_rank_value(self, *args, **kwargs):
         return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.booster_champions}"
+    
+
+    def get_order_price(self):
+        # Read data from JSON file
+        with open('static/wildRift/data/divisions_data.json', 'r') as file:
+            division_price = json.load(file)
+            flattened_data = [item for sublist in division_price for item in sublist]
+            flattened_data.insert(0,0)
+        ##
+        with open('static/wildRift/data/marks_data.json', 'r') as file:
+            marks_data = json.load(file)
+            marks_data.insert(0,[0,0,0,0,0,0,0])
+        ##   
+            
+        promo_code_amount = self.order.promo_code
+        if not promo_code_amount:
+            promo_code_amount = 0
+
+        current_rank = self.current_rank.id
+        reached_rank = self.reached_rank.id
+
+        current_division = self.current_division
+        reached_division = self.reached_division
+
+        current_marks = self.current_marks
+        reached_marks = self.reached_marks
+
+        total_percent = 0
+
+        if self.order.duo_boosting:
+            total_percent += 0.65
+
+        if self.order.select_booster:
+            total_percent += 0.10
+
+        if self.order.turbo_boost:
+            total_percent += 0.20
+
+        if self.order.streaming:
+            total_percent += 0.15
+
+        if reached_rank != 8 :
+            reached_division = 1
+
+        start_division = ((current_rank-1)*4) + current_division
+        end_division = ((reached_rank-1)*4)+ reached_division
+        marks_price = marks_data[current_rank][current_marks]
+        marks_price_reached = 0
+        if reached_rank != 8:
+            marks_price_reached = marks_data[reached_rank][reached_marks]
+
+        sublist = flattened_data[start_division:end_division]
+
+
+        total_sum = sum(sublist)    
+
+
+        custom_price = total_sum - marks_price + marks_price_reached
+        
+        custom_price += (custom_price * total_percent)
+        custom_price -= custom_price * (promo_code_amount/100)
+
+        ##############################################################
+
+        actual_price = self.order.actual_price
+        main_price = self.order.price
+
+        percent = round(actual_price / (main_price/100))
+
+        print(percent)
+
+        booster_price = custom_price * (percent/100)
+
+        percent_for_view = round((booster_price/actual_price)* 100)
+        if percent_for_view > 100:
+            percent_for_view = 100
+
+        # if booster_price > actual_price:
+        #     booster_price = actual_price
+
+
+        return {"booster_price":booster_price, 'percent_for_view':percent_for_view}

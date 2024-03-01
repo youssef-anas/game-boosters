@@ -100,7 +100,7 @@ def get_order_result_by_rank(data,extend_order_id):
             pass
     booster_id = data['choose_booster']
     if booster_id > 0 :
-       get_object_or_404(User,id=booster_id,is_booster=True)
+       get_object_or_404(User,id=booster_id,is_booster=True) # TODO add is_wr_player here pls
     else:
         booster_id = 0
     #####################################
@@ -110,3 +110,8 @@ def get_order_result_by_rank(data,extend_order_id):
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+    
+
+
+

@@ -50,12 +50,17 @@ $('document').ready(function () {
     var markNumber = selectedRank.data('mark');
 
     divisionSelect.html(originalDivisionOptions);
+    
     marksSelect.html(originalMarksOptions);
 
     if (selectedRank.text().toLowerCase() === "master") {
       divisionSelect.find('option').hide();
       marksSelect.find('option').hide();
+      divisionSelect.addClass('d-none')
+      marksSelect.addClass('d-none')
     } else {
+      divisionSelect.removeClass('d-none')
+      marksSelect.removeClass('d-none')
       marksSelect.find('option').each(function () {
         if ($(this).val() > markNumber) {
           $(this).hide();
