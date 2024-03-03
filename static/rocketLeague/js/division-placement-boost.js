@@ -1,5 +1,5 @@
 // Array For Names 
-const ranksNames = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAMPION', 'GRAND CHAMPION', 'SUPERSONIC LEGEND']
+const ranksNames = ['unrank', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'champion', 'grand champion', 'supersonic legend']
 
 const divisionNames = [0, 'I', 'II', 'III']
 // --------- If Customer Come After Choose Booster or For Extend Order ---------
@@ -8,12 +8,12 @@ const divisionNames = [0, 'I', 'II', 'III']
 const orderContainer = document.getElementById('order-container');
 const urlParams = new URLSearchParams(window.location.search);
 const extend_order = urlParams.get('extend');
+let discount_amount = 0
 
 // Access the data attribute and convert it to a JavaScript variable
 const orderValue = orderContainer.dataset.order;
 
 const valuesAsList = orderValue.split(',')
-const rankedtype = valuesAsList[0]
 const list1 = valuesAsList.slice(0, 5);
 const list2 = valuesAsList.slice(5, 9);
 
@@ -29,101 +29,26 @@ console.log(valuesToSet);
 // Get the 'choose-booster' query parameter value from the URL
 const chooseBoosterValue = urlParams.get('choose_booster');
 let chooseBoosterInt = 0
-let autoSelectBooster = document.getElementById('selectBoosterApplyButton')
+let autoSelectBooster = $('input#select-booster');
 if (chooseBoosterValue != null) {
   chooseBoosterInt = parseInt(chooseBoosterValue, 10);
-  autoSelectBooster.click()
+  autoSelectBooster.val(true)
 }
 // Set the value of the input field to the obtained 'choose-booster' value
 document.getElementById('chooseBoosterInput').value = chooseBoosterInt;
 
-// Extra Charges Part
-// Buttons 
-const buttons = {
-  duoBoosting: document.querySelector('#duoBoostingButton'),
-  selectBooster: document.querySelector('#selectBoosterButton'),
-  turboBoost: document.querySelector('#turboBoostButton'),
-  streaming: document.querySelector('#streamingButton'),
-};
-
-// Content
-const contents = {
-  duoBoosting: document.querySelector('.duoBoostingContent'),
-  selectBooster: document.querySelector('.selectBoosterContent'),
-  turboBoost: document.querySelector('.turboBoostContent'),
-  streaming: document.querySelector('.streamingContent'),
-};
-
-// Apply
-const Applybuttons = {
-  duoBoosting: document.querySelector('#duoBoostingApplyButton'),
-  selectBooster: document.querySelector('#selectBoosterApplyButton'),
-  turboBoost: document.querySelector('#turboBoostApplyButton'),
-  streaming: document.querySelector('#streamingApplyButton'),
-};
-
-// Toggle Function
-function toggleContent(content) {
-  for (const key in contents) {
-    contents[key].style.display = key === content && contents[key].style.display !== 'block' ? 'block' : 'none';
-  }
-}
-
-// Toggle click event
-function setupButtonClickEvent(button, content) {
-  button.addEventListener('click', function () {
-    toggleContent(content);
-  });
-}
-
-// Update Percentege
-function updateTotalPercentage(percentage, add = true, button) {
-  let buttonOldName = buttons[button].innerHTML
-  if (add) {
-    total_Percentage += percentage;
-    $(`.ranked-boost #${button}`).val(true);
-    $(`.placements-boost #${button}`).val(true);
-    $(`.seasonal-reward #${button}`).val(true);
-    $(`.tournament-boost #${button}`).val(true);
-    buttons[button].innerHTML = '<i class="fa-solid fa-check"></i>' + buttonOldName;
-    Applybuttons[button].innerHTML = 'Cancel'
-    Applybuttons[button].classList.remove('applyButton');
-    Applybuttons[button].classList.add('cancelButton');
-  } else {
-    $(`.ranked-boost #${button}`).val(false);
-    $(`.placements-boost #${button}`).val(false);
-    $(`.seasonal-reward #${button}`).val(false);
-    $(`.tournament-boost #${button}`).val(false);
-    total_Percentage -= percentage;
-    buttons[button].innerHTML = buttonOldName.replace('<i class="fa-solid fa-check"></i>', '');
-    Applybuttons[button].innerHTML = 'Apply'
-    Applybuttons[button].classList.remove('cancelButton');
-    Applybuttons[button].classList.add('applyButton');
-  }
-}
-
 // Additional Initial Percent
-var total_Percentage = 0;
+let total_Percentage = 0;
 
-// ----------------------------- Ranked Boost ---------------------------------
+// ----------------------------- Division Boost ---------------------------------
 
-// 3vs3 Buttons
-const radioButtons3vs3Current = document.querySelectorAll('input[name="radio-group-3vs3-current"]');
-const radioButtons3vs3Desired = document.querySelectorAll('input[name="radio-group-3vs3-desired"]');
-const radioButtons3vs3CurrentDivision = document.querySelectorAll('input[name="radio-group-current-3vs3-division"]');
-const radioButtons3vs3DesiredDivision = document.querySelectorAll('input[name="radio-group-desired-3vs3-division"]');
-
-// 2vs2 Buttons
-const radioButtons2vs2Current = document.querySelectorAll('input[name="radio-group-2vs2-current"]');
-const radioButtons2vs2Desired = document.querySelectorAll('input[name="radio-group-2vs2-desired"]');
-const radioButtons2vs2CurrentDivision = document.querySelectorAll('input[name="radio-group-current-2vs2-division"]');
-const radioButtons2vs2DesiredDivision = document.querySelectorAll('input[name="radio-group-desired-2vs2-division"]');
-
-// 1vs1 Buttons
-const radioButtons1vs1Current = document.querySelectorAll('input[name="radio-group-1vs1-current"]');
-const radioButtons1vs1Desired = document.querySelectorAll('input[name="radio-group-1vs1-desired"]');
-const radioButtons1vs1CurrentDivision = document.querySelectorAll('input[name="radio-group-current-1vs1-division"]');
-const radioButtons1vs1DesiredDivision = document.querySelectorAll('input[name="radio-group-desired-1vs1-division"]');
+//  Buttons
+const radioButtonsCurrent = document.querySelectorAll('input[name="radio-group-current"]');
+const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-desired"]');
+const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
+const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
+const queue_type_selected = document.querySelector('.queue-type-select');
+const division_server_select_element = document.querySelector('.division-servers-select');
 
 // Disable Functions
 function setRadioButtonStateWithDisable(radioButtons, values) {
@@ -153,30 +78,15 @@ function sliceArray(array, start, end) {
 }
 
 // Initail Values
-// 3vs3
-const initiallyCheckedIndex3vs3Current = Array.from(radioButtons3vs3Current).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex3vs3Desired = Array.from(radioButtons3vs3Desired).findIndex(radio => radio.checked) + 1;
+// 
+const initiallyCheckedIndexCurrent = Array.from(radioButtonsCurrent).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexDesired = Array.from(radioButtonsDesired).findIndex(radio => radio.checked) + 1;
 
-const initiallyCheckedIndex3vs3CurrentDivision = Array.from(radioButtons3vs3CurrentDivision).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex3vs3DesiredDivision = Array.from(radioButtons3vs3DesiredDivision).findIndex(radio => radio.checked) + 1;
-
-// 2vs2
-const initiallyCheckedIndex2vs2Current = Array.from(radioButtons2vs2Current).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex2vs2Desired = Array.from(radioButtons2vs2Desired).findIndex(radio => radio.checked) + 1;
-
-const initiallyCheckedIndex2vs2CurrentDivision = Array.from(radioButtons2vs2CurrentDivision).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex2vs2DesiredDivision = Array.from(radioButtons2vs2DesiredDivision).findIndex(radio => radio.checked) + 1;
-
-// 1vs1
-const initiallyCheckedIndex1vs1Current = Array.from(radioButtons1vs1Current).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex1vs1Desired = Array.from(radioButtons1vs1Desired).findIndex(radio => radio.checked) + 1;
-
-const initiallyCheckedIndex1vs1CurrentDivision = Array.from(radioButtons1vs1CurrentDivision).findIndex(radio => radio.checked) + 1;
-const initiallyCheckedIndex1vs1DesiredDivision = Array.from(radioButtons1vs1DesiredDivision).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexCurrentDivision = Array.from(radioButtonsCurrentDivision).findIndex(radio => radio.checked) + 1;
+const initiallyCheckedIndexDesiredDivision = Array.from(radioButtonsDesiredDivision).findIndex(radio => radio.checked) + 1;
 
 // Read Values From Json File
 let divisionPrices = [0];
-let marks_price = [[0, 0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
     $.getJSON('/static/rocketLeague/data/divisions_data.json', function (data) {
@@ -185,57 +95,21 @@ Promise.all([
     });
   })
 ]).then(function () {
-  // Variable That I Use
-  // 3vs3
-  var current_rank_3vs3 = initiallyCheckedIndex3vs3Current;
-  var desired_rank_3vs3 = initiallyCheckedIndex3vs3Desired;
-  var current_division_3vs3 = initiallyCheckedIndex3vs3CurrentDivision;
-  var desired_division_3vs3 = initiallyCheckedIndex3vs3DesiredDivision;
-  var current_rank_name_3vs3 = ranksNames[initiallyCheckedIndex3vs3Current];
-  var desired_rank_name_3vs3 = ranksNames[initiallyCheckedIndex3vs3Desired];
-  var current_division_name_3vs3 = divisionNames[initiallyCheckedIndex3vs3CurrentDivision];
-  var desired_division_name_3vs3 = divisionNames[initiallyCheckedIndex3vs3DesiredDivision];
+  // Variable That I Use 
+  let current_rank = initiallyCheckedIndexCurrent;
+  let desired_rank = initiallyCheckedIndexDesired;
+  let current_division = initiallyCheckedIndexCurrentDivision;
+  let desired_division = initiallyCheckedIndexDesiredDivision;
+  let current_rank_name = ranksNames[initiallyCheckedIndexCurrent];
+  let desired_rank_name = ranksNames[initiallyCheckedIndexDesired];
+  let current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
+  let desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
+  let queue_type = queue_type_selected.value
+  let selectedDivsionServer = division_server_select_element.value;
 
-  // 2vs2
-  var current_rank_2vs2 = initiallyCheckedIndex2vs2Current;
-  var desired_rank_2vs2 = initiallyCheckedIndex2vs2Desired;
-  var current_division_2vs2 = initiallyCheckedIndex2vs2CurrentDivision;
-  var desired_division_2vs2 = initiallyCheckedIndex2vs2DesiredDivision;
-  var current_rank_name_2vs2 = ranksNames[initiallyCheckedIndex2vs2Current];
-  var desired_rank_name_2vs2 = ranksNames[initiallyCheckedIndex2vs2Desired];
-  var current_division_name_2vs2 = divisionNames[initiallyCheckedIndex2vs2CurrentDivision];
-  var desired_division_name_2vs2 = divisionNames[initiallyCheckedIndex2vs2DesiredDivision];
-
-  // 1vs1
-  var current_rank_1vs1 = initiallyCheckedIndex1vs1Current;
-  var desired_rank_1vs1 = initiallyCheckedIndex1vs1Desired;
-  var current_division_1vs1 = initiallyCheckedIndex1vs1CurrentDivision;
-  var desired_division_1vs1 = initiallyCheckedIndex1vs1DesiredDivision;
-  var current_rank_name_1vs1 = ranksNames[initiallyCheckedIndex1vs1Current];
-  var desired_rank_name_1vs1 = ranksNames[initiallyCheckedIndex1vs1Desired];
-  var current_division_name_1vs1 = divisionNames[initiallyCheckedIndex1vs1CurrentDivision];
-  var desired_division_name_1vs1 = divisionNames[initiallyCheckedIndex1vs1DesiredDivision];
-
-  // Apply Extra Button
-  function setupApplyButtonClickEvent(button, percentage) {
-    Applybuttons[button].addEventListener('click', function () {
-      updateTotalPercentage(percentage, !Applybuttons[button].classList.contains('cancelButton'), button);
-      get3vs3RankedPrice();
-      get2vs2RankedPrice();
-      get1vs1RankedPrice();
-      getPlacementPrice();
-      getSeasonalPrice();
-    });
-  }
-
-  // Setup click events for each button
-  for (const key in buttons) {
-    setupButtonClickEvent(buttons[key], key);
-  }
-  setupApplyButtonClickEvent('duoBoosting', 0.65);
-  setupApplyButtonClickEvent('selectBooster', 0.05);
-  setupApplyButtonClickEvent('turboBoost', 0.20);
-  setupApplyButtonClickEvent('streaming', 0.15);
+  // Look Here:- I Want Get The Current & Desired Element Not Index
+  let currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
+  let desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
 
   // Extend
   if (extend_order) {
@@ -243,543 +117,312 @@ Promise.all([
     document.getElementById('extendOrder').value = orderID;
 
     // Set the checked state for each group of radio buttons using the specified order
-    // 3vs3
-    if(rankedtype == 3) {
-      setRadioButtonStateWithDisable(radioButtons3vs3Current, valuesToSet[1]-1);
-      setRadioButtonStateWithDisable(radioButtons3vs3CurrentDivision, valuesToSet[2]-1);
-      setRadioButtonState(radioButtons3vs3Desired, valuesToSet[3]-1, true);
-      setRadioButtonStateForDesiredDivision(radioButtons3vs3DesiredDivision, valuesToSet[4]-1);
-    } 
-    // 2vs2
-    else if(rankedtype == 2) {
-      setRadioButtonStateWithDisable(radioButtons2vs2Current, valuesToSet[1]-1);
-      setRadioButtonStateWithDisable(radioButtons2vs2CurrentDivision, valuesToSet[2]-1);
-      setRadioButtonState(radioButtons2vs2Desired, valuesToSet[3]-1, true);
-      setRadioButtonStateForDesiredDivision(radioButtons2vs2DesiredDivision, valuesToSet[4]-1);
+    setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
+    setRadioButtonStateWithDisable(radioButtonsCurrentDivision, valuesToSet[1]-1);
+    setRadioButtonState(radioButtonsDesired, valuesToSet[3]-1, true);
+    setRadioButtonStateForDesiredDivision(radioButtonsDesiredDivision, valuesToSet[4]-1);
+    queue_type_selected.disabled = true
+    division_server_select_element.disabled = true
+    current_rank = valuesToSet[0];
+    current_division = valuesToSet[1];
+    desired_rank = valuesToSet[3];
+    desired_division = valuesToSet[4];
+    current_rank_name = ranksNames[current_rank];
+    desired_rank_name = ranksNames[desired_rank];
+    current_division_name = divisionNames[current_division];
+    desired_division_name = divisionNames[desired_division];
+
+    // Checkbox
+    let extraOptions = document.querySelectorAll('input[name="extra-checkbox"]');
+
+    // Solo Or Duo Boosting Change
+    if (valuesToSetAdditional[0]) {
+      document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').checked = true;
+      $('input#duoBoosting').val(true)
+    } else {
+      document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').checked = true;
+      $('input#duoBoosting').val(false)
     }
-    // 1vs1
-    else if(rankedtype == 1) {
-      setRadioButtonStateWithDisable(radioButtons1vs1Current, valuesToSet[1]-1);
-      setRadioButtonStateWithDisable(radioButtons1vs1CurrentDivision, valuesToSet[2]-1);
-      setRadioButtonState(radioButtons1vs1Desired, valuesToSet[3]-1, true);
-      setRadioButtonStateForDesiredDivision(radioButtons1vs1DesiredDivision, valuesToSet[4]-1);
-    }
 
-    // 3vs3
-    current_rank_3vs3 = valuesToSet[1];
-    current_division_3vs3 = valuesToSet[2];
-    desired_rank_3vs3 = valuesToSet[3];
-    desired_division_3vs3 = valuesToSet[4];
-    var current_rank_name_3vs3 = ranksNames[current_rank_3vs3];
-    var desired_rank_name_3vs3 = ranksNames[desired_rank_3vs3];
-    var current_division_name_3vs3 = divisionNames[current_division_3vs3];
-    var desired_division_name_3vs3 = divisionNames[desired_division_3vs3];
+    // Disable Extra
+    document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').disabled = true;
+    document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').disabled = true;
 
-    // 2vs2
-    current_rank_2vs2 = valuesToSet[1];
-    current_division_2vs2 = valuesToSet[2];
-    desired_rank_2vs2 = valuesToSet[3];
-    desired_division_2vs2 = valuesToSet[4];
-    var current_rank_name_2vs2 = ranksNames[current_rank_2vs2];
-    var desired_rank_name_2vs2 = ranksNames[desired_rank_2vs2];
-    var current_division_name_2vs2 = divisionNames[current_division_2vs2];
-    var desired_division_name_3vs3 = divisionNames[desired_division_2vs2];
-
-    // 1vs1
-    current_rank_1vs1 = valuesToSet[1];
-    current_division_1vs1 = valuesToSet[2];
-    desired_rank_1vs1 = valuesToSet[3];
-    desired_division_1vs1 = valuesToSet[4];
-    var current_rank_name_1vs1 = ranksNames[current_rank_1vs1];
-    var desired_rank_name_1vs1 = ranksNames[desired_rank_1vs1];
-    var current_division_name_1vs1 = divisionNames[current_division_1vs1];
-    var desired_division_name_1vs1 = divisionNames[desired_division_1vs1];
-
-    let duoBoostingApply= document.getElementById('duoBoostingApplyButton')
-    let turboBoostApply = document.getElementById('turboBoostApplyButton')
-    let streamingApply = document.getElementById('streamingApplyButton')
-
-    // Function to set checkbox state based on values
-    function setCheckboxState(button, value) {
-      console.log('Setting button state for', button.id, 'to', value);
-      if (value === true) {
-        $(button).trigger('click');
-        console.log('Checkbox clicked successfully');
+    // Extra Buttons
+    extraOptions.forEach(function (checkbox, index) {
+      if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
+        checkbox.checked = true
+        $(`input#${checkbox.value}`).val(true)
+        
+      } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
+        checkbox.checked = true
+        $(`input#${checkbox.value}`).val(true)
+      } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
+        checkbox.checked = true
+        $(`input#${checkbox.value}`).val(true)
+      } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
+        checkbox.checked = true
+        $(`input#${checkbox.value}`).val(true)
+      } else {
+        checkbox.checked = false
+        $(`input#${checkbox.value}`).val(false)
       }
-    }
+      // Disable Extra
+      $(checkbox).prop('disabled', true)
+    })
 
-    // Set the state of each checkbox based on the values list
-    setCheckboxState(duoBoostingApply, valuesToSetAdditional[0]);
-    setCheckboxState(autoSelectBooster, valuesToSetAdditional[1]);
-    setCheckboxState(turboBoostApply, valuesToSetAdditional[2]);
-    setCheckboxState(streamingApply, valuesToSetAdditional[3]);
   }
 
   if (extend_order) {
-    if(rankedtype == 3) {
-      $("#ranked3vs3-boost").click()
-      // 3vs3
-      function get3vs3RankedPrice() {
-        const startRank = ((valuesToSet[3] - 1) * 3) + valuesToSet[4];
-        const endRank = ((desired_rank_3vs3 - 1) * 3) + desired_division_3vs3-1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        console.log(slicedArray)
-        console.log(divisionPrices)
-  
-        // Apply extra charges to the result
-        sum += sum * total_Percentage;
-        sum = parseFloat(sum.toFixed(2)); 
-  
-        const pricee = document.querySelector('.price-data.ranked3vs3-boost');
-        pricee.innerHTML = `
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_3vs3} ${current_division_name_3vs3} to ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]] } </span></p>
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Extend <span class='fw-bold text-white'>From ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} to ${desired_rank_name_3vs3} ${desired_division_name_3vs3} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Extra Cost: $${sum}</span>
-      `;
-  
-        // From Value
-        if ($('.ranked-boost input[name="ranked_type"]').val() == 3) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_3vs3);
-          $('.ranked-boost input[name="current_division"]').val(current_division_3vs3);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_3vs3);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_3vs3);
-          $('.ranked-boost input[name="price"]').val(sum);
-        }
-      }
+    function getDivisionPrice() {
+      const startRank = ((valuesToSet[3] - 1) * 3) + valuesToSet[4];
+      const endRank = ((desired_rank - 1) * 3) + desired_division-1;
+      const slicedArray = sliceArray(divisionPrices, startRank, endRank);
+      const sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-      // 2vs2
-      function get2vs2RankedPrice() {
-        const startRank = ((current_rank_2vs2 - 1) * 3) + current_division_2vs2;
-        const endRank = ((desired_rank_2vs2 - 1) * 3) + desired_division_2vs2 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked2vs2-boost');
-        pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_2vs2} ${current_division_name_2vs2} to ${desired_rank_name_2vs2} ${desired_division_name_2vs2} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 2) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_2vs2);
-          $('.ranked-boost input[name="current_division"]').val(current_division_2vs2);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_2vs2);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_2vs2);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
+      let result = sum
 
-      // 1vs1
-      function get1vs1RankedPrice() {
-        const startRank = ((current_rank_1vs1 - 1) * 3) + current_division_1vs1;
-        const endRank = ((desired_rank_1vs1 - 1) * 3) + desired_division_1vs1 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked1vs1-boost');
-        pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_1vs1} ${current_division_name_1vs1} to ${desired_rank_name_1vs1} ${desired_division_name_1vs1} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 1) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_1vs1);
-          $('.ranked-boost input[name="current_division"]').val(current_division_1vs1);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_1vs1);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_1vs1);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
-    } else if (rankedtype == 2) {
-      $("#ranked2vs2-boost").click()
-      // 2vs2
-      function get2vs2RankedPrice() {
-        const startRank = ((valuesToSet[3] - 1) * 3) + valuesToSet[4];
-        const endRank = ((desired_rank_2vs2 - 1) * 3) + desired_division_2vs2-1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        console.log(slicedArray)
-        console.log(divisionPrices)
-  
-        // Apply extra charges to the result
-        sum += sum * total_Percentage;
-        sum = parseFloat(sum.toFixed(2)); 
-  
-        const pricee = document.querySelector('.price-data.ranked2vs2-boost');
-        pricee.innerHTML = `
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_2vs2} ${current_division_name_2vs2} to ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]] } </span></p>
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Extend <span class='fw-bold text-white'>From ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} to ${desired_rank_name_2vs2} ${desired_division_name_2vs2} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Extra Cost: $${sum}</span>
-      `;
-  
-        // From Value
-        if ($('.ranked-boost input[name="ranked_type"]').val() == 2) { 
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_2vs2);
-          $('.ranked-boost input[name="current_division"]').val(current_division_2vs2);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_2vs2);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_2vs2);
-          $('.ranked-boost input[name="price"]').val(sum);
-        }
-      }
+      // Apply extra charges to the result
+      result += result * total_Percentage;
+      // Apply promo code 
+      result -= result * (discount_amount/100 )
 
-      // 3vs3
-      function get3vs3RankedPrice() {
-        const startRank = ((current_rank_3vs3 - 1) * 3) + current_division_3vs3;
-        const endRank = ((desired_rank_3vs3 - 1) * 3) + desired_division_3vs3 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked3vs3-boost');
-        pricee.innerHTML = `
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_3vs3} ${current_division_name_3vs3} to ${desired_rank_name_3vs3} ${desired_division_name_3vs3} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>
-      `;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 3) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_3vs3);
-          $('.ranked-boost input[name="current_division"]').val(current_division_3vs3);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_3vs3);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_3vs3);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
+      result = parseFloat(result.toFixed(2)); 
 
-      // 1vs1
-      function get1vs1RankedPrice() {
-        const startRank = ((current_rank_1vs1 - 1) * 3) + current_division_1vs1;
-        const endRank = ((desired_rank_1vs1 - 1) * 3) + desired_division_1vs1 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked1vs1-boost');
-        pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_1vs1} ${current_division_name_1vs1} to ${desired_rank_name_1vs1} ${desired_division_name_1vs1} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 1) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_1vs1);
-          $('.ranked-boost input[name="current_division"]').val(current_division_1vs1);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_1vs1);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_1vs1);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
-    } else if (rankedtype == 1) {
-      $("#ranked1vs1-boost").click()
-      // 1vs1
-      function get1vs1RankedPrice() {
-        const startRank = ((valuesToSet[3] - 1) * 3) + valuesToSet[4];
-        const endRank = ((desired_rank_1vs1 - 1) * 3) + desired_division_1vs1-1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-        console.log(slicedArray)
-        console.log(divisionPrices)
-  
-        // Apply extra charges to the result
-        sum += sum * total_Percentage;
-        sum = parseFloat(sum.toFixed(2)); 
-  
-        const pricee = document.querySelector('.price-data.ranked1vs1-boost');
-        pricee.innerHTML = `
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_1vs1} ${current_division_name_1vs1} to ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]] } </span></p>
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Extend <span class='fw-bold text-white'>From ${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} to ${desired_rank_name_1vs1} ${desired_division_name_1vs1} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Extra Cost: $${sum}</span>
-      `;
-  
-        // From Value
-        if ($('.ranked-boost input[name="ranked_type"]').val() == 1) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_1vs1);
-          $('.ranked-boost input[name="current_division"]').val(current_division_1vs1);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_1vs1);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_1vs1);
-          $('.ranked-boost input[name="price"]').val(sum);
-        }
-      }
+      let currentElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (ranksNames[valuesToSet[3]]).toLowerCase());
 
-      // 3vs3
-      function get3vs3RankedPrice() {
-        const startRank = ((current_rank_3vs3 - 1) * 3) + current_division_3vs3;
-        const endRank = ((desired_rank_3vs3 - 1) * 3) + desired_division_3vs3 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked3vs3-boost');
-        pricee.innerHTML = `
-        <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_3vs3} ${current_division_name_3vs3} to ${desired_rank_name_3vs3} ${desired_division_name_3vs3} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>
-      `;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 3) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_3vs3);
-          $('.ranked-boost input[name="current_division"]').val(current_division_3vs3);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_3vs3);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_3vs3);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+      $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
+      $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      // 2vs2
-      function get2vs2RankedPrice() {
-        const startRank = ((current_rank_2vs2 - 1) * 3) + current_division_2vs2;
-        const endRank = ((desired_rank_2vs2 - 1) * 3) + desired_division_2vs2 - 1;
-        const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-        let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    
-        // Apply extra charges to the result
-        result += result * total_Percentage;
-        result = parseFloat(result.toFixed(2)); 
-    
-        const pricee = document.querySelector('.price-data.ranked2vs2-boost');
-        pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_2vs2} ${current_division_name_2vs2} to ${desired_rank_name_2vs2} ${desired_division_name_2vs2} </span></p>
-        <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-    
-        console.log('Result', result)
-        // From Value
-        if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 2) {
-          $('.ranked-boost input[name="current_rank"]').val(current_rank_2vs2);
-          $('.ranked-boost input[name="current_division"]').val(current_division_2vs2);
-          $('.ranked-boost input[name="desired_rank"]').val(desired_rank_2vs2);
-          $('.ranked-boost input[name="desired_division"]').val(desired_division_2vs2);
-          $('.ranked-boost input[name="price"]').val(result);
-        }
-      }
+      $('.division-boost .current-selected-info').html(`${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]}`);
+      $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
+
+      $('.current').removeClass().addClass(`current ${ranksNames[valuesToSet[3]].replace(/\s+/g, '-')}`)
+      $('.desired').removeClass().addClass(`desired ${desired_rank_name.replace(/\s+/g, '-')}`)
+
+      $('.total-price #division-boost-price').text(`$${result}`)
+
+      // From Value
+      $('.division-boost input[name="current_rank"]').val(current_rank);
+      $('.division-boost input[name="current_division"]').val(current_division);
+      $('.division-boost input[name="queue_type"]').val(queue_type);
+      $('.division-boost input[name="desired_rank"]').val(desired_rank);
+      $('.division-boost input[name="desired_division"]').val(desired_division);
+      $('.division-boost input[name="server"]').val(selectedDivsionServer);
+      $('.division-boost input[name="price"]').val(result);
     }
   } else {
     // Get Result Function
-    // 3vs3
-    function get3vs3RankedPrice() {
-      const startRank = ((current_rank_3vs3 - 1) * 3) + current_division_3vs3;
-      const endRank = ((desired_rank_3vs3 - 1) * 3) + desired_division_3vs3 - 1;
+    function getDivisionPrice() {
+      const startRank = ((current_rank - 1) * 3) + current_division;
+      const endRank = ((desired_rank - 1) * 3) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-      let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+      const sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+  
+      let result = sum
   
       // Apply extra charges to the result
       result += result * total_Percentage;
-      result = parseFloat(result.toFixed(2)); 
-  
-      const pricee = document.querySelector('.price-data.ranked3vs3-boost');
-      pricee.innerHTML = `
-      <p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_3vs3} ${current_division_name_3vs3} to ${desired_rank_name_3vs3} ${desired_division_name_3vs3} </span></p>
-      <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>
-    `;
-  
-      console.log('Result', result)
-      // From Value
-      if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 3) {
-        $('.ranked-boost input[name="current_rank"]').val(current_rank_3vs3);
-        $('.ranked-boost input[name="current_division"]').val(current_division_3vs3);
-        $('.ranked-boost input[name="desired_rank"]').val(desired_rank_3vs3);
-        $('.ranked-boost input[name="desired_division"]').val(desired_division_3vs3);
-        $('.ranked-boost input[name="price"]').val(result);
-      }
-    }
+      // Apply promo code 
+      result -= result * (discount_amount/100 )
 
-    // 2vs2
-    function get2vs2RankedPrice() {
-      const startRank = ((current_rank_2vs2 - 1) * 3) + current_division_2vs2;
-      const endRank = ((desired_rank_2vs2 - 1) * 3) + desired_division_2vs2 - 1;
-      const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-      let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  
-      // Apply extra charges to the result
-      result += result * total_Percentage;
       result = parseFloat(result.toFixed(2)); 
-  
-      const pricee = document.querySelector('.price-data.ranked2vs2-boost');
-      pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_2vs2} ${current_division_name_2vs2} to ${desired_rank_name_2vs2} ${desired_division_name_2vs2} </span></p>
-      <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-  
-      console.log('Result', result)
-      // From Value
-      if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 2) {
-        $('.ranked-boost input[name="current_rank"]').val(current_rank_2vs2);
-        $('.ranked-boost input[name="current_division"]').val(current_division_2vs2);
-        $('.ranked-boost input[name="desired_rank"]').val(desired_rank_2vs2);
-        $('.ranked-boost input[name="desired_division"]').val(desired_division_2vs2);
-        $('.ranked-boost input[name="price"]').val(result);
-      }
-    }
 
-    // 1vs1
-    function get1vs1RankedPrice() {
-      const startRank = ((current_rank_1vs1 - 1) * 3) + current_division_1vs1;
-      const endRank = ((desired_rank_1vs1 - 1) * 3) + desired_division_1vs1 - 1;
-      const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-      let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+      $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
+      $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
+
+      $('.division-boost .current-selected-info').html(`${current_rank_name} ${current_division_name}`);
+      $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
+
+      $('.current').removeClass().addClass(`current ${current_rank_name.replace(/\s+/g, '-')}`)
+      $('.desired').removeClass().addClass(`desired ${desired_rank_name.replace(/\s+/g, '-')}`)
+
+      $('.total-price #division-boost-price').text(`$${result}`)
   
-      // Apply extra charges to the result
-      result += result * total_Percentage;
-      result = parseFloat(result.toFixed(2)); 
-  
-      const pricee = document.querySelector('.price-data.ranked1vs1-boost');
-      pricee.innerHTML = `<p class='fs-5 text-uppercase my-4 text-secondary'>Boosting <span class='fw-bold text-white'>From ${current_rank_name_1vs1} ${current_division_name_1vs1} to ${desired_rank_name_1vs1} ${desired_division_name_1vs1} </span></p>
-      <span class='fs-5 text-uppercase fw-bold'>Total Cost: $${result}</span>`;
-  
-      console.log('Result', result)
       // From Value
-      if ($('.ranked-boost input[name="game_type"]').val() == 'D' && $('.ranked-boost input[name="ranked_type"]').val() == 1) {
-        $('.ranked-boost input[name="current_rank"]').val(current_rank_1vs1);
-        $('.ranked-boost input[name="current_division"]').val(current_division_1vs1);
-        $('.ranked-boost input[name="desired_rank"]').val(desired_rank_1vs1);
-        $('.ranked-boost input[name="desired_division"]').val(desired_division_1vs1);
-        $('.ranked-boost input[name="price"]').val(result);
+      if ($('.division-boost input[name="game_type"]').val() == 'D') {
+        $('.division-boost input[name="current_rank"]').val(current_rank);
+        $('.division-boost input[name="current_division"]').val(current_division);
+        $('.division-boost input[name="queue_type"]').val(queue_type);
+        $('.division-boost input[name="desired_rank"]').val(desired_rank);
+        $('.division-boost input[name="desired_division"]').val(desired_division);
+        $('.division-boost input[name="server"]').val(selectedDivsionServer);
+        $('.division-boost input[name="price"]').val(result);
       }
     }
   }
 
   // Get Result 
-  get3vs3RankedPrice();
-  get2vs2RankedPrice();
-  get1vs1RankedPrice();
+  getDivisionPrice();
 
-  // Current Rank 3vs3 Change
-  radioButtons3vs3Current.forEach(function (radio, index) {
+  // Current Rank Change
+  radioButtonsCurrent.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons3vs3Current).indexOf(radio);
-      current_rank_3vs3 = selectedIndex + 1;
-      current_rank_name_3vs3 = ranksNames[current_rank_3vs3];
-      get3vs3RankedPrice();
+      const selectedIndex = Array.from(radioButtonsCurrent).indexOf(radio);
+      current_rank = selectedIndex + 1;
+      current_rank_name = ranksNames[current_rank];
+
+      // Look Here:- When Current Rank Change Change Value So Image Changed 
+      currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
+
+      getDivisionPrice();
     });
   });
 
-  // Current Rank 2vs2 Change
-  radioButtons2vs2Current.forEach(function (radio, index) {
+  // Desired Rank Change
+  radioButtonsDesired.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons2vs2Current).indexOf(radio);
-      current_rank_2vs2 = selectedIndex + 1;
-      current_rank_name_2vs2 = ranksNames[current_rank_2vs2];
-      get2vs2RankedPrice();
-    });
-  });
+      const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
+      desired_rank = selectedIndex + 1;
+      desired_rank_name = ranksNames[desired_rank]
 
-  // Current Rank 1vs1 Change
-  radioButtons1vs1Current.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons1vs1Current).indexOf(radio);
-      current_rank_1vs1 = selectedIndex + 1;
-      current_rank_name_1vs1 = ranksNames[current_rank_1vs1];
-      get1vs1RankedPrice();
-    });
-  });
-
-  // Desired Rank 3vs3 Change
-  radioButtons3vs3Desired.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons3vs3Desired).indexOf(radio);
-      desired_rank_3vs3 = selectedIndex + 1;
-      desired_rank_name_3vs3 = ranksNames[desired_rank_3vs3]
+      // Look Here:- When Desired Rank Change Change Value So Image Changed 
+      desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
       
-      get3vs3RankedPrice();
+      getDivisionPrice();
     });
   });
 
-  // Desired Rank 2vs2 Change
-  radioButtons2vs2Desired.forEach(function (radio, index) {
+  // Current Division  Change
+  radioButtonsCurrentDivision.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons2vs2Desired).indexOf(radio);
-      desired_rank_2vs2 = selectedIndex + 1;
-      desired_rank_name_2vs2 = ranksNames[desired_rank_2vs2]
-      
-      get2vs2RankedPrice();
-    });
-  });
-
-  // Desired Rank 1vs1 Change
-  radioButtons1vs1Desired.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons1vs1Desired).indexOf(radio);
-      desired_rank_1vs1 = selectedIndex + 1;
-      desired_rank_name_1vs1 = ranksNames[desired_rank_1vs1]
-      
-      get1vs1RankedPrice();
-    });
-  });
-
-  // Current Division 3vs3 Change
-  radioButtons3vs3CurrentDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons3vs3CurrentDivision).indexOf(radio);
-      current_division_3vs3 = selectedIndex + 1;
-      current_division_name_3vs3 = divisionNames[current_division_3vs3]
-      get3vs3RankedPrice();
+      const selectedIndex = Array.from(radioButtonsCurrentDivision).indexOf(radio);
+      current_division = selectedIndex + 1;
+      current_division_name = divisionNames[current_division]
+      getDivisionPrice();
     });
   })
 
-  // Current Division 2vs2 Change
-  radioButtons2vs2CurrentDivision.forEach(function (radio, index) {
+  // Desired Division  Change
+  radioButtonsDesiredDivision.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons2vs2CurrentDivision).indexOf(radio);
-      current_division_2vs2 = selectedIndex + 1;
-      current_division_name_2vs2 = divisionNames[current_division_2vs2]
-      get2vs2RankedPrice();
+      const selectedIndex = Array.from(radioButtonsDesiredDivision).indexOf(radio);
+      desired_division = selectedIndex + 1;
+      desired_division_name = divisionNames[desired_division]
+      getDivisionPrice()
     });
+  });
+
+  // Mark Changes
+  queue_type_selected.addEventListener("change", function() {
+    queue_type = this.value;
+    getDivisionPrice();
+  });
+
+  // Server Changes
+  division_server_select_element.addEventListener("change", function() {
+    selectedDivsionServer = this.value;
+    getDivisionPrice();
+  });
+
+  // ----------------------------- Others ---------------------------------
+  // Extra Charges Part
+  // Additional Initial Percent
+  let percentege = {
+    duoBoosting: 0.65,
+    selectBooster: 0.10,
+    turboBoost: 0.20,
+    streaming: 0.15,
+  }
+
+  // Checkbox
+  let soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-solo-duo"]');
+  let extraOptions = document.querySelectorAll('input[name="extra-checkbox"]');
+
+  // Solo Or Duo Boosting Change
+  soloOrDuoBoosting.forEach(function (radio, index) {
+    radio.addEventListener('change', function () {
+      if (this.value === "duo") {
+        total_Percentage += percentege.duoBoosting;
+        $('input#duoBoosting').val(true)
+      } else {
+        total_Percentage -= percentege.duoBoosting;
+        $('input#duoBoosting').val(false)
+      }
+
+      getDivisionPrice()
+    }) 
   })
 
-  // Current Division 1vs1 Change
-  radioButtons1vs1CurrentDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons1vs1CurrentDivision).indexOf(radio);
-      current_division_1vs1 = selectedIndex + 1;
-      current_division_name_1vs1 = divisionNames[current_division_1vs1]
-      get1vs1RankedPrice();
-    });
-  })
+  // Extra Buttons
+  extraOptions.forEach(function (checkbox, index) {
+    checkbox.addEventListener('change', function () {
+      if (this.checked) {
+        total_Percentage += percentege[this.value];
+        $(`input#${this.value}`).val(true)
+      } else {
+        total_Percentage -= percentege[this.value];
+        $(`input#${this.value}`).val(false)
+      }
+    
+      getDivisionPrice()
+    })
+  });
+  
+ 
+  const form = document.querySelector('.discount form');
 
-  // Desired Division 3vs3 Change
-  radioButtons3vs3DesiredDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons3vs3DesiredDivision).indexOf(radio);
-      desired_division_3vs3 = selectedIndex + 1;
-      desired_division_name_3vs3 = divisionNames[desired_division_3vs3]
-      get3vs3RankedPrice()
-    });
+  form.addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const discountInput = document.querySelector('input[name="discount"]');
+    const discountCode = discountInput.value.trim();
+    const promoDetails = $('#promo-details h6');
+    $('input[id="promo_send"]').val(discountCode);
+
+    if (discountCode) {
+      const csrfToken = getCookie('csrftoken');
+      $.ajax({
+        url: '/accounts/promo-codes/',
+        type: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken
+        },
+        contentType: 'application/json',
+        data: JSON.stringify({ code: discountCode }),
+        success: function(data) {
+          promoDetails.css('visibility', 'visible');
+          promoDetails.text(data.description);
+          promoDetails.css('color', 'green');
+          discount_amount = data.discount_amount;
+          getDivisionPrice();
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          promoDetails.css('visibility', 'visible');
+          promoDetails.text(xhr.responseJSON.error);
+          promoDetails.css('color', 'red');
+          discount_amount = 0;
+          getDivisionPrice();
+        }
+      });
+        
+    } else {
+      $('input[id="promo_send"]').val('null');
+      promoDetails.css('visibility', 'visible');
+      promoDetails.text('Please enter a discount code');
+      promoDetails.css('color', 'red');
+      discount_amount = 0;
+      getDivisionPrice();
+    }
   });
 
-  // Desired Division 2vs2 Change
-  radioButtons2vs2DesiredDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons2vs2DesiredDivision).indexOf(radio);
-      desired_division_2vs2 = selectedIndex + 1;
-      desired_division_name_2vs2 = divisionNames[desired_division_2vs2]
-      get2vs2RankedPrice()
-    });
-  });
-
-  // Desired Division 1vs1 Change
-  radioButtons1vs1DesiredDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', function () {
-      const selectedIndex = Array.from(radioButtons1vs1DesiredDivision).indexOf(radio);
-      desired_division_1vs1 = selectedIndex + 1;
-      desired_division_name_1vs1 = divisionNames[desired_division_1vs1]
-      get1vs1RankedPrice()
-    });
-  });
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        // Check if the cookie name matches the CSRF cookie name
+        if (cookie.startsWith(name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
 
 });
 

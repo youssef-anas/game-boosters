@@ -52,13 +52,13 @@ def valorantGetBoosterByRank(request):
   divisions_list = list(divisions.values())
 
   # Feedbacks
-  feedbaccks = OrderRating.objects.filter(order__game_name = "valorant")
+  feedbacks = OrderRating.objects.filter(order__game_name = "valorant")
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "placements": placements,
     "order":order,
-    "feedbacks": feedbaccks,
+    "feedbacks": feedbacks,
   }
   return render(request,'valorant/GetBoosterByRank.html', context)
 
@@ -84,11 +84,9 @@ def pay_with_paypal(request):
         extend_order_id = serializer.validated_data['extend_order']
         # Division
         if request.POST.get('game_type') == 'D':
-          print('Sorry, I am Here')
           order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Placement
         elif request.POST.get('game_type') == 'P':
-          print('I am Here')
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
         request.session['invoice'] = order_info['invoice']
@@ -106,9 +104,9 @@ def pay_with_paypal(request):
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
         return render(request, "accounts/paypal.html", context,status=200)
-      return JsonResponse({'error': serializer.errors}, status=400)
-      # messages.error(request, 'Ensure this value is greater than or equal to 10')
-      # return redirect(reverse_lazy('valorant'))
+      # return JsonResponse({'error': serializer.errors}, status=400)
+      messages.error(request, 'Ensure this value is greater than or equal to 10')
+      return redirect(reverse_lazy('valorant'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

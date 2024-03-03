@@ -1,3 +1,7 @@
+// Array For Names 
+const ranksNames = ['unrank', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', 'immortal'];
+
+const divisionNames = [0, 'I', 'II', 'III']
 // --------- If Customer Come After Choose Booster or For Extend Order ---------
 // Get Params
 // Assume you have a reference to the HTML element
@@ -18,9 +22,6 @@ const valuesToSet = list1.map(function(item) {
 });
 
 const valuesToSetAdditional = list2.map(value => JSON.parse(value.toLowerCase()));
-console.log(valuesAsList)
-console.log(valuesToSetAdditional)
-console.log(valuesToSet);
 
 // Get the 'choose-booster' query parameter value from the URL
 const chooseBoosterValue = urlParams.get('choose_booster');
@@ -44,7 +45,6 @@ const radioButtonsDesired = document.querySelectorAll('input[name="radio-group-d
 const radioButtonsCurrentDivision = document.querySelectorAll('input[name="radio-group-current-division"]');
 const radioButtonsDesiredDivision = document.querySelectorAll('input[name="radio-group-desired-division"]');
 const makrs_on_current_rank_selected = document.querySelector('.current-marks-select');
-const makrs_on_current_rank = document.querySelectorAll('.current-marks');
 const division_server_select_element = document.querySelector('.division-servers-select');
 
 // Disable Functions
@@ -99,18 +99,13 @@ Promise.all([
     });
   })
 ]).then(function () {
-  // Array For Names 
-  const divisionRanks = ['unrank', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'diamond', 'ascendant', 'immortal'];
-
-  const divisionNames = [0, 'I', 'II', 'III']
-
   // Variable That I Use
   var current_rank = initiallyCheckedIndexCurrent;
   var desired_rank = initiallyCheckedIndexDesired;
   var current_division = initiallyCheckedIndexCurrentDivision;
   var desired_division = initiallyCheckedIndexDesiredDivision;
-  var current_rank_name = divisionRanks[initiallyCheckedIndexCurrent];
-  var desired_rank_name = divisionRanks[initiallyCheckedIndexDesired];
+  var current_rank_name = ranksNames[initiallyCheckedIndexCurrent];
+  var desired_rank_name = ranksNames[initiallyCheckedIndexDesired];
   var current_division_name = divisionNames[initiallyCheckedIndexCurrentDivision];
   var desired_division_name = divisionNames[initiallyCheckedIndexDesiredDivision];
   var number_of_mark = marks_price[current_rank][initiallyCheckedIndexMark];
@@ -137,8 +132,8 @@ Promise.all([
     current_division = valuesToSet[1];
     desired_rank = valuesToSet[3];
     desired_division = valuesToSet[4];
-    var current_rank_name = divisionRanks[current_rank];
-    var desired_rank_name = divisionRanks[desired_rank];
+    var current_rank_name = ranksNames[current_rank];
+    var desired_rank_name = ranksNames[desired_rank];
     var current_division_name = divisionNames[current_division];
     var desired_division_name = divisionNames[desired_division];
 
@@ -149,35 +144,36 @@ Promise.all([
     if (valuesToSetAdditional[0]) {
       document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').checked = true;
       $('input#duoBoosting').val(true)
-      document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').disabled = true;
-      document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').disabled = true;
     } else {
       document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').checked = true;
       $('input#duoBoosting').val(false)
     }
+
+    // Disable Extra
+    document.querySelector('input[name="switch-between-solo-duo"][value="duo"]').disabled = true;
+    document.querySelector('input[name="switch-between-solo-duo"][value="solo"]').disabled = true;
 
     // Extra Buttons
     extraOptions.forEach(function (checkbox, index) {
       if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        
       } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
       } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
       } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
       } else {
         checkbox.checked = false
         $(`input#${checkbox.value}`).val(false)
-      } 
+      }
+      // Disable Extra
+      $(checkbox).prop('disabled', true)
     })
 
   }
@@ -188,8 +184,6 @@ Promise.all([
       const endRank = ((desired_rank - 1) * 3) + desired_division-1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
       const sum = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-      console.log(slicedArray)
-      console.log(divisionPrices)
 
       let result_with_mark = sum
 
@@ -204,16 +198,16 @@ Promise.all([
 
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
-      let currentElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (divisionRanks[valuesToSet[3]]).toLowerCase());
+      let currentElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (ranksNames[valuesToSet[3]]).toLowerCase());
 
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
       $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      $('.division-boost .current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR`);
+      $('.division-boost .current-selected-info').html(`${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark == 0 ? '0-20' : mark == 1 ? '21-40' : mark == 2 ? '41-60' : mark == 3 ? '61-80' : '81-100'} RR`);
       $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
 
-      $('.current').removeClass().addClass(`current ${divisionRanks[valuesToSet[3]]}`)
+      $('.current').removeClass().addClass(`current ${ranksNames[valuesToSet[3]]}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
       $('.total-price #division-boost-price').text(`$${result_with_mark}`)
@@ -281,7 +275,7 @@ Promise.all([
     radio.addEventListener('change', function () {
       const selectedIndex = Array.from(radioButtonsCurrent).indexOf(radio);
       current_rank = selectedIndex + 1;
-      current_rank_name = divisionRanks[current_rank];
+      current_rank_name = ranksNames[current_rank];
 
       // Look Here:- When Current Rank Change Change Value So Image Changed 
       currentElement = Array.from(radioButtonsCurrent).find(radio => radio.checked);
@@ -296,7 +290,7 @@ Promise.all([
     radio.addEventListener('change', function () {
       const selectedIndex = Array.from(radioButtonsDesired).indexOf(radio);
       desired_rank = selectedIndex + 1;
-      desired_rank_name = divisionRanks[desired_rank]
+      desired_rank_name = ranksNames[desired_rank]
 
       // Look Here:- When Desired Rank Change Change Value So Image Changed 
       desiredElement = Array.from(radioButtonsDesired).find(radio => radio.checked);
@@ -353,7 +347,7 @@ Promise.all([
   let perviousElement = Array.from(placementsRanks).find(radio => radio.checked);
   
   let pervious_rank = initiallyCheckedIndexRank
-  let pervious_rank_name = divisionRanks[pervious_rank]
+  let pervious_rank_name = ranksNames[pervious_rank]
   let rank_price = initiallyCheckedIndexRankPrice
   let gameCounter = gameCounterInitial
   let selectedPlacementServer = placement_server_select_element.val()
@@ -398,7 +392,7 @@ Promise.all([
     $(radio).on('change', function () {
       const selectedIndex = placementsRanks.index(radio);
       pervious_rank = selectedIndex;
-      pervious_rank_name = divisionRanks[pervious_rank]
+      pervious_rank_name = ranksNames[pervious_rank]
       rank_price = $(radio).data('price');
 
       // Look Here:- When Desired Rank Change Change Value So Image Changed 
@@ -432,7 +426,7 @@ Promise.all([
 
   // Server Changes
   placement_server_select_element.on("change", function() {
-    console.log($(this).val())
+
     selectedPlacementServer = $(this).val();
     getPlacementPrice();
   });

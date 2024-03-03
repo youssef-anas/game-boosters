@@ -20,6 +20,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   desired_division = data['desired_division']
 
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
@@ -118,6 +119,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   number_of_match = data['number_of_match']
 
   total_percent = 0
+  
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
@@ -192,7 +194,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{server}-{booster_agents_value}'
+  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_agents_value}-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

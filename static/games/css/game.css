@@ -10,6 +10,10 @@
   background-position-y: -160px;
   background-repeat: space;
 }
+.game-landing.rocketLeague {
+  background-image: url('./../images/rocketLeague_bg.png');
+  background-position-y: -170px;
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */
