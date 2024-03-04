@@ -10,6 +10,7 @@
   --alternative-color: #2F271F;
   --background-color: #201914;
   --heading-font: heading-font;
+  --sharp-font: sharp-medium-font;
   --main-radius: 8px;
   --text-color: #fafafa;
   --section-padding: 100px;
@@ -41,6 +42,10 @@
 @font-face {
   font-family: heading-font;
   src: url('./../fonts/SharpGrotesk-SemiBold25.otf');
+}
+@font-face {
+  font-family: sharp-medium-font;
+  src: url('./../fonts/SharpGrotesk-MediumItalic20.otf');
 }
 html {
   scroll-behavior: smooth;

@@ -1,5 +1,5 @@
 /*=============== SWIPER JS ===============*/
-let swiperCards = new Swiper('.swiper', {
+let swiperCards = new Swiper('.feedbacks-swiper', {
   loop: true,
   spaceBetween: 32,
   grabCursor: true,

@@ -2,45 +2,79 @@
 {% load static %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'homepage/css/homepage.css' %}">
+<!-- SWIPER CSS -->
+<link href="{% static 'swiper/css/swiper-bundle.min.css'%}" rel="stylesheet">
+<!-- OUR STYLE -->
+<link href="{% static 'homepage/css/homepage.css' %}" rel="stylesheet">
+<!-- STYLE FEEDBACK -->
+<link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
+<!-- STYLE MOTIVATION -->
+<link href="{% static 'components/css/motivation.css'%}" rel="stylesheet" />
+<!-- STYLE INFORMATION -->
+<link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
-<!-- Start Landing -->
-<div class="landing">
+<div class="homepage">
   <div class="container">
-    <div class="text text-white">
-      <h1>Welcome, To Game Booster World!</h1>
-      <p class="fs-4 text-white">Reach Your Ranking Goals Effortlessly and Quickly with Premium Boosting Services!</p>
-      <p class="fs-6">Transform Your Gaming Experience with the Best Multi-Boosting Project - Boosteria!</p>
+    <!-- ------------------------- Landing ------------------------- -->
+    <div class="landing row justify-content-between align-items-center">
+      <div class="text col-6">
+        <h1>REACH YOUR RANK <span>GOALS</span></h1>
+        <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+      </div>
+      <div class="image col-6">
+        <img src="{% static 'homepage/images/Logo.png' %}" class="img-fluid" alt="Landing">
+      </div>
     </div>
-    <div class="image">
-      <img src="{% static 'base/images/megamenu.webp' %}" alt="" />
-    </div>
-  </div>
-  <a href="#games" class="go-down">
-    <i class="fas fa-angle-double-down fa-2x"></i>
-  </a>
-</div>
-<!-- End Landing -->
 
-<!-- Start Gaming -->
-<div class="games container-fluid px-0" id="games">
-  <h2 class="main-title">CHOOSE YOUR GAME TO GET DESIRED RANK</h2>
-  <div class="my-5 container px-0">
-    {% for game in games %}
-    <div class="box">
-      <div class="data">
-        <img src="{%static 'games/images/'|add:game.image%}" alt={{game.name}} />
-      </div>
-      <div class="info">
-        <h3>{{game.name}}</h3>
-        <a href="{{ game.link }}" class="fs-5 text-white my-2">Start Boost &rarr;</a>
+
+    <!-- ------------------------- Gaming ------------------------- -->
+    <div class="games swiper py-5">
+      <div class="games-swiper" id="games">
+
+        <div class="head d-flex justify-content-between align-items-center">
+          <h1>Games</h1>
+
+          <div class="navigation-buttons">
+            <!-- Navigation Buttons -->
+            <div class="games-swiper-button-prev">
+              <i class="fa-solid fa-chevron-left fs-3"></i>
+            </div>
+  
+            <div class="games-swiper-button-next">
+              <i class="fa-solid fa-chevron-right fs-3"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-wrapper mt-4">
+          {% for game in games %}
+            <div class="swiper-slide game">
+              <div class="game-logo">
+                <img src="{{game.logo}}" class="img-fluid" alt="{{game.name}}">
+              </div>
+              <p class="mt-2 text-center">{{game.name}}</p>
+            </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
-    {% endfor %}
+
+    <!-- ------------------------- Import Last Orders ------------------------- -->
+  
+
+    <!-- ------------------------- Import Feedback Component ------------------------- -->
+    {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
+
+    <!-- ------------------------- Import Information Component ------------------------- -->
+    {% include 'components/information.html' %}
+
+    <!-- ------------------------- Import Motivation ------------------------- -->
+    {% include 'components/motivation.html' %}
+
   </div>
 </div>
-<!-- End Gaming -->
+
 {% endblock %}
 {% block script %}
 <script>
@@ -48,4 +82,9 @@
     window.location.href = link;
   }
 </script>
+<!-- SWIPER JS -->
+<script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
+<!-- OUR SCRIPTS -->
+<script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
+<script src="{% static 'homepage/js/games.js'%}"></script>
 {% endblock %}
