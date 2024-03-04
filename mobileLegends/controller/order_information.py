@@ -7,10 +7,9 @@ from django.utils import timezone
 User = get_user_model()
 
 division_names = ['','IV','IV','III','II','I']  
-rank_names = ['warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
+rank_names = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
 def get_division_order_result_by_rank(data,extend_order_id):
-  print('Data: ', data)
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -63,20 +62,69 @@ def get_division_order_result_by_rank(data,extend_order_id):
     division_price = json.load(file)
     flattened_data = [item for sublist in division_price for item in sublist]
     flattened_data.insert(0,0)
+    pass
   ##
   with open('static/mobilelegends/data/marks_data.json', 'r') as file:
     marks_data = json.load(file)
     marks_data.insert(0,[0,0,0,0,0,0])
+    pass
   ##    
-  start_division = ((current_rank-1) * 4) + current_division
-  end_division = ((desired_rank-1) * 4)+ desired_division
+    
+  if current_rank == 1:
+    if current_division not in [3, 4, 5]:
+      print(f"error in current rank cant be {current_division} in rank {current_rank}")
+      current_division = 3
+    if marks not in [1,2,3]:
+      print(f"error in current mark cant be {marks} in rank {current_rank}")
+      marks = 3
+
+  elif current_rank == 2 :
+    if current_division not in [2, 3, 4, 5]:
+      print(f"error in current rank cant be {current_division} in rank {current_rank}")
+      current_division = 2
+    if marks not in [1,2,3]:
+      print(f"error in current mark cant be {marks} in rank {current_rank}")
+      marks = 3
+
+  elif current_rank == 3 :
+    if current_division not in [2, 3, 4, 5]:
+      print(f"error in current rank cant be {current_division} in rank {current_rank}")
+      current_division = 2
+    if marks not in [1,2,3,4]:
+      print(f"error in current mark cant be {marks} in rank {current_rank}")
+      marks = 4 
+
+  elif current_rank in [4, 5, 6] :
+    if current_division not in [1, 2, 3, 4, 5]:
+      print(f"error in current rank cant be {current_division} in rank {current_rank}")
+      current_division = 1
+    if marks not in [1,2,3,4,5]:
+      print(f"error in current mark cant be {marks} in rank {current_rank}")
+      marks = 1
+
+  elif current_rank in [7, 8, 9] :
+    if current_division not in [1, 2, 3, 4, 5]:
+      print(f"error in current rank cant be {current_division} in rank {current_rank}")
+      current_division = 1
+    if marks not in [1,2,3,4,5]:
+      print(f"error in current mark cant be {marks} in rank {current_rank}")
+      marks = 0
+  else:
+    raise IndexError 
+
+  if desired_rank > 10 or desired_rank < 0:
+    raise IndexError 
+
+
+  #########################  
+  start_division = ((current_rank-1) * 5) + current_division
+  end_division = ((desired_rank-1) * 5)+ desired_division
   marks_price = marks_data[current_rank][marks]
   sublist = flattened_data[start_division:end_division ]
   total_sum = sum(sublist)
   price = total_sum - marks_price
   price += (price * total_percent)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
@@ -93,8 +141,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
-  print('Invoice', invoice)
+  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_champions_value}-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
@@ -154,7 +201,6 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)
   price = round(price, 2)
-  print('Placement Price: ', price)
 
   if extend_order_id > 0:
     try:
@@ -171,8 +217,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-{choose_champions_value}'
-  print('Invoice', invoice)
+  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_champions_value}-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

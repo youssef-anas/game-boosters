@@ -29,3 +29,5 @@ class RankSerializer(serializers.Serializer):
 class PlacementSerializer(serializers.Serializer):
     Previous_Season_Rank = serializers.IntegerField()
     games_count = serializers.IntegerField()
+    promo_code = serializers.CharField()
+    
