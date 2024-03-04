@@ -1,10 +1,8 @@
 <div class="updata-now">
   <h5 class="my-4">Now Rank</h5>
-  <form action="{% url 'order.update.rating' %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
     {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
-    <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
-    <input type="hidden" name="order_game_id" value="{{ order.order.order.game_id }}">
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank">

@@ -5,7 +5,7 @@ from pubg.models import PubgDivisionOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
-from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
+from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from WorldOfWarcraft.models import WoWArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder
@@ -19,7 +19,7 @@ channel_layer = get_channel_layer()
 
 def check_rl_type(type) -> Model:
     ROCKET_LEAGUE_MODELS = {
-    'D': RocketLeagueRankedOrder,
+    'D': RocketLeagueDivisionOrder,
     'P': RocketLeaguePlacementOrder,
     'S': RocketLeagueSeasonalOrder,
     'T': RocketLeagueTournamentOrder

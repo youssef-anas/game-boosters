@@ -2,16 +2,14 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import JsonResponse
-from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
 from rocketLeague.models import *
-from rocketLeague.controller.serializers import RankedSerializer, PlacementSerializer, SeasonalSerializer, TournamentSerializer
-from django.contrib.auth import get_user_model
-from django.utils import timezone
+from rocketLeague.controller.serializers import *
 from paypal.standard.forms import PayPalPaymentsForm
 from rocketLeague.controller.order_information import *
+from booster.models import OrderRating
 
 # Create your views here.
 
@@ -19,7 +17,7 @@ from rocketLeague.controller.order_information import *
 def rocketLeagueGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = RocketLeagueRankedOrder.objects.get(order_id=extend_order)
+    order = RocketLeagueDivisionOrder.objects.get(order_id=extend_order)
   except:
     order = None
   ranks = RocketLeagueRank.objects.all().order_by('id')
@@ -61,6 +59,9 @@ def rocketLeagueGetBoosterByRank(request):
     json.dump(tournaments_data, json_file)
 
   divisions_list = list(divisions.values())
+
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_name = "rocketLeague")
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
@@ -68,12 +69,13 @@ def rocketLeagueGetBoosterByRank(request):
     "seasonals": seasonals,
     "tournaments": tournaments,
     "order":order,
+    "feedbacks": feedbacks,
   }
   return render(request,'rocketLeague/GetBoosterByRank.html', context)
 
 # Paypal
 @csrf_exempt
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -84,7 +86,7 @@ def view_that_asks_for_money(request):
     try:
       # Division
       if request.POST.get('game_type') == 'D':
-        serializer = RankedSerializer(data=request.POST)
+        serializer = DivisionSerializer(data=request.POST)
       # Placement
       elif request.POST.get('game_type') == 'P':
         serializer = PlacementSerializer(data=request.POST)
@@ -99,7 +101,7 @@ def view_that_asks_for_money(request):
         extend_order_id = serializer.validated_data['extend_order']
         # Division
         if request.POST.get('game_type') == 'D':
-          order_info = get_ranked_order_result_by_rank(serializer.validated_data,extend_order_id)
+          order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Placement
         elif request.POST.get('game_type') == 'P':
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
@@ -119,12 +121,12 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/rocketLeague/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "rocketLeague/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       return JsonResponse({'error': serializer.errors}, status=400)
       # messages.error(request, 'Ensure this value is greater than or equal to 10')
       # return redirect(reverse_lazy('rocketLeague'))
@@ -133,6 +135,12 @@ def view_that_asks_for_money(request):
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-# Cancel Payment
-def payment_canceled(request):
-  return HttpResponse('payment canceled')
+# Cryptomus
+@csrf_exempt
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

@@ -1,151 +1,64 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const extend_order = urlParams.get('extend');
-
-  // Access the data attribute and convert it to a JavaScript variable
-  const orderValue = orderContainer.dataset.order;
-
-  const valuesAsList = orderValue.split(',')
   
-  const ranked3vs3BoostRadio = document.getElementById('ranked3vs3-boost');
-  const ranked2vs2BoostRadio = document.getElementById('ranked2vs2-boost');
-  const ranked1vs1BoostRadio = document.getElementById('ranked1vs1-boost');
+  const divisionBoostRadio = document.getElementById('division-boost');
   const placementBoostRadio = document.getElementById('placements-boost');
   const seasonalBoostRadio = document.getElementById('seasonal-reward');
   const tournamentBoostRadio = document.getElementById('tournament-boost');
 
-  const ranked3vs3BoostDiv = document.querySelectorAll('.ranked3vs3-boost');
-  const ranked2vs2BoostDiv = document.querySelectorAll('.ranked2vs2-boost');
-  const ranked1vs1BoostDiv = document.querySelectorAll('.ranked1vs1-boost');
-  const rankedBoostDiv = document.querySelectorAll('.ranked-boost');
+  const divisionBoostDiv = document.querySelectorAll('.division-boost');
   const placementBoostDiv = document.querySelectorAll('.placements-boost');
   const seasonalBoostDiv = document.querySelectorAll('.seasonal-reward');
   const tournamentBoostDiv = document.querySelectorAll('.tournament-boost');
 
   // Initial setup
-  if (ranked3vs3BoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.remove('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+  if (divisionBoostRadio.checked) {
+    divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
     placementBoostDiv.forEach(div => div.classList.add('d-none'));
     seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
     tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-    rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-    $('input[name="ranked_type"]').val(3);
-  } else if (ranked2vs2BoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.remove('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
-    placementBoostDiv.forEach(div => div.classList.add('d-none'));
-    seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
-    tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
-
-    rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-    $('input[name="ranked_type"]').val(2);
-  } else if (ranked1vs1BoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.remove('d-none'));
-    placementBoostDiv.forEach(div => div.classList.add('d-none'));
-    seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
-    tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
-    
-    rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-    $('input[name="ranked_type"]').val(1);
   } else if (placementBoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+    divisionBoostDiv.forEach(div => div.classList.add('d-none'));
     placementBoostDiv.forEach(div => div.classList.remove('d-none'));
     seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
     tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-    rankedBoostDiv.forEach(div => div.classList.add('d-none'));
   } else if (seasonalBoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+    divisionBoostDiv.forEach(div => div.classList.add('d-none'));
     placementBoostDiv.forEach(div => div.classList.add('d-none'));
     seasonalBoostDiv.forEach(div => div.classList.remove('d-none'));
     tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-    rankedBoostDiv.forEach(div => div.classList.add('d-none'));
   } else if (tournamentBoostRadio.checked) {
-    ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-    ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+    divisionBoostDiv.forEach(div => div.classList.add('d-none'));
     placementBoostDiv.forEach(div => div.classList.add('d-none'));
     seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
     tournamentBoostDiv.forEach(div => div.classList.remove('d-none'));
 
-    rankedBoostDiv.forEach(div => div.classList.add('d-none'));
   } 
 
-  // Event listener for 3vs3 ranked-boost radio button
-  ranked3vs3BoostRadio.addEventListener('change', function () {
-    if (ranked3vs3BoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.remove('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+  // Event listener for division-boost radio button
+  divisionBoostRadio.addEventListener('change', function () {
+    if (divisionBoostRadio.checked) {
+      divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
       placementBoostDiv.forEach(div => div.classList.add('d-none'));
       seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
       tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-      rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-      $('input[name="ranked_type"]').val(3);
     } else {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
+      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
     }
   });
 
-  // Event listener for 2vs2 ranked-boost radio button
-  ranked2vs2BoostRadio.addEventListener('change', function () {
-    if (ranked2vs2BoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.remove('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
-      placementBoostDiv.forEach(div => div.classList.add('d-none'));
-      seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
-      tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
-
-      rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-      $('input[name="ranked_type"]').val(2);
-    } else {
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
-    }
-  });
-
-  // Event listener for 1vs1 ranked-boost radio button
-  ranked1vs1BoostRadio.addEventListener('change', function () {
-    if (ranked1vs1BoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.remove('d-none'));
-      placementBoostDiv.forEach(div => div.classList.add('d-none'));
-      seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
-      tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
-
-      rankedBoostDiv.forEach(div => div.classList.remove('d-none'));
-      $('input[name="ranked_type"]').val(1);
-    } else {
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
-    }
-  });
 
   // Event listener for placements-boost radio button
   placementBoostRadio.addEventListener('change', function () {
     if (placementBoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
       placementBoostDiv.forEach(div => div.classList.remove('d-none'));
       seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
       tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
     } else {
       placementBoostDiv.forEach(div => div.classList.add('d-none'));
     }
@@ -154,14 +67,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listener for seasonal-reward radio button
   seasonalBoostRadio.addEventListener('change', function () {
     if (seasonalBoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
       placementBoostDiv.forEach(div => div.classList.add('d-none'));
       seasonalBoostDiv.forEach(div => div.classList.remove('d-none'));
       tournamentBoostDiv.forEach(div => div.classList.add('d-none'));
 
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
     } else {
       seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
     }
@@ -170,30 +80,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Event listener for tournament-boost radio button
   tournamentBoostRadio.addEventListener('change', function () {
     if (tournamentBoostRadio.checked) {
-      ranked3vs3BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked2vs2BoostDiv.forEach(div => div.classList.add('d-none'));
-      ranked1vs1BoostDiv.forEach(div => div.classList.add('d-none'));
+      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
       placementBoostDiv.forEach(div => div.classList.add('d-none'));
       seasonalBoostDiv.forEach(div => div.classList.add('d-none'));
       tournamentBoostDiv.forEach(div => div.classList.remove('d-none'));
 
-      rankedBoostDiv.forEach(div => div.classList.add('d-none'));
     } else {
       tournamentBoostRadio.forEach(div => div.classList.add('d-none'));
     }
   });
 
-  // Check Correct Option When Extend
-  // if(extend_order) {
-  //   if (valuesAsList[0] == 3) {
-  //     console.log("Ranked Type: 3vs3")
-  //     ranked3vs3BoostRadio.checked = true
-  //   } else if (valuesAsList[0] == 2) {
-  //     console.log("Ranked Type: 2vs2")
-  //     ranked2vs2BoostRadio.checked = true
-  //   } else if (valuesAsList[0] == 1) {
-  //     console.log("Ranked Type: 1vs1")
-  //     ranked1vs1BoostRadio.checked = true
-  //   }
-  // }
 });

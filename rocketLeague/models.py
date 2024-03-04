@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division_original, romanize_division
 import requests
+import json
 
 # Create your models here.
 class RocketLeagueRank(models.Model):
@@ -56,7 +57,7 @@ class RocketLeagueTournament(models.Model):
   def get_image_url(self):
     return f"/media/{self.rank_image}"
   
-class RocketLeagueRankedOrder(models.Model):
+class RocketLeagueDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'I'),
     (2, 'II'),
@@ -75,6 +76,8 @@ class RocketLeagueRankedOrder(models.Model):
   current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  current_marks = models.IntegerField(default=0,blank=True, null=True)
+  reached_marks = models.IntegerField(default=0,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
   
   def send_discord_notification(self):
@@ -99,13 +102,13 @@ class RocketLeagueRankedOrder(models.Model):
 
 
     headers = {
-        "Content-Type": "application/json"
+      "Content-Type": "application/json"
     }
 
     response = requests.post(discord_webhook_url, json=data, headers=headers)
 
     if response.status_code != 204:
-        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+      print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
 
 
@@ -129,7 +132,76 @@ class RocketLeagueRankedOrder(models.Model):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.ranked_type},{self.current_rank.id},{self.current_division},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+    return f"{self.current_rank.id},{self.current_division},{self.ranked_type},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+  
+  def get_order_price(self):
+    # Read data from JSON file
+    with open('static/rocketLeague/data/divisions_data.json', 'r') as file:
+      division_price = json.load(file)
+      flattened_data = [item for sublist in division_price for item in sublist]
+      flattened_data.insert(0,0)  
+          
+    promo_code_amount = self.order.promo_code
+    if not promo_code_amount:
+      promo_code_amount = 0
+
+    current_rank = self.current_rank.id
+    reached_rank = self.reached_rank.id
+
+    current_division = self.current_division
+    reached_division = self.reached_division
+
+    current_marks = self.current_marks
+    reached_marks = self.reached_marks
+
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    if self.order.streaming:
+      total_percent += 0.15
+
+    start_division = ((current_rank-1)*3) + current_division
+    end_division = ((reached_rank-1)*3)+ reached_division
+
+    sublist = flattened_data[start_division:end_division]
+
+
+    total_sum = sum(sublist)    
+
+
+    custom_price = total_sum
+    
+    custom_price += (custom_price * total_percent)
+    custom_price -= custom_price * (promo_code_amount/100)
+
+    ##############################################################
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    print(percent)
+
+    booster_price = custom_price * (percent/100)
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+    if percent_for_view > 100:
+      percent_for_view = 100
+
+    if booster_price > actual_price:
+      booster_price = actual_price
+
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
 
 class RocketLeaguePlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_placement_order')

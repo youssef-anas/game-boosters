@@ -15,15 +15,10 @@ User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from wildRift.models import WildRiftDivisionOrder, WildRiftRank
-from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder, ValorantRank
-from pubg.models import PubgDivisionOrder, PubgRank
-from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder, LeagueOfLegendsRank
-from tft.models import TFTDivisionOrder, TFTPlacementOrder, TFTRank
-from hearthstone.models import HearthstoneDivisionOrder, HearthstoneRank
-from rocketLeague.models import RocketLeagueRankedOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder, RocketLeagueRank
-from honorOfKings.models import HonorOfKingsDivisionOrder, HonorOfKingsRank
+from pubg.models import PubgRank
+from leagueOfLegends.models import LeagueOfLegendsRank
+from tft.models import TFTRank
+from hearthstone.models import  HearthstoneRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
@@ -200,8 +195,7 @@ def booster_orders(request):
 
     pubg_ranks = PubgRank.objects.all()  
     tft_ranks = TFTRank.objects.all()  
-    hearthstone_ranks = HearthstoneRank.objects.all()  
-    rocketLeague_ranks = RocketLeagueRank.objects.all()  
+    hearthstone_ranks = HearthstoneRank.objects.all() 
     lol_ranks = LeagueOfLegendsRank.objects.all()  
  
     context = {
@@ -210,7 +204,6 @@ def booster_orders(request):
         'lol_ranks': lol_ranks,
         'tft_ranks': tft_ranks,
         'hearthstone_ranks': hearthstone_ranks,
-        'rocketLeague_ranks': rocketLeague_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 
@@ -294,10 +287,8 @@ def drop_order(request):
             print('Old Invoice: ', invoice)
             invoice[3]= str(order.reached_rank.id) 
             invoice[4]= str(order.reached_division)
-            if int(base_order.game_id) != 9:
-                invoice[5]= str(order.reached_marks)
-            else:
-                invoice[5] = '0'
+            invoice[5]= str(order.reached_marks)
+
             new_invoice = '-'.join(invoice)
             print('New Invoice: ', new_invoice)
             payer_id = order.order.payer_id
@@ -316,9 +307,8 @@ def drop_order(request):
             #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
 
-def update_rating(request):
+def update_rating(request, order_id):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
         base_order = BaseOrder.objects.get(id = order_id)
         contect_type = base_order.content_type
         if contect_type :
@@ -326,12 +316,11 @@ def update_rating(request):
 
         reached_rank_id = request.POST.get('reached_rank')
         reached_division = request.POST.get('reached_division')
-        reached_marks = request.POST.get('reached_marks', None)
+        reached_marks = request.POST.get('reached_marks', 0)
 
         game.reached_rank_id = reached_rank_id
         game.reached_division = reached_division
-        if int(base_order.game_id) != 9: # TODO remove this line after add reached_marks and current marks in 9 id gam rocket leage
-            game.reached_marks = reached_marks
+        game.reached_marks = reached_marks
         
         game.save()    
         return redirect(reverse_lazy('booster.orders'))

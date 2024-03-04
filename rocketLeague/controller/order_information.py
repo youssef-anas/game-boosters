@@ -3,6 +3,7 @@ import json
 from rocketLeague.models import *
 from django.utils import timezone
 from django.contrib.auth import get_user_model
+from accounts.models import PromoCode
 
 User = get_user_model()
 
@@ -10,9 +11,9 @@ division_names = ['','I','II','III']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAMPION', 'GRAND CHAMPION', 'SUPERSONIC LEGEND']
 
 # ---------------------------- Ranked ----------------------------
-def get_ranked_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data,extend_order_id):
   print('Data: ', data)
-  ranked_type = data['ranked_type']
+  queue_type = data['queue_type']
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -20,15 +21,20 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
   desired_division = data['desired_division']
 
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  server = data['server']
+  promo_code = data['promo_code']
+
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -38,7 +44,7 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -52,6 +58,13 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
+
   # Read data from JSON file
   with open('static/rocketLeague/data/divisions_data.json', 'r') as file:
     division_price = json.load(file)
@@ -64,8 +77,8 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
   total_sum = sum(sublist)
   price = total_sum 
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
@@ -82,7 +95,7 @@ def get_ranked_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-?-{timezone.now()}-?-?-{ranked_type}'
+  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{queue_type}-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -103,10 +116,14 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  server = data['server']
+  promo_code = data['promo_code']
+
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -116,7 +133,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -130,6 +147,13 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
+
   # Read data from JSON file
   with open('static/rocketLeague/data/placements_data.json', 'r') as file:
     placement_data = json.load(file)
@@ -137,8 +161,8 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Placement Price: ', price)
 
   if extend_order_id > 0:
     try:
@@ -155,7 +179,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -176,10 +200,14 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  server = data['server']
+  promo_code = data['promo_code']
+
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -189,7 +217,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -203,6 +231,13 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
+
   # Read data from JSON file
   with open('static/rocketLeague/data/seasonals_data.json', 'r') as file:
     seasonals_data = json.load(file)
@@ -210,6 +245,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   
   price = seasonals_data[current_rank] * number_of_wins
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
   if extend_order_id > 0:
@@ -226,7 +262,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -246,10 +282,14 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  server = data['server']
+  promo_code = data['promo_code']
+
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -259,7 +299,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -273,6 +313,13 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
+
   # Read data from JSON file
   with open('static/rocketLeague/data/tournaments_data.json', 'r') as file:
     tournaments_data = json.load(file)
@@ -280,6 +327,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   
   price = tournaments_data[current_league]
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
   if extend_order_id > 0:
@@ -296,7 +344,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}'
+  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

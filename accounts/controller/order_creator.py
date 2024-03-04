@@ -36,18 +36,10 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         choose_champions = bool(int(invoice_values[16]))
         choose_legends = bool(int(invoice_values[16]))
         speed_up_boost = bool(int(invoice_values[17]))
+        ranked_type = int(invoice_values[16])  
 
         promo_code_amount = 0 # TODO get it from invoice
 
-        #check this value TODO
-        try:
-            ranked_type = int(invoice_values[18])  
-        except:
-            ranked_type = None
-
-        # promo_code 
-            
-            
         try:
             booster = BaseUser.objects.get(id=booster_id, is_booster =True)
         except BaseUser.DoesNotExist:
@@ -78,8 +70,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
                 extend_order_game = Game.objects.get(order = extend_order)
                 extend_order_game_reached_rank = extend_order_game.reached_rank
                 extend_order_game_reached_division = extend_order_game.reached_division
-                if game_id != 9:
-                    extend_order_game_reached_marks = extend_order_game.reached_marks  
+                extend_order_game_reached_marks = extend_order_game.reached_marks  
                      
 
         except BaseOrder.DoesNotExist:
