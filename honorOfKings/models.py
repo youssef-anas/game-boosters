@@ -61,7 +61,6 @@ class HonorOfKingsDivisionOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 11
-    self.order.game_name = 'hok'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:

@@ -70,6 +70,9 @@ INSTALLED_APPS = [
     'overwatch2.apps.Overwatch2Config',
     'csgo2.apps.Csgo2Config',
     
+    # Games
+    'games.apps.GamesConfig',
+
     # Others
     'paypal.standard.ipn',
     'corsheaders',

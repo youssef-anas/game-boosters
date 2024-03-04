@@ -60,3 +60,6 @@
 
 /dota2/migrations/
 /dota2/__pycache__/
+
+/games/migrations/
+/games/__pycache__/

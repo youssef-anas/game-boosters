@@ -9,7 +9,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 # from wildRift.models import WildRiftRank
 import secrets
-
+from games.models import Game
 
 class UserManager(UserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -101,8 +101,7 @@ class BaseOrder(models.Model):
     ]
     name = models.CharField(max_length=30, null = True)
     details = models.CharField(max_length=300, default='no details')
-    game_id = models.IntegerField(null=True)
-    game_name = models.CharField(max_length=30, default='game name')
+    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING, default=None, related_name='game')
     game_type = models.CharField(max_length=10, choices=GAME_TYPE, null=True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)

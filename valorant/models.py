@@ -103,7 +103,6 @@ class ValorantDivisionOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2
-    self.order.game_name = 'valorant'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -212,7 +211,6 @@ class ValorantPlacementOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2
-    self.order.game_name = 'valorant'
     self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:

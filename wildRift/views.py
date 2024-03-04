@@ -44,7 +44,7 @@ def wildRiftGetBoosterByRank(request):
     divisions_list = list(divisions.values())
 
     # Feedbacks
-    feedbacks = OrderRating.objects.filter(order__game_name = "wildRift")
+    feedbacks = OrderRating.objects.filter(order__game_id = 1)
     context = {
         "ranks": ranks,
         "divisions": divisions_list,

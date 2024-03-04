@@ -52,7 +52,7 @@ def valorantGetBoosterByRank(request):
   divisions_list = list(divisions.values())
 
   # Feedbacks
-  feedbacks = OrderRating.objects.filter(order__game_name = "valorant")
+  feedbacks = OrderRating.objects.filter(order__game_id = 2)
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
