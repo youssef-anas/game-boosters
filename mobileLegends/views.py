@@ -18,24 +18,24 @@ from mobileLegends.controller.order_information import *
 def MobileLegendsGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = MobileLegendsDivisionOrder.objects.get(order_id=extend_order)
+    order_get_rank_value = MobileLegendsDivisionOrder.objects.get(order_id=extend_order).get_rank_value()
   except:
-    order = None
+    order_get_rank_value = None
   ranks = MobileLegendsRank.objects.all().order_by('id')
   divisions  = MobileLegendsTier.objects.all().order_by('id')
   marks = MobileLegendsMark.objects.all().order_by('id')
   placements = MobileLegendsPlacement.objects.all().order_by('id')
 
   divisions_data = [
-    [division.from_V_to_IV ,division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+    [division.from_V_to_IV ,division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
     for division in divisions
   ]
+  
 
   marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
+    [mark.star_1, mark.star_2, mark.star_3, mark.star_4, mark.star_5]
     for mark in marks
   ]
-
   placements_data = [
     placement.price
     for placement in placements
@@ -55,13 +55,14 @@ def MobileLegendsGetBoosterByRank(request):
     "ranks": ranks,
     "divisions": divisions_list,
     "placements": placements,
-    "order":order,
+    "order_get_rank_value":order_get_rank_value,
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
 # Paypal
 @csrf_exempt
 def view_that_asks_for_money(request):
+  print('hi')
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
