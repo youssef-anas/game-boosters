@@ -23,7 +23,7 @@ class Dota2_50_MMR_Price(models.Model):
   
   
 class Dota2RankBoostOrder(models.Model):
-  ROLE = (
+  ROLE_CHOISES = (
         (1, 'Core'),
         (2, 'Support'),
   )
@@ -34,11 +34,15 @@ class Dota2RankBoostOrder(models.Model):
   
   current_division = models.IntegerField(default=0)
   reached_division = models.IntegerField(default=0)
-  desired_division = models.IntegerField(default=50)
-  
+  desired_division = models.IntegerField(default=0)
+
+  current_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
+  reached_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
+
+  select_champion = models.BooleanField(default=True, blank=True, null=True)
+  role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=True, blank=True)
+
   created_at = models.DateTimeField(auto_now_add =True)
-  choose_agents = models.BooleanField(default=True, blank=True, null=True)
-  role = models.IntegerField(choices=ROLE, null=True, blank=True)
 
 
   def validate_divition(self):
@@ -77,8 +81,8 @@ class Dota2RankBoostOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.validate_divition()
-    self.order.game_id = 11
-    self.order.game_name = 'dota2'
+    # self.order.game_id = 11
+    # self.order.game_name = 'dota2'
     self.order.game_type = 'A'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -95,4 +99,4 @@ class Dota2RankBoostOrder(models.Model):
     return f"Boosting From {self.current_division} RP To {self.desired_division}"
 
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
+    return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.select_champion}"

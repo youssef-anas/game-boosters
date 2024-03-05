@@ -12,32 +12,30 @@ from .controller.order_information import get_rank_boost_order_result_by_rank
 
 
 
-@csrf_exempt
 def dota2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
-  try:
-    order = Dota2RankBoostOrder.objects.get(order_id=extend_order)
-  except:
-    order = None
+  order_get_rank_value = None
+  if extend_order:
+    try:
+      order_get_rank_value = Dota2RankBoostOrder.objects.get(order_id=extend_order).get_rank_value()
+    except Dota2RankBoostOrder.DoesNotExist:
+      return redirect('homepage.index')
   ranks = Dota2Rank.objects.all().order_by('id')    
 
   context = {
     "ranks": ranks,
-    "order":order,
+    "order":order_get_rank_value,
   }
   return render(request,'dota2/GetBoosterByRank.html', context)
 
 
 # Paypal
-@csrf_exempt
 def view_that_asks_for_money(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
         return redirect(reverse_lazy('dota2'))
-      
-    print('request POST:  ', request.POST)
     try:
       # Division
       serializer = RankBoostSerializer(data=request.POST)
@@ -56,7 +54,7 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/dota2/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
@@ -68,6 +66,3 @@ def view_that_asks_for_money(request):
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-# Cancel Payment
-def payment_canceled(request):
-  return HttpResponse('payment canceled')

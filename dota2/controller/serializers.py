@@ -3,16 +3,14 @@ from rest_framework import serializers
 class RankBoostSerializer(serializers.Serializer):
 
     # rank
-    current_rank = serializers.IntegerField(min_value=1, max_value=4)
-    desired_rank = serializers.IntegerField(min_value=1, max_value=4)
+    # current_rank = serializers.IntegerField(min_value=1, max_value=4)
+    # desired_rank = serializers.IntegerField(min_value=1, max_value=4)
+    
+    # no need to get rank we know rank from divisions
 
     # division
     current_division = serializers.IntegerField(min_value=0, max_value=2500)
-    current_division = serializers.IntegerField(min_value=1, max_value=2500)
-
-    # mark ??
-    # add here TODO
-    
+    desired_division = serializers.IntegerField(min_value=1, max_value=2500)
 
     # exra filds about order
     duo_boosting = serializers.BooleanField()
@@ -22,11 +20,12 @@ class RankBoostSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     extend_order = serializers.IntegerField()
 
+    server = serializers.CharField()
+    promo_code = serializers.CharField()
+
 
 
     # fild not fo all games
-    choose_agents = serializers.BooleanField()
-
-    # for this game only
+    select_champion = serializers.BooleanField()
     role = serializers.IntegerField(min_value=1, max_value=2)
     

@@ -11,19 +11,21 @@ class DivisionSerializer(serializers.Serializer):
     select_booster = serializers.BooleanField()
     turbo_boost = serializers.BooleanField()
     streaming = serializers.BooleanField()
-    choose_champions = serializers.BooleanField()
 
     price = serializers.FloatField(min_value=10)
 
-    choose_booster = serializers.IntegerField()
+    select_champion = serializers.BooleanField()
 
     extend_order = serializers.IntegerField()
 
     promo_code = serializers.CharField()
+    server = serializers.CharField()
 
 class PlacementSerializer(serializers.Serializer):
     last_rank = serializers.IntegerField(min_value=0, max_value=11)
     number_of_match = serializers.IntegerField(min_value=1, max_value=5)
     extend_order = serializers.IntegerField()
     promo_code = serializers.CharField()
-    choose_booster = serializers.IntegerField()
+    select_booster = serializers.BooleanField()
+    server = serializers.CharField()
+    select_champion = serializers.BooleanField()

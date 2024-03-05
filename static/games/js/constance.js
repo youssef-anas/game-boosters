@@ -42,8 +42,7 @@ const makrs_on_current_rank_selected = document.querySelector('.current-marks-se
 const makrs_on_current_rank = document.querySelectorAll('.current-marks');
 const division_server_select_element = document.querySelector('.division-servers-select');
 
-const currentElement = getSelectedElement(radioButtonsCurrent)
-const desiredElement = getSelectedElement(radioButtonsDesired)
+const role_selected = document.querySelector('.role-select');
 
 // All Checkbox
 const extraOptions = document.querySelectorAll('input[name="extra-checkbox"]');
@@ -57,4 +56,5 @@ const soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-
 let total_Percentage = 0; // inital value for Additional value 
 let discount_amount = 0 // inital value of discount
 console.log();
+
 

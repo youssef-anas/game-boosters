@@ -33,7 +33,7 @@ class PubgMark(models.Model):
   marks_81_100 = models.FloatField(default=0)
 
   def __str__(self):
-    return f"{self.rank} -> Marks 0-20 : {self.marks_0_20}, Marks 21_40 : {self.marks_21_40}, Marks 41_60 : {self.marks_41_60}, Marks 61_80 : {self.marks_61_80}, Marks 81_100 : {self.marks_81_100}"
+    return f"Marks for {self.rank}"
   
   
 class PubgDivisionOrder(models.Model):
@@ -55,13 +55,14 @@ class PubgDivisionOrder(models.Model):
   current_rank = models.ForeignKey(PubgRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
   reached_rank = models.ForeignKey(PubgRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
   desired_rank = models.ForeignKey(PubgRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
-  current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
-  reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+  current_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  reached_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  desired_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+  reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
-  choose_agents = models.BooleanField(default=True, blank=True, null=True)
+
+  select_champion = models.BooleanField(default=True, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -94,8 +95,8 @@ class PubgDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 3
-    self.order.game_name = 'pubg'
+    # self.order.game_id = 3
+    # self.order.game_name = 'pubg'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -111,4 +112,4 @@ class PubgDivisionOrder(models.Model):
     return f"Boosting From {str(self.current_rank).upper()} {self.current_division} Marks {self.current_marks} To {str(self.desired_rank).upper()} {self.desired_division}"
 
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.select_champion}"

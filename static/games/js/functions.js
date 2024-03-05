@@ -43,7 +43,7 @@ function getSelectedElement(radioButton) {
 }
 
 
-function getDivisionIcons(rank) {
+function getDivisionIconsMobilLegends(rank) {
     let rank_icons = 5;
     switch (rank) {
       case 1:
@@ -59,7 +59,7 @@ function getDivisionIcons(rank) {
     return rank_icons;
   }
 
-  function getMarksIcons(rank) {
+  function getMarksIconsMobilLegends(rank) {
     let rank_icons = 5;
     switch (rank) {
       case 1:
@@ -89,7 +89,7 @@ function getDivisionIcons(rank) {
 function refreshDivisionBasedRankMobileLegends(selectedRank, currentDivison){
     let labels
     let divisionIconsNumber
-    divisionIconsNumber = getDivisionIcons(selectedRank);
+    divisionIconsNumber = getDivisionIconsMobilLegends(selectedRank);
     if (currentDivison){
         const divisionContainer = document.querySelector('.current-dcontainer');
         labels = divisionContainer.querySelectorAll('label');
@@ -126,7 +126,7 @@ function refreshMarksBasedRankMobileLegends(current_rank){
     const markContainer = document.querySelector('.current-marks-select');
     const containerOfmarkContainer = document.querySelector('.current-mark-container')
     markContainer.innerHTML = '';
-    const numberOfMarks = getMarksIcons(current_rank)
+    const numberOfMarks = getMarksIconsMobilLegends(current_rank)
     for (let i = 1; i <= numberOfMarks; i++) {
         const option = document.createElement('option');
         option.value = i;

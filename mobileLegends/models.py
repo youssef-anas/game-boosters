@@ -116,7 +116,7 @@ class MobileLegendsDivisionOrder(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
-  choose_champions = models.BooleanField(default=True, blank=True, null=True)
+  select_champion = models.BooleanField(default=True, blank=True, null=True)
 
 
   def save(self, *args, **kwargs):
@@ -164,8 +164,8 @@ class MobileLegendsDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 8
-    self.order.game_name = 'mobile legends'
+    # self.order.game_id = 8
+    # self.order.game_name = 'mobile legends'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -183,14 +183,14 @@ class MobileLegendsDivisionOrder(models.Model):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming },{self.choose_champions}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.select_champion},{self.order.turbo_boost},{self.order.streaming }"
     
 class MobileLegendsPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='mob_leg_placement_order')
   last_rank = models.ForeignKey(MobileLegendsPlacement, on_delete=models.CASCADE, default=None, related_name='mob_leg_last_rank')
   number_of_match = models.IntegerField(default=5)
 
-  choose_champions = models.BooleanField(default=False, blank=True, null=True)
+  select_champion = models.BooleanField(default=False, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -223,8 +223,8 @@ class MobileLegendsPlacementOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 8
-    self.order.game_name = 'mobileLegends'
+    # self.order.game_id = 8
+    # self.order.game_name = 'mobileLegends'
     self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:

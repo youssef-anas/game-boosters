@@ -62,15 +62,14 @@ class HearthstoneDivisionOrder(models.Model):
   current_rank = models.ForeignKey(HearthstoneRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
   reached_rank = models.ForeignKey(HearthstoneRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
   desired_rank = models.ForeignKey(HearthstoneRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
-  current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
-  current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
-  reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+  current_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  reached_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  desired_division = models.PositiveSmallIntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
+  reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
 
-  speed_up_boost = models.BooleanField(default=True, blank=True, null=True)
-  choose_legends = models.BooleanField(default=True, blank=True, null=True)
+  select_champion = models.BooleanField(default=True, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -104,8 +103,8 @@ class HearthstoneDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 7
-    self.order.game_name = 'hearthstone'
+    # self.order.game_id = 7
+    # self.order.game_name = 'hearthstone'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -122,4 +121,5 @@ class HearthstoneDivisionOrder(models.Model):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.speed_up_boost},{self.choose_legends},{self.order.streaming}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.select_champion},{self.order.streaming}"
+

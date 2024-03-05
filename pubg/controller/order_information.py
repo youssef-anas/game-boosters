@@ -24,13 +24,15 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_agents = data['choose_agents']
+  select_champion = data['select_champion']
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_agents_value = 0
+  select_champion_value = 0
 
   boost_options = []
 
@@ -54,10 +56,10 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_agents:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_agents_value = 1
+    select_champion_value = 1
 
   # Read data from JSON file
   with open('static/pubg/data/divisions_data.json', 'r') as file:
@@ -78,14 +80,12 @@ def get_division_order_result_by_rank(data,extend_order_id):
   price = total_sum - marks_price
   price += (price * total_percent)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
       price = round((price - extend_order_price), 2)
-      print('Price', price)
     except:
       pass
 
@@ -94,8 +94,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     get_object_or_404(User,id=booster_id,is_booster=True)
   else:
     booster_id = 0
-
-  invoice = f'pubg-3-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-D-{choose_agents_value}'
+  invoice = f'pubg-3-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

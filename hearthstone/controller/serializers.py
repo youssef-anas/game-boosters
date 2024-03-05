@@ -10,7 +10,7 @@ class DivisionSerializer(serializers.Serializer):
   duo_boosting = serializers.BooleanField()
   select_booster = serializers.BooleanField()
   speed_up_boost = serializers.BooleanField()
-  choose_legends = serializers.BooleanField()
+  choose_champion = serializers.BooleanField()
   streaming = serializers.BooleanField()
 
   price = serializers.FloatField(min_value=10)
@@ -18,3 +18,6 @@ class DivisionSerializer(serializers.Serializer):
   choose_booster = serializers.IntegerField()
 
   extend_order = serializers.IntegerField()
+
+  promo_code = serializers.CharField()
+  server = serializers.CharField()

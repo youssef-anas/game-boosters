@@ -21,14 +21,16 @@ def get_division_order_result_by_rank(data,extend_order_id):
   total_percent = 0
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
-  speed_up_boost = data['speed_up_boost']
-  choose_legends = data['choose_legends']
+  turbo_boost = data['speed_up_boost']
+  select_champion = data['select_champion']
   streaming = data['streaming']
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
-  speed_up_boost_value = 0
-  choose_legends_value = 0
+  turbo_boost_value = 0
+  select_champion_value = 0
   streaming_value = 0
 
   boost_options = []
@@ -43,20 +45,20 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
-  if speed_up_boost:
+  if turbo_boost:
     total_percent += 0.20
     boost_options.append('SPEED UP BOOST')
-    speed_up_boost_value = 1
+    turbo_boost_value = 1
   
   if streaming:
     total_percent += 0.15
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_legends:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE LEGENDS')
-    choose_legends_value = 1
+    select_champion_value = 1
 
   # Read data from JSON file
   with open('static/hearthstone/data/divisions_data.json', 'r') as file:
@@ -92,8 +94,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     get_object_or_404(User,id=booster_id,is_booster=True)
   else:
     booster_id = 0
-
-  invoice = f'hearthstone-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-0-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_legends_value}-{speed_up_boost_value}-{timezone.now()}'
+  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

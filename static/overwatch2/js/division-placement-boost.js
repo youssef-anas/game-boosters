@@ -1,22 +1,24 @@
 // Read Values From Json File
+
 let divisionPrices = [0];
 let marks_price = [[0, 0, 0, 0, 0]];
+let role_price = 0
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/mobileLegends/data/divisions_data.json', function (data) {
+    $.getJSON('/static/overwatch2/data/divisions_data.json', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/mobileLegends/data/marks_data.json', function (data) {
+    $.getJSON('/static/overwatch2/data/marks_data.json', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
+  const divisionRanks = ['','bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grand master', 'champion']
 
   const divisionNames = ['', 'V', 'IV', 'III', 'II', 'I']
 
@@ -89,24 +91,22 @@ Promise.all([
       const sum = slicedArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
       let result_with_mark = sum
+      
+      // Apply role extra value
+      const total_Percentage_with_role_result = total_Percentage + role_price
 
       // Apply extra charges to the result
-      result_with_mark += result_with_mark * total_Percentage;
+      result_with_mark += result_with_mark * total_Percentage_with_role_result;
       // Apply promo code 
       result_with_mark -= result_with_mark * (discount_amount/100 )
-
+      
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
-      // let currentElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (divisionRanks[valuesToSet[3]]).toLowerCase());
-
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-      const currentElement = getSelectedElement(radioButtonsCurrent)
-      const desiredElement = getSelectedElement(radioButtonsDesired)
-      
       $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
       $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      $('.division-boost .current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]} ${mark_index == 0 ? '1 Star' : mark_index == 1 ? '2 Stars' : mark_index == 2 ? '3 Stars' : mark_index == 3 ? '4 Stars' : mark_index == 4 ? '5 Stars' : ''}`);
+      $('.division-boost .current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${mark_index == 0 ? '0-19 %' : mark_index == 1 ? '20-39 %' : mark_index == 2 ? '40-59 %' : mark_index == 3 ? '60-79 %' : mark_index == 4 ? '80-99 %' : ''}`);
       $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
 
       $('.current').removeClass().addClass(`current ${divisionRanks[valuesToSet[3]]}`)
@@ -142,33 +142,43 @@ Promise.all([
       } catch (error) {
         
       }
+      // const role_index = getSelectedValueForDropList(role_selected);
+      // console.log(role_index)
+
       const selectedDivsionServer = division_server_select_element.value;
       
       const startRank = ((current_rank - 1) * 5) + current_division;
       const endRank = ((desired_rank - 1) * 5) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
+      console.log(startRank,endRank, slicedArray , number_of_mark)
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result
   
       if (result > 0) {
         result_with_mark = result - number_of_mark;
       }
-  
+      
+      //Apply role percent
+      const total_Percentage_with_role_result = total_Percentage + role_price
+
       // Apply extra charges to the result
-      result_with_mark += result_with_mark * total_Percentage;
+      result_with_mark += result_with_mark * total_Percentage_with_role_result;
       // Apply promo code 
       result_with_mark -= result_with_mark * (discount_amount/100 )
 
+
+
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
-      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       const currentElement = getSelectedElement(radioButtonsCurrent)
       const desiredElement = getSelectedElement(radioButtonsDesired)
-
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
       $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      $('.division-boost .current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark_index == 0 ? '1 Star' : mark_index == 1 ? '2 Stars' : mark_index == 2 ? '3 Stars' : mark_index == 3 ? '4 Stars' : mark_index == 4 ? '5 Stars' : ''}`);
+
+
+      $('.division-boost .current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark_index == 0 ? '0-19 %' : mark_index == 1 ? '20-39 %' : mark_index == 2 ? '40-59 %' : mark_index == 3 ? '60-79 %' : mark_index == 4 ? '80-99 %' : ''}`);
       $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
 
       $('.current').removeClass().addClass(`current ${current_rank_name}`)
@@ -193,9 +203,6 @@ Promise.all([
   // Current Rank Change
   radioButtonsCurrent.forEach(function (radio, index) {
     radio.addEventListener('change', function () {
-      const selectedIndex = getSelectedValueForRadio(radioButtonsCurrent)
-      refreshDivisionBasedRankMobileLegends(selectedIndex, true)
-      refreshMarksBasedRankMobileLegends(selectedIndex)
       getDivisionPrice();
     });
   });
@@ -203,33 +210,35 @@ Promise.all([
   // Desired Rank Change
   radioButtonsDesired.forEach(function (radio, index) {
     radio.addEventListener('change', function(){
-      const selectedIndex = getSelectedValueForRadio(radioButtonsDesired)
-      refreshDivisionBasedRankMobileLegends(selectedIndex, false)
       getDivisionPrice()
     });
   });
 
   // Current Division Change
   radioButtonsCurrentDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', getDivisionPrice);
+    radio.addEventListener('change', ()=>{
+      getDivisionPrice()
+    });
   })
 
   // Desired Division Change
   radioButtonsDesiredDivision.forEach(function (radio, index) {
-    radio.addEventListener('change', getDivisionPrice);
+    radio.addEventListener('change', function(){
+      getDivisionPrice()
+    });
   });
 
   // Mark Changes
-  makrs_on_current_rank_selected.addEventListener("change", getDivisionPrice);
+  makrs_on_current_rank_selected.addEventListener("change", function(){
+    getDivisionPrice()
+  });
   // Server Changes
-  division_server_select_element.addEventListener("change", getDivisionPrice);
+  division_server_select_element.addEventListener("change", function(){
+    getDivisionPrice()
+  }); // we dont need this
+
 
   // Get Result 
-  const checkedIndexCurrent = getSelectedValueForRadio(radioButtonsCurrent)
-  const checkedIndexDesired = getSelectedValueForRadio(radioButtonsDesired)
-  refreshDivisionBasedRankMobileLegends(checkedIndexCurrent, true)
-  refreshDivisionBasedRankMobileLegends(checkedIndexDesired, false)
-  refreshMarksBasedRankMobileLegends(checkedIndexCurrent)
   getDivisionPrice();
 
 
@@ -364,6 +373,31 @@ Promise.all([
       getDivisionPrice()
       getPlacementPrice()
     })
+  });
+
+  role_selected.addEventListener('change', function () {
+    role_price = 0
+    const role_imput = document.getElementById('role_input')
+    switch (this.value) {
+      case '1':
+        role_price = 0
+        role_imput.value = '1';
+        getDivisionPrice()
+        break;
+      case '2':
+        role_price = 0
+        role_imput.value = '2';
+        getDivisionPrice()
+        break;
+      case '3':
+        role_price = .12;
+        role_imput.value = '3';
+        getDivisionPrice()
+        break;
+      default:
+        console.log('Invalid option selected');
+        break;
+    }
   });
   
   promo_form.addEventListener('submit', async function(event) {

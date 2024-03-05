@@ -22,13 +22,15 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_champions = data['choose_champions']
+  select_champion = data['select_champion']
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_champions_value = 0
+  select_champion_value = 0
 
   boost_options = []
 
@@ -52,10 +54,10 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_champions:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE CHAMPIONS')
-    choose_champions_value = 1
+    select_champion_value = 1
 
   # Read data from JSON file
   with open('static/mobileLegends/data/divisions_data.json', 'r') as file:
@@ -140,8 +142,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     get_object_or_404(User,id=booster_id,is_booster=True)
   else:
     booster_id = 0
-
-  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_champions_value}-{timezone.now()}'
+  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
@@ -158,13 +159,15 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_champions = data['choose_champions']
+  select_champion = data['select_champion']
+  server = data['server']
+  promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_champions_value = 0
+  select_champion_value = 0
 
   boost_options = []
 
@@ -188,10 +191,10 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_champions:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE CHAMPIONS')
-    choose_champions_value = 1
+    select_champion_value = 1
 
   # Read data from JSON file
   with open('static/mobileLegends/data/placements_data.json', 'r') as file:
@@ -217,7 +220,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{choose_champions_value}-{timezone.now()}'
+  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}--{server}-{price}-{select_champion_value}-{promo_code}-0-0'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
