@@ -56,5 +56,3 @@ const soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-
 let total_Percentage = 0; // inital value for Additional value 
 let discount_amount = 0 // inital value of discount
 console.log();
-
-

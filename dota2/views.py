@@ -10,8 +10,6 @@ from .controller.serializers import RankBoostSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from .controller.order_information import get_rank_boost_order_result_by_rank
 
-
-
 def dota2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   order_get_rank_value = None

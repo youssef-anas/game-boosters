@@ -28,4 +28,3 @@ class RankBoostSerializer(serializers.Serializer):
     # fild not fo all games
     select_champion = serializers.BooleanField()
     role = serializers.IntegerField(min_value=1, max_value=2)
-    

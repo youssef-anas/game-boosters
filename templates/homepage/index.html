@@ -1,5 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
+{% load custom_filters %}
 {% block title %}Game Boosters{% endblock %}
 {% block style %}
 <!-- SWIPER CSS -->
@@ -107,11 +108,27 @@
 
                 <div class="rank">
                   {% if order.order.game_type == 'D' %}
-                  <p class="mb-0">Rank</p>
-                  <p class="mb-0 text-capitalize">{{order.reached_rank}} {{order.reached_division}}</p>
+                    <p class="mb-0">Rank</p>
+                    {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'pubg' or order.order.game.link == 'tft' %}
+                      <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'rocketLeague' %}
+                      <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
+
+                    {% elif order.order.game.link == 'hearthstone' %}
+                      <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'hok' %}
+                      <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
+
+                    {% else %}
+                      <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division }}</p>
+
+                    {% endif %}
+                  
                   {% else %}
-                  <p class="mb-0">Matches</p>
-                  <p class="mb-0 text-capitalize">{{order.number_of_match}} Mathces</p>
+                    <p class="mb-0">Matches</p>
+                    <p class="mb-0 text-capitalize">{{order.number_of_match}} Mathces</p>
                   {% endif %}
                 </div>
               </div>
@@ -139,6 +156,9 @@
   function redirectToGame(link) {
     window.location.href = link;
   }
+  $('#make-order').click(function() {
+    window.location.href = 'games'
+  })
 </script>
 <!-- SWIPER JS -->
 <script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
