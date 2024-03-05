@@ -25,7 +25,7 @@
             <div>
               {% if order.order.game_type == 'D' %}
 
-              <a class="btn btn-success m-3" href="{% url order.order.game_name %}?extend={{order.order.id}}">Extend Order</a>
+              <a class="btn btn-success m-3" href="{% url order.order.game.link %}?extend={{order.order.id}}">Extend Order</a>
               {% endif %}
               <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
                 {% csrf_token %}
@@ -61,13 +61,13 @@
           <div class="current row">
             <p class="my-3 text-uppercase col-4 px-0">Now</p>
             <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" />
-            {% if order.order.game_name == 'wildRift' or order.order.game_name == 'lol' or order.order.game_name == 'pubg' or order.order.game_name == 'tft' %}
+            {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'pubg' or order.order.game.link == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
-            {% elif order.order.game_name == 'valorant' or order.order.game_name == 'rocketLeague' %}
+            {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
-            {% elif order.order.game_name == 'hearthstone' %}
+            {% elif order.order.game.link == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
-            {% elif order.order.game_name == 'hok' %}
+            {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
             {% endif %}
           </div>
@@ -77,13 +77,13 @@
           <div class="to row">
             <p class="my-3 text-uppercase col-4 px-0">TO</p>
             <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" />
-            {% if order.order.game_name == 'wildRift' or order.order.game_name == 'lol' or order.order.game_name == 'pubg' or order.order.game_name == 'tft' %}
+            {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'pubg' or order.order.game.link == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
-            {% elif order.order.game_name == 'valorant' or order.order.game_name == 'rocketLeague' %}
+            {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
-            {% elif order.order.game_name == 'hearthstone' %}
+            {% elif order.order.game.link == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|ten_romanize_division }}</p>
-            {% elif order.order.game_name == 'hok' %}
+            {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|five_romanize_division }}</p>
             {% endif %}
           </div>

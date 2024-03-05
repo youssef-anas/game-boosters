@@ -45,7 +45,7 @@
 }
 @font-face {
   font-family: sharp-medium-font;
-  src: url('./../fonts/SharpGrotesk-MediumItalic20.otf');
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Medium25.otf');
 }
 html {
   scroll-behavior: smooth;

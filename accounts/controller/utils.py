@@ -119,13 +119,13 @@ def live_orders():
     for order in orders:
         order_dict = {
             "id": order.pk,
-            'name': order.game_name,
+            'name': order.game.name,
             'server': order.customer_server,
             'status': order.status,
             'price': order.price,
-            'game_name':order.game_name,
+            'game_name':order.game.name,
             'details':order.details,
-            'url':f'{order.game_name}/{order.pk}/',
+            'url':f'{order.game.link}/{order.pk}/',
         }
         all_orders_dict.append(order_dict)
     return all_orders_dict 

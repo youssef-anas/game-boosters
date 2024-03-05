@@ -49,9 +49,9 @@
 
         <div class="swiper-wrapper mt-4">
           {% for game in games %}
-            <div class="swiper-slide game">
+            <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')">
               <div class="game-logo">
-                <img src="{{game.logo}}" class="img-fluid" alt="{{game.name}}">
+                <img src="{{game.get_logo_image_url}}" class="img-fluid" alt="{{game.name}}">
               </div>
               <p class="mt-2 text-center">{{game.name}}</p>
             </div>
@@ -60,8 +60,66 @@
       </div>
     </div>
 
-    <!-- ------------------------- Import Last Orders ------------------------- -->
+    <!-- ------------------------- Last Orders ------------------------- -->
+    <div class="last-orders swiper py-5">
+      <div class="last-orders-swiper" id="last-orders">
+
+        <div class="head d-flex justify-content-between align-items-center">
+          <h1>Last Orders</h1>
+
+          <div class="navigation-buttons">
+            <!-- Navigation Buttons -->
+            <div class="last-orders-swiper-button-prev">
+              <i class="fa-solid fa-chevron-left fs-3"></i>
+            </div>
   
+            <div class="last-orders-swiper-button-next">
+              <i class="fa-solid fa-chevron-right fs-3"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-wrapper mt-4">
+          {% for order in last_orders %}
+            <div class="swiper-slide order">
+
+              <div class="banner">
+                <img src="{{order.order.game.get_banner_image_url}}" class="img-fluid" alt="{{order.order.game.name}}">
+              </div>
+
+              <div class="title d-flex justify-content-between align-items-center my-2">
+                <h1>{{order.order.game.name}}</h1>
+                <p class="solo-or-duo">{% if order.order.duo_boosting %}Duo{% else %}Solo{% endif %}</p>
+              </div>
+
+              <div class="information d-flex justify-content-between align-items-center">
+                <div class="booster d-flex justify-content-center align-items-center">
+
+                  <div class="image">
+                    <img src="{{order.order.booster.get_image_url}}" class="img-fluid" alt="Booster Image">
+                  </div>
+
+                  <div class="name ms-3">
+                    <p class="mb-0">Booster</p>
+                    <p class="mb-0">{{order.order.booster.username}}</p>
+                  </div>
+                </div>
+
+                <div class="rank">
+                  {% if order.order.game_type == 'D' %}
+                  <p class="mb-0">Rank</p>
+                  <p class="mb-0 text-capitalize">{{order.reached_rank}} {{order.reached_division}}</p>
+                  {% else %}
+                  <p class="mb-0">Matches</p>
+                  <p class="mb-0 text-capitalize">{{order.number_of_match}} Mathces</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
 
     <!-- ------------------------- Import Feedback Component ------------------------- -->
     {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
@@ -87,4 +145,5 @@
 <!-- OUR SCRIPTS -->
 <script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
 <script src="{% static 'homepage/js/games.js'%}"></script>
+<script src="{% static 'homepage/js/last-orders.js'%}"></script>
 {% endblock %}

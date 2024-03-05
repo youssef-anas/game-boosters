@@ -46,7 +46,7 @@
 
             <div class="d-flex justify-content-between align-item-center">
               <p class="text-secondary">Order Type</p>
-              {% if order.order.order.game_type == 'D' and order.order.order.game_name != 'rocketLeague' %}
+              {% if order.order.order.game_type == 'D' and order.order.order.game.link != 'rocketLeague' %}
               <p>Division Boost</p>
               {% elif order.order.order.game_type == 'D' and order.order.ranked_type == 3 %}
               <p>3vs3 Ranked</p>
@@ -102,40 +102,40 @@
               <img class="text-center col-4 px-0" src="{{order.order.current_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
-                {% if order.order.order.game_name == 'wildRift' %}
+                {% if order.order.order.game.link == 'wildRift' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {% if order.order.current_rank|lower != 'master' %} {{ order.order.current_division|romanize_division }} {% endif %}</p>
 
-                {% elif order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
+                {% elif order.order.order.game.link == 'lol' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division }}</p>
 
-                {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
+                {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division_original }}</p>
 
-                {% elif order.order.order.game_name == 'hearthstone' %}
+                {% elif order.order.order.game.link == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|ten_romanize_division}}</p>
 
-                {% elif order.order.order.game_name == 'hok' %}
+                {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|five_romanize_division}}</p>
 
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
-                {% if order.order.order.game_name == 'wildRift' and order.order.current_rank|lower != 'master'  %}
+                {% if order.order.order.game.link == 'wildRift' and order.order.current_rank|lower != 'master'  %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.current_marks}} Marks</span>
 
-                {% elif order.order.order.game_name == 'valorant' %}
+                {% elif order.order.order.game.link == 'valorant' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 RR {% elif order.order.current_marks == 1 %} 21-40 RR {% elif order.order.current_marks == 2 %} 41-60 RR {% elif order.order.current_marks == 3 %} 61-80 RR {% elif order.order.current_marks == 4 %} 81-100 RR {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'lol' %}
+                {% elif order.order.order.game.link == 'lol' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 LP {% elif order.order.current_marks == 1 %} 21-40 LP {% elif order.order.current_marks == 2 %} 41-60 LP {% elif order.order.current_marks == 3 %} 61-80 LP {% elif order.order.current_marks == 4 %} 81-99 LP {% elif order.order.current_marks == 5 %} SERIES {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'tft' %}
+                {% elif order.order.order.game.link == 'tft' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 0-20 LP {% elif order.order.current_marks == 1 %} 21-40 LP {% elif order.order.current_marks == 2 %} 41-60 LP {% elif order.order.current_marks == 3 %} 61-80 LP {% elif order.order.current_marks == 4 %} 81-100 LP {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'hearthstone' %}
+                {% elif order.order.order.game.link == 'hearthstone' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.current_marks == 0 %} 3 STAR {% elif order.order.current_marks == 1 %} 2 STAR {% elif order.order.current_marks == 2 %} 1 STAR {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'hok' %}
+                {% elif order.order.order.game.link == 'hok' %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.current_marks}} Stars</span>
 
                 {% endif %}
@@ -150,40 +150,40 @@
               <img class="text-center col-4 px-0" src="{{order.order.reached_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
-                {% if order.order.order.game_name == 'wildRift' %}
+                {% if order.order.order.game.link == 'wildRift' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {% if order.order.reached_rank|lower != 'master' %} {{ order.order.reached_division|romanize_division }} {% endif %}</p>
 
-                {% elif order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
+                {% elif order.order.order.game.link == 'lol' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division }}</p>
 
-                {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
+                {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division_original }}</p>
 
-                {% elif order.order.order.game_name == 'hearthstone' %}
+                {% elif order.order.order.game.link == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|ten_romanize_division }}</p>
 
-                {% elif order.order.order.game_name == 'hok' %}
+                {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|five_romanize_division }}</p>
 
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
-                {% if order.order.order.game_name == 'wildRift' and order.order.reached_rank|lower != 'master' %}
+                {% if order.order.order.game.link == 'wildRift' and order.order.reached_rank|lower != 'master' %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.reached_marks}} Marks</span>
 
-                {% elif order.order.order.game_name == 'valorant' %}
+                {% elif order.order.order.game.link == 'valorant' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 RR {% elif order.order.reached_marks == 1 %} 21-40 RR {% elif order.order.reached_marks == 2 %} 41-60 RR {% elif order.order.reached_marks == 3 %} 61-80 RR {% elif order.order.reached_marks == 4 %} 81-100 RR {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'lol' %}
+                {% elif order.order.order.game.link == 'lol' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 LP {% elif order.order.reached_marks == 1 %} 21-40 LP {% elif order.order.reached_marks == 2 %} 41-60 LP {% elif order.order.reached_marks == 3 %} 61-80 LP {% elif order.order.reached_marks == 4 %} 81-99 LP {% elif order.order.reached_marks == 4 %} SERIES {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'tft' %}
+                {% elif order.order.order.game.link == 'tft' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 0-20 LP {% elif order.order.reached_marks == 1 %} 21-40 LP {% elif order.order.reached_marks == 2 %} 41-60 LP {% elif order.order.reached_marks == 3 %} 61-80 LP {% elif order.order.reached_marks == 4 %} 81-100 LP {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'hearthstone' %}
+                {% elif order.order.order.game.link == 'hearthstone' %}
                 <span class="text-secondary" style="font-size: 12px;">{% if order.order.reached_marks == 0 %} 3 STAR {% elif order.order.reached_marks == 1 %} 2 STAR {% elif order.order.reached_marks == 2 %} 1 STAR {% endif %} </span>
 
-                {% elif order.order.order.game_name == 'hok' %}
+                {% elif order.order.order.game.link == 'hok' %}
                 <span class="text-secondary" style="font-size: 12px;">{{order.order.reached_marks}} Stars</span>
 
                 {% endif %}
@@ -198,19 +198,19 @@
               <img class="text-center col-4 px-0" src="{{order.order.desired_rank.get_image_url}}" width="70" />
               <div class="col-4 px-0">
                 <!-- Here Sara Division Range I II III .. Or V IV III ... -->
-                {% if order.order.order.game_name == 'wildRift' %}
+                {% if order.order.order.game.link == 'wildRift' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {% if order.order.desired_rank|lower != 'master' %} {{ order.order.desired_division|romanize_division }} {% endif %}</p>
 
-                {% elif order.order.order.game_name == 'lol' or order.order.order.game_name == 'pubg' or order.order.order.game_name == 'tft' %}
+                {% elif order.order.order.game.link == 'lol' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'tft' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division }}</p>
 
-                {% elif order.order.order.game_name == 'valorant' or order.order.order.game_name == 'rocketLeague' %}
+                {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division_original }}</p>
 
-                {% elif order.order.order.game_name == 'hearthstone' %}
+                {% elif order.order.order.game.link == 'hearthstone' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|ten_romanize_division }}</p>
 
-                {% elif order.order.order.game_name == 'hok' %}
+                {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|five_romanize_division }}</p>
 
                 {% endif %}
@@ -245,28 +245,28 @@
             {% endif %}
             <hr>
             <!-- Here We Change Update Component Depend On Game -->
-            {% if order.order.order.game_name == 'wildRift' %}
+            {% if order.order.order.game.link == 'wildRift' %}
               {% include 'wildrift/order_update.html' %}
 
-            {% elif order.order.order.game_name == 'valorant' %}
+            {% elif order.order.order.game.link == 'valorant' %}
               {% include 'valorant/order_update.html' with valorant_ranks=valorant_ranks %}
 
-            {% elif order.order.order.game_name == 'lol' %}
+            {% elif order.order.order.game.link == 'lol' %}
               {% include 'leagueOfLegends/order_update.html' with lol_ranks=lol_ranks %}
 
-            {% elif order.order.order.game_name == 'pubg' %}
+            {% elif order.order.order.game.link == 'pubg' %}
               {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
 
-            {% elif order.order.order.game_name == 'tft' %}
+            {% elif order.order.order.game.link == 'tft' %}
               {% include 'tft/order_update.html' with tft_ranks=tft_ranks %}
 
-            {% elif order.order.order.game_name == 'hearthstone' %}
+            {% elif order.order.order.game.link == 'hearthstone' %}
               {% include 'hearthstone/order_update.html' with hearthstone_ranks=hearthstone_ranks %}
 
-            {% elif order.order.order.game_name == 'rocketLeague' %}
+            {% elif order.order.order.game.link == 'rocketLeague' %}
               {% include 'rocketLeague/order_update.html' with rocketLeague_ranks=rocketLeague_ranks %}
             
-            {% elif order.order.order.game_name == 'hok' %}
+            {% elif order.order.order.game.link == 'hok' %}
               {% include 'honorOfKings/order_update.html' with hok_ranks=hok_ranks %} 
             {% endif %}
             

@@ -78,17 +78,19 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
 
         if status == 'New' or status == 'Continue':
             baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code= promo_code_amount)
-            default_fields = {
-                'order': baseOrder,
-                'current_rank_id': current_rank,
-                'current_division': current_division,
-                'current_marks': current_marks,
-                'desired_rank_id': desired_rank,
-                'desired_division': desired_division,
-                'reached_rank_id': current_rank,
-                'reached_division': current_division,
-                'reached_marks': current_marks,
-            }
+            # Here I Make This Condition Because it Make Error in Placement
+            if type == 'D':
+                default_fields = {
+                    'order': baseOrder,
+                    'current_rank_id': current_rank,
+                    'current_division': current_division,
+                    'current_marks': current_marks,
+                    'desired_rank_id': desired_rank,
+                    'desired_division': desired_division,
+                    'reached_rank_id': current_rank,
+                    'reached_division': current_division,
+                    'reached_marks': current_marks,
+                }
             # Wildrift Without Placement 
             if game_id == 1:
                 order = Game.objects.create(**default_fields, booster_champions=booster_champions)

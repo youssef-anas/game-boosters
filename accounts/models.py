@@ -34,12 +34,13 @@ class BaseUser(AbstractUser):
     is_admin = models.BooleanField(default= False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    profile_image = models.ImageField(upload_to='accounts/images/', null=True)
 
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
-        if self.image:
-            return self.image.url
+        if self.profile_image:
+            return self.profile_image.url
         return None
     
     def save(self, *args, **kwargs):
@@ -101,7 +102,7 @@ class BaseOrder(models.Model):
     ]
     name = models.CharField(max_length=30, null = True)
     details = models.CharField(max_length=300, default='no details')
-    game = models.ForeignKey(Game, on_delete=models.DO_NOTHING, default=None, related_name='game')
+    game = models.ForeignKey(Game, null=True, on_delete=models.DO_NOTHING, default=None, related_name='game')
     game_type = models.CharField(max_length=10, choices=GAME_TYPE, null=True)
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
@@ -227,7 +228,7 @@ class BaseOrder(models.Model):
             )
 
     def __str__(self):
-        return f'{self.customer} have [{self.game_name.upper()}] order - {self.details}'
+        return f'{self.customer} have [{self.game.name.upper()}] order - {self.details}'
 
 class Tip_data(models.Model):
     payer_id            = models.CharField(max_length=50, null=True)
