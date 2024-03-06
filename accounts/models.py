@@ -124,7 +124,7 @@ class BaseOrder(models.Model):
     customer_server = models.CharField(max_length=300, blank=True, null=True)   # TODO make it interger filed and relational choise
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
-    payer_id = models.CharField(blank=True, null=True)
+    payer_id = models.CharField(blank=True, null=True, max_length=50)
     promo_code = models.FloatField(null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

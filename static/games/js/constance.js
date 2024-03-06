@@ -55,4 +55,3 @@ const promo_form = document.querySelector('.discount form');
 const soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-solo-duo"]');
 let total_Percentage = 0; // inital value for Additional value 
 let discount_amount = 0 // inital value of discount
-console.log();

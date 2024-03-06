@@ -144,8 +144,6 @@ Promise.all([
       }
       // const role_index = getSelectedValueForDropList(role_selected);
       // console.log(role_index)
-
-      const selectedDivsionServer = division_server_select_element.value;
       
       const startRank = ((current_rank - 1) * 5) + current_division;
       const endRank = ((desired_rank - 1) * 5) + desired_division - 1;
@@ -193,7 +191,6 @@ Promise.all([
         $('.division-boost input[name="marks"]').val(mark_index);
         $('.division-boost input[name="desired_rank"]').val(desired_rank);
         $('.division-boost input[name="desired_division"]').val(desired_division);
-        $('.division-boost input[name="server"]').val(selectedDivsionServer);
         $('.division-boost input[name="price"]').val(result_with_mark);
       }
     }
@@ -234,8 +231,9 @@ Promise.all([
   });
   // Server Changes
   division_server_select_element.addEventListener("change", function(){
-    getDivisionPrice()
-  }); // we dont need this
+    const selectedDivsionServer = division_server_select_element.value;
+    $('.division-boost input[name="server"]').val(selectedDivsionServer);
+  }); 
 
 
   // Get Result 
