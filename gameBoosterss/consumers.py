@@ -1,25 +1,32 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-
-from accounts.models import Room,Message, BaseUser
+from channels.db import database_sync_to_async
+from accounts.models import BaseUser
+from chat.models import Room, Message
+from datetime import datetime
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_slug']
-        self.roomGroupName = 'chat_%s' % self.room_name
+        self.room_group_name = 'chat_%s' % self.room_name
+        self.username = self.scope['user'].username
         
         await self.channel_layer.group_add(
-            self.roomGroupName,
+            self.room_group_name,
             self.channel_name
+
         )
+        await self.set_user_online(self.username)
         await self.accept()
         
     async def disconnect(self, close_code):
+        await self.set_user_offline(self.username)
         await self.channel_layer.group_discard(
-            self.roomGroupName,
+            self.room_group_name,
             self.channel_name
         )
+        print(close_code)
         
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -30,7 +37,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.save_message(message, username, room_name)     
 
         await self.channel_layer.group_send(
-            self.roomGroupName, {
+            self.room_group_name, {
                 "type": "sendMessage",
                 "message": message,
                 "username": username,
@@ -48,3 +55,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user=BaseUser.objects.get(username=username)
         room=Room.objects.get(name=room_name)
         Message.objects.create(user=user,room=room,content=message)
+
+
+
+    @database_sync_to_async
+    def set_user_online(self, username):
+        user = BaseUser.objects.filter(username=username).first()
+        user.is_online = True
+        user.save()
+        print(f"{username} online")
+
+    @database_sync_to_async
+    def set_user_offline(self, username):
+        user = BaseUser.objects.filter(username=username).first()
+        user.is_online = False
+        user.last_online = datetime.now()
+        user.save()
+        print(f"{username} offline")

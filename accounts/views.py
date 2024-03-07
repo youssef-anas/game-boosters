@@ -20,7 +20,8 @@ from accounts.controller.order_creator import create_order
 from accounts.controller.utils import refresh_order_page
 User = get_user_model()
 from booster.models import Booster
-from accounts.models import BaseUser, BaseOrder, Room, Message,TokenForPay, Transaction, Tip_data, Wallet
+from accounts.models import BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data, Wallet
+from chat.models import Room, Message
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 import requests

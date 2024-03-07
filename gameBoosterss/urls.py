@@ -3,6 +3,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from gameBoosterss.views import index
+from django.conf.urls import handler400, handler403, handler404, handler500
+
+
+
 
 urlpatterns = [
     path('', index, name="homepage.index"),
@@ -25,7 +29,14 @@ urlpatterns = [
     path('csgo2/', include('csgo2.urls')),
     path('hok/', include('honorOfKings.urls')),
     path('games/', include('games.urls')),
+    path('chat/', include('chat.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+handler400 = 'gameBoosterss.views.custom_handler400'
+handler403 = 'gameBoosterss.views.custom_handler403'
+handler404 = 'gameBoosterss.views.custom_handler404'
+handler500 = 'gameBoosterss.views.custom_handler500'

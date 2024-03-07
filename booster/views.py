@@ -22,7 +22,8 @@ from hearthstone.models import  HearthstoneRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
-from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
+from accounts.models import BaseOrder, Transaction, BoosterPercent
+from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from itertools import chain
 from accounts.controller.order_creator import create_order

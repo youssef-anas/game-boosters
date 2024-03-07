@@ -15,7 +15,7 @@ class DivisionSerializer(serializers.Serializer):
     price = serializers.FloatField(min_value=10)
 
     select_champion = serializers.BooleanField()
-
+    choose_booster = serializers.IntegerField()
     extend_order = serializers.IntegerField()
 
     promo_code = serializers.CharField()
@@ -29,3 +29,4 @@ class PlacementSerializer(serializers.Serializer):
     select_booster = serializers.BooleanField()
     server = serializers.CharField()
     select_champion = serializers.BooleanField()
+    choose_booster = serializers.IntegerField()

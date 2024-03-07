@@ -4,7 +4,8 @@ from django.contrib import admin
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from accounts.models import BaseUser, BaseOrder, Room, Message, Wallet, Transaction, BoosterPercent, TokenForPay, Tip_data, PromoCode
+from accounts.models import BaseUser, BaseOrder, Wallet, Transaction, BoosterPercent, TokenForPay, Tip_data, PromoCode
+from chat.models import  Room, Message
 
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
@@ -12,7 +13,7 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('email', 'username',)
     ordering = ('email',)
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password', 'profile_image')}),
+        (None, {'fields': ('username', 'email', 'password', 'profile_image','is_online','last_online')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'country')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser','is_booster','is_customer','is_admin')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
