@@ -81,14 +81,15 @@ def jobs(request):
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
     # TODO make this better
-    if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
-        (game_name == 'valorant' and request.user.booster.is_valo_player) or \
-        (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
-        (game_name == 'lol' and request.user.booster.is_lol_player) or \
-        (game_name == 'tft' and request.user.booster.is_tft_player) or \
-        (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
-        (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
-        (game_name == 'hok' and request.user.booster.is_hok_player) :
+    if True:
+    # if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
+    #     (game_name == 'valorant' and request.user.booster.is_valo_player) or \
+    #     (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
+    #     (game_name == 'lol' and request.user.booster.is_lol_player) or \
+    #     (game_name == 'tft' and request.user.booster.is_tft_player) or \
+    #     (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
+    #     (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
+    #     (game_name == 'hok' and request.user.booster.is_hok_player) :
         try:
             order.booster = request.user
             order.save()
@@ -279,33 +280,31 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         base_order = get_object_or_404(BaseOrder ,id =order_id)
-        content_type = base_order.content_type
-        if content_type:
-            order = content_type.model_class().objects.get(order_id=base_order.object_id)
-            base_order.is_drop = True
-            base_order.is_done = True
-            invoice = order.order.invoice.split('-')
-            print('Old Invoice: ', invoice)
-            invoice[3]= str(order.reached_rank.id) 
-            invoice[4]= str(order.reached_division)
-            invoice[5]= str(order.reached_marks)
+        order = base_order.related_order.model_class().objects.get(order_id=base_order.object_id)
+        base_order.is_drop = True
+        base_order.is_done = True
+        invoice = order.order.invoice.split('-')
+        print('Old Invoice: ', invoice)
+        invoice[3]= str(order.reached_rank.id) 
+        invoice[4]= str(order.reached_division)
+        invoice[5]= str(order.reached_marks)
 
-            new_invoice = '-'.join(invoice)
-            print('New Invoice: ', new_invoice)
-            payer_id = order.order.payer_id
-            customer = order.order.customer
-            
-            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
-            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
-            new_order.order.customer_gamename = order.order.customer_gamename
-            new_order.order.customer_password = order.order.customer_password
-            new_order.order.customer_server = order.order.customer_server
-            new_order.order.save()
-            order.order.save()
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-            # except:
-            #     return JsonResponse({'Drop Success': False})
+        new_invoice = '-'.join(invoice)
+        print('New Invoice: ', new_invoice)
+        payer_id = order.order.payer_id
+        customer = order.order.customer
+        
+        new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
+        new_order.order.actual_price = order.order.actual_price-order.order.money_owed
+        new_order.order.customer_gamename = order.order.customer_gamename
+        new_order.order.customer_password = order.order.customer_password
+        new_order.order.customer_server = order.order.customer_server
+        new_order.order.save()
+        order.order.save()
+        order.save()
+        return redirect(reverse_lazy('booster.orders'))
+        # except:
+        #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
 
 def update_rating(request, order_id):

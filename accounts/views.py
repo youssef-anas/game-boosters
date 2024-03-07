@@ -69,6 +69,20 @@ def register_view(request):
     payer_id = request.GET.get('PayerID')
 
     if invoice:
+        if request.method == 'POST':
+            form = Registeration(request.POST,request.FILES)
+            if form.is_valid():
+                user = form.save()
+                order = create_order(invoice, payer_id, user)
+                login(request, user)
+                # Send activation email
+                # send_activation_email(user, request)
+                # return render(request, 'accounts/activation_sent.html')
+                Room.create_room_with_admins(request.user, order.order.name)
+                Room.create_room_with_booster(request.user,booster, order.order.name)
+                refresh_order_page()
+                async_task(update_database_task,order.order.id)
+                return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
         invoice_values = invoice.split('-')
         booster_id = int(invoice_values[12])
         if booster_id <= 0 :
@@ -83,23 +97,10 @@ def register_view(request):
             Room.create_room_with_booster(request.user, booster, order.order.name)
             refresh_order_page()
             async_task(update_database_task,order.order.id)
-            return redirect(reverse_lazy('accounts.customer_side'))
-        if request.method == 'POST':
-            form = Registeration(request.POST,request.FILES)
-            if form.is_valid():
-                user = form.save()
-                order = create_order(invoice, payer_id, user)
-                login(request, user)
-                # Send activation email
-                # send_activation_email(user, request)
-                # return render(request, 'accounts/activation_sent.html')
-                Room.create_room_with_admins(request.user, order.order.name)
-                Room.create_room_with_booster(request.user,booster, order.order.name)
-                refresh_order_page()
-                async_task(update_database_task,order.order.id)
-                return redirect(reverse_lazy('accounts.customer_side'))
-        form =  Registeration()
-        return render(request, 'accounts/register.html', {'form': form})
+            return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
+        else:
+            form =  Registeration()
+            return render(request, 'accounts/register.html', {'form': form})
     return HttpResponse("error in invoice")
     
     
@@ -154,14 +155,13 @@ def choose_booster(request):
         # TODO make it in kwrgs better than POST data
         chosen_booster_id = request.POST.get('chosen_booster_id')
         order_id = request.POST.get('order_id')
-        print(chosen_booster_id)
 
         if chosen_booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
             booster = get_object_or_404(BaseUser, id=chosen_booster_id)
             order.booster = booster
             order.save()
-            Room.create_room_with_booster(request.user,booster,order.name)
+            # Room.create_room_with_booster(request.user,booster,order.name)
             return redirect(reverse_lazy('accounts.customer_side'))
     return JsonResponse({'success': False})
 
@@ -253,17 +253,19 @@ def cancel_tip(request, token):
 
 # TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
 @login_required
-def customer_side(request):
-    customer = BaseUser.objects.get(id = request.user.id)
-    base_order = BaseOrder.objects.filter(customer=customer).last()
+def customer_side(request, order_name):
+    customer = request.user
+    base_order = BaseOrder.objects.filter(customer=customer,name=order_name).order_by('id').last()
     if base_order.is_done:
         return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
-    boosters = get_boosters(base_order.game_id)     
+    boosters = get_boosters(base_order.game.pk)     
     
     # Chat with admins
     admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
+
     admins_room = Room.objects.get(slug=admins_chat_slug)
     admins_messages = Message.objects.filter(room=admins_room)
+
     game_order = base_order.related_order
     
     # Chat with booster
