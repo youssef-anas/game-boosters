@@ -3,7 +3,7 @@ from accounts.models import BaseOrder
 import requests
 from django.core.exceptions import ValidationError
 
-class WoWRank(models.Model):
+class WorldOfWarcraftRank(models.Model):
   rank_name = models.CharField(max_length=25)
   rank_image = models.ImageField(upload_to='wow/images/', blank=True, null=True)
   start_RP = models.IntegerField()
@@ -14,25 +14,47 @@ class WoWRank(models.Model):
     
   def get_image_url(self):
     return f"/media/{self.rank_image}"
+  
+class SingletonModel(models.Model):
+  class Meta:
+    abstract = True
 
-class WoW_25_RPs_Price_2x2(models.Model):
-  price = models.IntegerField(default=1)
+  @classmethod
+  def load(cls):
+    obj, created = cls.objects.get_or_create(pk=1)
+    return obj
+
+  def save(self, *args, **kwargs):
+    self.pk = 1
+    super().save(*args, **kwargs)
+
+  def delete(self, *args, **kwargs):
+    pass
+
+class WorldOfWarcraftRpsPrice(SingletonModel):
+  price_of_2vs2 = models.IntegerField(default=1)
+  price_of_3vs3 = models.IntegerField(default=2)
 
   def __str__(self):
-    return f"Price for 50 RPs is {self.price}"
+    return f"Price for 50 RPs is {self.price_of_2vs2} for 2vs2 , {self.price_of_3vs3} for 3vs3"
+  
+  def save(self, *args, **kwargs):
+    self.pk = 1
+    super().save(*args, **kwargs)
   
   
-class WoWArenaBoostOrder(models.Model):
+class WorldOfWarcraftArenaBoostOrder(models.Model):
   is_Arena_2x2 = models.BooleanField(default=True)
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_division_order')
-  current_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_current_rank')
-  reached_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_reached_rank')
-  desired_rank = models.ForeignKey(WoWRank, on_delete=models.CASCADE, default=None, related_name='wow_desired_rank')
+  current_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_current_rank')
+  reached_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_reached_rank')
+  desired_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_desired_rank')
   current_division = models.IntegerField(default=0)
   reached_division = models.IntegerField(default=0)
   desired_division = models.IntegerField(default=25)
   created_at = models.DateTimeField(auto_now_add =True)
-  choose_agents = models.BooleanField(default=True, blank=True, null=True)
+
+  choose_champions = models.BooleanField(default=True, blank=True, null=True)
 
   def validate_divition(self):
     if self.is_Arena_2x2:
@@ -94,11 +116,3 @@ class WoWArenaBoostOrder(models.Model):
 
   def get_rank_value(self, *args, **kwargs):
     return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
-
-
-
-class WoW_25_RPs_Price_3x3(models.Model):
-  price = models.IntegerField(default=2)
-
-  def __str__(self):
-    return f"Price for 50 RPs is {self.price}"

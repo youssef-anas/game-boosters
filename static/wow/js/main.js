@@ -1,57 +1,48 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const divisionBoostRadio = document.getElementById('rank-boost');
-  const placementsBoostRadio = document.getElementById('placements-boost');
-  const arenaBoostRadio = document.getElementById('arena-boost');
+  const arena2vs2Radio = document.getElementById('arena-2vs2');
+  const arena3vs3Radio = document.getElementById('arena-3vs3');
 
-  const divisionBoostDiv = document.querySelectorAll('.rank-boost');
-  const placementsBoostDiv = document.querySelectorAll('.placements-boost');
-  const arenaBoostDiv = document.querySelectorAll('.arena-boost');
+  const arena2vs2Div = document.querySelectorAll('.arena-2vs2');
+  const arena3vs3Div = document.querySelectorAll('.arena-3vs3');
 
   // Initial setup
-  if (divisionBoostRadio.checked) {
-    divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
-    placementsBoostDiv.forEach(div => div.classList.add('d-none'));
-    arenaBoostDiv.forEach(div => div.classList.add('d-none'));
-  } else if (placementsBoostRadio.checked) {
-    divisionBoostDiv.forEach(div => div.classList.add('d-none'));
-    arenaBoostDiv.forEach(div => div.classList.add('d-none'));
-    placementsBoostDiv.forEach(div => div.classList.remove('d-none'));
+  if (arena2vs2Radio.checked) {
+    arena2vs2Div.forEach(div => div.classList.remove('d-none'));
+    arena3vs3Div.forEach(div => div.classList.add('d-none'));
+    get2vs2ArenaPrice()
+
   } else {
-    arenaBoostDiv.forEach(div => div.classList.remove('d-none'));
-    divisionBoostDiv.forEach(div => div.classList.add('d-none'));
-    placementsBoostDiv.forEach(div => div.classList.add('d-none'));
+    arena2vs2Div.forEach(div => div.classList.add('d-none'));
+    arena3vs3Div.forEach(div => div.classList.remove('d-none'));
+    get3vs3ArenaPrice()
+
   }
 
   // Event listener for division-boost radio button
-  divisionBoostRadio.addEventListener('change', function () {
-    if (divisionBoostRadio.checked) {
-      divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
-      arenaBoostDiv.forEach(div => div.classList.add('d-none'));
-      placementsBoostDiv.forEach(div => div.classList.add('d-none'));
+  arena2vs2Radio.addEventListener('change', function () {
+    if (arena2vs2Radio.checked) {
+      arena2vs2Div.forEach(div => div.classList.remove('d-none'));
+      arena3vs3Div.forEach(div => div.classList.add('d-none'));
+      get2vs2ArenaPrice()
+
     } else {
-      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
+      arena2vs2Div.forEach(div => div.classList.add('d-none'));
+      get3vs3ArenaPrice();
+      
     }
   });
 
   // Event listener for placements-boost radio button
-  placementsBoostRadio.addEventListener('change', function () {
-    if (placementsBoostRadio.checked) {
-      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
-      arenaBoostDiv.forEach(div => div.classList.add('d-none'));
-      placementsBoostDiv.forEach(div => div.classList.remove('d-none'));
+  arena3vs3Radio.addEventListener('change', function () {
+    if (arena3vs3Radio.checked) {
+      arena2vs2Div.forEach(div => div.classList.add('d-none'));
+      arena3vs3Div.forEach(div => div.classList.remove('d-none'));
+      get3vs3ArenaPrice();
+
     } else {
-      placementsBoostDiv.forEach(div => div.classList.add('d-none'));
+      arena3vs3Div.forEach(div => div.classList.add('d-none'));
+      get2vs2ArenaPrice()
     }
   });
 
-  // Event listener for arena-boost radio button
-  arenaBoostRadio.addEventListener('change', function () {
-    if (arenaBoostRadio.checked) {
-      divisionBoostDiv.forEach(div => div.classList.add('d-none'));
-      placementsBoostDiv.forEach(div => div.classList.add('d-none'));
-      arenaBoostDiv.forEach(div => div.classList.remove('d-none'));
-    } else {
-      arenaBoostDiv.forEach(div => div.classList.add('d-none'));
-    }
-  });
 });

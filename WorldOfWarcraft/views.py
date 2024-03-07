@@ -9,28 +9,31 @@ from WorldOfWarcraft.models import *
 from WorldOfWarcraft.controller.serializers import ArenaSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank
-
-
+from booster.models import OrderRating
 
 @csrf_exempt
 def wowGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = WoWArenaBoostOrder.objects.get(order_id=extend_order)
+    order = WorldOfWarcraftArenaBoostOrder.objects.get(order_id=extend_order)
   except:
     order = None
-  ranks = WoWRank.objects.all().order_by('id')    
+  # ranks = WorldOfWarcraftRank.objects.all().order_by('id')    
+    
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 6)
 
   context = {
-    "ranks": ranks,
-    "order":order,
+    # "ranks": ranks,
+    "order": order,
+    "feedbacks": feedbacks,
   }
   return render(request,'wow/GetBoosterByRank.html', context)
 
 
 # Paypal
 @csrf_exempt
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -56,18 +59,24 @@ def view_that_asks_for_money(request):
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
             "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/wow/payment-canceled/"),
+            "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "wow/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       return JsonResponse({'error': serializer.errors}, status=400)
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-# Cancel Payment
-def payment_canceled(request):
-  return HttpResponse('payment canceled')
+# Cryptomus
+@csrf_exempt
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

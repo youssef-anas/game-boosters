@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
 import json
 from django.utils import timezone
-from WorldOfWarcraft.models import WoW_25_RPs_Price_2x2, BaseOrder
+from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, BaseOrder
 from django.contrib.auth import get_user_model
 User = get_user_model()
-rank_names = ['UNRANK', '0-1600', '1600-1800', '1800-2100', '2100-2500']
+rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
 
 
 def get_arena_order_result_by_rank(data,extend_order_id):
@@ -18,13 +18,13 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_agents = data['choose_agents']
+  choose_champions = data['choose_champions']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_agents_value = 0
+  choose_champions_value = 0
 
   boost_options = []
 
@@ -34,7 +34,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -48,12 +48,12 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_agents:
+  if choose_champions:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    choose_agents_value = 1
+    choose_champions_value = 1
       
-  wow_25_RPs_Price_2x2 = WoW_25_RPs_Price_2x2.objects.all().first().price
+  wow_25_RPs_Price_2x2 = WorldOfWarcraftRpsPrice.objects.all().first().price_of_2vs2
   total_sum = (desired_RP - current_RP) * (wow_25_RPs_Price_2x2 * 50)
   price = total_sum + (total_sum * total_percent)
   price = round(price, 2)
@@ -93,7 +93,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     desired_rank = 1
   
   
-  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-?-{choose_agents_value}'
+  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-?-{choose_champions_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

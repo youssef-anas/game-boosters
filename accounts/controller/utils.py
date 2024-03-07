@@ -7,7 +7,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
-from WorldOfWarcraft.models import WoWArenaBoostOrder
+from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from accounts.models import BaseOrder
@@ -76,7 +76,7 @@ def get_game(id, type) -> Model:
         3: PubgDivisionOrder,
         4: check_lol_type(type),
         5: check_tft_type(type),
-        6: WoWArenaBoostOrder,
+        6: WorldOfWarcraftArenaBoostOrder,
         7: HearthstoneDivisionOrder,
         8: check_mobleg_type(type),
         9: check_rl_type(type),

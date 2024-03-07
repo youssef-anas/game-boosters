@@ -53,6 +53,7 @@ def valorantGetBoosterByRank(request):
 
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 2)
+  
   context = {
     "ranks": ranks,
     "divisions": divisions_list,

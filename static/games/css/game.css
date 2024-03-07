@@ -14,6 +14,9 @@
   background-image: url('./../images/rocketLeague_bg.png');
   background-position-y: -170px;
 }
+.game-landing.wow {
+  background-image: url('./../images/wow_bg.jpg');
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

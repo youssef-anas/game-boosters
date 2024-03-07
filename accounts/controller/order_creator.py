@@ -35,10 +35,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         select_champion = bool(int(invoice_values[16]))
         promo_code = str(invoice_values[17])
         role = int(invoice_values[18])
-        ranked_type = int(invoice_values[19])
-        
-
-        
+        ranked_type = int(invoice_values[19])   
         
         
         try:
