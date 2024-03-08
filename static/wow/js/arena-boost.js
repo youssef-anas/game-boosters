@@ -1,40 +1,76 @@
 const ranks = ["UNRANK", "0-1599", "1600-1799", "1800-2099", "2100-2499"]
+const MIN_DESIRED_VALUE = 50
 
 function getRank(rp)  {
   if (rp >= 2100) {
-    return ranks[4]
+    return [ranks[4], 4]
   } 
 
   if (rp >= 1800 && rp < 2100) {
-    return ranks[3]
+    return [ranks[3], 3]
   }
 
   if (rp >= 1600 && rp < 1799) {
-    return ranks[2]
+    return [ranks[2], 2]
   }
 
   if (rp < 1600) {
-    return ranks[1]
+    return [ranks[1], 1]
   }
 }
+
+prices = $('#WorldOfWarcraftRpsPrice');
+console.log(prices.data('rp2vs2'))
+price_of_2vs2 = parseFloat(prices.data('rp2vs2'));
+price_of_3vs3 = parseFloat(prices.data('rp3vs3'));
+
+
+function changeUI(achivedValue, arena, steps) {
+  const progress = ((achivedValue) / (arena.prop("max"))) * 100;
+
+  arena.css({
+    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
+  });
+  
+  steps.each((step, index) => {
+    
+    if (parseInt(index.innerText) < achivedValue) {
+      index.classList.add('selected')
+    } else {
+      index.classList.remove('selected');
+    }
+  });
+}
+
 // ----------------------------- Arena 2vs2 Boost ---------------------------------
 // Current 2vs2 Varible
 const current2vs2Arena = $('#current-2vs2-arena');
 const current2vs2Steps = $('.current-2vs2.step-indicator .step');
 let current2vs2ArenaValue = Number(current2vs2Arena.val())
-let current2vs2Rank = getRank(current2vs2ArenaValue)
+let current2vs2Rank = getRank(current2vs2ArenaValue)[0]
 
 // Desired 2vs2 Varible
 const desired2vs2Arena = $('#desired-2vs2-arena');
 const desired2vs2Steps = $('.desired-2vs2.step-indicator .step');
 let desired2vs2ArenaValue = Number(current2vs2Arena.val())
-let desired2vs2Rank = getRank(desired2vs2ArenaValue)
+let desired2vs2Rank = getRank(desired2vs2ArenaValue)[0]
 
 // 2vs2 Arena Server
 const arena_2vs2_server_select_element = $('.arena-2vs2-servers-select');
 let selected2vs2ArenaServer = arena_2vs2_server_select_element.val()
 
-function get2vs2ArenaPrice() {
+function get2vs2ArenaPrice(arenaType = '2vs2') {
+  // Price
+  let price = (desired2vs2ArenaValue - current2vs2ArenaValue) * (price_of_2vs2 / MIN_DESIRED_VALUE);
+
+  // Apply extra charges to the result
+  price += price * total_Percentage;
+
+  // Apply promo code 
+  price -= price * (discount_amount / 100 )
+
+  price = parseFloat(price.toFixed(2));
+
   // Current
   $('#current-2vs2 .current-2vs2-rp').html(current2vs2ArenaValue);
   $('.current-2vs2-selected-img').attr('src', `/media/wow/images/${current2vs2Rank}.png`);
@@ -47,30 +83,36 @@ function get2vs2ArenaPrice() {
   $('.desired.desired-2vs2').removeClass().addClass(`desired desired-2vs2 rank-${desired2vs2Rank}`);
   $('.desired-2vs2-selected-info').html(`${desired2vs2ArenaValue} MMR`)
 
-  // Form
-  $('#arena-form input[name="server"]').val(selected2vs2ArenaServer);
+  // Price
+  $('#arena-2vs2-price').html(`$${price}`)
 
+  // Form
+  if ($('#arena-form').data('type') == 'arena2vs2') {
+    $('#arena-form input[name="is_Arena_2vs2"]').val(true);
+    $('#arena-form input[name="current_rank"]').val(getRank(current2vs2ArenaValue)[1]);
+    $('#arena-form input[name="current_RP"]').val(current2vs2ArenaValue);
+    $('#arena-form input[name="desired_rank"]').val(getRank(desired2vs2ArenaValue)[1]);
+    $('#arena-form input[name="desired_RP"]').val(desired2vs2ArenaValue);
+    $('#arena-form input[name="server"]').val(selected2vs2ArenaServer);
+    $('#arena-form input[name="price"]').val(price);
+  }
+  
 }
-get2vs2ArenaPrice()
+// get2vs2ArenaPrice()
 
 current2vs2Arena.on("input", function (event) {
   current2vs2ArenaValue = Number(event.target.value);
-  current2vs2Rank = getRank(current2vs2ArenaValue)
-  
-  const progress = ((current2vs2ArenaValue) / (current2vs2Arena.prop("max"))) * 100;
+  current2vs2Rank = getRank(current2vs2ArenaValue)[0];
 
-  current2vs2Arena.css({
-    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-  });
+  if((desired2vs2ArenaValue - current2vs2ArenaValue) < MIN_DESIRED_VALUE) {
+    desired2vs2Arena.val(current2vs2ArenaValue + MIN_DESIRED_VALUE);
+    desired2vs2ArenaValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+    desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
+
+    changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
+  }
   
-  current2vs2Steps.each((step, index) => {
-    
-    if (parseInt(index.innerText) < current2vs2ArenaValue) {
-      index.classList.add('selected')
-    } else {
-      index.classList.remove('selected');
-    }
-  });
+  changeUI(current2vs2ArenaValue, current2vs2Arena, current2vs2Steps)
 
   get2vs2ArenaPrice()
 
@@ -78,28 +120,17 @@ current2vs2Arena.on("input", function (event) {
 
 desired2vs2Arena.on("input", function (event) {
   desired2vs2ArenaValue = Number(event.target.value);
-  desired2vs2Rank = getRank(desired2vs2ArenaValue)
+  desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
 
-  if((desired2vs2ArenaValue - current2vs2ArenaValue) < 50) {
-    desired2vs2Arena.val(current2vs2ArenaValue + 50);
-    desired2vs2ArenaValue = current2vs2ArenaValue + 50;
-    desired2vs2Rank = getRank(desired2vs2ArenaValue)
+  if((desired2vs2ArenaValue - current2vs2ArenaValue) < MIN_DESIRED_VALUE) {
+    desired2vs2Arena.val(current2vs2ArenaValue + MIN_DESIRED_VALUE);
+    desired2vs2ArenaValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+    desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
+
+    changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
   }
   
-  const progress = ((desired2vs2ArenaValue) / (desired2vs2Arena.prop("max"))) * 100;
-
-  desired2vs2Arena.css({
-    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-  });
-  
-  desired2vs2Steps.each((step, index) => {
-    
-    if (parseInt(index.innerText) < desired2vs2ArenaValue) {
-      index.classList.add('selected')
-    } else {
-      index.classList.remove('selected');
-    }
-  });
+  changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
 
   get2vs2ArenaPrice()
 
@@ -116,19 +147,30 @@ arena_2vs2_server_select_element.on("change", function() {
 const current3vs3Arena = $('#current-3vs3-arena');
 const current3vs3Steps = $('.current-3vs3.step-indicator .step');
 let current3vs3ArenaValue = Number(current3vs3Arena.val())
-let current3vs3Rank = getRank(current3vs3ArenaValue)
+let current3vs3Rank = getRank(current3vs3ArenaValue)[0];
 
 // Desired 3vs3 Varible
 const desired3vs3Arena = $('#desired-3vs3-arena');
 const desired3vs3Steps = $('.desired-3vs3.step-indicator .step');
 let desired3vs3ArenaValue = Number(current3vs3Arena.val())
-let desired3vs3Rank = getRank(desired3vs3ArenaValue)
+let desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
 // 3vs3 Arena Server
 const arena_3vs3_server_select_element = $('.arena-3vs3-servers-select');
 let selected3vs3ArenaServer = arena_3vs3_server_select_element.val()
 
-function get3vs3ArenaPrice() {
+function get3vs3ArenaPrice(arenaType = '3vs3') {
+  // Price
+  let price = (desired3vs3ArenaValue - current3vs3ArenaValue) * (price_of_3vs3 / MIN_DESIRED_VALUE);
+
+  // Apply extra charges to the result
+  price += price * total_Percentage;
+
+  // Apply promo code 
+  price -= price * (discount_amount/100 )
+
+  price = parseFloat(price.toFixed(2)); 
+
   // Current
   $('#current-3vs3 .current-3vs3-rp').html(current3vs3ArenaValue);
   $('.current-3vs3-selected-img').attr('src', `/media/wow/images/${current3vs3Rank}.png`);
@@ -141,29 +183,36 @@ function get3vs3ArenaPrice() {
   $('.desired.desired-3vs3').removeClass().addClass(`desired desired-3vs3 rank-${desired3vs3Rank}`);
   $('.desired-3vs3-selected-info').html(`${desired3vs3ArenaValue} MMR`)
 
-  // Form
-  $('#arena-form input[name="server"]').val(selected3vs3ArenaServer);
+  // Price
+  $('#arena-3vs3-price').html(`$${price}`)
+
+  if($('#arena-form').data('type') == 'arena3vs3') {
+    // Form
+    $('#arena-form input[name="is_Arena_2vs2"]').val(false);
+    $('#arena-form input[name="current_rank"]').val(getRank(current3vs3ArenaValue)[1]);
+    $('#arena-form input[name="current_RP"]').val(current3vs3ArenaValue);
+    $('#arena-form input[name="desired_rank"]').val(getRank(desired3vs3ArenaValue)[1]);
+    $('#arena-form input[name="desired_RP"]').val(desired3vs3ArenaValue);
+    $('#arena-form input[name="server"]').val(selected3vs3ArenaServer);
+    $('#arena-form input[name="price"]').val(price);
+  }
 }
-get3vs3ArenaPrice()
+// get3vs3ArenaPrice()
 
 current3vs3Arena.on("input", function (event) {
   current3vs3ArenaValue = Number(event.target.value);
-  current3vs3Rank = getRank(current3vs3ArenaValue)
+  current3vs3Rank = getRank(current3vs3ArenaValue)[0];
   
-  const progress = ((current3vs3ArenaValue) / (current3vs3Arena.prop("max"))) * 100;
+  if((desired3vs3ArenaValue - current3vs3ArenaValue) < MIN_DESIRED_VALUE) {
+    desired3vs3Arena.val(current3vs3ArenaValue + MIN_DESIRED_VALUE);
+    desired3vs3ArenaValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+    desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
-  current3vs3Arena.css({
-    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-  });
+    changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
+  }
   
-  current3vs3Steps.each((step, index) => {
-    
-    if (parseInt(index.innerText) < current3vs3ArenaValue) {
-      index.classList.add('selected')
-    } else {
-      index.classList.remove('selected');
-    }
-  });
+  changeUI(current3vs3ArenaValue, current3vs3Arena, current3vs3Steps)
+
 
   get3vs3ArenaPrice()
 
@@ -171,28 +220,17 @@ current3vs3Arena.on("input", function (event) {
 
 desired3vs3Arena.on("input", function (event) {
   desired3vs3ArenaValue = Number(event.target.value);
-  desired3vs3Rank = getRank(desired3vs3ArenaValue);
+  desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
-  if((desired3vs3ArenaValue - current3vs3ArenaValue) < 50) {
-    desired3vs3Arena.val(current3vs3ArenaValue + 50);
-    desired3vs3ArenaValue = current3vs3ArenaValue + 50;
-    desired3vs3Rank = getRank(desired3vs3ArenaValue)
+  if((desired3vs3ArenaValue - current3vs3ArenaValue) < MIN_DESIRED_VALUE) {
+    desired3vs3Arena.val(current3vs3ArenaValue + MIN_DESIRED_VALUE);
+    desired3vs3ArenaValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+    desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
+
+    changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
   }
   
-  const progress = ((desired3vs3ArenaValue) / (desired3vs3Arena.prop("max"))) * 100;
-
-  desired3vs3Arena.css({
-    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-  });
-  
-  desired3vs3Steps.each((step, index) => {
-    
-    if (parseInt(index.innerText) < desired3vs3ArenaValue) {
-      index.classList.add('selected')
-    } else {
-      index.classList.remove('selected');
-    }
-  });
+  changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
 
   get3vs3ArenaPrice()
 

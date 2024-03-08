@@ -64,19 +64,26 @@
 
           <!-- <i class="fa-solid fa-angle-down my-3" style="color: var(--secondary-color);"></i> -->
 
-          {% if order.order.game_type == 'D' %}
+          {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
           <!-- Division -->
           <div class="current row">
             <p class="my-3 text-uppercase col-4 px-0">Now</p>
             <img class="text-center col-4 px-0" src="{{order.reached_rank.get_image_url}}" />
             {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'pubg' or order.order.game.link == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+
             {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
+
             {% elif order.order.game.link == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
+
             {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
+
+            {% elif order.order.game.link == 'wow' %}
+            <p class="my-3 text-uppercase col-4 px-0">{{ order.reached_division }} MMR</p>
+
             {% endif %}
           </div>
 
@@ -87,12 +94,18 @@
             <img class="text-center col-4 px-0" src="{{order.desired_rank.get_image_url}}" />
             {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'pubg' or order.order.game.link == 'tft' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+            
             {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
+
             {% elif order.order.game.link == 'hearthstone' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|ten_romanize_division }}</p>
+
             {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|five_romanize_division }}</p>
+
+            {% elif order.order.game.link == 'wow' %}
+            <p class="my-3 text-uppercase col-4 px-0">{{ order.desired_division }} MMR</p>
             {% endif %}
           </div>
           {% elif order.order.game_type == 'P' %}
