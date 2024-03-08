@@ -149,7 +149,7 @@ def booster_orders(request):
     for refresh_order in refresh_orders:
         refresh_order.update_actual_price()
         
-    orders = BaseOrder.objects.filter(booster= request.user, is_done= False).order_by('id')
+    orders = BaseOrder.objects.filter(booster= request.user, is_done= False, is_drop = False).order_by('id')
     if not orders:
         return redirect(reverse_lazy('orders.jobs'))
 
@@ -193,7 +193,6 @@ def booster_orders(request):
             'slug': None,
             }
             orders_with_percentage.append(order_data)
-    print('game', game)   
 
     pubg_ranks = PubgRank.objects.all()  
     tft_ranks = TFTRank.objects.all()  
@@ -280,29 +279,35 @@ def drop_order(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
         base_order = get_object_or_404(BaseOrder ,id =order_id)
-        order = base_order.related_order.model_class().objects.get(order_id=base_order.object_id)
-        base_order.is_drop = True
-        base_order.is_done = True
-        invoice = order.order.invoice.split('-')
-        print('Old Invoice: ', invoice)
-        invoice[3]= str(order.reached_rank.id) 
-        invoice[4]= str(order.reached_division)
-        invoice[5]= str(order.reached_marks)
+        content_type = base_order.content_type
+        if content_type:
 
-        new_invoice = '-'.join(invoice)
-        print('New Invoice: ', new_invoice)
-        payer_id = order.order.payer_id
-        customer = order.order.customer
-        
-        new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
-        new_order.order.actual_price = order.order.actual_price-order.order.money_owed
-        new_order.order.customer_gamename = order.order.customer_gamename
-        new_order.order.customer_password = order.order.customer_password
-        new_order.order.customer_server = order.order.customer_server
-        new_order.order.save()
-        order.order.save()
-        order.save()
-        return redirect(reverse_lazy('booster.orders'))
+            order = content_type.model_class().objects.get(order_id=base_order.object_id)
+            base_order.is_drop = True
+            base_order.is_done = True
+            invoice = order.order.invoice.split('-')
+            print('Old Invoice: ', invoice)
+            invoice[3]= str(order.reached_rank.id) 
+            invoice[4]= str(order.reached_division)
+            invoice[5]= str(order.reached_marks)
+
+            new_invoice = '-'.join(invoice)
+            print('New Invoice: ', new_invoice)
+            payer_id = order.order.payer_id
+            customer = order.order.customer
+            
+            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
+
+            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
+            new_order.order.customer_gamename = order.order.customer_gamename
+            new_order.order.customer_password = order.order.customer_password
+            new_order.order.customer_server = order.order.customer_server
+            new_order.order.save()
+            order.order.save()
+            order.save()
+            base_order.save()
+
+            return redirect(reverse_lazy('booster.orders'))
         # except:
         #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
