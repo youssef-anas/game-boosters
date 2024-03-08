@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load humanize %}
 {% load static %}
 {% load custom_filters %}
 {% block title %}Game Boosters{% endblock %}
@@ -20,6 +21,12 @@
             <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
             {% endif %}
             <h4 class="my-3">{{order.order.booster.first_name}} {{order.order.booster.last_name}}</h4>
+            {% if order.order.booster.is_online %}
+              <p>Online</p>
+            {% else %}
+               <p>Last online: {{ order.order.booster.last_online|date:"F j, Y, P" }}</p>
+            {% endif %}
+
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
             <div>

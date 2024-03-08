@@ -22,7 +22,8 @@ from hearthstone.models import  HearthstoneRank
 from django.http import JsonResponse
 from django.db.models import Sum
 import json
-from accounts.models import BaseOrder, Room, Message, Transaction, BoosterPercent
+from accounts.models import BaseOrder, Transaction, BoosterPercent
+from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from itertools import chain
 from accounts.controller.order_creator import create_order
@@ -80,14 +81,15 @@ def jobs(request):
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
     # TODO make this better
-    if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
-        (game_name == 'valorant' and request.user.booster.is_valo_player) or \
-        (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
-        (game_name == 'lol' and request.user.booster.is_lol_player) or \
-        (game_name == 'tft' and request.user.booster.is_tft_player) or \
-        (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
-        (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
-        (game_name == 'hok' and request.user.booster.is_hok_player) :
+    if True:
+    # if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
+    #     (game_name == 'valorant' and request.user.booster.is_valo_player) or \
+    #     (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
+    #     (game_name == 'lol' and request.user.booster.is_lol_player) or \
+    #     (game_name == 'tft' and request.user.booster.is_tft_player) or \
+    #     (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
+    #     (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
+    #     (game_name == 'hok' and request.user.booster.is_hok_player) :
         try:
             order.booster = request.user
             order.save()
@@ -147,7 +149,7 @@ def booster_orders(request):
     for refresh_order in refresh_orders:
         refresh_order.update_actual_price()
         
-    orders = BaseOrder.objects.filter(booster= request.user, is_done= False).order_by('id')
+    orders = BaseOrder.objects.filter(booster= request.user, is_done= False, is_drop = False).order_by('id')
     if not orders:
         return redirect(reverse_lazy('orders.jobs'))
 
@@ -191,7 +193,6 @@ def booster_orders(request):
             'slug': None,
             }
             orders_with_percentage.append(order_data)
-    print('game', game)   
 
     pubg_ranks = PubgRank.objects.all()  
     tft_ranks = TFTRank.objects.all()  
@@ -280,6 +281,7 @@ def drop_order(request):
         base_order = get_object_or_404(BaseOrder ,id =order_id)
         content_type = base_order.content_type
         if content_type:
+
             order = content_type.model_class().objects.get(order_id=base_order.object_id)
             base_order.is_drop = True
             base_order.is_done = True
@@ -295,6 +297,7 @@ def drop_order(request):
             customer = order.order.customer
             
             new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
+
             new_order.order.actual_price = order.order.actual_price-order.order.money_owed
             new_order.order.customer_gamename = order.order.customer_gamename
             new_order.order.customer_password = order.order.customer_password
@@ -302,9 +305,11 @@ def drop_order(request):
             new_order.order.save()
             order.order.save()
             order.save()
+            base_order.save()
+
             return redirect(reverse_lazy('booster.orders'))
-            # except:
-            #     return JsonResponse({'Drop Success': False})
+        # except:
+        #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
 
 def update_rating(request, order_id):

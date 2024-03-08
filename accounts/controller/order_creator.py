@@ -83,7 +83,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             extend_order = None
 
         if status == 'New' or status == 'Continue':
-            baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code= promo_code_amount)
+            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code= promo_code_amount)
             # Here I Make This Condition Because it Make Error in Placement
             if type == 'D' or type == 'A':
                 default_fields = {
@@ -99,22 +99,22 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
                 }
             # Wildrift Without Placement 
             if game_id == 1:
-                order = Game.objects.create(**default_fields, booster_champions=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # Valorant - Division
             elif game_id == 2 and type == 'D':
-                order = Game.objects.create(**default_fields, choose_agents=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # Valorant - Placement
             elif game_id == 2 and type == 'P':
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_agents=select_champion)
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
             # Pubg Without Placement 
             elif game_id == 3:
-                order = Game.objects.create(**default_fields, choose_agents=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # LOL - Division
             elif game_id == 4 and type == 'D':
-                order = Game.objects.create(**default_fields, choose_champions=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # LOL - Placement
             elif game_id == 4 and type == 'P':
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=select_champion)
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
             # TFT - Division
             elif game_id == 5 and type == 'D':
                 order = Game.objects.create(**default_fields)
@@ -126,13 +126,13 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
                 order = Game.objects.create(**default_fields)
             # HEARTHSTONE
             elif game_id == 7 and type == 'D':
-                order = Game.objects.create(**default_fields, choose_legends=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # Mobile Legends - Division
             elif game_id == 8 and type == 'D':
-                order = Game.objects.create(**default_fields, choose_champions=select_champion)
+                order = Game.objects.create(**default_fields, select_champion=select_champion)
             # Mobile Legends - Placement
             elif game_id == 8 and type == 'P':
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=select_champion)
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
             # Rocket League - Division
             elif game_id == 9 and type == 'D':
                 order = Game.objects.create(**default_fields, ranked_type=ranked_type)
@@ -175,22 +175,22 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
 
             # Wildrift Without Placement 
             if game_id == 1:
-                order = Game.objects.create(**extend_fields, booster_champions=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
             # Valorant - Division
             elif game_id == 2 and type == 'D':
-                order = Game.objects.create(**extend_fields, choose_agents=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
             # Valorant - Placement
             elif game_id == 2 and type == 'P':
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_agents=select_champion)       
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)       
             # Pubg Without Placement 
             elif game_id == 3:
-                order = Game.objects.create(**extend_fields, choose_agents=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
             # LOL - Division
             elif game_id == 4 and type == 'D':
-                order = Game.objects.create(**extend_fields, choose_champions=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
             # LOL - Placement
             elif game_id == 4 and type == 'P':
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=select_champion)
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
             # TFT - Division
             elif game_id == 5 and type == 'D':
                 order = Game.objects.create(**extend_fields, speed_up_boost=turbo_boost)
@@ -203,13 +203,13 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
                 order = Game.objects.create(**extend_fields)
             # HEARTHSTONE
             elif game_id == 7:
-                order = Game.objects.create(**extend_fields, choose_legends=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
             # Mobile Legends
             elif game_id == 8 and type == 'D': 
-                order = Game.objects.create(**extend_fields, choose_champions=select_champion)
+                order = Game.objects.create(**extend_fields, select_champion=select_champion)
 
             elif game_id == 8 and type == 'P': 
-                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,choose_champions=select_champion)
+                order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
 
             # Rocket League - Division
             elif game_id == 9 and type == 'D':

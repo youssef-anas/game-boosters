@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     
     # My Apps
     'booster.apps.BoosterConfig',
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     'dota2.apps.Dota2Config',
     'overwatch2.apps.Overwatch2Config',
     'csgo2.apps.Csgo2Config',
+    'chat.apps.ChatConfig',
     
     # Games
     'games.apps.GamesConfig',

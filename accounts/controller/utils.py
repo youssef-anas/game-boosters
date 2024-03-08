@@ -12,6 +12,7 @@ from overwatch2.models import Overwatch2DivisionOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
+from typing import List
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
@@ -102,7 +103,7 @@ def get_game(id, type) -> Model:
     return Game
 
 
-def get_boosters(id):
+def get_boosters(id: int) -> List[Booster]:
     filter_conditions = {
     1: {'can_choose_me': True, 'is_wf_player': True},
     2: {'can_choose_me': True, 'is_valo_player': True},

@@ -123,6 +123,8 @@ class Overwatch2DivisionOrder(models.Model):
     def get_rank_value(self, *args, **kwargs):
         return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming}"
 
+    def get_order_price(self):
+        return {"booster_price":20, 'percent_for_view':30}
 
 class Overwatch2Placement(models.Model):
   rank_name = models.CharField(max_length=25)
