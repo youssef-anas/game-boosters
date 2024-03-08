@@ -221,3 +221,48 @@ dropContainers.forEach(dropContainer => {
     previewImage(fileInput);
   });
 });
+
+
+// update status online and offline 
+function formatMinutesToHourMin(minutes) {
+  var hours = Math.floor(minutes / 60);
+  var mins = minutes % 60;
+  var formattedTime = hours.toString().padStart(2, '0') + ':' + mins.toString().padStart(2, '0');
+  return formattedTime;
+}
+
+const customer_ids = document.querySelectorAll('.user-ids');
+customer_ids.forEach(function(element) {
+    const user_id = element.dataset.userId;
+    const statusElement = document.getElementById(`state${user_id}-id`)
+    function fetchData() {
+      fetch(`/chat/status/${user_id}/`)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok');
+              }
+              return response.json();
+          })
+          .then(data => {
+              if (data.status == 'online'){
+                  statusElement.textContent = data.status;
+                  // TODO add css style
+              }else if(data.status < 1440){
+                  const time = formatMinutesToHourMin(data.status)
+                  const message = `Offline from: ${time} min`
+                  statusElement.textContent = message;
+              }else if(data.status >= 1440){
+                  const days = Math.ceil(data.status / (24 * 60));
+                  const message = `Last online:  ${days} days` 
+                  statusElement.textContent = message;
+              }else{
+                  console.warn("error whan get last online")
+              }
+          })
+          .catch(error => {
+              console.warn('Error fetching data:', error);
+          });
+  }
+  fetchData()
+  setInterval(fetchData, 50000);
+});

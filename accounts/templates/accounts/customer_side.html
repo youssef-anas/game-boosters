@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
 {% endblock %}
 {% block container %}
+<div id="user-id" data-user-id="{{ order.order.booster.id }}"></div>
 <div class="containter-fluid customer-order-body">
   <div class="container py-5 customer-order text-white">
     <div class="row justify-content-between ">
@@ -22,9 +23,9 @@
             {% endif %}
             <h4 class="my-3">{{order.order.booster.first_name}} {{order.order.booster.last_name}}</h4>
             {% if order.order.booster.is_online %}
-              <p>Online</p>
+              <p id="status">Online</p>
             {% else %}
-               <p>Last online: {{ order.order.booster.last_online|date:"F j, Y, P" }}</p>
+               <p id="status">Last online: {{ order.order.booster.last_online|date:"F j, Y, P" }}</p>
             {% endif %}
 
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile

@@ -36,6 +36,10 @@
           <div class="user-info shadow p-4">
             <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="profile" />
             <h4 class="my-3">{{order.order.order.customer.first_name}} {{order.order.order.customer.last_name}}</h4>
+            <!-- user online or offline  -->
+            <div class="user-ids" id="user-id{{order.order.order.customer.id}}" data-user-id="{{ order.order.order.customer.id}}"></div>
+            <p id="state{{order.order.order.customer.id}}-id" class="state{{order.order.order.customer.id}}">Last online: {{ order.order.order.customer.last_online }}</p>
+            <!-- end user online or ofline -->
             <hr>
   
             <p class="text-start">Order Information</p>

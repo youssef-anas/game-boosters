@@ -36,7 +36,7 @@ class BaseUser(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     profile_image = models.ImageField(upload_to='accounts/images/', null=True)
     is_online = models.BooleanField(default = False)
-    last_online = models.DateTimeField(null =True)
+    last_online = models.DateTimeField(default=timezone.now)
 
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 

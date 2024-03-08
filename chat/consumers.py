@@ -4,8 +4,7 @@ from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from accounts.models import BaseUser
 from chat.models import Room, Message
-from datetime import datetime
-
+from django.utils import timezone
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_slug']
@@ -69,6 +68,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def set_user_offline(self, username):
         user = BaseUser.objects.filter(username=username).first()
         user.is_online = False
-        user.last_online = datetime.now()
+        user.last_online = timezone.now()
         user.save()
         print(f"{username} offline")
