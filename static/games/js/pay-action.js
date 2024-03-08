@@ -5,31 +5,56 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // --------------------- DIVISION ---------------------
 
-  const divisionForm = document.getElementById('division-boost-form');
-  const divisionPaypalBtn = document.getElementById('division-paypal-btn');
-  const divisionCryptomusBtn = document.getElementById('division-cryptomus-btn');
+  if (game_id == 6) {
+    const arenaForm = document.getElementById('arena-form');
+    const arenaPaypalBtn = document.getElementById('arena-paypal-btn');
+    const arenaCryptomusBtn = document.getElementById('arena-cryptomus-btn');
 
-  divisionPaypalBtn.addEventListener('click', function() {
-    // Get the PayPal URL from data attribute
-    const paypalUrl = urls.dataset.paypalUrl;
-    // Set the form action
-    divisionForm.action = paypalUrl;
-    // Submit the form
-    divisionForm.submit();
-  });
+    arenaPaypalBtn.addEventListener('click', function() {
+      // Get the PayPal URL from data attribute
+      const paypalUrl = urls.dataset.paypalUrl;
+      // Set the form action
+      arenaForm.action = paypalUrl;
+      // Submit the form
+      arenaForm.submit();
+    });
 
-  divisionCryptomusBtn.addEventListener('click', function() {
-    // Get the Cryptomus URL from data attribute
-    const cryptomusUrl = urls.dataset.cryptomusUrl;
-    // Set the form action
-    divisionForm.action = cryptomusUrl;
-    // Submit the form
-    divisionForm.submit();
-  });
+    arenaCryptomusBtn.addEventListener('click', function() {
+      // Get the Cryptomus URL from data attribute
+      const cryptomusUrl = urls.dataset.cryptomusUrl;
+      // Set the form action
+      arenaForm.action = cryptomusUrl;
+      // Submit the form
+      arenaForm.submit();
+    });
+    
+  } else {
+    const divisionForm = document.getElementById('division-boost-form');
+    const divisionPaypalBtn = document.getElementById('division-paypal-btn');
+    const divisionCryptomusBtn = document.getElementById('division-cryptomus-btn');
+
+    divisionPaypalBtn.addEventListener('click', function() {
+      // Get the PayPal URL from data attribute
+      const paypalUrl = urls.dataset.paypalUrl;
+      // Set the form action
+      divisionForm.action = paypalUrl;
+      // Submit the form
+      divisionForm.submit();
+    });
+
+    divisionCryptomusBtn.addEventListener('click', function() {
+      // Get the Cryptomus URL from data attribute
+      const cryptomusUrl = urls.dataset.cryptomusUrl;
+      // Set the form action
+      divisionForm.action = cryptomusUrl;
+      // Submit the form
+      divisionForm.submit();
+    });
+  }
 
   // --------------------- PLACEMNET ---------------------
 
-  if (game_id != 1) {
+  if (game_id != 1 && game_id != 6) {
     const placementForm = document.getElementById('placements-boost-form');
     const placementPaypalBtn = document.getElementById('placement-paypal-btn');
     const placementCryptomusBtn = document.getElementById('placement-cryptomus-btn');

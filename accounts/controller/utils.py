@@ -69,24 +69,35 @@ def check_mobleg_type(type) -> Model:
         raise ValueError(f"Invalid Mobile Legends game type: {type}")
     return Game
 
+def check_wow_type(type) -> Model:
+    WOW_MODELS = {
+        'A': WorldOfWarcraftArenaBoostOrder,
+    }
+    Game = WOW_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid World of Warcraft game type: {type}")
+    return Game
+
 def get_game(id, type) -> Model:
     GAME_MODELS = {
         1: WildRiftDivisionOrder,
-        2: check_valo_type(type),
+        2: check_valo_type,
         3: PubgDivisionOrder,
-        4: check_lol_type(type),
-        5: check_tft_type(type),
-        6: WorldOfWarcraftArenaBoostOrder,
+        4: check_lol_type,
+        5: check_tft_type,
+        6: check_wow_type,  # Use a function for WoW Arena
         7: HearthstoneDivisionOrder,
-        8: check_mobleg_type(type),
-        9: check_rl_type(type),
+        8: check_mobleg_type,
+        9: check_rl_type,
         10: 'dota2',
         11: HonorOfKingsDivisionOrder,
         12: Overwatch2DivisionOrder,
         13: 'csgo2',
     }
     Game = GAME_MODELS.get(id, None)
-    if not Game:
+    if callable(Game):  
+        return Game(type)  
+    elif not Game:
         raise ValueError(f"Invalid game ID: {id}")
     return Game
 
@@ -117,6 +128,7 @@ def live_orders():
     orders = BaseOrder.objects.filter(booster=None).order_by('-created_at')
     all_orders_dict = []
     for order in orders:
+        print("ORDER: ",order)
         order_dict = {
             "id": order.pk,
             'name': order.game.name,

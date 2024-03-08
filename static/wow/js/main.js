@@ -9,11 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
   if (arena2vs2Radio.checked) {
     arena2vs2Div.forEach(div => div.classList.remove('d-none'));
     arena3vs3Div.forEach(div => div.classList.add('d-none'));
+    $('#arena-form').data('type', 'arena2vs2');
     get2vs2ArenaPrice()
 
   } else {
     arena2vs2Div.forEach(div => div.classList.add('d-none'));
     arena3vs3Div.forEach(div => div.classList.remove('d-none'));
+    $('#arena-form').data('type', 'arena3vs3');
     get3vs3ArenaPrice()
 
   }
@@ -23,10 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (arena2vs2Radio.checked) {
       arena2vs2Div.forEach(div => div.classList.remove('d-none'));
       arena3vs3Div.forEach(div => div.classList.add('d-none'));
+      $('#arena-form').data('type', 'arena2vs2');
       get2vs2ArenaPrice()
 
     } else {
       arena2vs2Div.forEach(div => div.classList.add('d-none'));
+      $('#arena-form').data('type', 'arena3vs3');
       get3vs3ArenaPrice();
       
     }
@@ -37,10 +41,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (arena3vs3Radio.checked) {
       arena2vs2Div.forEach(div => div.classList.add('d-none'));
       arena3vs3Div.forEach(div => div.classList.remove('d-none'));
+      $('#arena-form').data('type', 'arena3vs3');
       get3vs3ArenaPrice();
 
     } else {
       arena3vs3Div.forEach(div => div.classList.add('d-none'));
+      $('#arena-form').data('type', 'arena2vs2');
       get2vs2ArenaPrice()
     }
   });

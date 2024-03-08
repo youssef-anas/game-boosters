@@ -32,8 +32,8 @@ class SingletonModel(models.Model):
     pass
 
 class WorldOfWarcraftRpsPrice(SingletonModel):
-  price_of_2vs2 = models.IntegerField(default=1)
-  price_of_3vs3 = models.IntegerField(default=2)
+  price_of_2vs2 = models.FloatField(default=1)
+  price_of_3vs3 = models.FloatField(default=2)
 
   def __str__(self):
     return f"Price for 50 RPs is {self.price_of_2vs2} for 2vs2 , {self.price_of_3vs3} for 3vs3"
@@ -45,18 +45,25 @@ class WorldOfWarcraftRpsPrice(SingletonModel):
   
 class WorldOfWarcraftArenaBoostOrder(models.Model):
   is_Arena_2x2 = models.BooleanField(default=True)
+
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_division_order')
+
   current_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_current_rank')
+
   reached_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_reached_rank')
+
   desired_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_desired_rank')
+
   current_division = models.IntegerField(default=0)
   reached_division = models.IntegerField(default=0)
   desired_division = models.IntegerField(default=25)
+
+  current_marks = models.IntegerField(default=0, blank=True, null=True)
+  reached_marks = models.IntegerField(default=0, blank=True, null=True)
+
   created_at = models.DateTimeField(auto_now_add =True)
 
-  choose_champions = models.BooleanField(default=True, blank=True, null=True)
-
-  def validate_divition(self):
+  def validate_division(self):
     if self.is_Arena_2x2:
       if not (self.current_division > 0 and self.current_division <= 2200):
         raise ValidationError("Current division must be between 0 and 2200.")
@@ -96,9 +103,8 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    # self.validate_divition()
+    # self.validate_division()
     self.order.game_id = 6
-    self.order.game_name = 'WOW'
     self.order.game_type = 'A'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -109,10 +115,10 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     self.send_discord_notification()
 
   def get_details(self):
-      return f"From {self.current_division} RP To {self.desired_division}"
+    return f"From {self.current_division} RP To {self.desired_division}"
     
   def __str__(self):
     return f"Boosting From {self.current_division} RP To {self.desired_division}"
 
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming },{self.choose_agents}"
+    return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming }"

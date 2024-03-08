@@ -3,28 +3,45 @@ import json
 from django.utils import timezone
 from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, BaseOrder
 from django.contrib.auth import get_user_model
+from accounts.models import PromoCode
+
 User = get_user_model()
 rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
 
 
 def get_arena_order_result_by_rank(data,extend_order_id):
-  print('Data: ', data)
+  # Prices
+  prices = WorldOfWarcraftRpsPrice.objects.all().first()
+  price_of_2vs2 = prices.price_of_2vs2
+  price_of_3vs3 = prices.price_of_3vs3
+
+  # Ranks
+  current_rank = data['current_rank']
+  desired_rank = data['desired_rank']
+
   # Division
   current_RP = data['current_RP']
   desired_RP = data['desired_RP']
 
+  # Is 2vs2
+  is_Arena_2vs2 = data['is_Arena_2vs2']
+
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  choose_champions = data['choose_champions']
+
+  server = data['server']
+  promo_code = data['promo_code']
+
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  choose_champions_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -48,23 +65,27 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if choose_champions:
-    total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
-    choose_champions_value = 1
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
       
-  wow_25_RPs_Price_2x2 = WorldOfWarcraftRpsPrice.objects.all().first().price_of_2vs2
-  total_sum = (desired_RP - current_RP) * (wow_25_RPs_Price_2x2 * 50)
-  price = total_sum + (total_sum * total_percent)
+  if is_Arena_2vs2:
+    price = (desired_RP - current_RP) * (price_of_2vs2 / 50)
+  else: 
+    price = (desired_RP - current_RP) * (price_of_3vs3 / 50)
+
+  price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
       price = round((price - extend_order_price), 2)
-      print('Price', price)
     except:
       pass
 
@@ -74,26 +95,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  if current_RP >= 2100:
-    current_rank = 4
-  elif current_RP <= 2100 and current_RP >= 1800:
-    current_rank = 3
-  elif current_RP <= 1800 and current_RP >= 1600:
-    current_rank = 2
-  else:
-    current_rank = 1
-  
-  if desired_RP >= 2100:
-    desired_rank = 4
-  elif desired_RP <= 2100 and desired_RP >= 1800:
-    desired_rank = 3
-  elif desired_RP <= 1800 and desired_RP >= 1600:
-    desired_rank = 2
-  else:
-    desired_rank = 1
-  
-  
-  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{timezone.now()}-?-{choose_champions_value}'
+  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

@@ -68,12 +68,17 @@ class WildRiftDivisionOrder(models.Model):
         (6 , '6 Marks'),
     ]
     order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wildrift_order')
+
     current_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
+
     reached_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
+
     desired_rank = models.ForeignKey(WildRiftRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
+
     current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
     desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+    
     current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

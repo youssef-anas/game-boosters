@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from accounts.controller.utils import get_game
 from accounts.models import PromoCode
 
-def create_order(invoice, payer_id, customer, status='New',name = None):
+def create_order(invoice, payer_id, customer, status='New', name = None):
     try :
         invoice_values = invoice.split('-')
         game_id = int(invoice_values[1])
@@ -85,7 +85,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
         if status == 'New' or status == 'Continue':
             baseOrder = BaseOrder.objects.create(invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code= promo_code_amount)
             # Here I Make This Condition Because it Make Error in Placement
-            if type == 'D':
+            if type == 'D' or type == 'A':
                 default_fields = {
                     'order': baseOrder,
                     'current_rank_id': current_rank,
@@ -123,7 +123,7 @@ def create_order(invoice, payer_id, customer, status='New',name = None):
                 order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match)
             # WoW - Arena
             elif game_id == 6 and type == 'A':
-                order = Game.objects.create(**extend_fields, choose_agents=select_champion)
+                order = Game.objects.create(**default_fields)
             # HEARTHSTONE
             elif game_id == 7 and type == 'D':
                 order = Game.objects.create(**default_fields, choose_legends=select_champion)

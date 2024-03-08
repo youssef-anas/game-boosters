@@ -10,6 +10,7 @@ from WorldOfWarcraft.controller.serializers import ArenaSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank
 from booster.models import OrderRating
+import json
 
 @csrf_exempt
 def wowGetBoosterByRank(request):
@@ -18,7 +19,8 @@ def wowGetBoosterByRank(request):
     order = WorldOfWarcraftArenaBoostOrder.objects.get(order_id=extend_order)
   except:
     order = None
-  # ranks = WorldOfWarcraftRank.objects.all().order_by('id')    
+
+  prices = WorldOfWarcraftRpsPrice.objects.all().first()  
     
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 6)
@@ -27,6 +29,8 @@ def wowGetBoosterByRank(request):
     # "ranks": ranks,
     "order": order,
     "feedbacks": feedbacks,
+    "rp2vs2": prices.price_of_2vs2,
+    "rp3vs3": prices.price_of_3vs3,
   }
   return render(request,'wow/GetBoosterByRank.html', context)
 
