@@ -38,35 +38,36 @@ Promise.all([
     if (valuesToSetAdditional[0]) {
       duoBoosting.checked = true;
       $('input#duoBoosting').val(true)
-      duoBoosting.disabled = true;
-      soloBoosting.disabled = true;
     } else {
       soloBoosting.checked = true;
       $('input#duoBoosting').val(false)
     }
+    duoBoosting.disabled = true;
+    soloBoosting.disabled = true;
 
     // Extra Buttons
     extraOptions.forEach(function (checkbox, index) {
       if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        
       } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        
       } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        
       } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        
       } else {
         checkbox.checked = false
         $(`input#${checkbox.value}`).val(false)
       } 
+      $(checkbox).prop('disabled', true)
     })
   
     function getDivisionPrice() {

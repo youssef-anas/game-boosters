@@ -101,3 +101,17 @@ def five_romanize_division(value):
     return 'I'
   else:
     return value
+  
+@register.filter(name='wow_ranks')
+def wow_ranks(value):
+  value = float(value)
+  if value < 1600:
+    return ['0-1599', 1]
+  elif value < 1800:
+    return ['1600-1799', 2]
+  elif value < 2100:
+    return ['1800-2099', 3]
+  elif value <= 2500:
+    return ['2100-2500', 4]
+  else:
+    return value

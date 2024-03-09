@@ -10,12 +10,14 @@ const orderValue = orderContainer.dataset.order; // values of extended order as 
 const valuesAsList = orderValue.split(',') // values of extended order as list of strings
 const list1 = valuesAsList.slice(0, 5); // values of extended order as {current_rank.id}, {current_division}, {current_marks}, {desired_rank.id}, {desired_division}
 const list2 = valuesAsList.slice(5, 10);  // values of extended order as {duo_boosting}, {False}, {turbo_boost}, {streaming }, {choose_champions}
-
+const list3 = valuesAsList.slice(11, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
+const server = valuesAsList[10]
 
 const valuesToSet = list1.map(function(item) {
     return parseInt(item, 10); // Use parseInt to convert list1 from srting to int as list
   });
 const valuesToSetAdditional = list2.map(value => JSON.parse(value.toLowerCase())); // to convert code to true and false for list2 
+const valuesToSetExtra = list3.map(value => JSON.parse(value.toLowerCase())); // to convert code to true and false for list3
 
 let autoSelectBooster = $('input#select-booster'); // select an input for select-booster 
 let chooseBoosterInt = 0 // inital value of choose booster

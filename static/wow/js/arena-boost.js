@@ -20,7 +20,6 @@ function getRank(rp)  {
 }
 
 prices = $('#WorldOfWarcraftRpsPrice');
-console.log(prices.data('rp2vs2'))
 price_of_2vs2 = parseFloat(prices.data('rp2vs2'));
 price_of_3vs3 = parseFloat(prices.data('rp3vs3'));
 
@@ -42,7 +41,7 @@ function changeUI(achivedValue, arena, steps) {
   });
 }
 
-// ----------------------------- Arena 2vs2 Boost ---------------------------------
+// ----------------------------- Arena 2vs2 Boost Varible ---------------------------------
 // Current 2vs2 Varible
 const current2vs2Arena = $('#current-2vs2-arena');
 const current2vs2Steps = $('.current-2vs2.step-indicator .step');
@@ -57,49 +56,274 @@ let desired2vs2Rank = getRank(desired2vs2ArenaValue)[0]
 
 // 2vs2 Arena Server
 const arena_2vs2_server_select_element = $('.arena-2vs2-servers-select');
-let selected2vs2ArenaServer = arena_2vs2_server_select_element.val()
+let selected2vs2ArenaServer = arena_2vs2_server_select_element.val();
 
-function get2vs2ArenaPrice(arenaType = '2vs2') {
-  // Price
-  let price = (desired2vs2ArenaValue - current2vs2ArenaValue) * (price_of_2vs2 / MIN_DESIRED_VALUE);
+// ----------------------------- Arena 3vs3 Boost Variable ---------------------------------
+// Current 3vs3 Varible
+const current3vs3Arena = $('#current-3vs3-arena');
+const current3vs3Steps = $('.current-3vs3.step-indicator .step');
+let current3vs3ArenaValue = Number(current3vs3Arena.val())
+let current3vs3Rank = getRank(current3vs3ArenaValue)[0];
 
-  // Apply extra charges to the result
-  price += price * total_Percentage;
+// Desired 3vs3 Varible
+const desired3vs3Arena = $('#desired-3vs3-arena');
+const desired3vs3Steps = $('.desired-3vs3.step-indicator .step');
+let desired3vs3ArenaValue = Number(current3vs3Arena.val())
+let desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
-  // Apply promo code 
-  price -= price * (discount_amount / 100 )
+// 3vs3 Arena Server
+const arena_3vs3_server_select_element = $('.arena-3vs3-servers-select');
+let selected3vs3ArenaServer = arena_3vs3_server_select_element.val()
 
-  price = parseFloat(price.toFixed(2));
 
-  // Current
-  $('#current-2vs2 .current-2vs2-rp').html(current2vs2ArenaValue);
-  $('.current-2vs2-selected-img').attr('src', `/media/wow/images/${current2vs2Rank}.png`);
-  $('.current.current-2vs2').removeClass().addClass(`current current-2vs2 rank-${current2vs2Rank}`);
-  $('.current-2vs2-selected-info').html(`${current2vs2ArenaValue} MMR`)
+if(extend_order) {
+  let orderID = parseInt(extend_order, 10);
+  document.getElementById('extendOrder').value = orderID; 
+  extends_from_2vs2 = valuesToSetExtra[0]
 
-  // Desired
-  $('#desired-2vs2 .desired-2vs2-rp').html(desired2vs2ArenaValue);
-  $('.desired-2vs2-selected-img').attr('src', `/media/wow/images/${desired2vs2Rank}.png`);
-  $('.desired.desired-2vs2').removeClass().addClass(`desired desired-2vs2 rank-${desired2vs2Rank}`);
-  $('.desired-2vs2-selected-info').html(`${desired2vs2ArenaValue} MMR`)
+  arena_2vs2_server_select_element.disabled = true
+  arena_3vs3_server_select_element.disabled = true
 
-  // Price
-  $('#arena-2vs2-price').html(`$${price}`)
+  // Solo Or Duo Boosting Change
+  if (valuesToSetAdditional[0]) {
+    duoBoosting.checked = true;
+    $('input#duoBoosting').val(true)
+  } else {
+    soloBoosting.checked = true;
+    $('input#duoBoosting').val(false)
+  }
+  duoBoosting.disabled = true;
+  soloBoosting.disabled = true;
 
-  // Form
-  if ($('#arena-form').data('type') == 'arena2vs2') {
-    $('#arena-form input[name="is_Arena_2vs2"]').val(true);
-    $('#arena-form input[name="current_rank"]').val(getRank(current2vs2ArenaValue)[1]);
-    $('#arena-form input[name="current_RP"]').val(current2vs2ArenaValue);
-    $('#arena-form input[name="desired_rank"]').val(getRank(desired2vs2ArenaValue)[1]);
-    $('#arena-form input[name="desired_RP"]').val(desired2vs2ArenaValue);
-    $('#arena-form input[name="server"]').val(selected2vs2ArenaServer);
-    $('#arena-form input[name="price"]').val(price);
+  // Extra Buttons
+  extraOptions.forEach(function (checkbox, index) {
+    if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
+      checkbox.checked = true
+      $(`input#${checkbox.value}`).val(true)
+
+    } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
+      checkbox.checked = true
+      $(`input#${checkbox.value}`).val(true)
+
+    } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
+      checkbox.checked = true
+      $(`input#${checkbox.value}`).val(true)
+
+    } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
+      checkbox.checked = true
+      $(`input#${checkbox.value}`).val(true)
+
+    } else {
+      checkbox.checked = false
+      $(`input#${checkbox.value}`).val(false)
+    } 
+    
+    $(checkbox).prop('disabled', true)
+  }) 
+
+  // Check Type 
+  if(extends_from_2vs2) {
+    $('input[type="radio"]#arena-3vs3').prop('disabled', true)
+    
+    // Change Values
+    current2vs2Rank = getRank(valuesToSet[1])[0]
+    desired2vs2Rank = getRank(valuesToSet[4])[0]
+    current2vs2ArenaValue = valuesToSet[1]
+    desired2vs2ArenaValue = valuesToSet[4]
+
+    // Change Range Value
+    current2vs2Arena.val(current2vs2ArenaValue) 
+    desired2vs2Arena.val(desired2vs2ArenaValue) 
+
+    // Change Range UI
+    changeUI(current2vs2ArenaValue, current2vs2Arena, current2vs2Steps)
+    changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps)
+
+    // Disable Current
+    current2vs2Arena.prop('disabled', true)
+
+    function get2vs2ArenaPrice() {
+      // Price
+      let price = (desired2vs2ArenaValue - valuesToSet[4]) * (price_of_2vs2 / MIN_DESIRED_VALUE);
+    
+      // Apply extra charges to the result
+      price += price * total_Percentage;
+    
+      // Apply promo code 
+      price -= price * (discount_amount / 100 )
+    
+      price = parseFloat(price.toFixed(2));
+    
+      // Current
+      $('#current-2vs2 .current-2vs2-rp').html(current2vs2ArenaValue);
+      $('.current-2vs2-selected-img').attr('src', `/media/wow/images/${getRank(current2vs2ArenaValue)[0]}.png`);
+      $('.current.current-2vs2').removeClass().addClass(`current current-2vs2 rank-${getRank(valuesToSet[4])[0]}`);
+      $('.current-2vs2-selected-info').html(`${valuesToSet[4]} MMR`)
+    
+      // Desired
+      $('#desired-2vs2 .desired-2vs2-rp').html(desired2vs2ArenaValue);
+      $('.desired-2vs2-selected-img').attr('src', `/media/wow/images/${desired2vs2Rank}.png`);
+      $('.desired.desired-2vs2').removeClass().addClass(`desired desired-2vs2 rank-${desired2vs2Rank}`);
+      $('.desired-2vs2-selected-info').html(`${desired2vs2ArenaValue} MMR`)
+    
+      // Price
+      $('#arena-2vs2-price').html(`$${price}`)
+    
+      // Form
+      $('#arena-form input[name="is_arena_2vs2"]').val(true);
+      $('#arena-form input[name="current_rank"]').val(getRank(current2vs2ArenaValue)[1]);
+      $('#arena-form input[name="current_RP"]').val(current2vs2ArenaValue);
+      $('#arena-form input[name="desired_rank"]').val(getRank(desired2vs2ArenaValue)[1]);
+      $('#arena-form input[name="desired_RP"]').val(desired2vs2ArenaValue);
+      $('#arena-form input[name="server"]').val(server);
+      $('#arena-form input[name="price"]').val(price);
+      
+    }
+  } else {
+    $('input[type="radio"]#arena-3vs3').prop('checked', true);
+    $('input[type="radio"]#arena-2vs2').prop('disabled', true)
+    
+    // Change Values
+    current3vs3Rank = getRank(valuesToSet[1])[0]
+    desired3vs3Rank = getRank(valuesToSet[4])[0]
+    current3vs3ArenaValue = valuesToSet[1]
+    desired3vs3ArenaValue = valuesToSet[4]
+
+    // Change Range Value
+    current3vs3Arena.val(current3vs3ArenaValue) 
+    desired3vs3Arena.val(desired3vs3ArenaValue) 
+
+    // Change Range UI
+    changeUI(current3vs3ArenaValue, current3vs3Arena, current3vs3Steps)
+    changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps)
+
+    // Disable Current
+    current3vs3Arena.prop('disabled', true)
+
+    function get3vs3ArenaPrice() {
+      // Price
+      let price = (desired3vs3ArenaValue - valuesToSet[4]) * (price_of_3vs3 / MIN_DESIRED_VALUE);
+    
+      // Apply extra charges to the result
+      price += price * total_Percentage;
+    
+      // Apply promo code 
+      price -= price * (discount_amount / 100 )
+    
+      price = parseFloat(price.toFixed(2));
+    
+      // Current
+      $('#current-3vs3 .current-3vs3-rp').html(current3vs3ArenaValue);
+      $('.current-3vs3-selected-img').attr('src', `/media/wow/images/${getRank(current3vs3ArenaValue)[0]}.png`);
+      $('.current.current-3vs3').removeClass().addClass(`current current-3vs3 rank-${getRank(valuesToSet[4])[0]}`);
+      $('.current-3vs3-selected-info').html(`${valuesToSet[4]} MMR`)
+    
+      // Desired
+      $('#desired-3vs3 .desired-3vs3-rp').html(desired3vs3ArenaValue);
+      $('.desired-3vs3-selected-img').attr('src', `/media/wow/images/${desired3vs3Rank}.png`);
+      $('.desired.desired-3vs3').removeClass().addClass(`desired desired-3vs3 rank-${desired3vs3Rank}`);
+      $('.desired-3vs3-selected-info').html(`${desired3vs3ArenaValue} MMR`)
+    
+      // Price
+      $('#arena-3vs3-price').html(`$${price}`)
+    
+      // Form
+      $('#arena-form input[name="is_arena_2vs2"]').val(false);
+      $('#arena-form input[name="current_rank"]').val(getRank(current3vs3ArenaValue)[1]);
+      $('#arena-form input[name="current_RP"]').val(current3vs3ArenaValue);
+      $('#arena-form input[name="desired_rank"]').val(getRank(desired3vs3ArenaValue)[1]);
+      $('#arena-form input[name="desired_RP"]').val(desired3vs3ArenaValue);
+      $('#arena-form input[name="server"]').val(server);
+      $('#arena-form input[name="price"]').val(price);
+      
+    }
+  }
+
+
+} else {
+
+  function get2vs2ArenaPrice() {
+    // Price
+    let price = (desired2vs2ArenaValue - current2vs2ArenaValue) * (price_of_2vs2 / MIN_DESIRED_VALUE);
+  
+    // Apply extra charges to the result
+    price += price * total_Percentage;
+  
+    // Apply promo code 
+    price -= price * (discount_amount / 100 )
+  
+    price = parseFloat(price.toFixed(2));
+  
+    // Current
+    $('#current-2vs2 .current-2vs2-rp').html(current2vs2ArenaValue);
+    $('.current-2vs2-selected-img').attr('src', `/media/wow/images/${current2vs2Rank}.png`);
+    $('.current.current-2vs2').removeClass().addClass(`current current-2vs2 rank-${current2vs2Rank}`);
+    $('.current-2vs2-selected-info').html(`${current2vs2ArenaValue} MMR`)
+  
+    // Desired
+    $('#desired-2vs2 .desired-2vs2-rp').html(desired2vs2ArenaValue);
+    $('.desired-2vs2-selected-img').attr('src', `/media/wow/images/${desired2vs2Rank}.png`);
+    $('.desired.desired-2vs2').removeClass().addClass(`desired desired-2vs2 rank-${desired2vs2Rank}`);
+    $('.desired-2vs2-selected-info').html(`${desired2vs2ArenaValue} MMR`)
+  
+    // Price
+    $('#arena-2vs2-price').html(`$${price}`)
+  
+    // Form
+    if ($('#arena-form').data('type') == 'arena2vs2') {
+      $('#arena-form input[name="is_arena_2vs2"]').val(true);
+      $('#arena-form input[name="current_rank"]').val(getRank(current2vs2ArenaValue)[1]);
+      $('#arena-form input[name="current_RP"]').val(current2vs2ArenaValue);
+      $('#arena-form input[name="desired_rank"]').val(getRank(desired2vs2ArenaValue)[1]);
+      $('#arena-form input[name="desired_RP"]').val(desired2vs2ArenaValue);
+      $('#arena-form input[name="server"]').val(selected2vs2ArenaServer);
+      $('#arena-form input[name="price"]').val(price);
+    }
+    
   }
   
-}
-// get2vs2ArenaPrice()
+  function get3vs3ArenaPrice() {
+    // Price
+    let price = (desired3vs3ArenaValue - current3vs3ArenaValue) * (price_of_3vs3 / MIN_DESIRED_VALUE);
+  
+    // Apply extra charges to the result
+    price += price * total_Percentage;
+  
+    // Apply promo code 
+    price -= price * (discount_amount/100 )
+  
+    price = parseFloat(price.toFixed(2)); 
+  
+    // Current
+    $('#current-3vs3 .current-3vs3-rp').html(current3vs3ArenaValue);
+    $('.current-3vs3-selected-img').attr('src', `/media/wow/images/${current3vs3Rank}.png`);
+    $('.current.current-3vs3').removeClass().addClass(`current current-3vs3 rank-${current3vs3Rank}`);
+    $('.current-3vs3-selected-info').html(`${current3vs3ArenaValue} MMR`)
+  
+    // Desired
+    $('#desired-3vs3 .desired-3vs3-rp').html(desired3vs3ArenaValue);
+    $('.desired-3vs3-selected-img').attr('src', `/media/wow/images/${desired3vs3Rank}.png`);
+    $('.desired.desired-3vs3').removeClass().addClass(`desired desired-3vs3 rank-${desired3vs3Rank}`);
+    $('.desired-3vs3-selected-info').html(`${desired3vs3ArenaValue} MMR`)
+  
+    // Price
+    $('#arena-3vs3-price').html(`$${price}`)
+  
+    if($('#arena-form').data('type') == 'arena3vs3') {
+      // Form
+      $('#arena-form input[name="is_arena_2vs2"]').val(false);
+      $('#arena-form input[name="current_rank"]').val(getRank(current3vs3ArenaValue)[1]);
+      $('#arena-form input[name="current_RP"]').val(current3vs3ArenaValue);
+      $('#arena-form input[name="desired_rank"]').val(getRank(desired3vs3ArenaValue)[1]);
+      $('#arena-form input[name="desired_RP"]').val(desired3vs3ArenaValue);
+      $('#arena-form input[name="server"]').val(selected3vs3ArenaServer);
+      $('#arena-form input[name="price"]').val(price);
+    }
+  }
 
+}
+
+// ----------------------------- Arena 2vs2 Boost Changes ---------------------------------
 current2vs2Arena.on("input", function (event) {
   current2vs2ArenaValue = Number(event.target.value);
   current2vs2Rank = getRank(current2vs2ArenaValue)[0];
@@ -130,6 +354,13 @@ desired2vs2Arena.on("input", function (event) {
     changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
   }
   
+  if (extend_order && extends_from_2vs2 && desired2vs2ArenaValue < valuesToSet[4]) {
+    desired2vs2Arena.val(valuesToSet[4])
+    desired2vs2ArenaValue = valuesToSet[4];
+    desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
+    changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
+  }
+
   changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
 
   get2vs2ArenaPrice()
@@ -142,63 +373,7 @@ arena_2vs2_server_select_element.on("change", function() {
   $('#arena-form input[name="server"]').val(selected2vs2ArenaServer);
 });
 
-// ----------------------------- Arena 3vs3 Boost ---------------------------------
-// Current 3vs3 Varible
-const current3vs3Arena = $('#current-3vs3-arena');
-const current3vs3Steps = $('.current-3vs3.step-indicator .step');
-let current3vs3ArenaValue = Number(current3vs3Arena.val())
-let current3vs3Rank = getRank(current3vs3ArenaValue)[0];
-
-// Desired 3vs3 Varible
-const desired3vs3Arena = $('#desired-3vs3-arena');
-const desired3vs3Steps = $('.desired-3vs3.step-indicator .step');
-let desired3vs3ArenaValue = Number(current3vs3Arena.val())
-let desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
-
-// 3vs3 Arena Server
-const arena_3vs3_server_select_element = $('.arena-3vs3-servers-select');
-let selected3vs3ArenaServer = arena_3vs3_server_select_element.val()
-
-function get3vs3ArenaPrice(arenaType = '3vs3') {
-  // Price
-  let price = (desired3vs3ArenaValue - current3vs3ArenaValue) * (price_of_3vs3 / MIN_DESIRED_VALUE);
-
-  // Apply extra charges to the result
-  price += price * total_Percentage;
-
-  // Apply promo code 
-  price -= price * (discount_amount/100 )
-
-  price = parseFloat(price.toFixed(2)); 
-
-  // Current
-  $('#current-3vs3 .current-3vs3-rp').html(current3vs3ArenaValue);
-  $('.current-3vs3-selected-img').attr('src', `/media/wow/images/${current3vs3Rank}.png`);
-  $('.current.current-3vs3').removeClass().addClass(`current current-3vs3 rank-${current3vs3Rank}`);
-  $('.current-3vs3-selected-info').html(`${current3vs3ArenaValue} MMR`)
-
-  // Desired
-  $('#desired-3vs3 .desired-3vs3-rp').html(desired3vs3ArenaValue);
-  $('.desired-3vs3-selected-img').attr('src', `/media/wow/images/${desired3vs3Rank}.png`);
-  $('.desired.desired-3vs3').removeClass().addClass(`desired desired-3vs3 rank-${desired3vs3Rank}`);
-  $('.desired-3vs3-selected-info').html(`${desired3vs3ArenaValue} MMR`)
-
-  // Price
-  $('#arena-3vs3-price').html(`$${price}`)
-
-  if($('#arena-form').data('type') == 'arena3vs3') {
-    // Form
-    $('#arena-form input[name="is_Arena_2vs2"]').val(false);
-    $('#arena-form input[name="current_rank"]').val(getRank(current3vs3ArenaValue)[1]);
-    $('#arena-form input[name="current_RP"]').val(current3vs3ArenaValue);
-    $('#arena-form input[name="desired_rank"]').val(getRank(desired3vs3ArenaValue)[1]);
-    $('#arena-form input[name="desired_RP"]').val(desired3vs3ArenaValue);
-    $('#arena-form input[name="server"]').val(selected3vs3ArenaServer);
-    $('#arena-form input[name="price"]').val(price);
-  }
-}
-// get3vs3ArenaPrice()
-
+// ----------------------------- Arena 3vs3 Boost Changes ---------------------------------
 current3vs3Arena.on("input", function (event) {
   current3vs3ArenaValue = Number(event.target.value);
   current3vs3Rank = getRank(current3vs3ArenaValue)[0];
@@ -227,6 +402,13 @@ desired3vs3Arena.on("input", function (event) {
     desired3vs3ArenaValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
     desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
+    changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
+  }
+
+  if (extend_order && !extends_from_2vs2 && desired3vs3ArenaValue < valuesToSet[4]) {
+    desired3vs3Arena.val(valuesToSet[4])
+    desired3vs3ArenaValue = valuesToSet[4];
+    desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
     changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
   }
   

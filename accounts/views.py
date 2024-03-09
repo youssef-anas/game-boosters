@@ -150,19 +150,17 @@ def logout_view(request):
     logout(request)
     return redirect(reverse_lazy('homepage.index'))
 
-def choose_booster(request):
+def choose_booster(request, order_id, booster_id):
     if request.method == 'POST':
         # TODO make it in kwrgs better than POST data
-        chosen_booster_id = request.POST.get('chosen_booster_id')
-        order_id = request.POST.get('order_id')
 
-        if chosen_booster_id and order_id:
+        if booster_id and order_id:
             order = get_object_or_404(BaseOrder, pk=order_id)
-            booster = get_object_or_404(BaseUser, id=chosen_booster_id)
+            booster = get_object_or_404(BaseUser, id=booster_id)
             order.booster = booster
             order.save()
             # Room.create_room_with_booster(request.user,booster,order.name)
-            return redirect(reverse_lazy('accounts.customer_side'))
+            return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
     return JsonResponse({'success': False})
 
 def set_customer_data(request):
@@ -181,8 +179,8 @@ def set_customer_data(request):
             order.save()
             if booster:
                 Room.create_room_with_booster(User,booster,order.name)
-                return redirect(reverse_lazy('accounts.customer_side'))
-            return redirect(reverse_lazy('accounts.customer_side'))
+                return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
+            return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
     return JsonResponse({'success': False})
 
 @csrf_exempt
@@ -211,7 +209,7 @@ def tip_booster(request):
                 "invoice": invoice,
                 "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
                 "return": request.build_absolute_uri(f"/accounts/tip_booster/success/{token_with_data}/"),
-                "cancel_return": request.build_absolute_uri(f"/accounts/tip_booster/cancel/{token_with_data}/"),
+                "cancel_return": request.build_absolute_uri(f"/accounts/tip_booster/cancel/{token_with_data}/{order_id}"),
             }
             # Create the instance.
             form = PayPalPaymentsForm(initial=paypal_dict)
@@ -243,13 +241,15 @@ def success_tip(request,token):
         booster_wallet = booster_instance.wallet
         booster_wallet.money += tip
         booster_wallet.save()
-        return redirect('accounts.customer_side')
+        return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
     return HttpResponse("error while adding tip to bosster, check your wallet and call page admin")
 
-def cancel_tip(request, token):
+def cancel_tip(request, token, order_id):
+    # TODO : check This Shehab --- I Cancel Return To Customer Side
     TokenForPay.delete_token(token)
+    order = BaseOrder.objects.get(id=order_id)
     request.session['success_tip'] = 'false'
-    return redirect('accounts.customer_side')
+    return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
 
 # TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
 @login_required

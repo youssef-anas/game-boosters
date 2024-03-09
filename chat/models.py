@@ -97,7 +97,7 @@ class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     created_on = models.DateTimeField(auto_now_add=True)
     msg_type = models.IntegerField(choices=MSG_TYPE, default=1)
-
+    
     def __str__(self):
         return "Message is :- "+ self.content
     

@@ -31,7 +31,7 @@
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
             <div>
-              {% if order.order.game_type == 'D' %}
+              {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
 
               <a class="btn btn-success m-3" href="{% url order.order.game.link %}?extend={{order.order.id}}">Extend Order</a>
               {% endif %}
@@ -321,10 +321,9 @@
                   <span class="ms-4">{{booster.booster.first_name}} {{booster.booster.last_name}}</span>
                 </div>
 
-                <form action="{% url 'choose.booster' %}" method="POST">
+                <form action="{% url 'choose.booster' order_id=order.order.id booster_id=booster.booster.id %}
+                " method="POST">
                   {% csrf_token %}
-                  <input type="hidden" name="chosen_booster_id" value="{{ booster.booster.id }}">
-                  <input type="hidden" name="order_id" value="{{ order.order.id }}">
                   <button type="submit" class="btn submit-btn">Choose</button>
                 </form>
               </div>

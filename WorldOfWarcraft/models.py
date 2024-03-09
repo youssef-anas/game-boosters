@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder
 import requests
 from django.core.exceptions import ValidationError
+import json
 
 class WorldOfWarcraftRank(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -44,7 +45,7 @@ class WorldOfWarcraftRpsPrice(SingletonModel):
   
   
 class WorldOfWarcraftArenaBoostOrder(models.Model):
-  is_Arena_2x2 = models.BooleanField(default=True)
+  is_arena_2vs2 = models.BooleanField(default=True)
 
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_division_order')
 
@@ -121,4 +122,22 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     return f"Boosting From {self.current_division} RP To {self.desired_division}"
 
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_division},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming }"
+    return f"{self.current_rank},{self.current_division},0,{self.desired_rank},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},0,{self.order.customer_server},{self.is_arena_2vs2}"
+  
+  def get_order_price(self):
+    percent_for_view = 0
+    booster_price = 0
+
+    current_rp = self.current_division
+    reached_rp = self.reached_division
+    desired_rp = self.desired_division
+
+    percent_for_view = round(((reached_rp - current_rp) / (desired_rp - current_rp)) * 100)
+
+    if percent_for_view > 100:
+      percent_for_view = 100
+
+    booster_price = (self.order.actual_price) * (percent_for_view / 100)
+    print('booster_price', booster_price)
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
