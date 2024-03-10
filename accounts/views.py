@@ -4,95 +4,140 @@ from accounts.controller.forms import Registeration, ProfileEditForm, ProfileEdi
 from django.contrib import messages as NotifyMessage
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_decode
-from django.contrib.auth.tokens import default_token_generator
 from django.http import HttpResponseBadRequest, HttpResponse
-from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_encode
 from django.utils import timezone
-from django.contrib.auth.views import LoginView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import authenticate, login , logout
 from django.http import JsonResponse
 from accounts.controller.order_creator import create_order
 from accounts.controller.utils import refresh_order_page
 User = get_user_model()
-from booster.models import Booster
-from accounts.models import BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data, Wallet
+from accounts.models import BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data
 from chat.models import Room, Message
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
-import requests
 import secrets
-from pubg.models import PubgDivisionOrder
 from channels.db import database_sync_to_async
 from accounts.controller.utils import get_boosters
 from django_q.tasks import async_task
 from .controller.tasks import update_database_task
-import time
-from django.core.mail import send_mail
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-channel_layer = get_channel_layer()
-
-#api
+from django.contrib import messages as messageForPageResponse
 from accounts.models import PromoCode
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from accounts.controller.serializers import PromoCodeSerializer
+from django.http import HttpResponse
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+import random
+from datetime import timedelta
 
-@csrf_exempt
-def send_activation_email(user, request):
-    # Generate a token for the user
-    token = default_token_generator.make_token(user)
 
-    # Build the activation URL
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
-    activation_url = reverse('account.activate', kwargs={'uidb64': uid, 'token': token})
-    activation_url = request.build_absolute_uri(activation_url)
 
-    # Create the subject and message for the email
+def generate_random_5_digit_number():
+    return random.randint(10000, 99999)
+
+
+def send_activation_code(user) -> int:
     subject = 'Activate Your Account'
-    message = render_to_string('accounts/activation_email.html', {
-        'user': user,
-        'activation_url': activation_url,
-    })
+    users_list = [user.email]
+    secret_key = generate_random_5_digit_number()
 
-    # Send the email
-    send_mail(subject, message, 'your@example.com', [user.email])
+    html_content = render_to_string('chat/activation_email.html', {'secret_key': secret_key, 'user':user})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+
+    user.activation_code = secret_key
+    user.activation_time = timezone.now()
+    user.save()
+    return secret_key
+
+def create_account(request):
+    email = request.session.get('email')
+    if email:
+        user = get_object_or_404(BaseUser, email = email)
+        send_activation_code(user)
+        return redirect('accounts.activate.sent')
+    if request.method == 'POST':
+        form = Registeration(request.POST,request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            send_activation_code(user)
+            request.session['email'] = user.email
+            return redirect('accounts.activate.sent')
+        else:
+            return render(request, 'accounts/register.html', {'form': form})
+    form =  Registeration()
+    return render(request, 'accounts/register.html', {'form': form})
+
+
+def activate_account_sent(request):
+    email = request.session.get('email')
+    return render(request, 'accounts/activation_sent.html', context={'email':email})
+
+
+def activate_account(request, code):
+    user = BaseUser.objects.get(activation_code=code)
+
+    if not user:
+        messageForPageResponse.error(request, 'Error in code')
+        return redirect(reverse('accounts.activate.sent'))
+
+    time_difference = timezone.now() - user.activation_time
+    if time_difference > timedelta(minutes=1):
+        return HttpResponseBadRequest("Activation time hasn't elapsed yet")
+
+    user.is_active = True
+    user.save()
+
+    # Set the backend attribute on the user
+    user.backend = 'django.contrib.auth.backends.ModelBackend'
+    login(request, user)
+
+    messageForPageResponse.success(request, 'Your account has been activated successfully')
+    return redirect(reverse('homepage.index'))
+
+# from allauth.socialaccount.providers.openid.views import OpenIDLoginView
+
+# class Custom_login(OpenIDLoginView):
+#     template_name = "accounts/test.html"
+
+
 
 def register_view(request):
     invoice = request.session.get('invoice')
     payer_id = request.GET.get('PayerID')
-
+        # if request.method == 'POST':
+        #     form = Registeration(request.POST,request.FILES)
+        #     if form.is_valid():
+        #         user = form.save()
+        #         order = create_order(invoice, payer_id, user)
+        #         login(request, user)
+        #         # Send activation email
+        #         # send_activation_email(user, request)
+        #         # return render(request, 'accounts/activation_sent.html')
+        #         Room.create_room_with_admins(request.user, order.order.name)
+        #         Room.create_room_with_booster(request.user,booster, order.order.name)
+        #         refresh_order_page()
+        #         async_task(update_database_task,order.order.id)
+        #         return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
     if invoice:
-        if request.method == 'POST':
-            form = Registeration(request.POST,request.FILES)
-            if form.is_valid():
-                user = form.save()
-                order = create_order(invoice, payer_id, user)
-                login(request, user)
-                # Send activation email
-                # send_activation_email(user, request)
-                # return render(request, 'accounts/activation_sent.html')
-                Room.create_room_with_admins(request.user, order.order.name)
-                Room.create_room_with_booster(request.user,booster, order.order.name)
-                refresh_order_page()
-                async_task(update_database_task,order.order.id)
-                return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
         invoice_values = invoice.split('-')
         booster_id = int(invoice_values[12])
-        if booster_id <= 0 :
-            try:
-                booster = BaseUser.objects.get(id=booster_id, is_booster =True)
-            except BaseUser.DoesNotExist:
-                booster = None
+        try:
+            booster = BaseUser.objects.get(id=booster_id, is_booster =True)
+        except BaseUser.DoesNotExist:
+            booster = None
         if request.user.is_authenticated:
             order = create_order(invoice, payer_id, request.user)
-            print(order)
             Room.create_room_with_admins(request.user, order.order.name)
             Room.create_room_with_booster(request.user, booster, order.order.name)
             refresh_order_page()
@@ -108,21 +153,6 @@ def register_view(request):
 def profile_view(request):
     return render(request, 'accounts/profile.html')
 
-@csrf_exempt
-def activate_account(request, uidb64, token):
-    try:
-        uid = force_bytes(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user and default_token_generator.check_token(user, token):
-        user.is_active = True
-        user.email_verified_at = timezone.now()
-        user.save()
-        return render(request, 'accounts/.html')
-    
-    return HttpResponseBadRequest('Activation Link is Invalid or Has Expired.')
 
 @csrf_exempt
 def login_view(request):
@@ -256,39 +286,43 @@ def cancel_tip(request, token):
 def customer_side(request, order_name):
     customer = request.user
     base_order = BaseOrder.objects.filter(customer=customer,name=order_name).order_by('id').last()
-    if base_order.is_done:
-        return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
-    boosters = get_boosters(base_order.game.pk)     
-    
-    # Chat with admins
-    admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
+    if base_order:
+        if base_order.is_done:
+            return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
+        boosters = get_boosters(base_order.game.pk)     
+        
+        # Chat with admins
+        admins_chat_slug = f'roomFor-{request.user.username}-admins-{base_order.name}'
 
-    admins_room = Room.objects.get(slug=admins_chat_slug)
-    admins_messages = Message.objects.filter(room=admins_room)
+        admins_room = Room.objects.get(slug=admins_chat_slug)
+        admins_messages = Message.objects.filter(room=admins_room)
 
-    game_order = base_order.related_order
-    
-    # Chat with booster
-    specific_room = Room.get_specific_room(request.user, base_order.name)
-    slug = specific_room.slug if specific_room else None
-    if slug:
-        room = Room.objects.get(slug=slug)
-        messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
-        context = {
-            'user':User,
-            "slug":slug,
-            'messages':messages,
-            'room':room,
-            'boosters':boosters,
-            'order':game_order,
-            'admins_room':admins_room,
-            'admins_room_name':admins_room,
-            'admins_messages':admins_messages,
-            'admins_chat_slug':admins_chat_slug
-        }    
-        template_name = 'accounts/customer_side.html'
-        return render(request, template_name, context)
-    return  HttpResponse("error on creating chat")
+        game_order = base_order.related_order
+        
+        # Chat with booster
+        specific_room = Room.get_specific_room(request.user, base_order.name)
+        slug = specific_room.slug if specific_room else None
+        if slug:
+            room = Room.objects.get(slug=slug)
+            messages=Message.objects.filter(room=Room.objects.get(slug=slug)) 
+            context = {
+                'user':User,
+                "slug":slug,
+                'messages':messages,
+                'room':room,
+                'boosters':boosters,
+                'order':game_order,
+                'admins_room':admins_room,
+                'admins_room_name':admins_room,
+                'admins_messages':admins_messages,
+                'admins_chat_slug':admins_chat_slug
+            }    
+            template_name = 'accounts/customer_side.html'
+            return render(request, template_name, context)
+        return  HttpResponse("error on creating chat")
+    messageForPageResponse.error(request, "This order dosent belong to you, dont try to cheat (:")
+    return  redirect(reverse('homepage.index'))
+
 
 @login_required
 def edit_customer_profile(request):

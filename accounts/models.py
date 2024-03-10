@@ -37,6 +37,10 @@ class BaseUser(AbstractUser):
     profile_image = models.ImageField(upload_to='accounts/images/', null=True)
     is_online = models.BooleanField(default = False)
     last_online = models.DateTimeField(default=timezone.now)
+    activation_code = models.IntegerField(null=True)
+    activation_time = models.DateTimeField(null=True)
+    rest_password_code = models.IntegerField(null=True)
+    rest_password_time = models.DateTimeField(null=True)
 
     # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 

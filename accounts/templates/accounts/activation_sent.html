@@ -33,10 +33,14 @@
             <div class="content text-center py-5">
               <h3 class="my-2">Check Your Inbox</h3>
               <img src="{% static 'accounts/images/send-email.png' %}" alt="" width="150">
-              <p class="my-3">Click on the link we sent to</p>
-              <p class="my-3"><span class="fw-bold">Sarah@gmail.com</span> to finish your account</p>
-              <p>setup.</p>
-              <a href="https://mail.google.com/" target="_blank" class="btn text-white gmail-btn"><img src="{% static 'accounts/images/google.png' %}" class="me-2" width="20" /> Open Gmail</a>
+              <p class="my-2">Click on the link we sent to</p>
+              <p class="my-2"><span class="fw-bold">{{email}}</span> to finish your account</p>
+              <form id="activationForm" method="get">
+                {% csrf_token %}
+                <input type="text" id="activationCodeInput" name="activation_code" maxlength="5" placeholder="Enter 5-digit code" required>
+                <button  type="submit" class="m-3 btn text-white gmail-btn">Activate</button>
+              </form>
+            
             </div>
           </div>
         <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
@@ -44,5 +48,21 @@
         <script src="{% static  'base/js/script.js' %}"></script>
         <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
         <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+        <script>
+          document.getElementById("activationForm").addEventListener("submit", function(event) {
+              event.preventDefault(); // Prevent the default form submission
+              
+              const activationCode = document.getElementById("activationCodeInput");
+              const code = activationCode.value
+              if (code.length !== 5 || isNaN(parseInt(code))) {
+                  alert("Please enter a 5-digit code.");
+                  return;
+              }
+              
+              var url = `/accounts/activate/${code}/`;
+              window.location.href = url;
+          });
+          </script>
     </body>
+    
 </html>

@@ -29,6 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
+CSRF_COOKIE_SECURE = False
 
 ASGI_APPLICATION = 'gameBoosterss.asgi.application'
 
@@ -80,8 +81,17 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_q',
+    # 'oauth2_provider',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    # 'django.contrib.sites',
 
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,6 +104,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'gameBoosterss.urls'
@@ -195,21 +206,27 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # to send email via gmail
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+EMAIL_PORT = 587  # For TLS
 EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'madboost.customer@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 
-EMAIL_USE_SSL = False
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# EMAIL_USE_SSL = False
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
-ALLOWED_HOSTS = ['*','.vercel.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
+# PAYPAL_EMAIL='madboost.payment@gmail.com'
 PAYPAL_TEST = True
 PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+# SECURE_SSL_REDIRECT = True
+
 
 
 Q_CLUSTER = {
@@ -245,3 +262,64 @@ Q_CLUSTER = {
 #         },
 #     },
 # }
+
+OAUTH2_PROVIDER = {
+    'SCOPES': {'read', 'write'},
+    'CLIENT_ID': 'your-client-id',
+    'CLIENT_SECRET': 'your-client-secret',
+    'OAUTH2_SERVER_CLASS': 'oauth2_provider.oauth2.Server',
+    'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+        'APP': {
+            'client_id': '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.apps.googleusercontent.com',
+            'secret': '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',
+        }
+    },
+    'facebook': {
+        'APP': {
+            'client_id': '395531559777062',
+            'secret': 'c20a1e8d9e7ecc668111c23da1528dee',
+        }
+    }
+    
+    #  'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SCOPE': ['email', 'public_profile', 'user_friends'],
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'INIT_PARAMS': {'cookie': True},
+    #     'FIELDS': [
+    #         'id',
+    #         'email',
+    #         'name',
+    #         'first_name',
+    #         'last_name',
+    #         'verified',
+    #         'locale',
+    #         'timezone',
+    #         'link',
+    #         'gender',
+    #         'updated_time',
+    #     ],
+    #     'EXCHANGE_TOKEN': True,
+    #     'LOCALE_FUNC': lambda request: 'en_US',
+    #     'VERIFIED_EMAIL': False,
+    #     'VERSION': 'v12.0',
+    #     'APP': {
+    #         'client_id': '395531559777062',
+    #         'secret': 'c20a1e8d9e7ecc668111c23da1528dee',
+    #     }
+    # }
+}

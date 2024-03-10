@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from gameBoosterss.views import index
 from django.conf.urls import handler400, handler403, handler404, handler500
+# from oauth2_provider import views as oauth2_views
 
 
 
@@ -31,6 +32,10 @@ urlpatterns = [
     path('games/', include('games.urls')),
     path('chat/', include('chat.urls')),
     path('paypal/', include("paypal.standard.ipn.urls")),
+    # path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
+    # path('token/', oauth2_views.TokenView.as_view(), name="token"),
+    path('accounts/', include('allauth.urls')),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

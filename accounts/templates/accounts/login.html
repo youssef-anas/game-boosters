@@ -1,4 +1,5 @@
 {% extends 'layouts/base.html' %}
+{% load socialaccount %}
 {% load static %}
 {% block title %}Login{% endblock %}
 {% block style %}
@@ -20,6 +21,9 @@
                 <!-- {{ form.username.label_tag }} {{ form.username }}
                 {{ form.password.label_tag }} {{ form.password }}
                 {{ form.as_p }} -->
+                <a href="{% provider_login_url 'google' %}">Login with Google</a><hr/>
+                <a href="{% provider_login_url 'facebook' %}">Login with Facebook</a><hr/>
+
                 <div class="mb-3">
                     <label for="username" class="form-label custom-label">Username</label>
                     <input type="text" name="username" class="form-control custom-input" id="username">

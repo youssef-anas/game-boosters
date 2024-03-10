@@ -9,8 +9,11 @@ def is_customer(user):
 urlpatterns = [
     path('register/', register_view, name='accounts.register'),
     path('profile/', profile_view, name='accounts.profile'),
-    path('activate/<str:uidb64>/<str:token>/', activate_account, name='account.activate'),
+    path('signup/',create_account, name='accounts.signup'),
     path('login/', login_view, name='account.login'),
+    # path('google/login/', Custom_login.as_view(), name='custom_google_login'),
+    path('activate/sent/', activate_account_sent, name='accounts.activate.sent'),
+    path('activate/<int:code>/',activate_account, name='accounts.activate.code'),
     path('logout/', logout_view, name='account.logout'), 
     path('choose_booster/', choose_booster, name='choose.booster'),
     path('set_customer_data/', set_customer_data, name='set.customer.data'),
