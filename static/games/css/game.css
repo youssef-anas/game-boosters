@@ -17,6 +17,10 @@
 .game-landing.wow {
   background-image: url('./../images/wow_bg.jpg');
 }
+.game-landing.hearthstone {
+  background-image: url('./../images/hearthstone_bg.jpg');
+  background-position-y: -140px;
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

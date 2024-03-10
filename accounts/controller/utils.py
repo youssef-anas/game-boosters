@@ -30,6 +30,15 @@ def check_rl_type(type) -> Model:
         raise ValueError(f"Invalid Rocket League game type: {type}")
     return Game
 
+def check_wl_type(type) -> Model:
+    WR_MODELS = {
+        'D': WildRiftDivisionOrder,
+    }
+    Game = WR_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid WildRift game type: {type}")
+    return Game
+
 def check_valo_type(type) -> Model:
     VALORANT_MODELS = {
     'D': ValorantDivisionOrder,
@@ -60,6 +69,33 @@ def check_tft_type(type) -> Model:
         raise ValueError(f"Invalid TFT game type: {type}")
     return Game
 
+def check_wow_type(type) -> Model:
+    WOW_MODELS = {
+        'A': WorldOfWarcraftArenaBoostOrder,
+    }
+    Game = WOW_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid World of Warcraft game type: {type}")
+    return Game
+
+def check_hearthstone_type(type) -> Model:
+    HEARTHSTONE_MODELS = {
+        'D': HearthstoneDivisionOrder,
+    }
+    Game = HEARTHSTONE_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Hearthstone game type: {type}")
+    return Game
+
+def check_hok_type(type) -> Model:
+    HOK_MODELS = {
+        'D': HonorOfKingsDivisionOrder,
+    }
+    Game = HOK_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Honor Of Kings game type: {type}")
+    return Game
+
 def check_mobleg_type(type) -> Model:
     MOBILE_LEGENDS_MODELS = {
         'D': MobileLegendsDivisionOrder,
@@ -70,28 +106,19 @@ def check_mobleg_type(type) -> Model:
         raise ValueError(f"Invalid Mobile Legends game type: {type}")
     return Game
 
-def check_wow_type(type) -> Model:
-    WOW_MODELS = {
-        'A': WorldOfWarcraftArenaBoostOrder,
-    }
-    Game = WOW_MODELS.get(type, None)
-    if not Game:
-        raise ValueError(f"Invalid World of Warcraft game type: {type}")
-    return Game
-
 def get_game(id, type) -> Model:
     GAME_MODELS = {
-        1: WildRiftDivisionOrder,
+        1: check_wl_type,
         2: check_valo_type,
         3: PubgDivisionOrder,
         4: check_lol_type,
         5: check_tft_type,
         6: check_wow_type,  # Use a function for WoW Arena
-        7: HearthstoneDivisionOrder,
+        7: check_hearthstone_type,
         8: check_mobleg_type,
         9: check_rl_type,
         10: 'dota2',
-        11: HonorOfKingsDivisionOrder,
+        11: check_hok_type,
         12: Overwatch2DivisionOrder,
         13: 'csgo2',
     }

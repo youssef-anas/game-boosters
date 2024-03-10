@@ -24,7 +24,7 @@ def get_order_result_by_rank(data,extend_order_id):
     select_booster = data['select_booster']
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
-    booster_champions = data['booster_champions']
+    select_champion = data['select_champion']
     
     server = data['server']
     promo_code = data['promo_code']
@@ -33,7 +33,7 @@ def get_order_result_by_rank(data,extend_order_id):
     select_booster_value = 0
     turbo_boost_value = 0
     streaming_value = 0
-    booster_champions_value = 0
+    select_champion_value = 0
     promo_code_amount = 0
 
     boost_options = []
@@ -58,10 +58,10 @@ def get_order_result_by_rank(data,extend_order_id):
         boost_options.append('STREAMING')
         streaming_value = 1
 
-    if booster_champions:
+    if select_champion:
         total_percent += 0.0
         boost_options.append('BOOSTER Champions')
-        booster_champions_value = 1
+        select_champion_value = 1
 
     if promo_code != 'null':   
         try:
@@ -104,7 +104,8 @@ def get_order_result_by_rank(data,extend_order_id):
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_champions_value}-{timezone.now()}'
+    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
+
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'

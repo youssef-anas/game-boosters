@@ -4,6 +4,6 @@ from hearthstone.views import *
 
 urlpatterns = [
   path('', hearthstoneGetBoosterByRank, name='hearthstone'),
-  path('paypal/', view_that_asks_for_money, name='hearthstone-paypal-redirect'),
-  path('payment-canceled/', payment_canceled ,name='hearthstone.payment.canceled'),
+  path('paypal/', pay_with_paypal, name='hearthstone-paypal-redirect'),
+  path('cryptomus/', pay_with_cryptomus, name='hearthstone-cryptomus-redirect'),
 ]

@@ -77,10 +77,7 @@ class HonorOfKingsDivisionOrder(models.Model):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming}"
-  
-  def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.booster_champions}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server}"
     
 
   def get_order_price(self):
