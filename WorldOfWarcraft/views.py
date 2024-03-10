@@ -20,7 +20,13 @@ def wowGetBoosterByRank(request):
   except:
     order = None
 
-  prices = WorldOfWarcraftRpsPrice.objects.all().first()  
+  prices = WorldOfWarcraftRpsPrice.objects.all().first()
+
+  prices_data = [prices.price_of_2vs2, prices.price_of_3vs3]
+
+  with open('static/wow/data/prices.json', 'w') as json_file:
+    json.dump(prices_data, json_file)
+
     
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 6)

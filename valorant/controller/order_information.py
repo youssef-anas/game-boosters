@@ -25,7 +25,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  booster_agents = data['booster_agents']
+  select_champion = data['select_champion']
 
   server = data['server']
   promo_code = data['promo_code']
@@ -34,7 +34,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  booster_agents_value = 0
+  select_champion_value = 0
   promo_code_amount = 0
 
   boost_options = []
@@ -59,10 +59,10 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if booster_agents:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    booster_agents_value = 1
+    select_champion_value = 1
 
   if promo_code != 'null':   
     try:
@@ -105,7 +105,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_agents_value}-{timezone.now()}'
+  invoice = f'valo-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -124,7 +124,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  booster_agents = data['booster_agents']
+  select_champion = data['select_champion']
 
   server = data['server']
   promo_code = data['promo_code']
@@ -133,7 +133,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
-  booster_agents_value = 0
+  select_champion_value = 0
   promo_code_amount = 0
 
   boost_options = []
@@ -158,10 +158,10 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if booster_agents:
+  if select_champion:
     total_percent += 0.0
     boost_options.append('CHOOSE AGENTS')
-    booster_agents_value = 1
+    select_champion_value = 1
 
   if promo_code != 'null':   
     try:
@@ -194,7 +194,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_agents_value}-{timezone.now()}'
+  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

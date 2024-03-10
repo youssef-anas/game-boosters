@@ -10,6 +10,7 @@ from hearthstone.models import *
 from hearthstone.controller.serializers import DivisionSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from hearthstone.controller.order_information import *
+from booster.models import OrderRating
 
 # Create your views here.
 @csrf_exempt
@@ -29,7 +30,7 @@ def hearthstoneGetBoosterByRank(request):
   ]
 
   marks_data = [
-    [mark.marks_3, mark.marks_2, mark.marks_1]
+    [0, mark.marks_3, mark.marks_2, mark.marks_1]
     for mark in marks
   ]
 
@@ -40,16 +41,20 @@ def hearthstoneGetBoosterByRank(request):
     json.dump(marks_data, json_file)
 
   divisions_list = list(divisions.values())
+
+   # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 7)
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
-    "order":order,
+    "order": order,
+    "feedbacks": feedbacks,
   }
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
 # Paypal
 @csrf_exempt
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -78,12 +83,12 @@ def view_that_asks_for_money(request):
           "invoice": order_info['invoice'],
           "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
           "return": request.build_absolute_uri(f"/accounts/register/"),
-          "cancel_return": request.build_absolute_uri(f"/hearthstone/payment-canceled/"),
+          "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "hearthstone/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       # return JsonResponse({'error': serializer.errors}, status=400)
       messages.error(request, 'Ensure this value is greater than or equal to 10')
       return redirect(reverse_lazy('hearthstone'))
@@ -92,6 +97,12 @@ def view_that_asks_for_money(request):
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-# Cancel Payment
-def payment_canceled(request):
-  return HttpResponse('payment canceled')
+# Cryptomus
+@csrf_exempt
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

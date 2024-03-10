@@ -121,10 +121,15 @@
                     {% elif order.order.game.link == 'hok' %}
                       <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
 
-                    {% else %}
+                      
+                      {% else %}
                       <p class="mb-0 text-capitalize">{{order.reached_rank}} {{ order.reached_division }}</p>
+                      
+                      {% endif %}
 
-                    {% endif %}
+                  {% elif order.order.game_type == 'A' %}
+                    <p class="mb-0">MMR Rank</p>
+                    <p class="mb-0 text-capitalize">{{ order.reached_division}} MMR</p>
                   
                   {% else %}
                     <p class="mb-0">Matches</p>

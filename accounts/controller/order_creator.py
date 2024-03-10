@@ -31,12 +31,13 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
         select_booster = bool(int(invoice_values[9]))
         turbo_boost = bool(int(invoice_values[10]))
         streaming = bool(int(invoice_values[11]))
-
+        
         select_champion = bool(int(invoice_values[16]))
+
         promo_code = str(invoice_values[17])
         role = int(invoice_values[18])
         ranked_type = int(invoice_values[19])   
-        
+        is_arena_2vs2 = bool(int(invoice_values[20]))
         
         try:
             promo_obj = PromoCode.objects.get(name = promo_code)
@@ -123,10 +124,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
                 order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match)
             # WoW - Arena
             elif game_id == 6 and type == 'A':
-                order = Game.objects.create(**default_fields)
+                order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2)
             # HEARTHSTONE
             elif game_id == 7 and type == 'D':
-                order = Game.objects.create(**default_fields, select_champion=select_champion)
+                order = Game.objects.create(**default_fields)
             # Mobile Legends - Division
             elif game_id == 8 and type == 'D':
                 order = Game.objects.create(**default_fields, select_champion=select_champion)
@@ -150,7 +151,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
                 pass
             #TODO sarah mohamed Honer Of King #########
             if game_id == 11:
-                order = Game.objects.create(**default_fields,select_champion=select_champion)
+                order = Game.objects.create(**default_fields)
             # Overwatch Division 
             if game_id == 12 and type == 'D':
                 order = Game.objects.create(**default_fields, role=role)
@@ -200,10 +201,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             # WoW
             elif game_id == 6 and type == 'A':
                 # TODO not completed yet
-                order = Game.objects.create(**extend_fields)
+                order = Game.objects.create(**extend_fields, is_arena_2vs2=is_arena_2vs2)
             # HEARTHSTONE
             elif game_id == 7:
-                order = Game.objects.create(**extend_fields, select_champion=select_champion)
+                order = Game.objects.create(**extend_fields)
             # Mobile Legends
             elif game_id == 8 and type == 'D': 
                 order = Game.objects.create(**extend_fields, select_champion=select_champion)

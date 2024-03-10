@@ -24,6 +24,8 @@ Promise.all([
 
 
   if(extend_order) {
+    $('input[type="radio"]#placements-boost').prop('disabled', true)
+
     let orderID = parseInt(extend_order, 10);
     document.getElementById('extendOrder').value = orderID; 
 
@@ -83,6 +85,9 @@ Promise.all([
       const desired_rank_name = divisionRanks[desired_rank];
       const current_division_name = divisionNames[current_division];
       const desired_division_name = divisionNames[desired_division];
+
+      makrs_on_current_rank_selected.value = mark_index
+      division_server_select_element.value = server
       
       const startRank = ((valuesToSet[3] - 1) * 5) + valuesToSet[4];
       const endRank = ((desired_rank - 1) * 5) + desired_division-1;
@@ -164,16 +169,19 @@ Promise.all([
       // Apply promo code 
       result_with_mark -= result_with_mark * (discount_amount/100 )
 
-
-
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
+      const oldDeiredElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (divisionRanks[valuesToSet[3]]).toLowerCase());
+
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       const currentElement = getSelectedElement(radioButtonsCurrent)
       const desiredElement = getSelectedElement(radioButtonsDesired)
-      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-      $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
-      $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
+      // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
+      $('.division-boost .current-rank-selected-img:not(.checkout-img)').attr('src', $(currentElement).data('img'))
+      $('.division-boost .current-rank-selected-img.checkout-img').attr('src', $(oldDeiredElement).data('img'))
+
+      $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
 
       $('.division-boost .current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark_index == 0 ? '0-19 %' : mark_index == 1 ? '20-39 %' : mark_index == 2 ? '40-59 %' : mark_index == 3 ? '60-79 %' : mark_index == 4 ? '80-99 %' : ''}`);
@@ -238,8 +246,6 @@ Promise.all([
 
   // Get Result 
   getDivisionPrice();
-
-
   
   // ----------------------------- Placments Boost ---------------------------------
   const placementsRanks = $('input[name="placement-ranks"]');

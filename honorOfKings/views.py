@@ -54,7 +54,7 @@ def honerOfKingeGetBoosterByRank(request):
 
 # Paypal
 @csrf_exempt
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:

@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 import json
 from hearthstone.models import *
+from accounts.models import PromoCode
 
 User = get_user_model()
 
@@ -22,16 +23,18 @@ def get_division_order_result_by_rank(data,extend_order_id):
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['speed_up_boost']
-  select_champion = data['select_champion']
   streaming = data['streaming']
+  # select_champion = data['select_champion']
+
   server = data['server']
   promo_code = data['promo_code']
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
-  select_champion_value = 0
+  # select_champion_value = 0
   streaming_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -41,7 +44,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -55,10 +58,17 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if select_champion:
-    total_percent += 0.0
-    boost_options.append('CHOOSE LEGENDS')
-    select_champion_value = 1
+  # if select_champion:
+  #   total_percent += 0.0
+  #   boost_options.append('CHOOSE LEGENDS')
+  #   select_champion_value = 1
+    
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_amount = promo_code_obj.discount_amount
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
 
   # Read data from JSON file
   with open('static/hearthstone/data/divisions_data.json', 'r') as file:
@@ -77,6 +87,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   total_sum = sum(sublist)
   price = total_sum - marks_price
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
   print('Price', price)
 
@@ -94,7 +105,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     get_object_or_404(User,id=booster_id,is_booster=True)
   else:
     booster_id = 0
-  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
+  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0-0'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

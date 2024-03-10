@@ -20,7 +20,7 @@ def index(request):
     if content_type:
       last_order = content_type.model_class().objects.get(order_id=order.object_id)
 
-      if last_order.order.game_type == 'D':
+      if last_order.order.game_type == 'D' or last_order.order.game_type == 'A':
         divsion_orders.append(last_order)
 
       elif last_order.order.game_type == 'P':

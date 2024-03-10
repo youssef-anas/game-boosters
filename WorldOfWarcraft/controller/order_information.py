@@ -4,6 +4,7 @@ from django.utils import timezone
 from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, BaseOrder
 from django.contrib.auth import get_user_model
 from accounts.models import PromoCode
+import json
 
 User = get_user_model()
 rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
@@ -11,9 +12,12 @@ rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
 
 def get_arena_order_result_by_rank(data,extend_order_id):
   # Prices
-  prices = WorldOfWarcraftRpsPrice.objects.all().first()
-  price_of_2vs2 = prices.price_of_2vs2
-  price_of_3vs3 = prices.price_of_3vs3
+  prices = []
+  with open('static/wow/data/prices.json', 'r') as file:
+    prices = json.load(file)
+
+  price_of_2vs2 = prices[0]
+  price_of_3vs3 = prices[1]
 
   # Ranks
   current_rank = data['current_rank']
@@ -24,7 +28,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   desired_RP = data['desired_RP']
 
   # Is 2vs2
-  is_Arena_2vs2 = data['is_Arena_2vs2']
+  is_arena_2vs2 = data['is_arena_2vs2']
 
   total_percent = 0
 
@@ -41,6 +45,9 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
+
+  is_arena_2vs2_value= 0
+
   promo_code_amount = 0
 
   boost_options = []
@@ -65,6 +72,9 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
+  if is_arena_2vs2:
+    is_arena_2vs2_value = 1
+
   if promo_code != 'null':   
     try:
       promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
@@ -72,7 +82,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
       
-  if is_Arena_2vs2:
+  if is_arena_2vs2:
     price = (desired_RP - current_RP) * (price_of_2vs2 / 50)
   else: 
     price = (desired_RP - current_RP) * (price_of_3vs3 / 50)
@@ -95,7 +105,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0'
+  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0-{is_arena_2vs2_value}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

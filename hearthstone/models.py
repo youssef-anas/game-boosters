@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import ten_romanize_division,romanize_division
 import requests
-
+import json
 
 # Create your models here.
 class HearthstoneRank(models.Model):
@@ -54,9 +54,10 @@ class HearthstoneDivisionOrder(models.Model):
     (10, 'I'),
   ]
   MARKS_CHOISES = [
-    (0, '3'),
-    (1 , '2'),
-    (2, '1'),
+    (0, '0 Stars'),
+    (1, '3 Stars'),
+    (2, '2 Stars'),
+    (3, '1 Stars'),
   ]
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='hearthstone_division_order')
   current_rank = models.ForeignKey(HearthstoneRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
@@ -69,7 +70,7 @@ class HearthstoneDivisionOrder(models.Model):
   reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
 
-  select_champion = models.BooleanField(default=True, blank=True, null=True)
+  # select_champion = models.BooleanField(default=True, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -103,8 +104,7 @@ class HearthstoneDivisionOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    # self.order.game_id = 7
-    # self.order.game_name = 'hearthstone'
+    self.order.game_id = 7
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -115,11 +115,87 @@ class HearthstoneDivisionOrder(models.Model):
     self.send_discord_notification()
     
   def get_details(self):
-    return f"From {str(self.current_rank).upper()} {ten_romanize_division(self.current_division)} {'3' if self.current_marks == 0 else ('2' if self.current_marks == 1 else '1')} STAR To {str(self.desired_rank).upper()} {ten_romanize_division(self.desired_division)}"
+    return f"From {str(self.current_rank).upper()} {ten_romanize_division(self.current_division)} {'0' if self.current_marks == 0 else ('3' if self.current_marks == 1 else ('2' if self.current_marks == 2 else '1'))} STAR To {str(self.desired_rank).upper()} {ten_romanize_division(self.desired_division)}"
 
   def __str__(self):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.select_champion},{self.order.streaming}"
+    return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server}"
 
+  def get_order_price(self):
+    # Read data from JSON file
+    with open('static/hearthstone/data/divisions_data.json', 'r') as file:
+      division_price = json.load(file)
+      flattened_data = [item for sublist in division_price for item in sublist]
+      flattened_data.insert(0,0)
+    ##
+    with open('static/hearthstone/data/marks_data.json', 'r') as file:
+      marks_data = json.load(file)
+      marks_data.insert(0,[0,0,0,0])
+    ##   
+          
+    promo_code_amount = self.order.promo_code
+    if not promo_code_amount:
+      promo_code_amount = 0
+
+    current_rank = self.current_rank.id
+    reached_rank = self.reached_rank.id
+
+    current_division = self.current_division
+    reached_division = self.reached_division
+
+    current_marks = self.current_marks
+    reached_marks = self.reached_marks
+
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    if self.order.streaming:
+      total_percent += 0.15
+
+    start_division = ((current_rank-1) * 10) + current_division
+    end_division = ((reached_rank-1) * 10)+ reached_division
+    marks_price = marks_data[current_rank][current_marks]
+    marks_price_reached = 0
+    marks_price_reached = marks_data[reached_rank][reached_marks]
+
+    sublist = flattened_data[start_division:end_division]
+
+
+    total_sum = sum(sublist)    
+
+
+    custom_price = total_sum - marks_price + marks_price_reached
+    
+    custom_price += (custom_price * total_percent)
+    custom_price -= custom_price * (promo_code_amount/100)
+
+    ##############################################################
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    print(percent)
+
+    booster_price = custom_price * (percent/100)
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+    if percent_for_view > 100:
+      percent_for_view = 100
+
+    if booster_price > actual_price:
+      booster_price = actual_price
+
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}

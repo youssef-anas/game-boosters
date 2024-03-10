@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // --------------------- PLACEMNET ---------------------
 
-  if (game_id != 1 && game_id != 6) {
+  if (game_id != 1 && game_id != 6 && game_id != 11) {
     const placementForm = document.getElementById('placements-boost-form');
     const placementPaypalBtn = document.getElementById('placement-paypal-btn');
     const placementCryptomusBtn = document.getElementById('placement-cryptomus-btn');
