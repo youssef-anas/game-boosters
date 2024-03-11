@@ -12,10 +12,15 @@ from overwatch2.models import Overwatch2DivisionOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
+from django.utils import timezone
 from typing import List
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 channel_layer = get_channel_layer()
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+import random
 
 
 def check_rl_type(type) -> Model:
@@ -179,3 +184,25 @@ def refresh_order_page():
             'order': all_orders_dict,
         }
     )
+
+# activate account and reset password
+    
+def generate_random_5_digit_number():
+    return random.randint(10000, 99999)
+
+def send_activation_code(user) -> int:
+    subject = 'Activate Your Account'
+    users_list = [user.email]
+    secret_key = generate_random_5_digit_number()
+
+    html_content = render_to_string('chat/activation_email.html', {'secret_key': secret_key, 'user':user})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+
+    user.activation_code = secret_key
+    user.activation_time = timezone.now()
+    user.save()
+    return secret_key

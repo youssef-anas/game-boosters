@@ -5,15 +5,16 @@ from paypal.standard.forms import PayPalPaymentsForm
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.conf import settings
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from wildRift.models import *
 import json
 from wildRift.controller.serializers import RankSerializer
 from django.http import HttpResponse
 from wildRift.controller.order_information import *
 from booster.models import OrderRating
+from accounts.models import TokenForPay
 
-@csrf_exempt
+
 def wildRiftGetBoosterByRank(request):
     extend_order = request.GET.get('extend')
     try:
@@ -53,7 +54,7 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-@csrf_exempt
+@login_required
 def pay_with_paypal(request):
     if request.method == 'POST':
         if request.user.is_authenticated :
@@ -70,14 +71,16 @@ def pay_with_paypal(request):
                 order_info = get_order_result_by_rank(serializer.validated_data,extend_order_id)
                 request.session['invoice'] = order_info['invoice']
 
+                token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+
                 paypal_dict = {
                     "business": settings.PAYPAL_EMAIL,
                     "amount": order_info['price'],
                     "item_name": order_info['name'],
                     "invoice": order_info['invoice'],
                     "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                    "return": request.build_absolute_uri(f"/accounts/register/"),
-                    "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
+                    "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+                    "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
                 }
                 # Create the instance.
                 form = PayPalPaymentsForm(initial=paypal_dict)
@@ -92,7 +95,7 @@ def pay_with_paypal(request):
     return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 # Cryptomus
-@csrf_exempt
+@login_required
 def pay_with_cryptomus(request):
   if request.method == 'POST':
     context = {

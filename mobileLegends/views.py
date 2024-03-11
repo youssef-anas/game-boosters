@@ -1,20 +1,19 @@
-from django.shortcuts import render, redirect,get_object_or_404
-from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import JsonResponse
-from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
 from mobileLegends.models import *
 from mobileLegends.controller.serializers import DivisionSerializer, PlacementSerializer
-from django.contrib.auth import get_user_model
-from django.utils import timezone
 from paypal.standard.forms import PayPalPaymentsForm
 from mobileLegends.controller.order_information import *
+from accounts.models import TokenForPay
+from django.contrib.auth.decorators import login_required
+
+
 
 # Create your views here.
-@csrf_exempt
 def MobileLegendsGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
@@ -60,7 +59,7 @@ def MobileLegendsGetBoosterByRank(request):
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
 # Paypal
-@csrf_exempt
+@login_required
 def view_that_asks_for_money(request):
   print('hi')
   if request.method == 'POST':
@@ -87,6 +86,7 @@ def view_that_asks_for_money(request):
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
         request.session['invoice'] = order_info['invoice']
+        token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
         paypal_dict = {
             "business": settings.PAYPAL_EMAIL,
@@ -94,8 +94,8 @@ def view_that_asks_for_money(request):
             "item_name": order_info['name'],
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/mobileLegends/payment-canceled/"),
+            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
@@ -110,7 +110,3 @@ def view_that_asks_for_money(request):
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-# Cancel Payment
-def payment_canceled(request):
-  return HttpResponse('payment canceled')

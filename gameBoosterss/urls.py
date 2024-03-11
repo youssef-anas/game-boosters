@@ -7,8 +7,6 @@ from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 
 
-
-
 urlpatterns = [
     path('', index, name="homepage.index"),
     path('admin/', admin.site.urls),

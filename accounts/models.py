@@ -7,25 +7,8 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-# from wildRift.models import WildRiftRank
-import secrets
 from games.models import Game
 
-class UserManager(UserManager):
-    def create_user(self, email, password=None, **extra_fields):
-        if not email:
-            raise ValueError('The Email Field Must Be Set')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        return self.create_user(email, password, **extra_fields)
 
 class BaseUser(AbstractUser):
     country = CountryField(blank=True,null=True)
@@ -41,8 +24,6 @@ class BaseUser(AbstractUser):
     activation_time = models.DateTimeField(null=True)
     rest_password_code = models.IntegerField(null=True)
     rest_password_time = models.DateTimeField(null=True)
-
-    # customer_rooms = models.ManyToManyField('Room', related_name='customers', blank=True)
 
     def get_image_url(self):
         if self.profile_image:
@@ -72,8 +53,13 @@ class Wallet(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE,related_name='wallet')
     money = models.FloatField(default=0, null=True, blank=True)
 
+
     def __str__(self):
-        return f'{self.user.username} Has {self.money}$'
+        if self.user.is_customer:
+            action = 'Paid'
+        else:
+            action = 'Has'
+        return f'{self.user.username} {action} {self.money}$'
     
 class PromoCode(models.Model):
     code                = models.CharField(max_length=50, unique=True)
@@ -298,23 +284,24 @@ class Transaction(models.Model):
         ('Done', 'Done'),
         ('Tip', 'Tip')
     ]
-    user = models.ForeignKey(BaseUser, on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(BaseUser, on_delete=models.PROTECT)
     amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    order = models.ForeignKey(BaseOrder, on_delete=models.DO_NOTHING, related_name='from_order')
+    order = models.ForeignKey(BaseOrder, on_delete=models.PROTECT, related_name='from_order')
     notice = models.TextField(default='_')
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
-    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.DO_NOTHING, null=True) 
+    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.PROTECT, null=True) 
 
     def __str__(self):
         return f'{self.user.username} {self.type} {self.amount}$'
 
+import secrets
 
 class TokenForPay(models.Model):
-    user                = models.OneToOneField(BaseUser, on_delete=models.CASCADE)
-    token               = models.TextField(max_length=40, unique=True)
-
+    user                = models.OneToOneField(BaseUser, on_delete=models.PROTECT)
+    token               = models.CharField(max_length=50, unique=True)
+    invoice             = models.CharField(max_length=1000, unique=True, null=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
@@ -336,3 +323,9 @@ class TokenForPay(models.Model):
         except cls.DoesNotExist:
             return None    
         
+    @classmethod
+    def create_token_for_pay(cls, user, invoice):
+        token = secrets.token_hex(14)
+        TokenForPay.objects.filter(user=user).delete()
+        TokenForPay.objects.create(user=user, token=token, invoice=invoice)
+        return token

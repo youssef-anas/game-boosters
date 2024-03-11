@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.http import JsonResponse
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
@@ -11,9 +10,10 @@ from hearthstone.controller.serializers import DivisionSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from hearthstone.controller.order_information import *
 from booster.models import OrderRating
+from accounts.models import TokenForPay
+
 
 # Create your views here.
-@csrf_exempt
 def hearthstoneGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
@@ -53,7 +53,7 @@ def hearthstoneGetBoosterByRank(request):
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
 # Paypal
-@csrf_exempt
+@login_required
 def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
@@ -75,15 +75,16 @@ def pay_with_paypal(request):
           print('Order Info: ', order_info)
 
         request.session['invoice'] = order_info['invoice']
-
+        token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+        
         paypal_dict = {
           "business": settings.PAYPAL_EMAIL,
           "amount": order_info['price'],
           "item_name": order_info['name'],
           "invoice": order_info['invoice'],
           "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-          "return": request.build_absolute_uri(f"/accounts/register/"),
-          "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
+          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
@@ -98,7 +99,7 @@ def pay_with_paypal(request):
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 # Cryptomus
-@csrf_exempt
+@login_required
 def pay_with_cryptomus(request):
   if request.method == 'POST':
     context = {

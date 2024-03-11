@@ -26,8 +26,8 @@ from accounts.models import BaseOrder, Transaction, BoosterPercent
 from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from itertools import chain
-from accounts.controller.order_creator import create_order
-from accounts.controller.utils import refresh_order_page
+from customer.controllers.order_creator import create_order
+from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks
 
 def register_booster_view(request):

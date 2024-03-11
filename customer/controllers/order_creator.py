@@ -1,6 +1,6 @@
 from accounts.models import BaseUser, BaseOrder
 from django.contrib.contenttypes.models import ContentType
-from accounts.controller.utils import get_game
+from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
 
 def create_order(invoice, payer_id, customer, status='New', name = None):

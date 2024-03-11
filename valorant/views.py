@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
@@ -11,9 +10,9 @@ from valorant.controller.serializers import DivisionSerializer, PlacementSeriali
 from paypal.standard.forms import PayPalPaymentsForm
 from valorant.controller.order_information import *
 from booster.models import OrderRating
+from accounts.models import TokenForPay
 
-# Create your views here.
-@csrf_exempt
+
 def valorantGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
@@ -63,16 +62,13 @@ def valorantGetBoosterByRank(request):
   }
   return render(request,'valorant/GetBoosterByRank.html', context)
 
-# Paypal
-@csrf_exempt
+@login_required
 def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
         return redirect(reverse_lazy('valorant'))
-      
-    print('request POST:  ', request.POST)
     try:
       # Division
       if request.POST.get('game_type') == 'D':
@@ -91,6 +87,7 @@ def pay_with_paypal(request):
           order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
         request.session['invoice'] = order_info['invoice']
+        token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
         paypal_dict = {
             "business": settings.PAYPAL_EMAIL,
@@ -98,10 +95,9 @@ def pay_with_paypal(request):
             "item_name": order_info['name'],
             "invoice": order_info['invoice'],
             "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/accounts/register/"),
-            "cancel_return": request.build_absolute_uri(f"/accounts/payment-canceled/"),
+            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
         }
-        # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
         return render(request, "accounts/paypal.html", context,status=200)
@@ -113,8 +109,7 @@ def pay_with_paypal(request):
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
-# Cryptomus
-@csrf_exempt
+@login_required
 def pay_with_cryptomus(request):
   if request.method == 'POST':
     context = {
