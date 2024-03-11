@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
+from wildRift.models import *
 import json
-from leagueOfLegends.models import *
-from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
-User = get_user_model()
+from accounts.models import PromoCode
+from booster.models import Booster
 
 division_names = ['','IV','IV','III','II','I']  
 rank_names = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
@@ -18,13 +18,17 @@ def get_division_order_result_by_rank(data,extend_order_id):
   desired_division = data['desired_division']
 
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
   select_champion = data['select_champion']
+  promo_code_amount = 0
+
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -58,6 +62,14 @@ def get_division_order_result_by_rank(data,extend_order_id):
     total_percent += 0.0
     boost_options.append('CHOOSE CHAMPIONS')
     select_champion_value = 1
+
+  if promo_code != 'null': 
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
+      promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
 
   # Read data from JSON file
   with open('static/mobileLegends/data/divisions_data.json', 'r') as file:
@@ -126,23 +138,23 @@ def get_division_order_result_by_rank(data,extend_order_id):
   total_sum = sum(sublist)
   price = total_sum - marks_price
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_mobleg_player=True)
   else:
     booster_id = 0
-  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
+  invoice = f'MOBLEG-8-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
@@ -155,19 +167,23 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   number_of_match = data['number_of_match']
 
   total_percent = 0
+
   duo_boosting = data['duo_boosting']
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
   select_champion = data['select_champion']
+
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
   turbo_boost_value = 0
   streaming_value = 0
   select_champion_value = 0
+  promo_code_amount = 0
 
   boost_options = []
 
@@ -196,6 +212,14 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('CHOOSE CHAMPIONS')
     select_champion_value = 1
 
+  if promo_code != 'null': 
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
+      promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
+
   # Read data from JSON file
   with open('static/mobileLegends/data/placements_data.json', 'r') as file:
     placement_data = json.load(file)
@@ -203,24 +227,24 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_mobleg_player=True)
   else:
     booster_id = 0
 
-  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}--{server}-{price}-{select_champion_value}-{promo_code}-0-0'
+  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

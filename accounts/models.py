@@ -74,6 +74,39 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Has {self.money}$'
+    
+class PromoCode(models.Model):
+    code                = models.CharField(max_length=50, unique=True)
+    description         = models.CharField(null=True, max_length=50)
+    discount_amount     = models.FloatField()
+    is_active           = models.BooleanField(default=True)
+    expiration_date     = models.DateField()
+    max_uses            = models.PositiveIntegerField(default=1)
+    times_used          = models.PositiveIntegerField(default=0)
+
+    created_at          = models.DateTimeField(auto_now_add=True)
+    updated_at          = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        if self.max_uses == 0:
+            permanent = 'Permanent'
+            times_left = ''
+        else:
+            permanent = self.max_uses - self.times_used
+            times_left = ' Times Left'
+        
+        return f'{self.code } | {permanent} {times_left}'
+
+    def can_be_used(self):
+        return self.is_active and (self.max_uses == 0 or self.times_used < self.max_uses)
+
+    def use_code(self):
+        if self.can_be_used():
+            self.times_used += 1
+            self.save()
+            return True
+        return False
+    
 
 class BoosterPercent(models.Model):
     booster_percent1 = models.IntegerField(default=22)
@@ -131,7 +164,9 @@ class BaseOrder(models.Model):
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
     payer_id = models.CharField(blank=True, null=True, max_length=50)
-    promo_code = models.FloatField(null=True, blank=True, default=0)
+
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.DO_NOTHING, null= True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -301,36 +336,3 @@ class TokenForPay(models.Model):
         except cls.DoesNotExist:
             return None    
         
-
-class PromoCode(models.Model):
-    code                = models.CharField(max_length=50, unique=True)
-    description         = models.CharField(null=True, max_length=50)
-    discount_amount     = models.FloatField()
-    is_active           = models.BooleanField(default=True)
-    expiration_date     = models.DateField()
-    max_uses            = models.PositiveIntegerField(default=1)
-    times_used          = models.PositiveIntegerField(default=0)
-
-    created_at          = models.DateTimeField(auto_now_add=True)
-    updated_at          = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        if self.max_uses == 0:
-            permanent = 'Permanent'
-            times_left = ''
-        else:
-            permanent = self.max_uses - self.times_used
-            times_left = ' Times Left'
-        
-        return f'{self.code } | {permanent} {times_left}'
-
-    def can_be_used(self):
-        return self.is_active and (self.max_uses == 0 or self.times_used < self.max_uses)
-
-    def use_code(self):
-        if self.can_be_used():
-            self.times_used += 1
-            self.save()
-            return True
-        return False
-    

@@ -1,11 +1,10 @@
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
-from django.utils import timezone
+from wildRift.models import *
 import json
-from hearthstone.models import *
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from accounts.models import PromoCode
-
-User = get_user_model()
+from booster.models import Booster
 
 division_names = ['','X','IX','VIII','VII','VI','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'LEGEND']
@@ -28,6 +27,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -65,8 +65,9 @@ def get_division_order_result_by_rank(data,extend_order_id):
     
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -95,18 +96,18 @@ def get_division_order_result_by_rank(data,extend_order_id):
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
+      price = round(price - extend_order_price, 2)
       print('Price', price)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_hearthstone_player=True)
   else:
     booster_id = 0
-  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0-0'
-  print('Invoice', invoice)
+
+  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

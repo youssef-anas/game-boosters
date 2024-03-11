@@ -11,8 +11,10 @@ const valuesAsList = orderValue.split(',') // values of extended order as list o
 const list1 = valuesAsList.slice(0, 5); // values of extended order as {current_rank.id}, {current_division}, {current_marks}, {desired_rank.id}, {desired_division}
 const list2 = valuesAsList.slice(5, 10);  // values of extended order as {duo_boosting}, {False}, {turbo_boost}, {streaming }, {choose_champions}
 
-const list3 = valuesAsList.slice(11, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
+const list3 = valuesAsList.slice(13, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
 const server = valuesAsList[10]
+const extendPromoCode = valuesAsList[11] != 'None' ? valuesAsList[11] : 'null'
+const discountAmount = valuesAsList[12] != 'None' ? parseFloat(valuesAsList[12]) : 0
 
 const valuesToSet = list1.map(function(item) {
     return parseInt(item, 10); // Use parseInt to convert list1 from srting to int as list
@@ -53,6 +55,11 @@ const duoBoosting = document.querySelector('input[name="switch-between-solo-duo"
 const soloBoosting = document.querySelector('input[name="switch-between-solo-duo"][value="solo"]')
 
 const promo_form = document.querySelector('.discount form');
+if(extend_order) {
+  promo_form.style.visibility = 'hidden';
+} else {
+  promo_form.style.visibility = 'visible';
+}
 
 // Checkbox
 const soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-solo-duo"]');

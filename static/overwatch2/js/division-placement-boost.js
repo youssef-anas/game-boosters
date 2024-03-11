@@ -41,36 +41,38 @@ Promise.all([
     // Solo Or Duo Boosting Change
     if (valuesToSetAdditional[0]) {
       duoBoosting.checked = true;
+      total_Percentage += percentege.duoBoosting;
       $('input#duoBoosting').val(true)
-      duoBoosting.disabled = true;
-      soloBoosting.disabled = true;
     } else {
       soloBoosting.checked = true;
       $('input#duoBoosting').val(false)
     }
+    duoBoosting.disabled = true;
+    soloBoosting.disabled = true;
 
     // Extra Buttons
     extraOptions.forEach(function (checkbox, index) {
       if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        total_Percentage += percentege[checkbox.value];
       } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        total_Percentage += percentege[checkbox.value];
       } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        total_Percentage += percentege[checkbox.value];
       } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
-        $(checkbox).prop('disabled', true)
+        total_Percentage += percentege[checkbox.value];
       } else {
         checkbox.checked = false
         $(`input#${checkbox.value}`).val(false)
       } 
+      $(checkbox).prop('disabled', true)
     })
   
     function getDivisionPrice() {
@@ -83,7 +85,6 @@ Promise.all([
       
       const current_rank_name = divisionRanks[current_rank];
       const desired_rank_name = divisionRanks[desired_rank];
-      const current_division_name = divisionNames[current_division];
       const desired_division_name = divisionNames[desired_division];
 
       makrs_on_current_rank_selected.value = mark_index
@@ -103,7 +104,7 @@ Promise.all([
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage_with_role_result;
       // Apply promo code 
-      result_with_mark -= result_with_mark * (discount_amount/100 )
+      result_with_mark -= result_with_mark * (discountAmount/100 )
       
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
@@ -111,10 +112,10 @@ Promise.all([
       $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
       $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
-      $('.division-boost .current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${mark_index == 0 ? '0-19 %' : mark_index == 1 ? '20-39 %' : mark_index == 2 ? '40-59 %' : mark_index == 3 ? '60-79 %' : mark_index == 4 ? '80-99 %' : ''}`);
+      $('.division-boost .current-selected-info').html(`${divisionRanks[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]}`);
       $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
 
-      $('.current').removeClass().addClass(`current ${divisionRanks[valuesToSet[3]]}`)
+      $('.current').removeClass().addClass(`current ${current_rank_name}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
       $('.total-price #division-boost-price').text(`$${result_with_mark}`)
@@ -126,6 +127,9 @@ Promise.all([
       $('.division-boost input[name="desired_rank"]').val(desired_rank);
       $('.division-boost input[name="desired_division"]').val(desired_division);
       $('.division-boost input[name="price"]').val(result_with_mark);
+
+      // SET PROMO CODE IN FORM
+      $('.division-boost input[name="promo_code"]').val(extendPromoCode);
     }
   } else {
     // Get Result Function
@@ -406,8 +410,10 @@ Promise.all([
   
   promo_form.addEventListener('submit', async function(event) {
     event.preventDefault();
-    discount_amount = await fetch_promo(); 
-    getDivisionPrice(); 
-    getPlacementPrice();
+    if(!extend_order) {
+      discount_amount = await fetch_promo(); 
+      getDivisionPrice(); 
+      getPlacementPrice();
+    }
   });
 });

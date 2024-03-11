@@ -37,6 +37,7 @@ Promise.all([
     // Solo Or Duo Boosting Change
     if (valuesToSetAdditional[0]) {
       duoBoosting.checked = true;
+      total_Percentage += percentege.duoBoosting;
       $('input#duoBoosting').val(true)
     } else {
       soloBoosting.checked = true;
@@ -50,18 +51,22 @@ Promise.all([
     extraOptions.forEach(function (checkbox, index) {
       if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
         checkbox.checked = true
+        total_Percentage += percentege[checkbox.value];
         $(`input#${checkbox.value}`).val(true)
         
       } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
         checkbox.checked = true
+        total_Percentage += percentege[checkbox.value];
         $(`input#${checkbox.value}`).val(true)
 
       } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
         checkbox.checked = true
+        total_Percentage += percentege[checkbox.value];
         $(`input#${checkbox.value}`).val(true)
 
       } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
         checkbox.checked = true
+        total_Percentage += percentege[checkbox.value];
         $(`input#${checkbox.value}`).val(true)
 
       } else {
@@ -82,7 +87,6 @@ Promise.all([
       
       const current_rank_name = ranksNames[current_rank];
       const desired_rank_name = ranksNames[desired_rank];
-      const current_division_name = divisionNames[current_division];
       const desired_division_name = divisionNames[desired_division];
 
       const selectedDivsionServer = server;
@@ -100,15 +104,15 @@ Promise.all([
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
       // Apply promo code 
-      result_with_mark -= result_with_mark * (discount_amount/100)
+      result_with_mark -= result_with_mark * (discountAmount/100)
 
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
 
-       // To Make Current Image Be Old Desired
-       const oldDeiredElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (ranksNames[valuesToSet[3]]).toLowerCase());
+      // To Make Current Image Be Old Desired
+      const oldDeiredElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (ranksNames[valuesToSet[3]]).toLowerCase());
   
-       const currentElement = getSelectedElement(radioButtonsCurrent)
-       const desiredElement = getSelectedElement(radioButtonsDesired)
+      const currentElement = getSelectedElement(radioButtonsCurrent)
+      const desiredElement = getSelectedElement(radioButtonsDesired)
 
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       $('.current-rank-selected-img:not(.checkout-img)').attr('src', $(currentElement).data('img'))
@@ -132,6 +136,9 @@ Promise.all([
       $('input[name="desired_division"]').val(desired_division);
       $('input[name="server"]').val(selectedDivsionServer);
       $('input[name="price"]').val(result_with_mark);
+
+      // SET PROMO CODE IN FORM
+      $('input[name="promo_code"]').val(extendPromoCode);
     }
   }
   else {
@@ -287,9 +294,11 @@ Promise.all([
  
   promo_form.addEventListener('submit', async function(event) {
     event.preventDefault();
-    discount_amount = await fetch_promo(); 
+    if(!extend_order) {
+      discount_amount = await fetch_promo(); 
 
-    getResult()
+      getResult()
+    }
   });
 
 });

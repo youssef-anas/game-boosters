@@ -87,6 +87,7 @@ if(extend_order) {
   // Solo Or Duo Boosting Change
   if (valuesToSetAdditional[0]) {
     duoBoosting.checked = true;
+    total_Percentage += percentege.duoBoosting;
     $('input#duoBoosting').val(true)
   } else {
     soloBoosting.checked = true;
@@ -99,18 +100,22 @@ if(extend_order) {
   extraOptions.forEach(function (checkbox, index) {
     if (checkbox.value === "selectBooster" && valuesToSetAdditional[1]) {
       checkbox.checked = true
+      total_Percentage += percentege[checkbox.value];
       $(`input#${checkbox.value}`).val(true)
 
     } else if (checkbox.value === "turboBoost" && valuesToSetAdditional[2]) {
       checkbox.checked = true
+      total_Percentage += percentege[checkbox.value];
       $(`input#${checkbox.value}`).val(true)
 
     } else if (checkbox.value === "streaming" && valuesToSetAdditional[3]) {
       checkbox.checked = true
+      total_Percentage += percentege[checkbox.value];
       $(`input#${checkbox.value}`).val(true)
 
     } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
       checkbox.checked = true
+      total_Percentage += percentege[checkbox.value];
       $(`input#${checkbox.value}`).val(true)
 
     } else {
@@ -150,7 +155,7 @@ if(extend_order) {
       price += price * total_Percentage;
     
       // Apply promo code 
-      price -= price * (discount_amount / 100 )
+      price -= price * (discountAmount / 100 )
     
       price = parseFloat(price.toFixed(2));
     
@@ -177,6 +182,9 @@ if(extend_order) {
       $('#arena-form input[name="desired_RP"]').val(desired2vs2ArenaValue);
       $('#arena-form input[name="server"]').val(server);
       $('#arena-form input[name="price"]').val(price);
+
+      // SET PROMO CODE IN FORM
+      $('#arena-form input[name="promo_code"]').val(extendPromoCode);
       
     }
   } else {
@@ -208,7 +216,7 @@ if(extend_order) {
       price += price * total_Percentage;
     
       // Apply promo code 
-      price -= price * (discount_amount / 100 )
+      price -= price * (discountAmount / 100 )
     
       price = parseFloat(price.toFixed(2));
     
@@ -235,10 +243,12 @@ if(extend_order) {
       $('#arena-form input[name="desired_RP"]').val(desired3vs3ArenaValue);
       $('#arena-form input[name="server"]').val(server);
       $('#arena-form input[name="price"]').val(price);
+
+      // SET PROMO CODE IN FORM
+      $('#arena-form input[name="promo_code"]').val(extendPromoCode);
       
     }
   }
-
 
 } else {
 
@@ -457,8 +467,11 @@ extraOptions.forEach(function (checkbox, index) {
 });
 
 promo_form.addEventListener('submit', async function(event) {
-  event.preventDefault();
-  discount_amount = await fetch_promo(); 
-  get2vs2ArenaPrice(); 
-  get3vs3ArenaPrice();
+  event.preventDefault();  
+  if(!extend_order) {
+    discount_amount = await fetch_promo(); 
+
+    get2vs2ArenaPrice(); 
+    get3vs3ArenaPrice();
+  }
 });

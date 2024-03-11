@@ -101,8 +101,7 @@ class Overwatch2DivisionOrder(models.Model):
             print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
     def save_with_processing(self, *args, **kwargs):
-        # self.order.game_id = 12
-        # self.order.game_name = 'overwatch2'
+        self.order.game_id = 12
         self.order.game_type = 'D'
         self.order.details = self.get_details()
         # 
@@ -121,7 +120,12 @@ class Overwatch2DivisionOrder(models.Model):
     
     
     def get_rank_value(self, *args, **kwargs):
-        return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming}"
+        promo_code = f'{None},{None}'
+
+        if self.order.promo_code != None:
+            promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+        return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
 
     def get_order_price(self):
         return {"booster_price":20, 'percent_for_view':30}

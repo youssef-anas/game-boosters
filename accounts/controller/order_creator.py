@@ -34,16 +34,14 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
         
         select_champion = bool(int(invoice_values[16]))
 
-        promo_code = str(invoice_values[17])
+        promo_code = int(invoice_values[17])
         role = int(invoice_values[18])
         ranked_type = int(invoice_values[19])   
         is_arena_2vs2 = bool(int(invoice_values[20]))
+
+        if promo_code == 0:
+            promo_code = None
         
-        try:
-            promo_obj = PromoCode.objects.get(name = promo_code)
-            promo_code_amount = promo_obj.discount_amount
-        except:
-            promo_code_amount = 0
         try:
             booster = BaseUser.objects.get(id=booster_id, is_booster =True)
         except BaseUser.DoesNotExist:
@@ -84,7 +82,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             extend_order = None
 
         if status == 'New' or status == 'Continue':
-            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code= promo_code_amount)
+            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code)
             # Here I Make This Condition Because it Make Error in Placement
             if type == 'D' or type == 'A':
                 default_fields = {

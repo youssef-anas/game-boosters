@@ -2,11 +2,9 @@ from django.shortcuts import get_object_or_404
 from wildRift.models import *
 import json
 from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
 from django.utils import timezone
 from accounts.models import PromoCode
-
-User = get_user_model()
+from booster.models import Booster
 
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
@@ -28,6 +26,7 @@ def get_order_result_by_rank(data,extend_order_id):
     
     server = data['server']
     promo_code = data['promo_code']
+    promo_code_id = 0
 
     duo_boosting_value = 0
     select_booster_value = 0
@@ -60,13 +59,14 @@ def get_order_result_by_rank(data,extend_order_id):
 
     if select_champion:
         total_percent += 0.0
-        boost_options.append('BOOSTER Champions')
+        boost_options.append('BOOSTER CHAMPIONS')
         select_champion_value = 1
 
-    if promo_code != 'null':   
+    if promo_code != 'null': 
         try:
-            promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+            promo_code_obj = PromoCode.objects.get(code=promo_code)
             promo_code_amount = promo_code_obj.discount_amount
+            promo_code_id = promo_code_obj.pk
         except PromoCode.DoesNotExist:
             promo_code_amount = 0
     
@@ -90,29 +90,26 @@ def get_order_result_by_rank(data,extend_order_id):
     price += (price * total_percent)
     price -= price * (promo_code_amount/100)
     price = round(price, 2)
+
     if extend_order_id > 0:
         try:
             # get extend order 
             extend_order = BaseOrder.objects.get(id=extend_order_id)
             extend_order_price = extend_order.price
-            price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
+            price = round(price - extend_order_price, 2)
         except: ####
             pass
+
     booster_id = data['choose_booster']
     if booster_id > 0 :
-       get_object_or_404(User,id=booster_id,is_booster=True) # TODO add is_wr_player here pls
+        get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_wf_player=True) # TODO add is_wr_player here pls 
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
+    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
 
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
-
-    
-
-
-

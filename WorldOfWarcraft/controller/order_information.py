@@ -1,14 +1,11 @@
 from django.shortcuts import get_object_or_404
 import json
 from django.utils import timezone
-from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, BaseOrder
-from django.contrib.auth import get_user_model
+from WorldOfWarcraft.models import  BaseOrder
 from accounts.models import PromoCode
-import json
+from booster.models import Booster
 
-User = get_user_model()
 rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
-
 
 def get_arena_order_result_by_rank(data,extend_order_id):
   # Prices
@@ -39,7 +36,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
-
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -77,8 +74,9 @@ def get_arena_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
       
@@ -101,12 +99,11 @@ def get_arena_order_result_by_rank(data,extend_order_id):
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_wow_player=True)
   else:
     booster_id = 0
 
-  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code}-0-0-{is_arena_2vs2_value}'
-  print('Invoice', invoice)
+  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-{is_arena_2vs2_value}-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

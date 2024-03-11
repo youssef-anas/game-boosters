@@ -1,11 +1,10 @@
 from django.shortcuts import get_object_or_404
+from wildRift.models import *
 import json
-from valorant.models import *
-from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
-
-User = get_user_model()
+from booster.models import Booster
 
 division_names = ['','I','II','III']  
 rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ASCENDANT', 'IMMORTAL']
@@ -29,6 +28,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -66,20 +66,21 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
   # Read data from JSON file
   with open('static/valorant/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    division_price = json.load(file)
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
   ##
   with open('static/valorant/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
+    marks_data = json.load(file)
+    marks_data.insert(0,[0,0,0,0,0,0])
   ##    
   start_division = ((current_rank-1) * 3) + current_division
   end_division = ((desired_rank-1) * 3)+ desired_division
@@ -95,18 +96,17 @@ def get_division_order_result_by_rank(data,extend_order_id):
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_valo_player=True)
   else:
     booster_id = 0
 
-  invoice = f'valo-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
-  print('Invoice', invoice)
+  invoice = f'valo-2-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
@@ -128,6 +128,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -165,8 +166,9 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -184,18 +186,17 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_valo_player=True)
   else:
     booster_id = 0
 
-  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0-0'
-  print('Invoice', invoice)
+  invoice = f'valo-2-P-{last_rank}-{number_of_match}-none-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

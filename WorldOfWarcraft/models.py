@@ -122,7 +122,12 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     return f"Boosting From {self.current_division} RP To {self.desired_division}"
 
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank},{self.current_division},0,{self.desired_rank},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},0,{self.order.customer_server},{self.is_arena_2vs2}"
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+    return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{self.is_arena_2vs2}"
   
   def get_order_price(self):
     percent_for_view = 0

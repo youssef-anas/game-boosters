@@ -136,7 +136,12 @@ class WildRiftDivisionOrder(models.Model):
     
     
     def get_rank_value(self, *args, **kwargs):
-        return f"{self.current_rank.id},{self.current_division},{self.current_marks},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server}"
+        promo_code = f'{None},{None}'
+
+        if self.order.promo_code != None:
+            promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+        return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
     
 
     def get_order_price(self):
