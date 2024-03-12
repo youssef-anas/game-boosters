@@ -8,7 +8,7 @@ from hearthstone.models import HearthstoneDivisionOrder
 from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
-from overwatch2.models import Overwatch2DivisionOrder
+from overwatch2.models import Overwatch2DivisionOrder, Overwatch2PlacementOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
@@ -111,6 +111,16 @@ def check_mobleg_type(type) -> Model:
         raise ValueError(f"Invalid Mobile Legends game type: {type}")
     return Game
 
+def check_overwatch2_type(type) -> Model:
+    OVERWATCH2_MODELS = {
+        'D': Overwatch2DivisionOrder,
+        'P': Overwatch2PlacementOrder
+    }
+    Game = OVERWATCH2_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Overwatch2 game type: {type}")
+    return Game
+
 def get_game(id, type) -> Model:
     GAME_MODELS = {
         1: check_wl_type,
@@ -124,7 +134,7 @@ def get_game(id, type) -> Model:
         9: check_rl_type,
         10: 'dota2',
         11: check_hok_type,
-        12: Overwatch2DivisionOrder,
+        12: check_overwatch2_type,
         13: 'csgo2',
     }
     Game = GAME_MODELS.get(id, None)

@@ -2,6 +2,13 @@ from django.db import models
 from accounts.models import BaseOrder
 from accounts.templatetags.custom_filters import romanize_division
 import requests
+import json
+
+def get_choices_string(number, CHOICES):
+    for value, string in CHOICES:
+        if value == number:
+            return string
+    return None 
 
 
 class Overwatch2Rank(models.Model):
@@ -82,8 +89,8 @@ class Overwatch2DivisionOrder(models.Model):
             "title": "Overwatch 2",
             "description": (
                 f"**Order ID:** {self.order.name}\n"
-                f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-                f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} server us" # change server next
+                f" From {str(self.current_rank).upper()} {get_choices_string(self.current_division, self.DIVISION_CHOICES)} Marks {get_choices_string(self.current_marks, self.MARKS_CHOISES)} "
+                f" To {str(self.desired_rank).upper()} {get_choices_string(self.desired_division, self.DIVISION_CHOICES)} server {self.order.customer_server}"
             ),
             "color": 0xC0C0C0,  
             "footer": {"text": f"{current_time}"}, 
@@ -101,7 +108,6 @@ class Overwatch2DivisionOrder(models.Model):
             print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
     def save_with_processing(self, *args, **kwargs):
-        self.order.game_id = 12
         self.order.game_type = 'D'
         self.order.details = self.get_details()
         # 
@@ -110,10 +116,10 @@ class Overwatch2DivisionOrder(models.Model):
         self.order.update_actual_price()
         self.order.save()
         super().save(*args, **kwargs)
-        # self.send_discord_notification()
+        self.send_discord_notification()
     
     def get_details(self):
-        return f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}"
+        return f"From {str(self.current_rank).upper()} {get_choices_string(self.current_division, self.DIVISION_CHOICES)} Progress {get_choices_string(self.current_marks, self.MARKS_CHOISES)} To {str(self.desired_rank).upper()} {get_choices_string(self.desired_division, self.DIVISION_CHOICES)}"
 
     def __str__(self):
         return self.get_details()
@@ -126,9 +132,87 @@ class Overwatch2DivisionOrder(models.Model):
             promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
 
         return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
-
+    
     def get_order_price(self):
-        return {"booster_price":20, 'percent_for_view':30}
+        # Read data from JSON file
+        with open('static/overwatch2/data/divisions_data.json', 'r') as file:
+            division_price = json.load(file)
+            flattened_data = [item for sublist in division_price for item in sublist]
+            flattened_data.insert(0,0)
+        ##
+        with open('static/overwatch2/data/marks_data.json', 'r') as file:
+            marks_data = json.load(file)
+            marks_data.insert(0,[0,0,0,0,0,0,0])
+        ##   
+        try:    
+            promo_code_amount = self.order.promo_code.discount_amount
+        except:
+            promo_code_amount = 0
+
+        current_rank = self.current_rank.id
+        reached_rank = self.reached_rank.id
+
+        current_division = self.current_division
+        reached_division = self.reached_division
+
+        current_marks = self.current_marks-1
+        reached_marks = self.reached_marks-1
+
+        total_percent = 0
+
+        if self.order.duo_boosting:
+            total_percent += 0.65
+
+        if self.order.select_booster:
+            total_percent += 0.10
+
+        if self.order.turbo_boost:
+            total_percent += 0.20
+
+        if self.order.streaming:
+            total_percent += 0.15
+
+        if self.role in [1, 2]:
+            role = 0
+        elif self.role == 3:
+            role = .12
+            total_percent += role
+        else:
+            role = 0
+
+
+        start_division = ((current_rank-1)*5) + current_division
+        end_division = ((reached_rank-1)*5)+ reached_division
+        marks_price = marks_data[current_rank][current_marks]
+
+        marks_price_reached = marks_data[reached_rank][reached_marks]
+
+        sublist = flattened_data[start_division:end_division]
+
+        total_sum = sum(sublist)    
+
+        custom_price = total_sum - marks_price + marks_price_reached
+        
+        custom_price += (custom_price * total_percent)
+        custom_price -= custom_price * (promo_code_amount/100)
+        ##############################################################
+
+        actual_price = self.order.actual_price
+        main_price = self.order.price
+
+        percent = round(actual_price / (main_price/100))
+
+        booster_price = round(custom_price * (percent/100), 2)
+        percent_for_view = round((booster_price/actual_price)* 100)
+        print('percent', percent)
+
+        # if percent_for_view > 100:
+        #     percent_for_view = 100
+
+        # if booster_price > actual_price:
+        #     booster_price = actual_price
+
+        return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
 
 class Overwatch2Placement(models.Model):
   rank_name = models.CharField(max_length=25)

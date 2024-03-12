@@ -344,7 +344,7 @@
 
                     <div class="choose">
                       <label class="switch" for="booster-agents">
-                        <input type="checkbox" id="booster-agents" name="extra-checkbox" value="boosterAgents">
+                        <input type="checkbox" id="booster-agents" name="extra-checkbox" value="selectChampion">
                           <span class="slider round"></span>
                       </label>
                     </div>
@@ -411,6 +411,7 @@
               </div>
               <!-- Division Form -->
               <form method="post" id="division-boost-form" class="division-boost purchaseForm">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="12">
                 <input type="hidden" name="game_type" value="D">
                 <!-- Division -->
@@ -423,7 +424,7 @@
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="booster_agents" id="boosterAgents" value=false>
+                <input type="hidden" name="select_champion" id="selectChampion" value=false>
                 <input type="hidden" name="streaming" id="streaming" value=false>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
@@ -443,6 +444,7 @@
 
               <!-- Placement Form -->
               <form method="post" id="placements-boost-form" class="placements-boost purchaseForm">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="12">
                 <input type="hidden" name="game_type" value="P">
                 <!-- Placement -->

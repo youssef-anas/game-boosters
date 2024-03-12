@@ -65,7 +65,6 @@ def get_division_order_result_by_rank(data,extend_order_id):
       boost_options.append('SELECT CHAMPION')
       select_champion_value = 1
 
-
     if role_data in [1, 2]:
       role = 0
     elif role_data == 3:
@@ -120,6 +119,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     else:
       booster_id = 0
     #####################################
+    marks+=1
       
     invoice = f'OVW2-12-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role_data}-0-0-{timezone.now()}'
 

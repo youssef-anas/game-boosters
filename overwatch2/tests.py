@@ -42,6 +42,12 @@ class SetUp(TestCase):
 
     Overwatch2Mark(rank_id = 5, mark_1 = 10, mark_2 = 13, mark_3 = 17, mark_4 = 19, mark_5 = 20),
 
+    Overwatch2Mark(rank_id = 6, mark_1 = 10, mark_2 = 13, mark_3 = 17, mark_4 = 19, mark_5 = 20),
+
+    Overwatch2Mark(rank_id = 7, mark_1 = 10, mark_2 = 13, mark_3 = 17, mark_4 = 19, mark_5 = 20),
+
+    Overwatch2Mark(rank_id = 8, mark_1 = 10, mark_2 = 13, mark_3 = 17, mark_4 = 19, mark_5 = 20),
+
   ]
 
   placements = [

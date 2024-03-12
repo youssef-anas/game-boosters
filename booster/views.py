@@ -249,18 +249,6 @@ def ask_customer(request):
             return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
 
-
-# def get_latest_price(request):
-#     order_id = request.GET.get('order_id')
-#     order = BaseOrder.objects.get(id=order_id)
-
-#     if order:
-#         time_difference = order.update_actual_price()
-#         order.save()
-#         latest_price = order.actual_price
-#         return JsonResponse({'actual_price': latest_price, 'time_difference':time_difference})
-#     else:
-#         return JsonResponse({'error': 'Order not found'}, status=404)
     
 def upload_finish_image(request):
     if request.method == 'POST':
@@ -286,20 +274,26 @@ def drop_order(request):
             order = content_type.model_class().objects.get(order_id=base_order.object_id)
             base_order.is_drop = True
             base_order.is_done = True
-            invoice = order.order.invoice.split('-')
-            print('Old Invoice: ', invoice)
+            invoice = order.order.invoice.split('-')            
+            print('old invoice:', '-'.join(invoice))
+
+
             invoice[3]= str(order.reached_rank.id) 
             invoice[4]= str(order.reached_division)
             invoice[5]= str(order.reached_marks)
 
+            customer_price = order.get_order_price()
+            invoice[15]= str(customer_price['main_price'])
+            percent = customer_price['percent']
+
+
             new_invoice = '-'.join(invoice)
             print('New Invoice: ', new_invoice)
+            
             payer_id = order.order.payer_id
             customer = order.order.customer
             
-            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name)
-
-            new_order.order.actual_price = order.order.actual_price-order.order.money_owed
+            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name, extra = percent)
             new_order.order.customer_gamename = order.order.customer_gamename
             new_order.order.customer_password = order.order.customer_password
             new_order.order.customer_server = order.order.customer_server

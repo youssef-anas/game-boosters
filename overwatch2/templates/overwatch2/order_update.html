@@ -1,6 +1,6 @@
 <div class="updata-now">
   <h5 class="my-4">Now Rank</h5>
-  <form action="{% url 'order.update.rating' %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
     {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
     <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
@@ -8,33 +8,34 @@
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank_overwatch2">
-        {% for rank in wildrift_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+        <option value="1" data-mark="5" {% if order.order.reached_rank.id == 1 %}selected{% endif %}>bronze</option>
+        <option value="2" data-mark="5" {% if order.order.reached_rank.id == 2 %}selected{% endif %}>silver</option>
+        <option value="3" data-mark="5" {% if order.order.reached_rank.id == 3 %}selected{% endif %}>gold</option>
+        <option value="4" data-mark="5" {% if order.order.reached_rank.id == 4 %}selected{% endif %}>platinum</option>
+        <option value="5" data-mark="5" {% if order.order.reached_rank.id == 5 %}selected{% endif %}>diamond</option>
+        <option value="6" data-mark="5" {% if order.order.reached_rank.id == 6 %}selected{% endif %}>master</option>
+        <option value="7" data-mark="5" {% if order.order.reached_rank.id == 7 %}selected{% endif %}>grand master</option>
+        <option value="8" data-mark="5" {% if order.order.reached_rank.id == 8 %}selected{% endif %}>champion</option>
       </select>
     </div>
 
     <div class="input-group mb-3">
       <select class="form-select custom-select" required name="reached_division" id="reached_division_overwatch2">
         <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>V</option>
-        <option value="1" {% if order.order.reached_division == 2 %}selected{% endif %}>IV</option>
-        <option value="2" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
-        <option value="3" {% if order.order.reached_division == 4 %}selected{% endif %}>II</option>
-        <option value="4" {% if order.order.reached_division == 5 %}selected{% endif %}>I</option>
+        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>IV</option>
+        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
+        <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>II</option>
+        <option value="5" {% if order.order.reached_division == 5 %}selected{% endif %}>I</option>
       </select>
     </div>
 
     <div class="input-group mb-3">
       <select class="form-select custom-select" required name="reached_marks" id="reached_marks_overwatch2">
-        <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 Mark</option>
-        <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>1 Marks</option>
-        <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>2 Marks</option>
-        <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>3 Marks</option>
-        <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>4 Marks</option>
-        <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>5 Marks</option>
-        <option value="6" {% if order.order.reached_marks == 6 %}selected{% endif %}>6 Marks</option>
+        <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>0-19 %</option>
+        <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>20-39 %</option>
+        <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>40-59 %</option>
+        <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>60-79 %</option>
+        <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>80-99 %</option>
       </select>
     </div>
 
@@ -43,3 +44,32 @@
     </div>
   </form>
 </div>
+
+<script>
+
+
+  const ranks = document.getElementById('reached_rank_overwatch2')
+  const divisions = document.getElementById('reached_division_overwatch2')
+  const marks = document.getElementById('reached_marks_overwatch2')
+
+  function set_marks(){
+    const selectedRank = parseInt(ranks.value);
+    const selectedDivision = parseInt(divisions.value);
+    console.log(selectedDivision)
+    if (selectedRank === 8 && selectedDivision === 5) {
+      marks.style.display = 'none'; 
+      marks.selectedIndex = 0;
+    } else {
+      marks.style.display = 'block';
+    }
+  }
+  ranks.addEventListener('change',function(){
+    set_marks()
+  })
+  divisions.addEventListener('change',function(){
+    set_marks()
+  })
+  set_marks()
+
+
+</script>

@@ -49,61 +49,83 @@ function admins_scrollToBottom() {
 admins_scrollToBottom();
 
 const admins_roomName = JSON.parse(document.getElementById('admins_chat_slug').textContent);
-const adminsChatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + admins_roomName + "/");
+let adminsChatSocket = null;
+let reconnectInterval = null;
+let refreshPage = false
 
-adminsChatSocket.onopen = function (e) {
-    console.log("The connection was setup successfully adminsChatSocket!");
-};
-adminsChatSocket.onclose = function (e) {
-    console.log("Something unexpected happened adminsChatSocket!");
-};
-
-document.querySelector("#admins_my_input").focus();
-document.querySelector("#admin_chat_form").addEventListener("submit", function (e) {
-    e.preventDefault();
-});
-document.querySelector("#admins_my_input").onkeyup = function (e) {
-    if (e.keyCode == 13) {
+function connectAdminsChatSocket() {
+    if (reconnectInterval != null){
+        console.warn("retry connection")
+    }
+    adminsChatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + admins_roomName + "/");
+    adminsChatSocket.onopen = function (e) {
+        console.log("The connection was set up successfully for adminsChatSocket!");
+        clearInterval(reconnectInterval);
+        reconnectInterval = null;
+        if (refreshPage){
+            window.location.reload();
+        }
+    };
+    adminsChatSocket.onclose = function (e) {
+        console.log("The connection was unexpectedly closed for adminsChatSocket!");
+        if (!reconnectInterval) {
+            refreshPage = true
+            reconnectInterval = setInterval(connectAdminsChatSocket, 5000); 
+        }
+    };
+    document.querySelector("#admins_my_input").focus();
+    document.querySelector("#admin_chat_form").addEventListener("submit", function (e) {
         e.preventDefault();
-        document.querySelector("#admins_submit_button").click();
-    }
-};
-document.querySelector("#admins_submit_button").onclick = function (e) {
-    var admins_messageInput = document.querySelector(
-        "#admins_my_input"
-    ).value;
+    });
+    document.querySelector("#admins_my_input").onkeyup = function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            document.querySelector("#admins_submit_button").click();
+        }
+    };
+    document.querySelector("#admins_submit_button").onclick = function (e) {
+        var admins_messageInput = document.querySelector(
+            "#admins_my_input"
+        ).value;
 
-    if (admins_messageInput.length == 0) {
-        alert("Add some Input First Or Press Send Button! adminsChatSocket")
-    }
-    else {
-        adminsChatSocket.send(JSON.stringify({ message: admins_messageInput, username: user, room_name: admin_room }));
-    }
+        if (admins_messageInput.length == 0) {
+            alert("Add some Input First Or Press Send Button! adminsChatSocket")
+        }
+        else {
+            adminsChatSocket.send(JSON.stringify({ message: admins_messageInput, username: user, room_name: admin_room }));
+        }
 
-};
+    };
+    adminsChatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        $('.noMessageAdmin').html('');
+        var div = document.createElement("div");
+        console.log(e.data);
+        div.innerHTML = `
+        <div class="message p-3 rounded-3 ">
+            <p class="content mb-1">${data.message}</p>
+            <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+        </div>
+        `
+        // Add class based on user authentication
+        if (data.username === user) {
+            div.classList.add("admins_chat_message", "userMessage");
+        } else {
+            div.classList.add("admins_chat_message", "otherMessage");
+        }
+    
+        document.querySelector("#admins_my_input").value = "";
+        document.querySelector("#admins_chatbox").appendChild(div);
+        admins_scrollToBottom();
+    };
+    
+}
 
-adminsChatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-    $('.noMessageAdmin').html('');
-    var div = document.createElement("div");
-    console.log(e.data);
-    div.innerHTML = `
-    <div class="message p-3 rounded-3 ">
-        <p class="content mb-1">${data.message}</p>
-        <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
-    </div>
-    `
-    // Add class based on user authentication
-    if (data.username === user) {
-        div.classList.add("admins_chat_message", "userMessage");
-    } else {
-        div.classList.add("admins_chat_message", "otherMessage");
-    }
+connectAdminsChatSocket();
 
-    document.querySelector("#admins_my_input").value = "";
-    document.querySelector("#admins_chatbox").appendChild(div);
-    admins_scrollToBottom();
-};
+
+
+
 
 // ################ Booster Chat 
 const chatbox = document.querySelector(".chat-customer-container");
