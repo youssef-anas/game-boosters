@@ -78,7 +78,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 extend_order_game_reached_division = extend_order_game.reached_division
                 extend_order_game_reached_marks = extend_order_game.reached_marks  
 
-                if game_id == 12 :
+                if game_id == 12 or game_id == 10 :
                     extend_order_role = extend_order_game.role
                      
 
@@ -86,6 +86,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             extend_order = None
 
         if status == 'New' or status == 'Continue':
+            actual_price = 0
             if status == 'Continue':
                 actual_price = round(price * (extra / 100),2)
             baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code, actual_price=actual_price)

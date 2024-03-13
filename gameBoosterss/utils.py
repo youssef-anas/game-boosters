@@ -95,8 +95,7 @@ def check_hearthstone_type(type) -> Model:
 
 def check_hok_type(type) -> Model:
     HOK_MODELS = {
-        'D': Dota2RankBoostOrder,
-        'P': Dota2PlacementOrder
+        'D': HonorOfKingsDivisionOrder,
     }
     Game = HOK_MODELS.get(type, None)
     if not Game:
@@ -105,11 +104,12 @@ def check_hok_type(type) -> Model:
 
 def check_dota2_type(type) -> Model:
     DOTA2_MODELS = {
-        'A': HonorOfKingsDivisionOrder,
+        'A': Dota2RankBoostOrder,
+        'P': Dota2PlacementOrder
     }
     Game = DOTA2_MODELS.get(type, None)
     if not Game:
-        raise ValueError(f"Invalid Honor Of Kings game type: {type}")
+        raise ValueError(f"Invalid Dota2 game type: {type}")
     return Game
 
 def check_mobleg_type(type) -> Model:

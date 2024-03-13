@@ -164,31 +164,40 @@ if(extend_order) {
   currentMmr.prop('disabled', true)
 
   function getDivisionPrice() {
-    const MMR_PRICE = getPrice(valuesToSet[4], desiredMmrValue)
+    const MMR_PRICE = getPrice(valuesToSet[1], valuesToSet[4])
+    console.log("MMR_Price: ", MMR_PRICE)
+
     // Price
     let price = ((desiredMmrValue - valuesToSet[4]) * (MMR_PRICE / MIN_DESIRED_VALUE));
-
+    console.log("Price 1: ", (desiredMmrValue - valuesToSet[4]))
+    console.log("Price 2: ", price)
     // Apply role extra value
     const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[roleValue]
 
     // Apply extra charges to the result
     price += price * total_Percentage_with_role_result;
+    console.log("Price 3: ", price)
+
   
     // Apply promo code 
     price -= price * (discountAmount / 100 )
+    console.log("Price 4: ", price)
   
     price = parseFloat(price.toFixed(2));
+    console.log("Price 5: ", price)
   
     // Current
     $('#current .current-rp').html(currentMmrValue);
-    $('.current-rank-selected-img:not(.checkout-img)').attr('src', RANKS_IMAGES[getRank(currentMmrValue)[1]]);
-    $('.current-rank-selected-img.checkout-img').attr('src', RANKS_IMAGES[getRank(valuesToSet[4])[1]])
+
+    $('.current-selected-img:not(.checkout-img)').attr('src', RANKS_IMAGES[getRank(currentMmrValue)[1]]);
+    $('.current-selected-img.checkout-img').attr('src', RANKS_IMAGES[getRank(valuesToSet[4])[1]])
+
     $('.current').removeClass().addClass(`current ${getRank(currentMmrValue)[0]}`);
     $('.current-selected-info').html(`${valuesToSet[4]} MMR`)
   
     // Desired
     $('#desired .desired-rp').html(desiredMmrValue);
-    $('.desired-selected-img').attr('src', RANKS_IMAGES[desiredRank]);
+    $('.desired-selected-img').attr('src', RANKS_IMAGES[getRank(desiredMmrValue)[1]]);
     $('.desired').removeClass().addClass(`desired ${desiredRank}`);
     $('.desired-selected-info').html(`${desiredMmrValue} MMR`)
   
@@ -205,7 +214,7 @@ if(extend_order) {
     $('.division-boost input[name="price"]').val(price);
 
     // SET PROMO CODE IN FORM
-    $('#division-boost input[name="promo_code"]').val(extendPromoCode);
+    $('.division-boost input[name="promo_code"]').val(extendPromoCode);
     
   }
 

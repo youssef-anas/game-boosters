@@ -151,9 +151,6 @@ class RocketLeagueDivisionOrder(models.Model):
     current_division = self.current_division
     reached_division = self.reached_division
 
-    current_marks = self.current_marks
-    reached_marks = self.reached_marks
-
     total_percent = 0
 
     if self.order.duo_boosting:
@@ -201,7 +198,7 @@ class RocketLeagueDivisionOrder(models.Model):
       booster_price = actual_price
 
 
-    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
 
 class RocketLeaguePlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_placement_order')

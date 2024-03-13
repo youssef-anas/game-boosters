@@ -223,4 +223,4 @@ class WildRiftDivisionOrder(models.Model):
             booster_price = actual_price
 
 
-        return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
+        return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

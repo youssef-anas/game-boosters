@@ -81,7 +81,7 @@
             {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
 
-            {% elif order.order.game.link == 'wow' %}
+            {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
             <p class="my-3 text-uppercase col-4 px-0">{{ order.reached_division }} MMR</p>
 
             {% endif %}
@@ -104,7 +104,7 @@
             {% elif order.order.game.link == 'hok' %}
             <p class="my-3 text-uppercase col-4 px-0">{{order.desired_rank}} {{ order.desired_division|five_romanize_division }}</p>
 
-            {% elif order.order.game.link == 'wow' %}
+            {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
             <p class="my-3 text-uppercase col-4 px-0">{{ order.desired_division }} MMR</p>
             {% endif %}
           </div>

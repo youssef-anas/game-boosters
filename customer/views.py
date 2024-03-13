@@ -164,8 +164,8 @@ def tip_booster(request):
                 "item_name": f"tip {booster}",
                 "invoice": invoice,
                 "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                "return": request.build_absolute_uri(f"/accounts/tip_booster/success/{token_with_data}/"),
-                "cancel_return": request.build_absolute_uri(f"/accounts/tip_booster/cancel/{token_with_data}/{order_id}"),
+                "return": request.build_absolute_uri(f"/customer/tip_booster/success/{token_with_data}/"),
+                "cancel_return": request.build_absolute_uri(f"/customer/tip_booster/cancel/{token_with_data}/{order_id}"),
             }
             # Create the instance.
             form = PayPalPaymentsForm(initial=paypal_dict)
