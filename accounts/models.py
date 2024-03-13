@@ -162,8 +162,16 @@ class BaseOrder(models.Model):
     related_order = GenericForeignKey('content_type', 'object_id')
 
     def update_actual_price(self):
-        if self.status == 'Continue' or self.status == 'Extend':
+        if self.status == 'Continue':
             return {'time':-1,'price':self.actual_price,'progress':5}
+        
+        elif self.status == 'Extend':
+            # get the percent of booster that user take old order on it
+            # actual_price will be the old price and new price with percent
+            # we can make this process in order_creator file
+            return {'time':-1,'price':self.actual_price,'progress':5}
+
+
         current_time = timezone.now()
         
         # TODO make this numbers in json file to stop calling db every time

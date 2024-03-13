@@ -64,7 +64,7 @@ Promise.all([
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
         total_Percentage += percentege[checkbox.value];
-      } else if (checkbox.value === "boosterChampions" && valuesToSetAdditional[4]) {
+      } else if (checkbox.value === "selectChampion" && valuesToSetAdditional[4]) {
         checkbox.checked = true
         $(`input#${checkbox.value}`).val(true)
         total_Percentage += percentege[checkbox.value];
@@ -151,13 +151,10 @@ Promise.all([
       } catch (error) {
         
       }
-      // const role_index = getSelectedValueForDropList(role_selected);
-      // console.log(role_index)
-      
+            
       const startRank = ((current_rank - 1) * 5) + current_division;
       const endRank = ((desired_rank - 1) * 5) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-      console.log(startRank,endRank, slicedArray , number_of_mark)
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result
   
@@ -174,19 +171,15 @@ Promise.all([
       result_with_mark -= result_with_mark * (discount_amount/100 )
 
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
-
-      const oldDeiredElement = Array.from(radioButtonsCurrent).find(radio => (radio.getAttribute('data-name')).toLowerCase() === (divisionRanks[valuesToSet[3]]).toLowerCase());
-
+''
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       const currentElement = getSelectedElement(radioButtonsCurrent)
       const desiredElement = getSelectedElement(radioButtonsDesired)
 
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-      $('.division-boost .current-rank-selected-img:not(.checkout-img)').attr('src', $(currentElement).data('img'))
-      $('.division-boost .current-rank-selected-img.checkout-img').attr('src', $(oldDeiredElement).data('img'))
 
+      $('.division-boost .current-rank-selected-img').attr('src', $(currentElement).data('img'))
       $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
-
 
       $('.division-boost .current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark_index == 0 ? '0-19 %' : mark_index == 1 ? '20-39 %' : mark_index == 2 ? '40-59 %' : mark_index == 3 ? '60-79 %' : mark_index == 4 ? '80-99 %' : ''}`);
       $('.division-boost .desired-selected-info').html(`${desired_rank_name} ${desired_division_name}`)
@@ -343,7 +336,6 @@ Promise.all([
 
   // Server Changes
   placement_server_select_element.on("change", function() {
-    console.log($(this).val())
     selectedPlacementServer = $(this).val();
     getPlacementPrice();
   });
@@ -372,7 +364,10 @@ Promise.all([
   extraOptions.forEach(function (checkbox, index) {
     checkbox.addEventListener('change', function () {
       if (this.checked) {
+        console.log(this.value)
+        console.log(percentege[this.value])
         total_Percentage += percentege[this.value];
+        
         $(`input#${this.value}`).val(true)
       } else {
         total_Percentage -= percentege[this.value];

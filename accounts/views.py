@@ -3,7 +3,6 @@ from django.urls import reverse, reverse_lazy
 from customer.forms import Registeration
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
-from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib.auth import login
 from accounts.models import BaseUser, PromoCode

@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
 
-def create_order(invoice, payer_id, customer, status='New', name = None):
+def create_order(invoice, payer_id, customer, status='New', name = None, extra = 0):
     try :
         invoice_values = invoice.split('-')
         game_id = int(invoice_values[1])
@@ -86,7 +86,9 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             extend_order = None
 
         if status == 'New' or status == 'Continue':
-            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code)
+            if status == 'Continue':
+                actual_price = round(price * (extra / 100),2)
+            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code, actual_price=actual_price)
             # Here I Make This Condition Because it Make Error in Placement
             if type == 'D' or type == 'A':
                 default_fields = {
@@ -157,10 +159,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             if game_id == 11:
                 order = Game.objects.create(**default_fields)
             # Overwatch Division 
-            if game_id == 12 and type == 'D':
+            elif game_id == 12 and type == 'D':
+                print("iam here")
                 order = Game.objects.create(**default_fields, role=role)
+                print('iam end')
             # csgo2
-            if game_id == 13:
+            elif game_id == 13:
                 pass
 
         elif status == 'Extend':
@@ -237,10 +241,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             if game_id == 11:
                 order = Game.objects.create(**extend_fields)
             # Overwatch Division 
-            if game_id == 12 and type == 'D':
+            elif game_id == 12 and type == 'D':
                 order = Game.objects.create(**extend_fields, role= extend_order_role)
             # csgo2
-            if game_id == 13:
+            elif game_id == 13:
                 pass
         content_type = ContentType.objects.get_for_model(order)
         baseOrder.content_type = content_type

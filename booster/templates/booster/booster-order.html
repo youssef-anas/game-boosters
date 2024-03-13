@@ -286,6 +286,9 @@
 
             {% elif order.order.order.game.link == 'wow' %}
               {% include 'wow/order_update.html' %}
+
+            {% elif order.order.order.game.link == 'overwatch2' %}
+              {% include 'overwatch2/order_update.html' %}
               
             {% endif %}
 
