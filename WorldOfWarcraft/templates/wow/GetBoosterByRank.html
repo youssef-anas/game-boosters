@@ -390,6 +390,7 @@
               </div>
               <!-- Division Form -->
               <form method="post" id="arena-form" data-type="arena2vs2" class="purchaseForm">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="6">
                 <input type="hidden" name="game_type" value="A">
                 <input type="hidden" name="is_arena_2vs2" value=true>

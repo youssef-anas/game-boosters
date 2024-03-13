@@ -5,31 +5,58 @@ from django.http import JsonResponse
 from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from dota2.models import *
-from dota2.controller.serializers import RankBoostSerializer
+from dota2.controller.serializers import *
 from paypal.standard.forms import PayPalPaymentsForm
-from dota2.controller.order_information import get_rank_boost_order_result_by_rank
+from dota2.controller.order_information import *
 from accounts.models import TokenForPay
+from booster.models import OrderRating
+import json
 
 def dota2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
-  order_get_rank_value = None
-  if extend_order:
-    try:
-      order_get_rank_value = Dota2RankBoostOrder.objects.get(order_id=extend_order).get_rank_value()
-    except Dota2RankBoostOrder.DoesNotExist:
-      return redirect('homepage.index')
-  ranks = Dota2Rank.objects.all().order_by('id')    
+  try:
+    order = Dota2RankBoostOrder.objects.get(order_id=extend_order)
+  except:
+    order = None
+
+  division_row = Dota2MmrPrice.objects.all().first()
+  division_prices = [division_row.price_0_2000, division_row.price_2000_3000, division_row.price_3000_4000, division_row.price_4000_5000, division_row.price_5000_5500, division_row.price_5500_6000, division_row.price_6000_extra]
+
+
+  placement_prices = []
+  placement_rows = Dota2Placement.objects.all()
+
+  for row in placement_rows:
+    placement_prices.append(row.price)
+
+  prices_data = {
+    "division": division_prices,
+    "placement": placement_prices,
+  }
+
+  ranks_images = [rank.rank_image.url for rank in Dota2Rank.objects.all()]
+  ranks_images = json.dumps(ranks_images)
+
+  with open('static/dota2/data/prices.json', 'w') as json_file:
+    json.dump(prices_data, json_file)
+
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 10)
 
   context = {
-    "ranks": ranks,
-    "order":order_get_rank_value,
+    "order":order,
+    "feedback": feedbacks,
+    "division_price": division_prices,
+    "placement_prices": placement_prices,
+    "ranks_images": ranks_images
   }
+
   return render(request,'dota2/GetBoosterByRank.html', context)
 
 
 # Paypal
 @login_required
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -37,32 +64,49 @@ def view_that_asks_for_money(request):
         return redirect(reverse_lazy('dota2'))
     try:
       # Division
-      serializer = RankBoostSerializer(data=request.POST)
+      if request.POST.get('game_type') == 'A':
+        serializer = RankBoostSerializer(data=request.POST)
+      # Placement
+      elif request.POST.get('game_type') == 'P':
+        serializer = PlacementSerializer(data=request.POST)
+      
 
       if serializer.is_valid():
         extend_order_id = serializer.validated_data['extend_order']
-        # Arena
-        order_info = get_rank_boost_order_result_by_rank(serializer.validated_data,extend_order_id)
+        # Division
+        if request.POST.get('game_type') == 'A':
+          order_info = get_rank_boost_order_result_by_rank(serializer.validated_data,extend_order_id)
+        # Placement
+        elif request.POST.get('game_type') == 'P':
+          order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
         request.session['invoice'] = order_info['invoice']
         token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
         
         paypal_dict = {
-            "business": settings.PAYPAL_EMAIL,
-            "amount": order_info['price'],
-            "item_name": order_info['name'],
-            "invoice": order_info['invoice'],
-            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
+          "business": settings.PAYPAL_EMAIL,
+          "amount": order_info['price'],
+          "item_name": order_info['name'],
+          "invoice": order_info['invoice'],
+          "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
         }
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "dota2/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       return JsonResponse({'error': serializer.errors}, status=400)
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
+@login_required
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

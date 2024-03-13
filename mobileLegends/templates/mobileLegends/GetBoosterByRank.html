@@ -397,6 +397,7 @@
               </div>
               <!-- Division Form -->
               <form method="post" id="division-boost-form" class="division-boost purchaseForm">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="8">
                 <input type="hidden" name="game_type" value="D">
                 <!-- Division -->
@@ -428,6 +429,7 @@
 
               <!-- Placement Form -->
               <form method="post" id="placements-boost-form" class="placements-boost purchaseForm">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="8">
                 <input type="hidden" name="game_type" value="P">
                 <!-- Placement -->

@@ -61,7 +61,7 @@ def rocketLeagueGetBoosterByRank(request):
   divisions_list = list(divisions.values())
 
   # Feedbacks
-  feedbacks = OrderRating.objects.filter(order__game_name = "rocketLeague")
+  feedbacks = OrderRating.objects.filter(order__game_id = 9)
   context = {
     "ranks": ranks,
     "divisions": divisions_list,

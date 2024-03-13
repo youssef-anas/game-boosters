@@ -32,7 +32,6 @@ class ValorantMark(models.Model):
   marks_61_80 = models.FloatField(default=0)
   marks_81_100 = models.FloatField(default=0)
   
-
   def __str__(self):
     return f"{self.rank} -> Marks 0-20 : {self.marks_0_20}, Marks 21_40 : {self.marks_21_40}, Marks 41_60 : {self.marks_41_60}, Marks 61_80 : {self.marks_61_80}, Marks 81_100 : {self.marks_81_100}"
   

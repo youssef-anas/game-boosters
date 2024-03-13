@@ -301,6 +301,7 @@
                   data-cryptomus-url="{% url 'hearthstone-cryptomus-redirect' %}">
               </div>
               <form action="" method="post" id="division-boost-form" class="purchaseForm active">
+                {% csrf_token %}
                 <input type="hidden" name="game_id" value="11">
                 <input type="hidden" name="game_type" value="D">
 

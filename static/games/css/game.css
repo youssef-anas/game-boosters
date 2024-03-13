@@ -21,6 +21,10 @@
   background-image: url('./../images/hearthstone_bg.jpg');
   background-position-y: -140px;
 }
+.game-landing.dota2 {
+  background-image: url('./../images/dota2_bg.jpg');
+  background-position-y: -100px;
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

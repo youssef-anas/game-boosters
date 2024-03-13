@@ -10,6 +10,7 @@ from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacem
 from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
+from dota2.models import Dota2RankBoostOrder, Dota2PlacementOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
 from django.utils import timezone
@@ -94,9 +95,19 @@ def check_hearthstone_type(type) -> Model:
 
 def check_hok_type(type) -> Model:
     HOK_MODELS = {
-        'D': HonorOfKingsDivisionOrder,
+        'D': Dota2RankBoostOrder,
+        'P': Dota2PlacementOrder
     }
     Game = HOK_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Honor Of Kings game type: {type}")
+    return Game
+
+def check_dota2_type(type) -> Model:
+    DOTA2_MODELS = {
+        'A': HonorOfKingsDivisionOrder,
+    }
+    Game = DOTA2_MODELS.get(type, None)
     if not Game:
         raise ValueError(f"Invalid Honor Of Kings game type: {type}")
     return Game
@@ -122,7 +133,7 @@ def get_game(id, type) -> Model:
         7: check_hearthstone_type,
         8: check_mobleg_type,
         9: check_rl_type,
-        10: 'dota2',
+        10: check_dota2_type,
         11: check_hok_type,
         12: Overwatch2DivisionOrder,
         13: 'csgo2',

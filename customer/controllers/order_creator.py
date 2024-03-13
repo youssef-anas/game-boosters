@@ -18,8 +18,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             current_marks = int(invoice_values[5])
             desired_rank = int(invoice_values[6])
             desired_division = int(invoice_values[7])
+        elif type == 'P' and game_id == 10:
+            last_rank = int(invoice_values[3])
+            number_of_match = int(invoice_values[4])
         elif type == 'P':
             last_rank = int(invoice_values[3])
+            last_division = int(invoice_values[5])
             number_of_match = int(invoice_values[4])
         elif type == 'S':
             current_rank = int(invoice_values[3])
@@ -144,9 +148,11 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             # Rocket League - Tournament
             elif game_id == 9 and type == 'T':
                 order = Game.objects.create(order=baseOrder,current_league_id=current_league)
-            # TODO sara kamal Doat2          #########
-            if game_id == 10:
-                pass
+            # TODO sara kamal Dota2          #########
+            if game_id == 10 and type == 'A':
+                order = Game.objects.create(**default_fields, role=role)
+            elif game_id == 10 and type == 'P':
+                order = Game.objects.create(order=baseOrder, last_rank_id=last_rank,last_division=last_division, number_of_match=number_of_match, role=role)
             #TODO sarah mohamed Honer Of King #########
             if game_id == 11:
                 order = Game.objects.create(**default_fields)
@@ -223,8 +229,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None):
             elif game_id == 9 and type == 'T':
                 order = Game.objects.create(order=baseOrder,current_league_id=current_league)
             # TODO sara kamal Doat2      TODO       ########
-            if game_id == 10:
-                pass
+            if game_id == 10 and type == 'A':
+                order = Game.objects.create(**extend_fields, role=extend_order_role)
+            elif game_id == 10 and type == 'P':
+                order = Game.objects.create(order=baseOrder,last_rank_id=last_rank,last_division=last_division, number_of_match=number_of_match, role=extend_order_role)
             #TODO sarah mohamed Honer Of King      TODO      #########
             if game_id == 11:
                 order = Game.objects.create(**extend_fields)

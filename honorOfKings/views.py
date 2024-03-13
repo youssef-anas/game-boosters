@@ -45,6 +45,7 @@ def honerOfKingeGetBoosterByRank(request):
 
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 11)
+  
   context = {
     "ranks": ranks,
     "divisions": divisions_list,

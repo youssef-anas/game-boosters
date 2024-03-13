@@ -10,7 +10,7 @@ from paypal.standard.forms import PayPalPaymentsForm
 from mobileLegends.controller.order_information import *
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
-
+from booster.models import OrderRating
 
 
 # Create your views here.
@@ -50,11 +50,16 @@ def MobileLegendsGetBoosterByRank(request):
     json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
+  
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 8)
+
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "placements": placements,
     "order_get_rank_value":order_get_rank_value,
+    "feedbacks": feedbacks,
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 

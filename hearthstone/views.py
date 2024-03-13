@@ -44,6 +44,7 @@ def hearthstoneGetBoosterByRank(request):
 
    # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 7)
+  
   context = {
     "ranks": ranks,
     "divisions": divisions_list,

@@ -290,6 +290,7 @@
                                 data-cryptomus-url="{% url 'wildRift-cryptomus-redirect' %}">
                             </div>
                             <form action="" method="post" id="division-boost-form" class="purchaseForm active">
+                                {% csrf_token %}
                                 <input type="hidden" name="game_id" value="1">
                                 <input type="hidden" name="current_rank" value="1">
                                 <input type="hidden" name="current_division" value="1">
