@@ -20,10 +20,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             desired_division = int(invoice_values[7])
         elif type == 'P' and game_id == 10:
             last_rank = int(invoice_values[3])
+            last_division = int(invoice_values[5])
             number_of_match = int(invoice_values[4])
         elif type == 'P':
             last_rank = int(invoice_values[3])
-            last_division = int(invoice_values[5])
             number_of_match = int(invoice_values[4])
         elif type == 'S':
             current_rank = int(invoice_values[3])

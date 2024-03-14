@@ -167,7 +167,105 @@
         </div>
 
         <!-- ------------------------------ Placements ------------------------------ -->
-        <div class="placements-boost"></div>
+        <div class="placements-boost">
+          <div class="pervious" id="pervious">
+            <div class="d-flex justify-content-between align-item-center">
+
+              <div class="d-flex align-item-center">
+                <div class="pervious-rp me-4">
+                  <h1 class="pervious-rp mb-0"></h1>
+                </div>
+                <div class="text-white text">
+                  <h5>Pervious MMR Rank</h5>
+                  <p>Select your pervious MMR</p>
+                </div>
+              </div>
+
+              <div class="image">
+                <img src="" alt="Pervious Rank Image" class="pervious-selected-img" class="img-fluid" width="60" height="60">
+              </div>
+            </div>
+
+            <div class="range-container mt-5 pt-xl-0 pt-5">
+              <input type="range" min="0" max="8000" value="0" step="1" id="pervious-mmr" /> 
+              <div class="pervious-step step-indicator">
+                <span class="step">0</span>
+                <span class="step">1000</span>
+                <span class="step">2000</span>
+                <span class="step">3000</span>
+                <span class="step">4000</span>
+                <span class="step">5000</span>
+                <span class="step">6000</span>
+                <span class="step">7000</span>
+                <span class="step">8000</span>
+              </div>
+            </div>
+
+            <!-- Role -->
+            <div class="server-container mt-3">
+              <p class="text-white" style="font-size: 16px;">Role</p>
+              <div class="select-container">
+                <select class="placement-role-select">
+                  <option value=1>Core</option>
+                  <option value=2>Suppor</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Matches Amount -->
+          <div class="matches-amount" id="matches-amount">
+
+            <div class="d-flex justift-content-center align-item-center">
+              <div class="matches-number me-4">
+                <h1 class="num-of-match mb-0"></h1>
+              </div>
+              <div class="text-white text">
+                <h5>Matches Amount</h5>
+                <p>Select your desired amount of matches.</p>
+              </div>
+            </div>
+
+            <div class="range-container mt-5 pt-xl-0 pt-5">
+              <input type="range" min="1" max="10" value="0" id="game-count" /> 
+              <div class="game-count-step step-indicator">
+                <span class="step">1</span>
+                <span class="step">2</span>
+                <span class="step">3</span>
+                <span class="step">4</span>
+                <span class="step">5</span>
+                <span class="step">6</span>
+                <span class="step">7</span>
+                <span class="step">8</span>
+                <span class="step">9</span>
+                <span class="step">10</span>
+              </div>
+            </div>
+
+            <!-- Servers -->
+            <div class="server-container mt-3">
+              <p class="text-white" style="font-size: 16px;">Server</p>
+              <div class="select-container">
+                <select class="placement-servers-select">
+                  <option value="Europe West">Europe West</option>
+                  <option value="Europe East">Europe East</option>
+                  <option value="Russia">Russia</option>
+                  <option value="Southeast Asia">Southeast Asia</option>
+                  <option value="China">China</option>
+                  <option value="South Korea">South Korea</option>
+                  <option value="Japan">Japan</option>
+                  <option value="US West">US West</option>
+                  <option value="US East">US East</option>
+                  <option value="South America">South America</option>
+                  <option value="Australia">Australia</option>
+                  <option value="India">India</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
         <!-- ------------------------------ Checkout ------------------------------ -->
         <div class="complate-order ps-3">
@@ -333,17 +431,19 @@
               <!-- Placement Form -->
               <form method="post" id="placements-boost-form" class="placements-boost purchaseForm">
                 {% csrf_token %}
-                <input type="hidden" name="game_id" value="2">
+                <input type="hidden" name="game_id" value="10">
                 <input type="hidden" name="game_type" value="P">
                 <!-- Placement -->
                 <input type="hidden" name="last_rank" value="0">
-                <input type="hidden" name="number_of_match" value="5">
+                <input type="hidden" name="last_division" value="0">
+                <input type="hidden" name="number_of_match" value="1">
+                <input type="hidden" name="role" value="1">
                 <!-- Extra Fields -->
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="select_champion" id="selectChampion" value=false>
                 <input type="hidden" name="streaming" id="streaming" value=false>
+                <!-- <input type="hidden" name="select_champion" id="selectChampion" value=false> -->
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" value="120">

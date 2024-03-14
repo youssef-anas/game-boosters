@@ -20,7 +20,8 @@
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
   linear-gradient(180deg, #7F999E 0%, #43373300 100%);
 }
-.placements-boost #matches-amount .num-of-match {
+.placements-boost #matches-amount .num-of-match,
+.placements-boost #pervious .pervious-rp{
   font-size: 48px;
   font-weight: 800;
 }

@@ -32,8 +32,8 @@ class RankBoostSerializer(serializers.Serializer):
 
 class PlacementSerializer(serializers.Serializer):
     last_rank = serializers.IntegerField(min_value=1, max_value=8)
-    last_divsion = serializers.IntegerField(min_value=0, max_value=8000)
-    number_of_match = serializers.IntegerField(min_value=1, max_value=5)
+    last_division = serializers.IntegerField(min_value=0, max_value=8000)
+    number_of_match = serializers.IntegerField(min_value=1, max_value=10)
 
     # Role
     role = serializers.IntegerField(min_value=1, max_value=2)

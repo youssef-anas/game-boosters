@@ -115,3 +115,25 @@ def wow_ranks(value):
     return ['2100-2500', 4]
   else:
     return value
+  
+@register.filter(name='dota2_ranks')
+def dota2_ranks(value):
+  value = float(value)
+  if value <= 700:
+    return ['herald', 1]
+  elif value <= 1540:
+    return ['guardian', 2]
+  elif value <= 2380:
+    return ['crusader', 3]
+  elif value <= 3220:
+    return ['archon', 4]
+  elif value <= 4060:
+    return ['legend', 5]
+  elif value <= 4900:
+    return ['ancient', 6]
+  elif value <= 5500:
+    return ['divine', 7]
+  elif value > 5500:
+    return ['immortal', 8]
+  else:
+    return value

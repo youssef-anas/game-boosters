@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 class DivisionSerializer(serializers.Serializer):
-  queue_type = serializers.IntegerField(min_value=1, max_value=3)
+  ranked_type = serializers.IntegerField(min_value=1, max_value=3)
   
   current_rank = serializers.IntegerField(min_value=1, max_value=7)
   current_division = serializers.IntegerField(min_value=1, max_value=3)

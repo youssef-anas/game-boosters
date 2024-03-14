@@ -28,7 +28,7 @@ from django.http import HttpResponseBadRequest
 from itertools import chain
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
-from accounts.templatetags.custom_filters import wow_ranks
+from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -319,6 +319,8 @@ def update_rating(request, order_id):
 
         if base_order.game.id == 6:
             reached_rank_id = wow_ranks(reached_division)[1]
+        if base_order.game.id == 10:
+            reached_rank_id = dota2_ranks(reached_division)[1]
         else:
             reached_rank_id = request.POST.get('reached_rank')
 

@@ -31,7 +31,7 @@
             <a href="{% url 'booster.profile' order.order.booster.id %}" class="fs-5" style="color: var(--secondary-color)">Booster Profile
               &rarr;</a>
             <div>
-              {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
+            {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
 
               <a class="btn btn-success m-3" href="{% url order.order.game.link %}?extend={{order.order.id}}">Extend Order</a>
               {% endif %}
@@ -108,6 +108,7 @@
             <p class="my-3 text-uppercase col-4 px-0">{{ order.desired_division }} MMR</p>
             {% endif %}
           </div>
+    
           {% elif order.order.game_type == 'P' %}
           <!-- Placement -->
           <div class="last">
@@ -115,6 +116,9 @@
             <p class="my-3 text-uppercase px-0">Last Rank</p>
             <img class="text-center px-0" src="{{order.last_rank.get_image_url}}" width="200" height="200"  />
             <p class="my-3 text-uppercase px-0">{{order.last_rank.rank_name}}</p>
+            {% if order.order.game_id == 10 %}
+            <p class="my-3">{{order.last_division}} MMR</p>
+            {% endif %}
             <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.number_of_match}}</span></p>
           </div>
           {% elif order.order.game_type == 'S' %}

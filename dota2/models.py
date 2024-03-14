@@ -240,6 +240,7 @@ class Dota2PlacementOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 10
+    self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:
       self.order.name = f'Dota2{self.order.id}'
@@ -252,3 +253,61 @@ class Dota2PlacementOrder(models.Model):
 
   def __str__(self):
     return self.get_details()
+  
+  def get_order_price(self):
+    with open('static/dota2/data/prices.json', 'r') as file:
+      prices = json.load(file)
+    
+    placement_price = prices['placement']
+
+    try:    
+      promo_code_amount = self.order.promo_code.discount_amount
+    except:
+      promo_code_amount = 0
+
+    ROLE_PRICES = [0, 0, 0.30]
+
+    last_rank = self.last_rank.pk
+    number_of_match = self.number_of_match
+
+    role = self.role
+    
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    if self.order.streaming:
+      total_percent += 0.15
+
+    custom_price = placement_price[last_rank - 1] * number_of_match
+
+    total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
+
+    custom_price += (custom_price * total_Percentage_with_role_result)
+
+    custom_price -= custom_price * (promo_code_amount/100)
+
+    custom_price = round(custom_price, 2)
+    
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price / 100))
+
+    booster_price = round(custom_price * (percent / 100), 2)
+    percent_for_view = round((booster_price / actual_price) * 100)
+
+    # if percent_for_view > 100:
+    #     percent_for_view = 100
+
+    # if booster_price > actual_price:
+    #     booster_price = actual_price
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

@@ -121,7 +121,6 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   price += price * total_Percentage_with_role_result
 
   price -= price * (promo_code_amount / 100)
-  print("Prom: ",total_Percentage_with_role_result)
 
   price = round(price, 2)
 
@@ -149,6 +148,9 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 def get_palcement_order_result_by_rank(data,extend_order_id):
+  # Placement
+  placement_price = prices['placement']
+  
   last_rank = data['last_rank']
   last_division = data['last_division']
   number_of_match = data['number_of_match']
@@ -162,10 +164,11 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  select_champion = data['select_champion']
+  # select_champion = data['select_champion']
 
   server = data['server']
   promo_code = data['promo_code']
+
   promo_code_id = 0
 
   duo_boosting_value = 0
@@ -198,10 +201,10 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     boost_options.append('STREAMING')
     streaming_value = 1
 
-  if select_champion:
-    total_percent += 0.0
-    boost_options.append('CHOOSE AGENTS')
-    select_champion_value = 1
+  # if select_champion:
+  #   total_percent += 0.0
+  #   boost_options.append('CHOOSE AGENTS')
+  #   select_champion_value = 1
 
   if promo_code != 'null':   
     try:
@@ -210,12 +213,15 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
       promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
-   
-  placement_price = price['placement']
 
   price = placement_price[last_rank - 1] * number_of_match
-  price += (price * total_percent)
+
+  total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
+
+  price += (price * total_Percentage_with_role_result)
+
   price -= price * (promo_code_amount/100)
+
   price = round(price, 2)
 
   if extend_order_id > 0:

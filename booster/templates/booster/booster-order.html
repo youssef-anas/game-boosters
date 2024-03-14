@@ -58,6 +58,8 @@
               <p>2vs2 Ranked</p>
               {% elif order.order.order.game_type == 'D' and order.order.ranked_type == 1 %}
               <p>1vs1 Ranked</p>
+              {% elif order.order.order.game_type == 'A' and order.order.order.game_id == 10 %}
+              <p>Ranked Boost</p>
               {% elif order.order.order.game_type == 'A' %}
               <p>Ranked {% if order.is_arena_2vs2 %}2vs2{% else %}3vs3{% endif %}</p>
               {% elif order.order.order.game_type == 'P' %}
@@ -123,7 +125,7 @@
                 {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.current_rank}} {{ order.order.current_division|five_romanize_division}}</p>
 
-                {% elif order.order.order.game.link == 'wow' %}
+                {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.current_division}} MMR</p>
 
                 {% endif %}
@@ -174,7 +176,7 @@
                 {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.reached_rank}} {{ order.order.reached_division|five_romanize_division }}</p>
 
-                {% elif order.order.order.game.link == 'wow' %}
+                {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.reached_division }} MMR</p>
 
                 {% endif %}
@@ -225,7 +227,7 @@
                 {% elif order.order.order.game.link == 'hok' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|five_romanize_division }}</p>
 
-                {% elif order.order.order.game.link == 'wow' %}
+                {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.desired_division }} MMR</p>
 
                 {% endif %}
@@ -287,6 +289,9 @@
             {% elif order.order.order.game.link == 'wow' %}
               {% include 'wow/order_update.html' %}
 
+            {% elif order.order.order.game.link == 'dota2' %}
+              {% include 'dota2/order_update.html' %}
+
             {% elif order.order.order.game.link == 'overwatch2' %}
               {% include 'overwatch2/order_update.html' %}
               
@@ -299,6 +304,9 @@
                 <p class="my-3 text-uppercase px-0">Last Rank</p>
                 <img class="text-center px-0" src="{{order.order.last_rank.get_image_url}}"  width="200" height="200" />
                 <p class="my-3 text-uppercase px-0">{{order.order.last_rank.rank_name}}</p>
+                {% if order.order.order.game_id == 10 %}
+                <p class="my-3 text-uppercase px-0">{{order.order.last_division}} MMR</p>
+                {% endif %}
                 <p class="my-3 text-uppercase px-0">Number Of Matches : <span class="text-secondary fs-5">{{order.order.number_of_match}}</span></p>
               </div>
               <hr>

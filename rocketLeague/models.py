@@ -82,7 +82,7 @@ class RocketLeagueDivisionOrder(models.Model):
   
   def send_discord_notification(self):
     if self.order.status == 'Extend':
-        return print('Extend Order')
+      return print('Extend Order')
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
@@ -111,10 +111,8 @@ class RocketLeagueDivisionOrder(models.Model):
       print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
 
-
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
-    self.order.game_name = 'rocketLeague'
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -126,13 +124,18 @@ class RocketLeagueDivisionOrder(models.Model):
 
     
   def get_details(self):
-    return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)}"
+    return f"From {str(self.current_rank).upper()} {romanize_division_original(self.current_division)} To {str(self.desired_rank).upper()} {romanize_division_original(self.desired_division)} With Queue {self.ranked_type}"
 
   def __str__(self):
     return self.get_details()
   
   def get_rank_value(self, *args, **kwargs):
-    return f"{self.current_rank.id},{self.current_division},{self.ranked_type},{self.desired_rank.id},{self.desired_division},{self.order.duo_boosting},{False},{self.order.turbo_boost},{self.order.streaming }"
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+      
+    return f"{self.current_rank.pk},{self.current_division},{self.ranked_type},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
     # Read data from JSON file

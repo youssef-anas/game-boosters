@@ -2,10 +2,8 @@ from django.shortcuts import get_object_or_404
 import json
 from rocketLeague.models import *
 from django.utils import timezone
-from django.contrib.auth import get_user_model
 from accounts.models import PromoCode
-
-User = get_user_model()
+from booster.models import Booster
 
 division_names = ['','I','II','III']  
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAMPION', 'GRAND CHAMPION', 'SUPERSONIC LEGEND']
@@ -13,10 +11,10 @@ rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAM
 # ---------------------------- Ranked ----------------------------
 def get_division_order_result_by_rank(data,extend_order_id):
   print('Data: ', data)
-  queue_type = data['queue_type']
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
+  ranked_type = data['ranked_type']
   desired_rank = data['desired_rank']
   desired_division = data['desired_division']
 
@@ -29,6 +27,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -62,6 +61,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     try:
       promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -84,19 +84,17 @@ def get_division_order_result_by_rank(data,extend_order_id):
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_rl_player=True)
   else:
     booster_id = 0
 
-  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{queue_type}-0'
-  print('Invoice', invoice)
+  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-{ranked_type}-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

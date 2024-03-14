@@ -93,8 +93,6 @@ Promise.all([
       const desired_rank_name = ranksNames[desired_rank];
       const desired_division_name = divisionNames[desired_division];
 
-      const selectedDivsionServer = server;
-
       makrs_on_current_rank_selected.value = mark_index
       division_server_select_element.value = server
       
@@ -137,7 +135,7 @@ Promise.all([
       $('.division-boost input[name="marks"]').val(mark_index);
       $('.division-boost input[name="desired_rank"]').val(desired_rank);
       $('.division-boost input[name="desired_division"]').val(desired_division);
-      $('.division-boost input[name="server"]').val(selectedDivsionServer);
+      $('.division-boost input[name="server"]').val(server);
       $('.division-boost input[name="price"]').val(result_with_mark);
 
        // SET PROMO CODE IN FORM
@@ -224,7 +222,7 @@ Promise.all([
 
   // Desired Rank Change
   radioButtonsDesired.forEach(function (radio, index) {
-      radio.addEventListener('change', getDivisionPrice);
+    radio.addEventListener('change', getDivisionPrice);
   });
 
   // Current Division Change
@@ -278,14 +276,10 @@ Promise.all([
     $('.placements-boost .game_count-selected-info').html(`${gameCounter} Matches`)
   
     $('.pervious').removeClass().addClass(`pervious ${pervious_rank_name}`);
+    $('.matches-amount').removeClass().addClass(`pervious ${pervious_rank_name}`);
 
     $('.total-price #placements-boost-price').text(`$${price}`)
-  
-    const pricee = $('.price-data.placements-boost').eq(0);
-    pricee.html(`
-    <p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
-    <h4>$${price}</h4>
-    `);
+
   
     if ($('.placements-boost input[name="game_type"]').val() == 'P') {
       $('.placements-boost input[name="last_rank"]').val(pervious_rank);

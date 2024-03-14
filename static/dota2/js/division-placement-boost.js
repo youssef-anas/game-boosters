@@ -2,6 +2,7 @@
 let dota2Data = $('#dota2Data');
 const MMR_PRICES  = [0].concat(dota2Data.data('divsion'));
 const PLACEMENT_PRICES =  [0].concat(dota2Data.data('placement'));
+console.log('PLACEMENT_PRICES: ',PLACEMENT_PRICES)
 const RANKS_IMAGES = [0].concat(dota2Data.data('images'));
 const ROLE_PRICES = [0, 0, 0.30]
 
@@ -62,8 +63,8 @@ function getPrice(currentMmr, desiredMmr) {
   else return (desiredRange + currentRange) / 2
 }
 
-function changeUI(achivedValue, arena, steps) {
-  const progress = ((achivedValue) / (arena.prop("max"))) * 100;
+function changeUI(achivedValue, arena, steps, miuns = 0) {
+  const progress = ((achivedValue - miuns) / (arena.prop("max") - miuns) ) * 100;
 
   arena.css({
     "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
@@ -165,12 +166,10 @@ if(extend_order) {
 
   function getDivisionPrice() {
     const MMR_PRICE = getPrice(valuesToSet[1], valuesToSet[4])
-    console.log("MMR_Price: ", MMR_PRICE)
 
     // Price
     let price = ((desiredMmrValue - valuesToSet[4]) * (MMR_PRICE / MIN_DESIRED_VALUE));
-    console.log("Price 1: ", (desiredMmrValue - valuesToSet[4]))
-    console.log("Price 2: ", price)
+
     // Apply role extra value
     const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[roleValue]
 
@@ -318,101 +317,82 @@ division_server_select_element.addEventListener("change", getDivisionPrice);
 role_selected.addEventListener("change", getDivisionPrice)
   
 // ----------------------------- Placments Boost ---------------------------------
-// const placementsRanks = $('input[name="placement-ranks"]');
-// const gameCountInput = $("#game-count");
-// const steps = $('.step-indicator .step');
-// const gameCounterInitial = Number(gameCountInput.val())
-// const initiallyCheckedIndexRank = $('input[name="placement-ranks"]').index($('input[name="placement-ranks"]:checked'));
-// const initiallyCheckedRank = $('input[name="placement-ranks"]').eq(initiallyCheckedIndexRank);
-// const initiallyCheckedIndexRankPrice = initiallyCheckedRank.data('price');
-// const placement_server_select_element = $('.placement-servers-select');
+// Pervious Varible
+const perviousMmr = $('#pervious-mmr');
+const perviousSteps = $('.pervious-step.step-indicator .step');
 
-// let perviousElement = Array.from(placementsRanks).find(radio => radio.checked);
+// Game Count
+const gameCount = $("#game-count");
+const gameCountSteps = $('.game-count-step.step-indicator .step');
 
-// let pervious_rank = initiallyCheckedIndexRank
-// let pervious_rank_name = ranksNames[pervious_rank]
-// let rank_price = initiallyCheckedIndexRankPrice
-// let gameCounter = gameCounterInitial
-// let selectedPlacementServer = placement_server_select_element.val()
+// Server
+const placement_server_select_element = $('.placement-servers-select');
+// Role
+const placement_role_select = $('.placement-role-select');
 
-// const getPlacementPrice = () => {
-//   let price = (rank_price * gameCounter);
-//   // Apply extra charges to the result
-//   price = price + (price * total_Percentage)
-//   // Apply promo code 
-//   price -= price * (discount_amount / 100 )
+const getPlacementPrice = () => {
 
-//   price = parseFloat(price.toFixed(2))
+  let perviousMmrValue = Number(perviousMmr.val())
+  let perviousRank = getRank(perviousMmrValue)[0]
 
-//   // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-//   $('.placements-boost .pervious-rank-selected-img').attr('src', $(perviousElement).data('img'))
-//   $('.num-of-match').text(gameCounter);
+  let gameCounterValue = Number(gameCount.val())
 
-//   $('.placements-boost .pervious-selected-info').html(`${pervious_rank_name}`)
-//   $('.placements-boost .game_count-selected-info').html(`${gameCounter} Matches`)
+  const selectedPlacementServer = placement_server_select_element.val();
+  const role = placement_role_select.val();
 
-//   $('.pervious').removeClass().addClass(`pervious ${pervious_rank_name}`);
+  const RANK_PRICE = PLACEMENT_PRICES[getRank(perviousMmrValue)[1]]
 
-//   $('.total-price #placements-boost-price').text(`$${price}`)
+  let price = (RANK_PRICE * gameCounterValue);
+  console.log(price)
 
-//   const pricee = $('.price-data.placements-boost').eq(0);
-//   pricee.html(`
-//   <p class='fs-5 text-uppercase my-4'>Boosting of <span class='fw-bold'>${gameCounter} Placement Games</span></p>
-//   <h4>$${price}</h4>
-//   `);
+  // Apply role extra value
+  const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[role]
 
-//   if ($('.placements-boost input[name="game_type"]').val() == 'P') {
-//     $('.placements-boost input[name="last_rank"]').val(pervious_rank);
-//     $('.placements-boost input[name="number_of_match"]').val(gameCounter);
-//     $('.placements-boost input[name="server"]').val(selectedPlacementServer);
-//     $('.placements-boost input[name="price"]').val(price);
-//   }
-// }
+  console.log(role)
 
-// getPlacementPrice()
+  // Apply extra charges to the result
+  price += price * total_Percentage_with_role_result;
 
-// placementsRanks.each(function (index, radio) {
-//   $(radio).on('change', function () {
-//     const selectedIndex = placementsRanks.index(radio);
-//     pervious_rank = selectedIndex;
-//     pervious_rank_name = ranksNames[pervious_rank]
-//     rank_price = $(radio).data('price');
+  // Apply promo code 
+  price -= price * (discount_amount / 100 )
 
-//     // Look Here:- When Desired Rank Change Change Value So Image Changed 
-//     perviousElement = Array.from(placementsRanks).find(radio => radio.checked);
+  price = parseFloat(price.toFixed(2));
 
-//     getPlacementPrice()
-//   });
-// });
+  // Pervious
+  $('#pervious .pervious-rp').html(perviousMmrValue);
+  $('.pervious-selected-img').attr('src', RANKS_IMAGES[getRank(perviousMmrValue)[1]]);
+  $('.pervious').removeClass().addClass(`pervious ${perviousRank}`);
+  $('.pervious-selected-info').html(`${perviousMmrValue} MMR`);
+  changeUI(perviousMmrValue, perviousMmr, perviousSteps);
 
-// gameCountInput.on("input", function (event) {
-//   gameCounter = Number(event.target.value);
+  // Counter
+  $('#matches-amount .num-of-match').html(gameCounterValue);
+  $('.matches-amount').removeClass().addClass(`matches-amount ${perviousRank}`);
+  $('.game_count-selected-info').html(`${gameCounterValue} Matches`)
+  changeUI(gameCounterValue, gameCount, gameCountSteps, 1);
+
+  // Price
+  $('.total-price #placements-boost-price').text(`$${price}`)
+
+  // Form
+  $('.placements-boost input[name="last_rank"]').val(getRank(perviousMmrValue)[1]);
+  $('.placements-boost input[name="last_division"]').val(perviousMmrValue);
+  $('.placements-boost input[name="role"]').val(role);
+  $('.placements-boost input[name="number_of_match"]').val(gameCounterValue);
+  $('.placements-boost input[name="server"]').val(selectedPlacementServer);
+  $('.placements-boost input[name="price"]').val(price);
   
-//   const progress = ((gameCounter - 1) / (gameCountInput.prop("max") - 1)) * 100;
+}
 
-//   gameCountInput.css({
-//     "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-//   });
+getPlacementPrice()
 
-//   steps.each((step, index) => {
-//     var $step = $(step);
-//     if (index < gameCounter) {
-//       $step.addClass('selected');
-//     } else {
-//       $step.removeClass('selected');
-//     }
-//   });
+perviousMmr.on("input", getPlacementPrice)
+gameCount.on("input", getPlacementPrice)
 
-//   getPlacementPrice()
-
-// })
-
-// // Server Changes
-// placement_server_select_element.on("change", function() {
-
-//   selectedPlacementServer = $(this).val();
-//   getPlacementPrice();
-// });
+// Server Changes
+placement_server_select_element.on("change", getPlacementPrice);
+// Role
+placement_role_select.on("change", getPlacementPrice);
 
 // ----------------------------- Others ---------------------------------
 
@@ -428,7 +408,7 @@ soloOrDuoBoosting.forEach(function (radio, index) {
     }
 
     getDivisionPrice()
-    // getPlacementPrice()
+    getPlacementPrice()
   }) 
 })
 
@@ -444,7 +424,7 @@ extraOptions.forEach(function (checkbox, index) {
     }
   
     getDivisionPrice()
-    // getPlacementPrice()
+    getPlacementPrice()
   })
 });
 
@@ -453,6 +433,6 @@ promo_form.addEventListener('submit', async function(event) {
   if(!extend_order) {
     discount_amount = await fetch_promo(); 
     getDivisionPrice(); 
-    // getPlacementPrice();
+    getPlacementPrice();
   }
 });
