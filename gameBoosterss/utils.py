@@ -132,14 +132,25 @@ def check_overwatch2_type(type) -> Model:
         raise ValueError(f"Invalid Overwatch2 game type: {type}")
     return Game
 
+def check_pubg_type(type) -> Model:
+    PUBG_MODELS = {
+        'D': PubgDivisionOrder,
+    }
+    Game = PUBG_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Overwatch2 game type: {type}")
+    return Game
+
+
+
 def get_game(id, type) -> Model:
     GAME_MODELS = {
         1: check_wl_type,
         2: check_valo_type,
-        3: PubgDivisionOrder,
+        3: check_pubg_type,
         4: check_lol_type,
         5: check_tft_type,
-        6: check_wow_type,  # Use a function for WoW Arena
+        6: check_wow_type,
         7: check_hearthstone_type,
         8: check_mobleg_type,
         9: check_rl_type,

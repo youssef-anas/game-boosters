@@ -67,6 +67,7 @@ def payment_sucess_view(request, token):
 def customer_side(request, order_name):
     customer = request.user
     base_order = BaseOrder.objects.filter(customer=customer,name=order_name).order_by('id').last()
+    print('wwwwwwwwwwww\n\n\n',base_order)
     if base_order:
         if base_order.is_done:
             return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
@@ -164,8 +165,8 @@ def tip_booster(request):
                 "item_name": f"tip {booster}",
                 "invoice": invoice,
                 "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                "return": request.build_absolute_uri(f"/customer/tip_booster/success/{token_with_data}/"),
-                "cancel_return": request.build_absolute_uri(f"/customer/tip_booster/cancel/{token_with_data}/{order_id}"),
+                "return": request.build_absolute_uri(f"/customer/tip-booster/success/{token_with_data}/"),
+                "cancel_return": request.build_absolute_uri(f"/customer/tip-booster/cancel/{token_with_data}/{order_id}"),
             }
             # Create the instance.
             form = PayPalPaymentsForm(initial=paypal_dict)

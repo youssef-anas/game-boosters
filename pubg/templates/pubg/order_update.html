@@ -1,38 +1,41 @@
 <div class="updata-now">
   <h5 class="my-4">Now Rank</h5>
-  <form action="{% url 'order.update.rating' %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
     {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
     <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
     <input type="hidden" name="order_game_id" value="{{ order.order.order.game_id }}">
 
     <div class="mb-3">
-      <select class="form-select custom-select" required name="reached_rank" id="reached_rank">
-        {% for rank in pubg_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+      <select class="form-select custom-select" required name="reached_rank" id="reached_rank_pubg">
+        <option value="1" {% if order.order.reached_rank.id == 1 %}selected{% endif %}>bronze</option>
+        <option value="2" {% if order.order.reached_rank.id == 2 %}selected{% endif %}>silver</option>
+        <option value="3" {% if order.order.reached_rank.id == 3 %}selected{% endif %}>gold</option>
+        <option value="4" {% if order.order.reached_rank.id == 4 %}selected{% endif %}>platinum</option>
+        <option value="5" {% if order.order.reached_rank.id == 5 %}selected{% endif %}>diamond</option>
+        <option value="6" {% if order.order.reached_rank.id == 6 %}selected{% endif %}>crown</option>
+        <option value="7" {% if order.order.reached_rank.id == 7 %}selected{% endif %}>ace</option>
+        <option value="8" {% if order.order.reached_rank.id == 8 %}selected{% endif %}>ace master</option>
+        <option value="9" {% if order.order.reached_rank.id == 9 %}selected{% endif %}>ace dominator</option>
+    </select>       
+    </div>
+    <div class="input-group mb-3">
+      <select class="form-select custom-select" required name="reached_division" id="reached_division_pubg">
+        <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>V</option>
+        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>IV</option>
+        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
+        <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>II</option>
+        <option value="5" {% if order.order.reached_division == 5 %}selected{% endif %}>I</option>
       </select>
     </div>
 
     <div class="input-group mb-3">
-      <select class="form-select custom-select" required name="reached_division" id="reached_division">
-        <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>IV</option>
-        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>III</option>
-        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>II</option>
-        <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>I</option>
-      </select>
-    </div>
-
-    <div class="input-group mb-3">
-      <select class="form-select custom-select" required name="reached_marks" id="reached_marks">
+      <select class="form-select custom-select" required name="reached_marks" id="reached_marks_pubg">
         <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 - 20</option>
         <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>21 - 40</option>
         <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>41 - 60</option>
         <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>61 - 80</option>
         <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>81 - 99</option>
-        <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>Series</option>
       </select>
     </div>
 
@@ -41,3 +44,30 @@
     </div>
   </form>
 </div>
+<script>
+
+
+  const ranks = document.getElementById('reached_rank_pubg')
+  const divisions = document.getElementById('reached_division_pubg')
+  const marks = document.getElementById('reached_marks_pubg')
+
+  function set_marks(){
+    const selectedRank = parseInt(ranks.value);
+    const selectedDivision = parseInt(divisions.value);
+    if (selectedRank === 9 && selectedDivision === 5) {
+      marks.style.display = 'none'; 
+      marks.selectedIndex = 0;
+    } else {
+      marks.style.display = 'block';
+    }
+  }
+  ranks.addEventListener('change',function(){
+    set_marks()
+  })
+  divisions.addEventListener('change',function(){
+    set_marks()
+  })
+  set_marks()
+
+
+</script>

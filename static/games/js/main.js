@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Event listener for division-boost radio button
+  if (divisionBoostRadio){
   divisionBoostRadio.addEventListener('change', function () {
     if (divisionBoostRadio.checked) {
       divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
@@ -40,8 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
       // divisionForm.classList.remove("active");
     }
   });
+  }
 
   // Event listener for placements-boost radio button
+  if (placementsBoostRadio){
   placementsBoostRadio.addEventListener('change', function () {
     if (placementsBoostRadio.checked) {
       divisionBoostDiv.forEach(div => div.classList.add('d-none'));
@@ -56,5 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
       // placementsForm.classList.remove("active");
     }
   });
+}
 
 });

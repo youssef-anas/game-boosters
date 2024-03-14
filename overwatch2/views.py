@@ -8,7 +8,7 @@ from overwatch2.models import Overwatch2DivisionOrder, Overwatch2Rank, Overwatch
 from overwatch2.controller.serializers import DivisionSerializer, PlacementSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from overwatch2.controller.order_information import *
-from accounts.models import TokenForPay
+from accounts.models import TokenForPay, BaseOrder
 from django.contrib.auth.decorators import login_required
 from booster.models import OrderRating
 
@@ -18,8 +18,10 @@ def overwatch2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   if extend_order:
     try:
-      order_get_rank_value = Overwatch2DivisionOrder.objects.get(order_id=extend_order, customer=request.user).get_rank_value()
-    except:
+      BaseOrder.objects.get(id = extend_order, customer= request.user)
+      order_get_rank_value = Overwatch2DivisionOrder.objects.get(order_id=extend_order).get_rank_value()
+    except Exception as e:
+      print(e)
       return redirect('homepage.index')
   ranks = Overwatch2Rank.objects.all().order_by('id')
   divisions  = Overwatch2Tier.objects.all().order_by('id')
