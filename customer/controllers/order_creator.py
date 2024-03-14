@@ -89,7 +89,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 new_order_price = price + extend_order_price
                 extend_order_actual_price = new_order_price* (percent/100)
                 
-                if game_id == 12 :
+                if game_id == 12 or game_id == 10 :
                     extend_order_role = extend_order_game.role
                      
 

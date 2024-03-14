@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder
 import requests
 from django.core.exceptions import ValidationError
+import json
 
 class Dota2Rank(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -80,6 +81,8 @@ class Dota2RankBoostOrder(models.Model):
   select_champion = models.BooleanField(default=True, blank=True, null=True)
   role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=True, blank=True)
 
+  mmr_price = models.FloatField(default=0.0,null=True, blank=True)
+
   created_at = models.DateTimeField(auto_now_add =True)
 
 
@@ -144,22 +147,78 @@ class Dota2RankBoostOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code},{self.role}"
   
   def get_order_price(self):
-    percent_for_view = 0
-    booster_price = 0
+    with open('static/dota2/data/prices.json', 'r') as file:
+      prices = json.load(file)
+      division_price = prices['division']
 
-    current_mmr = self.current_division
-    reached_mmr = self.reached_division
-    desired_mmr = self.desired_division
+    try:    
+      promo_code_amount = self.order.promo_code.discount_amount
+    except:
+      promo_code_amount = 0
 
-    percent_for_view = round(((reached_mmr - current_mmr) / (desired_mmr - current_mmr)) * 100)
+    MIN_DESIRED_VALUE = 50
+    ROLE_PRICES = [0, 0, 0.30]
 
-    if percent_for_view > 100:
-      percent_for_view = 100
+    def get_price(currentMmr, reachedMmr):
+      def get_range(mmr):
+        if mmr <= 2000: return division_price[0]
+        if mmr <= 3000: return division_price[1]
+        if mmr <= 4000: return division_price[2]
+        if mmr <= 5000: return division_price[3]
+        if mmr <= 5500: return division_price[4]
+        if mmr <= 6000: return division_price[5]
+        if mmr > 6000: return  division_price[6]
 
-    booster_price = (self.order.actual_price) * (percent_for_view / 100)
-    print('booster_price', booster_price)
+      currentRange = get_range(currentMmr)
+      reachedRange = get_range(reachedMmr)
 
-    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
+      if currentRange == reachedRange: return currentRange
+      else: (reachedRange + currentRange) / 2
+
+    current_division = self.current_division
+    reached_division = self.reached_division
+
+    role = self.role
+    
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    if self.order.streaming:
+      total_percent += 0.15
+
+    MIN_PRICE = get_price(current_division, reached_division)
+
+    custom_price = (reached_division - current_division) * (MIN_PRICE / MIN_DESIRED_VALUE)
+
+    total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
+    
+    custom_price += custom_price * total_Percentage_with_role_result
+
+    custom_price -= custom_price * (promo_code_amount / 100)
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price / 100))
+
+    booster_price = round(custom_price * (percent / 100), 2)
+    percent_for_view = round((booster_price / actual_price) * 100)
+
+    # if percent_for_view > 100:
+    #     percent_for_view = 100
+
+    # if booster_price > actual_price:
+    #     booster_price = actual_price
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
 
 class Dota2PlacementOrder(models.Model):
   ROLE_CHOISES = (

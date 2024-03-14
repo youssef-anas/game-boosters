@@ -200,7 +200,7 @@ class ValorantDivisionOrder(models.Model):
       booster_price = actual_price
 
 
-    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
     
 class ValorantPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='valorant_placement_order')

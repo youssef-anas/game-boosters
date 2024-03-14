@@ -42,7 +42,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
     desiredRange = get_range(desiredMmr)
 
     if currentRange == desiredRange: return currentRange
-    else: (desiredRange + currentRange) / 2
+    else: return (desiredRange + currentRange) / 2
 
   # Ranks
   current_rank = data['current_rank']
@@ -111,15 +111,17 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
   
-  MIN_PRICE = get_price(current_division, desired_division)
 
-  price = (desired_division - current_division) * (MIN_PRICE / MIN_DESIRED_VALUE)
+  MMR_PRICE = get_price(current_division, desired_division)
+
+  price = (desired_division - current_division) * (MMR_PRICE / MIN_DESIRED_VALUE)
 
   total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
   
   price += price * total_Percentage_with_role_result
 
   price -= price * (promo_code_amount / 100)
+  print("Prom: ",total_Percentage_with_role_result)
 
   price = round(price, 2)
 

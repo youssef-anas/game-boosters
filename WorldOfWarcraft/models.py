@@ -130,19 +130,60 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{self.is_arena_2vs2}"
   
   def get_order_price(self):
-    percent_for_view = 0
-    booster_price = 0
+    with open('static/wow/data/prices.json', 'r') as file:
+      prices = json.load(file)
+
+    try:
+      promo_code_amount = self.order.promo_code.discount_amount
+    except:
+      promo_code_amount = 0
+
+    price_of_2vs2 = prices[0]
+    price_of_3vs3 = prices[1]
+
+    MIN_DESIRED_VALUE = 50
+
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    if self.order.streaming:
+      total_percent += 0.15
 
     current_rp = self.current_division
     reached_rp = self.reached_division
-    desired_rp = self.desired_division
 
-    percent_for_view = round(((reached_rp - current_rp) / (desired_rp - current_rp)) * 100)
+    is_arena_2vs2 = self.is_arena_2vs2
 
-    if percent_for_view > 100:
-      percent_for_view = 100
+    if is_arena_2vs2:
+      custom_price = (reached_rp - current_rp) * (price_of_2vs2 / 50)
+    else: 
+      custom_price = (reached_rp - current_rp) * (price_of_3vs3 / 50)
 
-    booster_price = (self.order.actual_price) * (percent_for_view / 100)
-    print('booster_price', booster_price)
+    
+    custom_price += (custom_price * total_percent)
 
-    return {"booster_price":booster_price, 'percent_for_view':percent_for_view}
+    custom_price -= custom_price * (promo_code_amount/100)
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price / 100))
+
+    booster_price = round(custom_price * (percent / 100), 2)
+    percent_for_view = round((booster_price / actual_price) * 100)
+
+     # if percent_for_view > 100:
+    #     percent_for_view = 100
+
+    # if booster_price > actual_price:
+    #     booster_price = actual_price
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
