@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const placementPaypalBtn = document.getElementById('placement-paypal-btn');
     const placementCryptomusBtn = document.getElementById('placement-cryptomus-btn');
 
+    if(placementPaypalBtn){
     placementPaypalBtn.addEventListener('click', function() {
       // Get the PayPal URL from data attribute
       const paypalUrl = urls.dataset.paypalUrl;
@@ -67,7 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // Submit the form
       placementForm.submit();
     });
+    }
 
+    if(placementCryptomusBtn){
     placementCryptomusBtn.addEventListener('click', function() {
       // Get the Cryptomus URL from data attribute
       const cryptomusUrl = urls.dataset.cryptomusUrl;
@@ -76,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Submit the form
       placementForm.submit();
     });
+  }
   }
 
 });

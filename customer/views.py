@@ -67,6 +67,7 @@ def payment_sucess_view(request, token):
 def customer_side(request, order_name):
     customer = request.user
     base_order = BaseOrder.objects.filter(customer=customer,name=order_name).order_by('id').last()
+    print('wwwwwwwwwwww\n\n\n',base_order)
     if base_order:
         if base_order.is_done:
             return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))

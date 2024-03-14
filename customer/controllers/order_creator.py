@@ -3,8 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
 
-def create_order(invoice, payer_id, customer, status='New', name = None, extra = 0):
-    try :
+def create_order(invoice, payer_id, customer, status='New', name = None, extra = 1):
+    # try :
         invoice_values = invoice.split('-')
         game_id = int(invoice_values[1])
         type = str(invoice_values[2])
@@ -72,12 +72,23 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 extend_order_server = extend_order.customer_server
                 extend_order_data_correct = extend_order.data_correct
                 extend_order_promo_code = extend_order.promo_code
+                extend_order_game_id = extend_order.game.id
 
                 extend_order_game = Game.objects.get(order = extend_order)
                 extend_order_game_reached_rank = extend_order_game.reached_rank
                 extend_order_game_reached_division = extend_order_game.reached_division
                 extend_order_game_reached_marks = extend_order_game.reached_marks  
 
+
+                # set new extend_order_actual_price with old order percent 
+                actual_price = extend_order.actual_price
+                main_price = extend_order.price
+                percent = round(actual_price / (main_price/100))
+                print('percent is :: \n\n\n\n\n\n\n\n\n',percent,'\n')
+
+                new_order_price = price + extend_order_price
+                extend_order_actual_price = new_order_price* (percent/100)
+                
                 if game_id == 12 :
                     extend_order_role = extend_order_game.role
                      
@@ -86,6 +97,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             extend_order = None
 
         if status == 'New' or status == 'Continue':
+            actual_price = 0
             if status == 'Continue':
                 actual_price = round(price * (extra / 100),2)
             baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code, actual_price=actual_price)
@@ -169,7 +181,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
 
         elif status == 'Extend':
             print(f"order extended from:  {order_name}")
-            baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = price + extend_order_price, data_correct = extend_order_data_correct,promo_code=extend_order_promo_code, status = "Extend")
+            baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = new_order_price, data_correct = extend_order_data_correct,promo_code=extend_order_promo_code, status = "Extend",game_id =extend_order_game_id, actual_price=extend_order_actual_price)
             extend_fields = {
                 'order': baseOrder,
                 'current_rank_id': current_rank,
@@ -253,6 +265,6 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         baseOrder.customer_wallet()
         return order
     
-    except Exception as e:
-        print(f"Error creating order: {e}")
-        return None
+    # except Exception as e:
+    #     print(f"Error creating order: {e}")
+    #     return None

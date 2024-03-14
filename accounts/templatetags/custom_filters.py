@@ -97,7 +97,7 @@ def five_romanize_division(value):
     return 'III'
   elif value == 4:
     return 'II'
-  elif value == 2:
+  elif value == 5:
     return 'I'
   else:
     return value

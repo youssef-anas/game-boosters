@@ -159,10 +159,12 @@ def booster_orders(request):
     orders_with_percentage = []
     messages=[]
     for base_order in orders:
+        print('wwwwwwwww\n\n\n\n\n\n',base_order)
         content_type = base_order.content_type
         game = []
         if content_type:
             game = content_type.model_class().objects.get(order_id=base_order.object_id)
+            
             update_rating_result = game.get_order_price()
             base_order.money_owed = update_rating_result['booster_price']
             base_order.save()

@@ -17,15 +17,15 @@ from django.contrib.auth.decorators import login_required
 def pubgGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
-    order = PubgDivisionOrder.objects.get(order_id=extend_order)
+    order_get_rank_value = PubgDivisionOrder.objects.get(order_id=extend_order).get_rank_value()
   except:
-    order = None
+    order_get_rank_value = None
   ranks = PubgRank.objects.all().order_by('id')
   divisions  = PubgTier.objects.all().order_by('id')
   marks = PubgMark.objects.all().order_by('id')
 
   divisions_data = [
-    [division.from_V_to_VI, division.from_VI_to_III, division.from_III_to_II, division.from_II_to_I]
+    [division.from_V_to_VI, division.from_VI_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
     for division in divisions
   ]
   
@@ -44,7 +44,7 @@ def pubgGetBoosterByRank(request):
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
-    "order":order,
+    "order_get_rank_value": order_get_rank_value,
   }
   return render(request,'pubg/GetBoosterByRank.html', context)
 

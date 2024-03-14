@@ -6,6 +6,16 @@ radioButtons.forEach((radio, index) => {
     radio.disabled = true;
 });
 }
+
+function selectNthRadioButton(radioButtons, number) {
+    if (number >= 0 && number < radioButtons.length) {
+        radioButtons[number].checked = true;
+    } else {
+        console.error("Invalid number provided or radio button does not exist.");
+    }
+}
+
+
 function setRadioButtonState(radioButtons, values) {
 radioButtons.forEach((radio, index) => {
     radio.checked = (index === values);

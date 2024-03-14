@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 import json
 from pubg.models import *
 from django.utils import timezone
+from accounts.models import PromoCode
 
 User = get_user_model()
 
@@ -11,8 +12,6 @@ rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CROW
 
 
 def get_division_order_result_by_rank(data,extend_order_id):
-  print('Data: ', data)
-  # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
   marks = data['marks']
@@ -27,6 +26,19 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_champion = data['select_champion']
   server = data['server']
   promo_code = data['promo_code']
+
+  #
+  promo_code_amount = 0
+  promo_code_id = 0
+
+
+  if promo_code != 'null':   
+    try:
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
+      promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
+    except PromoCode.DoesNotExist:
+      promo_code_amount = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -72,13 +84,15 @@ def get_division_order_result_by_rank(data,extend_order_id):
       marks_data = json.load(file)
       marks_data.insert(0,[0,0,0,0,0,0])
       
-  start_division = ((current_rank-1) * 3) + current_division
-  end_division = ((desired_rank-1) * 3)+ desired_division
+  start_division = ((current_rank-1) * 5) + current_division
+  end_division = ((desired_rank-1) * 5)+ desired_division
   marks_price = marks_data[current_rank][marks]
   sublist = flattened_data[start_division:end_division ]
   total_sum = sum(sublist)
   price = total_sum - marks_price
+
   price += (price * total_percent)
+  price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
   if extend_order_id > 0:
@@ -94,7 +108,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     get_object_or_404(User,id=booster_id,is_booster=True)
   else:
     booster_id = 0
-  invoice = f'pubg-3-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code}-0-0'
+  invoice = f'pubg-3-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
