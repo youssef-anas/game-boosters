@@ -59,7 +59,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
       promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
@@ -116,6 +116,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -147,8 +148,9 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -157,27 +159,29 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     placement_data = json.load(file)
   ##    
   
-  price = placement_data[last_rank] * number_of_match
+  price = placement_data[last_rank - 1] * number_of_match
+
   price += (price * total_percent)
-  price -= price * (promo_code_amount/100)
+
+  price -= price * (promo_code_amount / 100)
+
   price = round(price, 2)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-      print('Price', price)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_rl_player=True)
   else:
     booster_id = 0
 
-  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
+  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -200,6 +204,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -231,8 +236,9 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -241,26 +247,30 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
     seasonals_data = json.load(file)
   ##    
   
-  price = seasonals_data[current_rank] * number_of_wins
+  price = seasonals_data[current_rank - 1] * number_of_wins
+
   price += (price * total_percent)
+
   price -= price * (promo_code_amount/100)
+  
   price = round(price, 2)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_rl_player=True)
   else:
     booster_id = 0
 
-  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
+
+  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -282,6 +292,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
 
   server = data['server']
   promo_code = data['promo_code']
+  promo_code_id = 0
 
   duo_boosting_value = 0
   select_booster_value = 0
@@ -313,8 +324,9 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
 
   if promo_code != 'null':   
     try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
+      promo_code_obj = PromoCode.objects.get(code=promo_code)
       promo_code_amount = promo_code_obj.discount_amount
+      promo_code_id = promo_code_obj.pk
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
@@ -323,26 +335,30 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
     tournaments_data = json.load(file)
   ##    
   
-  price = tournaments_data[current_league]
+  price = tournaments_data[current_league - 1]
+
   price += (price * total_percent)
-  price -= price * (promo_code_amount/100)
+
+  price -= price * (promo_code_amount / 100)
+
   price = round(price, 2)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
+      price = round(price - extend_order_price, 2)
     except:
       pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_rl_player=True)
   else:
     booster_id = 0
+    
 
-  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-0-0'
+  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)

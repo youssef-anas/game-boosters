@@ -1,0 +1,76 @@
+.seasonal-reward #current-seasonal, .seasonal-reward #number-of-wins,
+.tournament-boost #current-league {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: #433733; /* Fallback solid background color */
+  margin-bottom: 3rem;
+  min-height: 346px;
+}
+@media (max-width: 1199px) {
+  .seasonal-reward #current-seasonal, .seasonal-reward #number-of-wins,
+  .tournament-boost #current-league {
+    min-height: 438px;
+  }
+}
+@media (max-width: 767px) {
+  .seasonal-reward #current-seasonal, .seasonal-reward #number-of-wins,
+  .tournament-boost #current-league {
+    min-height: 346px;
+  }
+}
+.seasonal-reward #number-of-wins {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #7F999E 0%, #43373300 100%);
+}
+.seasonal-reward #number-of-wins .num-of-match {
+  font-size: 48px;
+  font-weight: 800;
+}
+@media (max-width: 1199px) {
+  .seasonal-reward #current-seasonal .image img,
+  .tournament-boost #current-league .image img  {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .seasonal-reward #current-seasonal .text h5, .seasonal-reward #number-of-wins .text h5,
+  .tournament-boost #current-league .text h5 {
+    font-size: 16px;
+  }
+  .seasonal-reward #current-seasonal .text p, .seasonal-reward #number-of-wins .text p,
+  .tournament-boost #current-league .text p {
+    font-size: 8px;
+  }
+}
+.seasonal-reward label, .tournament-boost label  {
+  width: 46px !important;
+  height: 46px !important;
+  margin-right: 16px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  background-color: var(--alternative-color);
+  border-radius: var(--main-radius);
+}
+@media (max-width: 1199px) { 
+  .seasonal-reward label, .tournament-boost label {
+    width: 60px !important;
+    height: 60px !important;
+    margin-right: 50px !important;
+    margin-bottom: 20px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+@media (max-width: 340px) { 
+  .seasonal-reward label, .tournament-boost label {
+    margin-right: 20px !important;
+  }
+}
+.seasonal-reward input[type="radio"]:checked+label,
+.tournament-boost input[type="radio"]:checked+label {
+  background-color: white;
+  color: black;
+}
