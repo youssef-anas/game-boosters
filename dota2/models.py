@@ -3,6 +3,7 @@ from accounts.models import BaseOrder
 import requests
 from django.core.exceptions import ValidationError
 import json
+import math
 
 class Dota2Rank(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -64,23 +65,16 @@ class Dota2RankBoostOrder(models.Model):
     (2, 'Support'),
   )
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='dota2_division_order')
-
   current_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_current_rank')
-
   reached_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_reached_rank')
-
   desired_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_desired_rank')
-  
   current_division = models.IntegerField(default=0)
   reached_division = models.IntegerField(default=0)
   desired_division = models.IntegerField(default=0)
-
   current_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
   reached_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
-
   select_champion = models.BooleanField(default=True, blank=True, null=True)
   role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=True, blank=True)
-
   mmr_price = models.FloatField(default=0.0,null=True, blank=True)
 
   created_at = models.DateTimeField(auto_now_add =True)
@@ -93,14 +87,14 @@ class Dota2RankBoostOrder(models.Model):
   def send_discord_notification(self):
     if self.order.status == 'Extend':
       return print('Extend Order')
-    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209759469806821396/Sw69hAULnlb4XIEIclX_Ag-xCdinblnLcpr01UXtJDM2STpTw2hv8UqyD29qY2H01uXX'
+    discord_webhook_url = 'https://discord.com/api/webhooks/1218196265163292734/M5Pl0WbSe_bHWXaRdcpzoSg2tbn5NONzqwGBg2e2kv62AUOfW658U-_SxAO_P_PoX5eB'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
       "title": "Dota 2",
       "description": (
         f"**Order ID:** {self.order.name}\n"
         f" From {self.current_division} RP"
-        f" To {self.desired_division} RP server {self.order.customer_server}" # change server next
+        f" To {self.desired_division} RP server {self.order.customer_server}"
       ),
       "color": 0xFFA500,  # Hex color code for a Discord color
       "footer": {"text": f"{current_time}"}, 
@@ -122,7 +116,7 @@ class Dota2RankBoostOrder(models.Model):
 
   def save_with_processing(self, *args, **kwargs):
     self.validate_divition()
-    self.order.game_id = 10
+    # self.order.game_id = 10
     self.order.game_type = 'A'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -149,31 +143,42 @@ class Dota2RankBoostOrder(models.Model):
   def get_order_price(self):
     with open('static/dota2/data/prices.json', 'r') as file:
       prices = json.load(file)
-      division_price = prices['division']
+      divison_prices = prices['division']
+      
+      divison_prices.insert(0,0)
+      price1 = round(divison_prices[1]*40,1)
+      price2 = round(divison_prices[2]*20,1)
+      price3 = round(divison_prices[3]*20,1)
+      price4 = round(divison_prices[4]*20,1)
+      price5 = round(divison_prices[5]*10,1)
+      price6 = round(divison_prices[6]*10,1)
+      price7 = round(divison_prices[7]*40,1) 
+      full_price_val = [price1, price2, price3, price4, price5, price6, price7]
+
+      def get_range_current(mmr):
+          MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+          for idx, max_val in enumerate(MAX_LISTS, start=1):
+              if mmr <= max_val:
+                  val = max_val - mmr
+                  return math.floor(val/50), idx
+          print('out_of_range')
+          return None, None
+          
+      def get_range_desired(mmr):
+          MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+          for idx, max_val in enumerate(MAX_LISTS, start=1):
+              if mmr <= max_val:
+                  val = mmr-MAX_LISTS[idx-2]
+                  return math.floor(val/50), idx
+          print('out_of_range')
+          return None, None
 
     try:    
       promo_code_amount = self.order.promo_code.discount_amount
     except:
       promo_code_amount = 0
 
-    MIN_DESIRED_VALUE = 50
     ROLE_PRICES = [0, 0, 0.30]
-
-    def get_price(currentMmr, reachedMmr):
-      def get_range(mmr):
-        if mmr <= 2000: return division_price[0]
-        if mmr <= 3000: return division_price[1]
-        if mmr <= 4000: return division_price[2]
-        if mmr <= 5000: return division_price[3]
-        if mmr <= 5500: return division_price[4]
-        if mmr <= 6000: return division_price[5]
-        if mmr > 6000: return  division_price[6]
-
-      currentRange = get_range(currentMmr)
-      reachedRange = get_range(reachedMmr)
-
-      if currentRange == reachedRange: return currentRange
-      else: (reachedRange + currentRange) / 2
 
     current_division = self.current_division
     reached_division = self.reached_division
@@ -194,9 +199,20 @@ class Dota2RankBoostOrder(models.Model):
     if self.order.streaming:
       total_percent += 0.15
 
-    MIN_PRICE = get_price(current_division, reached_division)
-
-    custom_price = (reached_division - current_division) * (MIN_PRICE / MIN_DESIRED_VALUE)
+    curent_mmr_in_c_range, current_range = get_range_current(current_division)  
+    desired_mmr_in_d_range, derired_range = get_range_desired(reached_division)
+    sliced_prices = full_price_val[current_range :derired_range - 1]
+    sum_current = curent_mmr_in_c_range * divison_prices[current_range]
+    sum_desired = desired_mmr_in_d_range * divison_prices[derired_range]
+    clear_res = sum(sliced_prices)
+   # full price for all rank [159.2, 92.6, 116.4, 213, 198.6, 244.6, 1520.4]
+    if current_range == derired_range:
+      if not current_division == 0:
+        current_division -= 1
+      range_value = math.floor((reached_division - current_division )/50)
+      custom_price = round(range_value * divison_prices[current_range], 2)
+    else:
+      custom_price = round(sum_current + sum_desired + clear_res,2)
 
     total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
     
@@ -208,7 +224,6 @@ class Dota2RankBoostOrder(models.Model):
     main_price = self.order.price
 
     percent = round(actual_price / (main_price / 100))
-
     booster_price = round(custom_price * (percent / 100), 2)
     percent_for_view = round((booster_price / actual_price) * 100)
 
@@ -227,19 +242,14 @@ class Dota2PlacementOrder(models.Model):
   )
    
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='dota2_placement_order')
-
   last_rank = models.ForeignKey(Dota2Placement, on_delete=models.CASCADE, default=None, related_name='last_rank')
-
   last_division = models.IntegerField(default=0)
-
   number_of_match = models.IntegerField(default=0)
-
   role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=True, blank=True)
-
   select_champion = models.BooleanField(default=False, blank=True, null=True)
 
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 10
+    # self.order.game_id = 10
     self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:
@@ -247,6 +257,7 @@ class Dota2PlacementOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    # self.send_discord_notification(self)
 
   def get_details(self):
     return f"Boosting of {self.number_of_match} Placement Games With Rank {self.last_rank}"

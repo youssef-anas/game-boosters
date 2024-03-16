@@ -10,6 +10,42 @@ const ROLE_PRICES = [0, 0, 0.30]
 const ranks = ["unrank", "herald", "guardian", "crusader", "archon", "legend", "ancient", "divine", "immortal"]
 const MIN_DESIRED_VALUE = 50
 
+
+function getRangeCurrent(mmr) {
+  const MAX_LISTS = [0, 2000, 3000, 4000, 5000, 5500, 6000, 8000];
+  for (let idx = 1; idx < MAX_LISTS.length; idx++) {
+      const max_val = MAX_LISTS[idx];
+      if (mmr <= max_val) {
+          const val = max_val - mmr;
+          return [Math.floor(val / 50), idx];
+      }
+  }
+  console.log('out_of_range');
+  return [null, null];
+}
+
+function getRangeDesired(mmr) {
+  const MAX_LISTS = [0, 2000, 3000, 4000, 5000, 5500, 6000, 8000];
+  for (let idx = 1; idx < MAX_LISTS.length; idx++) {
+      const max_val = MAX_LISTS[idx];
+      if (mmr <= max_val) {
+          const val = mmr - MAX_LISTS[idx-1];
+          return [Math.floor(val / 50), idx];
+      }
+  }
+  console.log('out_of_range');
+  return [null, null];
+}
+const price1 = Math.round(MMR_PRICES[1] * 40 * 10) / 10;
+const price2 = Math.round(MMR_PRICES[2] * 20 * 10) / 10;
+const price3 = Math.round(MMR_PRICES[3] * 20 * 10) / 10;
+const price4 = Math.round(MMR_PRICES[4] * 20 * 10) / 10;
+const price5 = Math.round(MMR_PRICES[5] * 10 * 10) / 10;
+const price6 = Math.round(MMR_PRICES[6] * 10 * 10) / 10;
+const price7 = Math.round(MMR_PRICES[7] * 40 * 10) / 10;
+
+const full_price_val = [price1, price2, price3, price4, price5, price6, price7];
+
 function getRank(mmr)  {
   if (mmr <= 700) {
     return [ranks[1], 1]
@@ -165,10 +201,25 @@ if(extend_order) {
   currentMmr.prop('disabled', true)
 
   function getDivisionPrice() {
-    const MMR_PRICE = getPrice(valuesToSet[1], valuesToSet[4])
+    // const MMR_PRICE = getPrice(valuesToSet[1], valuesToSet[4])
 
     // Price
-    let price = ((desiredMmrValue - valuesToSet[4]) * (MMR_PRICE / MIN_DESIRED_VALUE));
+    // let price = ((desiredMmrValue - valuesToSet[4]) * (MMR_PRICE / MIN_DESIRED_VALUE));
+
+    let [current_mmr_in_c_range, current_range] = getRangeCurrent(valuesToSet[4]);
+    let [desired_mmr_in_d_range, desired_range] = getRangeDesired(desiredMmrValue);
+    let sliced_prices = full_price_val.slice(current_range, desired_range - 1);
+    let sum_current = current_mmr_in_c_range * MMR_PRICES[current_range];
+    let sum_desired = desired_mmr_in_d_range * MMR_PRICES[desired_range];
+    let clear_res = sliced_prices.reduce((acc, val) => acc + val, 0);
+    let price = 0
+    if(current_range==desired_range){
+      let range_value = Math.floor((desiredMmrValue - valuesToSet[4])/50)
+      price = range_value * MMR_PRICES[current_range]
+    }else{
+      price = sum_current + sum_desired + clear_res
+    }
+
 
     // Apply role extra value
     const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[roleValue]
@@ -223,10 +274,26 @@ if(extend_order) {
     const selectedDivsionServer = division_server_select_element.value;
     const role = role_selected.value;
 
-    const MMR_PRICE = getPrice(currentMmrValue, desiredMmrValue)
+    // const MMR_PRICE = getPrice(currentMmrValue, desiredMmrValue)
 
+
+    let [current_mmr_in_c_range, current_range] = getRangeCurrent(currentMmrValue);
+    let [desired_mmr_in_d_range, desired_range] = getRangeDesired(desiredMmrValue);
+    let sliced_prices = full_price_val.slice(current_range, desired_range - 1);
+    let sum_current = current_mmr_in_c_range * MMR_PRICES[current_range];
+    let sum_desired = desired_mmr_in_d_range * MMR_PRICES[desired_range];
+    let clear_res = sliced_prices.reduce((acc, val) => acc + val, 0);
+    let price = 0
+    if(current_range==desired_range){
+      let range_value = Math.floor((desiredMmrValue - currentMmrValue)/50)
+      price = range_value * MMR_PRICES[current_range]
+    }else{
+      price = sum_current + sum_desired + clear_res
+    }
+    
     // Price
-    let price = (desiredMmrValue - currentMmrValue) * (MMR_PRICE / MIN_DESIRED_VALUE);
+    // let price = (desiredMmrValue - currentMmrValue) * (MMR_PRICE / MIN_DESIRED_VALUE);
+
 
     // Apply role extra value
     const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[role]
@@ -343,12 +410,8 @@ const getPlacementPrice = () => {
   const RANK_PRICE = PLACEMENT_PRICES[getRank(perviousMmrValue)[1]]
 
   let price = (RANK_PRICE * gameCounterValue);
-  console.log(price)
-
   // Apply role extra value
   const total_Percentage_with_role_result = total_Percentage + ROLE_PRICES[role]
-
-  console.log(role)
 
   // Apply extra charges to the result
   price += price * total_Percentage_with_role_result;
