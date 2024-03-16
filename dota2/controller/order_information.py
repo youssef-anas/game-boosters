@@ -19,8 +19,10 @@ import math
 rank_names = ['UNRANK', 'HERALD', 'GUARDIAN', 'CRUSADER', 'ARCHON', 'LEGEND', 'ANCIENT', 'DIVINE', 'IMMORTAL']
 role_names = ['NoRole', 'Core', 'Support']
 ROLE_PRICES = [0, 0, 0.30]
-
 prices = None
+with open('static/dota2/data/prices.json', 'r') as file:
+  prices = json.load(file)
+  pass
 def get_rank_boost_order_result_by_rank(data,extend_order_id):
   MIN_DESIRED_VALUE = 50
   # Division
