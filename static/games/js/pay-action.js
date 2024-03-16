@@ -60,26 +60,82 @@ document.addEventListener('DOMContentLoaded', function() {
     const placementCryptomusBtn = document.getElementById('placement-cryptomus-btn');
 
     if(placementPaypalBtn){
-    placementPaypalBtn.addEventListener('click', function() {
-      // Get the PayPal URL from data attribute
-      const paypalUrl = urls.dataset.paypalUrl;
-      // Set the form action
-      placementForm.action = paypalUrl;
-      // Submit the form
-      placementForm.submit();
-    });
+      placementPaypalBtn.addEventListener('click', function() {
+        // Get the PayPal URL from data attribute
+        const paypalUrl = urls.dataset.paypalUrl;
+        // Set the form action
+        placementForm.action = paypalUrl;
+        // Submit the form
+        placementForm.submit();
+      });
     }
 
     if(placementCryptomusBtn){
-    placementCryptomusBtn.addEventListener('click', function() {
-      // Get the Cryptomus URL from data attribute
-      const cryptomusUrl = urls.dataset.cryptomusUrl;
-      // Set the form action
-      placementForm.action = cryptomusUrl;
-      // Submit the form
-      placementForm.submit();
-    });
-  }
+      placementCryptomusBtn.addEventListener('click', function() {
+        // Get the Cryptomus URL from data attribute
+        const cryptomusUrl = urls.dataset.cryptomusUrl;
+        // Set the form action
+        placementForm.action = cryptomusUrl;
+        // Submit the form
+        placementForm.submit();
+      });
+    }
   }
 
+  // --------------------- OTHERS ---------------------
+  if(game_id == 9) {
+    // --------------------- SEASONAL ---------------------
+    const seasonalForm = document.getElementById('seasonal-reward-form');
+    const seasonalPaypalBtn = document.getElementById('seasonal-paypal-btn');
+    const seasonalCryptomusBtn = document.getElementById('seasonal-cryptomus-btn');
+
+    if(seasonalPaypalBtn){
+      seasonalPaypalBtn.addEventListener('click', function() {
+        // Get the PayPal URL from data attribute
+        const paypalUrl = urls.dataset.paypalUrl;
+        // Set the form action
+        seasonalForm.action = paypalUrl;
+        // Submit the form
+        seasonalForm.submit();
+      });
+    }
+
+    if(seasonalCryptomusBtn){
+      seasonalCryptomusBtn.addEventListener('click', function() {
+        // Get the Cryptomus URL from data attribute
+        const cryptomusUrl = urls.dataset.cryptomusUrl;
+        // Set the form action
+        seasonalForm.action = cryptomusUrl;
+        // Submit the form
+        seasonalForm.submit();
+      });
+    }
+
+    // --------------------- TOURNAMENT ---------------------
+    const tournamentForm = document.getElementById('tournament-boost-form');
+    const tournamentPaypalBtn = document.getElementById('tournament-paypal-btn');
+    const tournamentCryptomusBtn = document.getElementById('tournament-cryptomus-btn');
+
+    if(tournamentPaypalBtn){
+      tournamentPaypalBtn.addEventListener('click', function() {
+        // Get the PayPal URL from data attribute
+        const paypalUrl = urls.dataset.paypalUrl;
+        // Set the form action
+        tournamentForm.action = paypalUrl;
+        // Submit the form
+        tournamentForm.submit();
+      });
+    }
+
+    if(tournamentCryptomusBtn){
+      tournamentCryptomusBtn.addEventListener('click', function() {
+        // Get the Cryptomus URL from data attribute
+        const cryptomusUrl = urls.dataset.cryptomusUrl;
+        // Set the form action
+        tournamentForm.action = cryptomusUrl;
+        // Submit the form
+        tournamentForm.submit();
+      });
+    }
+  }
 });

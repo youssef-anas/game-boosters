@@ -78,6 +78,7 @@ class RocketLeagueDivisionOrder(models.Model):
   desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   current_marks = models.IntegerField(default=0,blank=True, null=True)
   reached_marks = models.IntegerField(default=0,blank=True, null=True)
+
   created_at = models.DateTimeField(auto_now_add =True)
   
   def send_discord_notification(self):
@@ -208,6 +209,8 @@ class RocketLeaguePlacementOrder(models.Model):
   last_rank = models.ForeignKey(RocketLeaguePlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
   number_of_match = models.IntegerField(default=10)
 
+  created_at = models.DateTimeField(auto_now_add =True)
+
   def send_discord_notification(self):
     if self.order.status == 'Extend':
         return print('Extend Order')
@@ -256,10 +259,26 @@ class RocketLeaguePlacementOrder(models.Model):
   def __str__(self):
     return self.get_details()
   
+  def get_order_price(self):
+    custom_price = self.order.money_owed
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    booster_price = self.order.money_owed
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+
+    return {"booster_price": booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
 class RocketLeagueSeasonalOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_seasonal_order')
   current_rank = models.ForeignKey(RocketLeagueSeasonal, on_delete=models.CASCADE, default=None, related_name='current_rank')
   number_of_wins = models.IntegerField(default=5)
+
+  created_at = models.DateTimeField(auto_now_add =True)
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
@@ -278,9 +297,25 @@ class RocketLeagueSeasonalOrder(models.Model):
   def __str__(self):
     return self.get_details()
   
+  def get_order_price(self):
+    custom_price = self.order.money_owed
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    booster_price = self.order.money_owed
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+
+    return {"booster_price": booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
 class RocketLeagueTournamentOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_ournament_order')
   current_league = models.ForeignKey(RocketLeagueTournament, on_delete=models.CASCADE, default=None, related_name='current_league')
+
+  created_at = models.DateTimeField(auto_now_add =True)
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
@@ -298,3 +333,17 @@ class RocketLeagueTournamentOrder(models.Model):
 
   def __str__(self):
     return self.get_details()
+  
+  def get_order_price(self):
+    custom_price = self.order.money_owed
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    booster_price = self.order.money_owed
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+
+    return {"booster_price": booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

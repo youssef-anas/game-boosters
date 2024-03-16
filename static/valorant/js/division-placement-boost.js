@@ -276,11 +276,10 @@ Promise.all([
     $('.placements-boost .game_count-selected-info').html(`${gameCounter} Matches`)
   
     $('.pervious').removeClass().addClass(`pervious ${pervious_rank_name}`);
-    $('.matches-amount').removeClass().addClass(`pervious ${pervious_rank_name}`);
+    $('.matches-amount').removeClass().addClass(`matches-amount ${pervious_rank_name}`);
 
     $('.total-price #placements-boost-price').text(`$${price}`)
 
-  
     if ($('.placements-boost input[name="game_type"]').val() == 'P') {
       $('.placements-boost input[name="last_rank"]').val(pervious_rank);
       $('.placements-boost input[name="number_of_match"]').val(gameCounter);
