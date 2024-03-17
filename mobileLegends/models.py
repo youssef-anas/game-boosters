@@ -142,7 +142,7 @@ class MobileLegendsDivisionOrder(models.Model):
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f"From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f"To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} \n server USA" # change server next
+            f"To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)} \n server {self.order.customer_server}"
         ),
         "color": 0x3498db,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 

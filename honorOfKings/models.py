@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import five_romanize_division
 import json
+import requests
 
 # Create your models here.
 class HonorOfKingsRank(models.Model):
@@ -59,16 +60,48 @@ class HonorOfKingsDivisionOrder(models.Model):
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
 
+  
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discord.com/api/webhooks/1218995123841663006/VCxXOoREssz7jgyXnKmxRVB6qINi15FccHPMt0gCJALNNf1LBzaZsgyV8cXL5lZEy6sw'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Mobile Legends",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} Marks {self.current_marks} "
+            f"To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)} \n server {self.order.customer_server}"
+        ),
+        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
   def save_with_processing(self, *args, **kwargs):
-    self.order.game_id = 11
-    self.order.game_type = 'D'
+    # self.order.game_id = 11
+    # self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
       self.order.name = f'HOK{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
-    # self.send_discord_notification()
+    self.send_discord_notification()
     
   def get_details(self):
     return f"From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} {self.current_marks} Stars To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)}"
