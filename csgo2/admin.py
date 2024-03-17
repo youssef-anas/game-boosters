@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Csgo2Rank, Csgo2Tier
 
-# Register your models here.
+admin.site.register(Csgo2Rank)
+admin.site.register(Csgo2Tier)

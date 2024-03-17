@@ -172,12 +172,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 order = Game.objects.create(**default_fields)
             # Overwatch Division 
             elif game_id == 12 and type == 'D':
-                print("iam here")
                 order = Game.objects.create(**default_fields, role=role)
-                print('iam end')
             # csgo2
             elif game_id == 13:
-                pass
+                order = Game.objects.create(**default_fields)
+            else:
+                print('error in game id')    
 
         elif status == 'Extend':
             print(f"order extended from:  {order_name}")
@@ -257,7 +257,9 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 order = Game.objects.create(**extend_fields, role= extend_order_role)
             # csgo2
             elif game_id == 13:
-                pass
+                order = Game.objects.create(**extend_fields)
+            else:
+                print('error in game id')  
         content_type = ContentType.objects.get_for_model(order)
         baseOrder.content_type = content_type
         baseOrder.object_id = order.pk

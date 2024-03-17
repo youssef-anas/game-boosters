@@ -11,6 +11,7 @@ from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
 from overwatch2.models import Overwatch2DivisionOrder, Overwatch2PlacementOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from dota2.models import Dota2RankBoostOrder, Dota2PlacementOrder
+from csgo2.models import Csgo2DivisionOrder, Csgo2PremierOrder, CsgoFaceitOrder
 from accounts.models import BaseOrder
 from django.db.models import Model
 from django.utils import timezone
@@ -138,7 +139,18 @@ def check_pubg_type(type) -> Model:
     }
     Game = PUBG_MODELS.get(type, None)
     if not Game:
-        raise ValueError(f"Invalid Overwatch2 game type: {type}")
+        raise ValueError(f"Invalid Pubg game type: {type}")
+    return Game
+
+def check_csgo2_type(type) -> Model:
+    CSGO2_MODELS = {
+        'D': Csgo2DivisionOrder,
+        'A': Csgo2PremierOrder,
+        'T': CsgoFaceitOrder,
+    }
+    Game = CSGO2_MODELS.get(type, None)
+    if not Game:
+        raise ValueError(f"Invalid Csgo2 game type: {type}")
     return Game
 
 
@@ -157,7 +169,7 @@ def get_game(id, type) -> Model:
         10: check_dota2_type,
         11: check_hok_type,
         12: check_overwatch2_type,
-        13: 'csgo2',
+        13: check_csgo2_type,
     }
     Game = GAME_MODELS.get(id, None)
     if callable(Game):  

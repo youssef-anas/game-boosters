@@ -1,28 +1,39 @@
-from django.shortcuts import get_object_or_404
-from wildRift.models import *
 import json
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from accounts.models import PromoCode
+from accounts.models import PromoCode, BaseOrder
 
 User = get_user_model()
 
-division_names = ['','IV','III','II','I']  
-rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
+rank_names = [
+    "Silver I",
+    "Silver II",
+    "Silver III",
+    "Silver IV",
+    "Silver Elite",
+    "SE Master",
+    "Gold NV I",
+    "Gold NV II",
+    "Gold NV III",
+    "Gold NV Master",
+    "Master Grd I",
+    "Master Grd II",
+    "Master Grd Elite",
+    "D Master Grd",
+    "Leg Eagle",
+    "Leg Eagle Master",
+    "Supre Master FC",
+    "Global Elite"
+]
 
-def get_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data, extend_order_id):
     current_rank = data['current_rank']
-    current_division = data['current_division']
-    marks = data['marks']
     desired_rank = data['desired_rank']
-    desired_division = data['desired_division']
-    total_percent = 0
     duo_boosting = data['duo_boosting']
     select_booster = data['select_booster']
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
-    booster_champions = data['booster_champions']
     server = data['server']
     promo_code = data['promo_code']
 
@@ -30,8 +41,10 @@ def get_order_result_by_rank(data,extend_order_id):
     select_booster_value = 0
     turbo_boost_value = 0
     streaming_value = 0
-    booster_champions_value = 0
+    # booster_champions_value = 0
     promo_code_amount = 0
+    total_percent = 0
+    promo_code_id = 0
 
     boost_options = []
 
@@ -55,35 +68,28 @@ def get_order_result_by_rank(data,extend_order_id):
         boost_options.append('STREAMING')
         streaming_value = 1
 
-    if booster_champions:
-        total_percent += 0.0
-        boost_options.append('BOOSTER Champions')
-        booster_champions_value = 1
 
     if promo_code != 'null':   
         try:
             promo_code_obj = PromoCode.objects.get(code=promo_code.lower())
             promo_code_amount = promo_code_obj.discount_amount
+            promo_code_id = promo_code_obj.id
         except PromoCode.DoesNotExist:
             promo_code_amount = 0
+            promo_code_id = 0
     
 
     # Read data from JSON file
-    with open('static/wildRift/data/divisions_data.json', 'r') as file:
+    with open('static/csgo2/data/divisions_data.json', 'r') as file:
         division_price = json.load(file)
         flattened_data = [item for sublist in division_price for item in sublist]
         flattened_data.insert(0,0)
     ##
-    with open('static/wildRift/data/marks_data.json', 'r') as file:
-        marks_data = json.load(file)
-        marks_data.insert(0,[0,0,0,0,0,0,0])
-    ##    
-    start_division = ((current_rank-1)*4) + current_division
-    end_division = ((desired_rank-1)*4)+ desired_division
-    marks_price = marks_data[current_rank][marks]
+    start_division = ((current_rank-1)*1) + 1
+    end_division = ((desired_rank-1)*1)+ 1
     sublist = flattened_data[start_division:end_division ]
     total_sum = sum(sublist)
-    price = total_sum - marks_price
+    price = total_sum 
     price += (price * total_percent)
     price -= price * (promo_code_amount/100)
     price = round(price, 2)
@@ -101,9 +107,9 @@ def get_order_result_by_rank(data,extend_order_id):
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{price}-{extend_order_id}-{server}-{booster_champions_value}-{timezone.now()}'
+    invoice = f'CS-13-D-{current_rank}-{1}-{0}-{desired_rank}-{1}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{0}-{promo_code_id}-0-0-0-{timezone.now()}'
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-    name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
+    name = f'Cs Go2, BOOSTING FROM {rank_names[current_rank]} TO {rank_names[desired_rank]} {boost_string}'
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})

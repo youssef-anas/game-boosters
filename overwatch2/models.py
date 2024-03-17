@@ -76,6 +76,7 @@ class Overwatch2DivisionOrder(models.Model):
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=False, blank=True, default=0)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     # booster_champions = models.BooleanField(default=False, blank=True)
 
@@ -229,8 +230,10 @@ class Overwatch2PlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='ovw2_placement_order')
   last_rank = models.ForeignKey(Overwatch2Placement, on_delete=models.CASCADE, default=None, related_name='ovw2_last_rank')
   number_of_match = models.IntegerField(default=5)
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
-  choose_champions = models.BooleanField(default=False, blank=True, null=True)
+  select_champions = models.BooleanField(default=False, blank=True, null=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -263,8 +266,6 @@ class Overwatch2PlacementOrder(models.Model):
 
 
   def save_with_processing(self, *args, **kwargs):
-    # self.order.game_id = 12
-    # self.order.game_name = 'overwatch2'
     self.order.game_type = 'P'
     self.order.details = self.get_details()
     if not self.order.name:
