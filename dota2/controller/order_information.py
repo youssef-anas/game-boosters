@@ -4,6 +4,7 @@ from django.utils import timezone
 from dota2.models import Dota2MmrPrice, BaseOrder
 from accounts.models import PromoCode
 from booster.models import Booster
+import math
 
 # Ranking System
 # Herald — 0-769 MMR.
@@ -18,33 +19,46 @@ from booster.models import Booster
 rank_names = ['UNRANK', 'HERALD', 'GUARDIAN', 'CRUSADER', 'ARCHON', 'LEGEND', 'ANCIENT', 'DIVINE', 'IMMORTAL']
 role_names = ['NoRole', 'Core', 'Support']
 ROLE_PRICES = [0, 0, 0.30]
-
 prices = None
 with open('static/dota2/data/prices.json', 'r') as file:
   prices = json.load(file)
-
+  pass
 def get_rank_boost_order_result_by_rank(data,extend_order_id):
   MIN_DESIRED_VALUE = 50
   # Division
-  division_price = prices['division']
+  with open('static/dota2/data/prices.json', 'r') as file:
+    prices = json.load(file)
+    pass
 
-  def get_price(currentMmr, desiredMmr):
-    def get_range(mmr):
-      if mmr <= 2000: return division_price[0]
-      if mmr <= 3000: return division_price[1]
-      if mmr <= 4000: return division_price[2]
-      if mmr <= 5000: return division_price[3]
-      if mmr <= 5500: return division_price[4]
-      if mmr <= 6000: return division_price[5]
-      if mmr > 6000: return  division_price[6]
+  divison_prices = prices['division']
+  divison_prices.insert(0,0)
+  price1 = round(divison_prices[1]*40,1)
+  price2 = round(divison_prices[2]*20,1)
+  price3 = round(divison_prices[3]*20,1)
+  price4 = round(divison_prices[4]*20,1)
+  price5 = round(divison_prices[5]*10,1)
+  price6 = round(divison_prices[6]*10,1)
+  price7 = round(divison_prices[7]*40,1) 
+  full_price_val = [price1, price2, price3, price4, price5, price6, price7]
 
-    currentRange = get_range(currentMmr)
-    desiredRange = get_range(desiredMmr)
-
-    if currentRange == desiredRange: return currentRange
-    else: return (desiredRange + currentRange) / 2
-
-  # Ranks
+  def get_range_current(mmr):
+      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+      for idx, max_val in enumerate(MAX_LISTS, start=1):
+          if mmr <= max_val:
+              val = max_val - mmr
+              return math.floor(val/50), idx
+      print('out_of_range')
+      return None, None
+      
+  def get_range_desired(mmr):
+      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+      for idx, max_val in enumerate(MAX_LISTS, start=1):
+          if mmr <= max_val:
+              val = mmr-MAX_LISTS[idx-2]
+              return math.floor(val/50), idx
+      print('out_of_range')
+      return None, None
+# Ranks
   current_rank = data['current_rank']
   desired_rank = data['desired_rank']
 
@@ -111,10 +125,19 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
   
+  curent_mmr_in_c_range, current_range = get_range_current(current_division)
+  desired_mmr_in_d_range, derired_range = get_range_desired(desired_division)
+  sliced_prices = full_price_val[current_range :derired_range - 1]
+  sum_current = curent_mmr_in_c_range * divison_prices[current_range]
+  sum_desired = desired_mmr_in_d_range * divison_prices[derired_range]
+  clear_res = sum(sliced_prices)
+  # full price for all rank [159.2, 92.6, 116.4, 213, 198.6, 244.6, 1520.4]
 
-  MMR_PRICE = get_price(current_division, desired_division)
-
-  price = (desired_division - current_division) * (MMR_PRICE / MIN_DESIRED_VALUE)
+  if current_range == derired_range:
+    range_value = math.floor((desired_division - current_division )/50)
+    price = round(range_value * divison_prices[current_range], 2)
+  else:
+    price = round(sum_current + sum_desired + clear_res,2)
 
   total_Percentage_with_role_result = total_percent + ROLE_PRICES[role]
   

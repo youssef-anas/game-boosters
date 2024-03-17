@@ -159,7 +159,6 @@ def booster_orders(request):
     orders_with_percentage = []
     messages=[]
     for base_order in orders:
-        print('wwwwwwwww\n\n\n\n\n\n',base_order)
         content_type = base_order.content_type
         game = []
         if content_type:
