@@ -131,6 +131,9 @@
                 {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.current_division}} MMR</p>
 
+                {% elif order.order.order.game.link == 'csgo2' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.current_rank}}</p>
+
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -186,6 +189,9 @@
                 {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.reached_division }} MMR</p>
 
+                {% elif order.order.order.game.link == 'csgo2'  %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.reached_rank}}</p>
+
                 {% endif %}
 
                 <!-- Mark Depend On Game -->
@@ -239,6 +245,9 @@
 
                 {% elif order.order.order.game.link == 'wow' or order.order.order.game.link == 'dota2' %}
                 <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.desired_division }} MMR</p>
+
+                {% elif order.order.order.game.link == 'csgo2' %}
+                <p class="my-3 text-uppercase px-0 mb-0">{{ order.order.desired_rank }}</p>
 
                 {% endif %}
               </div>
@@ -304,6 +313,9 @@
 
             {% elif order.order.order.game.link == 'overwatch2' %}
               {% include 'overwatch2/order_update.html' %}
+
+            {% elif order.order.order.game.link == 'csgo2' %}
+              {% include 'csgo2/order_update.html' %}
               
             {% endif %}
 

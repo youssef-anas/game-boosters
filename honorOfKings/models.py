@@ -60,14 +60,14 @@ class HonorOfKingsDivisionOrder(models.Model):
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
 
-  
+
   def send_discord_notification(self):
     if self.order.status == 'Extend':
         return print('Extend Order')
     discord_webhook_url = 'https://discord.com/api/webhooks/1218995123841663006/VCxXOoREssz7jgyXnKmxRVB6qINi15FccHPMt0gCJALNNf1LBzaZsgyV8cXL5lZEy6sw'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Mobile Legends",
+        "title": "Honor Of Kings",
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f"From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} Marks {self.current_marks} "

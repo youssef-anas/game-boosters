@@ -1,40 +1,32 @@
 <div class="updata-now">
   <h5 class="my-4">Now Rank</h5>
-  <form action="{% url 'order.update.rating' %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
     {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
     <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
     <input type="hidden" name="order_game_id" value="{{ order.order.order.game_id }}">
 
     <div class="mb-3">
-      <select class="form-select custom-select" required name="reached_rank" id="reached_rank_wildrift">
-        {% for rank in wildrift_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
-      </select>
-    </div>
-
-    <div class="input-group mb-3">
-      <select class="form-select custom-select" required name="reached_division" id="reached_division_wildrift">
-        <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>IV</option>
-        <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>III</option>
-        <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>II</option>
-        <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>I</option>
-      </select>
-    </div>
-
-    <div class="input-group mb-3">
-      <select class="form-select custom-select" required name="reached_marks" id="reached_marks_wildrift">
-        <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 Mark</option>
-        <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>1 Marks</option>
-        <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>2 Marks</option>
-        <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>3 Marks</option>
-        <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>4 Marks</option>
-        <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>5 Marks</option>
-        <option value="6" {% if order.order.reached_marks == 6 %}selected{% endif %}>6 Marks</option>
-      </select>
+      <select class="form-select custom-select" required name="reached_rank" id="reached_rank_csgo">
+        <option value="1" {% if order.order.reached_rank.id == 1 %}selected{% endif %}>Silver I</option>
+        <option value="2" {% if order.order.reached_rank.id == 2 %}selected{% endif %}>Silver II</option>
+        <option value="3" {% if order.order.reached_rank.id == 3 %}selected{% endif %}>Silver III</option>
+        <option value="4" {% if order.order.reached_rank.id == 4 %}selected{% endif %}>Silver IV</option>
+        <option value="5" {% if order.order.reached_rank.id == 5 %}selected{% endif %}>Silver Elite</option>
+        <option value="6" {% if order.order.reached_rank.id == 6 %}selected{% endif %}>SE Master</option>
+        <option value="7" {% if order.order.reached_rank.id == 7 %}selected{% endif %}>Gold NV I</option>
+        <option value="8" {% if order.order.reached_rank.id == 8 %}selected{% endif %}>Gold NV II</option>
+        <option value="9" {% if order.order.reached_rank.id == 9 %}selected{% endif %}>Gold NV III</option>
+        <option value="10" {% if order.order.reached_rank.id == 10 %}selected{% endif %}>Gold NV Master</option>
+        <option value="11" {% if order.order.reached_rank.id == 11 %}selected{% endif %}>Master Grd I</option>
+        <option value="12" {% if order.order.reached_rank.id == 12 %}selected{% endif %}>Master Grd II</option>
+        <option value="13" {% if order.order.reached_rank.id == 13 %}selected{% endif %}>Master Grd Elite</option>
+        <option value="14" {% if order.order.reached_rank.id == 14 %}selected{% endif %}>D Master Grd</option>
+        <option value="15" {% if order.order.reached_rank.id == 15 %}selected{% endif %}>Leg Eagle</option>
+        <option value="16" {% if order.order.reached_rank.id == 16 %}selected{% endif %}>Leg Eagle Master</option>
+        <option value="17" {% if order.order.reached_rank.id == 17 %}selected{% endif %}>Supre Master FC</option>
+        <option value="18" {% if order.order.reached_rank.id == 18 %}selected{% endif %}>Global Elite</option>
+    </select>
     </div>
 
     <div class="text-end">

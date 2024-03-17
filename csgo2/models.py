@@ -50,7 +50,7 @@ class Csgo2DivisionOrder(models.Model):
         discord_webhook_url = 'https://discord.com/api/webhooks/1218965021120270336/iFQDYMWYK7Z6DReMHG6B1KJESZyGMlV2mFv_E04TzcFfZF--_0J65S6Lg9sYMNTvxaov'
         current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         embed = {
-            "title": "Overwatch 2",
+            "title": "Csgo 2",
             "description": (
                 f"**Order ID:** {self.order.name}\n"
                 f" From {str(self.current_rank).upper()}"
@@ -76,7 +76,7 @@ class Csgo2DivisionOrder(models.Model):
         self.order.details = self.get_details()
         # 
         if not self.order.name:
-            self.order.name = f'CsGo{self.order.id}'
+            self.order.name = f'Csgo{self.order.id}'
         self.order.update_actual_price()
         self.order.save()
         super().save(*args, **kwargs)
@@ -110,8 +110,8 @@ class Csgo2DivisionOrder(models.Model):
         current_rank = self.current_rank.id
         reached_rank = self.reached_rank.id
 
-        current_division = self.current_division
-        reached_division = self.reached_division
+        # current_division = self.current_division
+        # reached_division = self.reached_division
 
         total_percent = 0
 
@@ -128,8 +128,8 @@ class Csgo2DivisionOrder(models.Model):
             total_percent += 0.15
 
 
-        start_division = ((current_rank-1)*1) + current_division
-        end_division = ((reached_rank-1)*1)+ reached_division
+        start_division = ((current_rank-1)*1) + 1
+        end_division = ((reached_rank-1)*1)+ 1
 
         sublist = flattened_data[start_division:end_division]
 
