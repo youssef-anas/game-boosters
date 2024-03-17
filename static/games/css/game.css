@@ -25,6 +25,13 @@
   background-image: url('./../images/dota2_bg.jpg');
   background-position-y: -100px;
 }
+.game-landing.tft {
+  background-image: url('./../images/tft_bg.jpg');
+}
+.game-landing.lol {
+  background-image: url('./../images/lol_bg.png');
+  background-position-y: -50px;
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

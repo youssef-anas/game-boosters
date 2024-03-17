@@ -119,7 +119,7 @@ Promise.all([
       $('.desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
       $('.current-selected-info').html(`${ranksNames[valuesToSet[3]]} ${divisionNames[valuesToSet[4]]}`);
-      $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
+      $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank == 8 ? desired_division_name : ''}`)
 
       $('.current').removeClass().addClass(`current ${current_rank_name}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
@@ -189,7 +189,7 @@ Promise.all([
       $('.desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
 
       $('.current-selected-info').html(`${current_rank_name} ${current_division_name} ${mark_index} Marks`);
-      $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank_name != 'master' ? desired_division_name : ''}`)
+      $('.desired-selected-info').html(`${desired_rank_name} ${desired_rank == 8 ? desired_division_name : ''}`)
 
       $('.current').removeClass().addClass(`current ${current_rank_name}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)

@@ -356,7 +356,6 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
     get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_rl_player=True)
   else:
     booster_id = 0
-    
 
   invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
   print('Invoice', invoice)

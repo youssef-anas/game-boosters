@@ -3,6 +3,24 @@ const ranksNames = ['unrank', 'iron', 'bronze', 'silver', 'gold', 'platinum', 'd
 
 const divisionNames = [0, 1, 2, 3]
 
+// Function That Change UI Of Range
+function changeUI(achivedValue, element, steps, miuns = 0) {
+  const progress = ((achivedValue - miuns) / (element.prop("max") - miuns) ) * 100;
+
+  element.css({
+    "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
+  });
+  
+  steps.each((step, index) => {
+    
+    if (parseInt(index.innerText) < achivedValue) {
+      index.classList.add('selected')
+    } else {
+      index.classList.remove('selected');
+    }
+  });
+}
+
 // ----------------------------- Division Boost ---------------------------------
 
 // Read Values From Json File
@@ -242,47 +260,57 @@ Promise.all([
 
   
   // ----------------------------- Placments Boost ---------------------------------
+  // Pervious Varible
   const placementsRanks = $('input[name="placement-ranks"]');
-  const gameCountInput = $("#game-count");
-  const steps = $('.step-indicator .step');
-  const gameCounterInitial = Number(gameCountInput.val())
-  const initiallyCheckedIndexRank = $('input[name="placement-ranks"]').index($('input[name="placement-ranks"]:checked'));
-  const initiallyCheckedRank = $('input[name="placement-ranks"]').eq(initiallyCheckedIndexRank);
-  const initiallyCheckedIndexRankPrice = initiallyCheckedRank.data('price');
+
+  // Game Count
+  const gameCount = $("#game-count");
+  const gameCountSteps = $('.step-indicator .step');
+
+  // Server
   const placement_server_select_element = $('.placement-servers-select');
   
-  let perviousElement = Array.from(placementsRanks).find(radio => radio.checked);
-  
-  let pervious_rank = initiallyCheckedIndexRank
-  let pervious_rank_name = ranksNames[pervious_rank]
-  let rank_price = initiallyCheckedIndexRankPrice
-  let gameCounter = gameCounterInitial
-  let selectedPlacementServer = placement_server_select_element.val()
-  
   const getPlacementPrice = () => {
-    let price = (rank_price * gameCounter);
+    const checkedIndexRank = placementsRanks.index($('input[name="placement-ranks"]:checked'));
+    const perviousElementRank = placementsRanks.eq(checkedIndexRank);
+
+    const perviousRank = checkedIndexRank;
+  
+    const perviousRankName = ranksNames[perviousRank]
+    
+    const gameCounterValue = Number(gameCount.val())
+    
+    const rankPrice = perviousElementRank.data('price');
+
+    const selectedPlacementServer = placement_server_select_element.val()
+
+    let price = (rankPrice * gameCounterValue);
+
     // Apply extra charges to the result
     price = price + (price * total_Percentage)
+
     // Apply promo code 
     price -= price * (discount_amount / 100 )
-  
+
     price = parseFloat(price.toFixed(2))
   
     // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
-    $('.placements-boost .pervious-rank-selected-img').attr('src', $(perviousElement).data('img'))
-    $('.num-of-match').text(gameCounter);
+    $('.placements-boost .pervious-rank-selected-img').attr('src', $(perviousElementRank).data('img'))
+    $('.num-of-match').text(gameCounterValue);
 
-    $('.placements-boost .pervious-selected-info').html(`${pervious_rank_name}`)
-    $('.placements-boost .game_count-selected-info').html(`${gameCounter} Matches`)
-  
-    $('.pervious').removeClass().addClass(`pervious ${pervious_rank_name}`);
-    $('.matches-amount').removeClass().addClass(`matches-amount ${pervious_rank_name}`);
+    $('.placements-boost .pervious-selected-info').html(`${perviousRankName}`)
+    $('.placements-boost .game-count-selected-info').html(`${gameCounterValue} Matches`)
+
+    $('.pervious').removeClass().addClass(`pervious ${perviousRankName}`);
+    $('.matches-amount').removeClass().addClass(`matches-amount ${perviousRankName}`);
 
     $('.total-price #placements-boost-price').text(`$${price}`)
 
+    changeUI(gameCounterValue, gameCount, gameCountSteps, 1)
+
     if ($('.placements-boost input[name="game_type"]').val() == 'P') {
-      $('.placements-boost input[name="last_rank"]').val(pervious_rank);
-      $('.placements-boost input[name="number_of_match"]').val(gameCounter);
+      $('.placements-boost input[name="last_rank"]').val(perviousRank);
+      $('.placements-boost input[name="number_of_match"]').val(gameCounterValue);
       $('.placements-boost input[name="server"]').val(selectedPlacementServer);
       $('.placements-boost input[name="price"]').val(price);
     }
@@ -291,47 +319,13 @@ Promise.all([
   getPlacementPrice()
   
   placementsRanks.each(function (index, radio) {
-    $(radio).on('change', function () {
-      const selectedIndex = placementsRanks.index(radio);
-      pervious_rank = selectedIndex;
-      pervious_rank_name = ranksNames[pervious_rank]
-      rank_price = $(radio).data('price');
-
-      // Look Here:- When Desired Rank Change Change Value So Image Changed 
-      perviousElement = Array.from(placementsRanks).find(radio => radio.checked);
-
-      getPlacementPrice()
-    });
+    $(radio).on('change', getPlacementPrice);
   });
   
-  gameCountInput.on("input", function (event) {
-    gameCounter = Number(event.target.value);
-    
-    const progress = ((gameCounter - 1) / (gameCountInput.prop("max") - 1)) * 100;
-  
-    gameCountInput.css({
-      "background": `linear-gradient(to right, #F36E3F ${progress}%, #251D16 ${progress}%)`
-    });
-  
-    steps.each((step, index) => {
-      var $step = $(step);
-      if (index < gameCounter) {
-        $step.addClass('selected');
-      } else {
-        $step.removeClass('selected');
-      }
-    });
-  
-    getPlacementPrice()
-  
-  })
+  gameCount.on("input", getPlacementPrice);
 
   // Server Changes
-  placement_server_select_element.on("change", function() {
-
-    selectedPlacementServer = $(this).val();
-    getPlacementPrice();
-  });
+  placement_server_select_element.on("change", getPlacementPrice);
 
   // ----------------------------- Others ---------------------------------
 

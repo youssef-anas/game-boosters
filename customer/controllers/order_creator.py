@@ -214,7 +214,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match,select_champion=select_champion)
             # TFT - Division
             elif game_id == 5 and type == 'D':
-                order = Game.objects.create(**extend_fields, speed_up_boost=turbo_boost)
+                order = Game.objects.create(**extend_fields)
             # TFT - Placement
             elif game_id == 5 and type == 'P':
                 order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match)

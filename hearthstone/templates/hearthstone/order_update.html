@@ -1,18 +1,22 @@
 <div class="updata-now">
   <h5 class="my-4">Now Rank</h5>
-  <form action="{% url 'order.update.rating' %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
     {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
-    <input type="hidden" name="order_id" value="{{ order.order.order.id }}">
-    <input type="hidden" name="order_game_id" value="{{ order.order.order.game_id }}">
 
     <div class="mb-3">
       <select class="form-select custom-select" required name="reached_rank" id="reached_rank">
-        {% for rank in hearthstone_ranks %}
-        {% with mark=rank.mark %}
-        <option value="{{ rank.id }}" data-mark="{{ mark.mark_number }}" {% if rank.rank_name|lower == order.order.reached_rank|lower %} selected {% endif %}>{{ rank.rank_name }}</option>
-        {% endwith %}
-        {% endfor %}
+        <option value=1 {% if order.order.reached_rank|lower == 'bronze' %} selected {% endif %}>bronze</option>
+
+        <option value=2 {% if order.order.reached_rank|lower == 'silver' %} selected {% endif %}>silver</option>
+
+        <option value=3 {% if order.order.reached_rank|lower == 'gold' %} selected {% endif %}>gold</option>
+
+        <option value=4 {% if order.order.reached_rank|lower == 'platinum' %} selected {% endif %}>platinum</option>
+
+        <option value=5 {% if order.order.reached_rank|lower == 'diamond' %} selected {% endif %}>diamond</option>
+
+        <option value=6 {% if order.order.reached_rank|lower == 'legend' %} selected {% endif %}>legend</option>
       </select>
     </div>
 

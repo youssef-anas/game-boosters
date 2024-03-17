@@ -4,5 +4,6 @@ from leagueOfLegends.views import *
 
 urlpatterns = [
   path('', leagueOfLegendsGetBoosterByRank, name='lol'),
-  path('paypal/', view_that_asks_for_money, name='lol-paypal-redirect'),
+  path('paypal/', pay_with_paypal, name='lol-paypal-redirect'),
+  path('cryptomus/', pay_with_cryptomus, name='lol-cryptomus-redirect'),
 ]

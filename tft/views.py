@@ -9,8 +9,8 @@ from tft.models import *
 from tft.controller.serializers import DivisionSerializer, PlacementSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from tft.controller.order_information import *
+from booster.models import OrderRating
 from accounts.models import TokenForPay
-
 
 
 def tftGetBoosterByRank(request):
@@ -30,7 +30,7 @@ def tftGetBoosterByRank(request):
   ]
 
   marks_data = [
-    [0,mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
     for mark in marks
   ]
 
@@ -49,17 +49,22 @@ def tftGetBoosterByRank(request):
     json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
+
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 5)
+
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "placements": placements,
-    "order":order,
+    "order": order,
+    "feedbacks": feedbacks,
   }
   return render(request,'tft/GetBoosterByRank.html', context)
 
 # Paypal
 @login_required
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -100,7 +105,7 @@ def view_that_asks_for_money(request):
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "tft/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       # return JsonResponse({'error': serializer.errors}, status=400)
       messages.error(request, 'Ensure this value is greater than or equal to 10')
       return redirect(reverse_lazy('tft'))
@@ -108,3 +113,12 @@ def view_that_asks_for_money(request):
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
+@login_required
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

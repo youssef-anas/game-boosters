@@ -10,6 +10,7 @@ from leagueOfLegends.controller.serializers import DivisionSerializer, Placement
 from paypal.standard.forms import PayPalPaymentsForm
 from leagueOfLegends.controller.order_information import *
 from accounts.models import TokenForPay
+from booster.models import OrderRating
 
 
 def leagueOfLegendsGetBoosterByRank(request):
@@ -48,16 +49,21 @@ def leagueOfLegendsGetBoosterByRank(request):
     json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
+
+  # Feedbacks
+  feedbacks = OrderRating.objects.filter(order__game_id = 4)
+
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "placements": placements,
     "order":order,
+    "feedbacks": feedbacks,
   }
   return render(request,'leagueOfLegends/GetBoosterByRank.html', context)
 
 @login_required
-def view_that_asks_for_money(request):
+def pay_with_paypal(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
@@ -98,7 +104,7 @@ def view_that_asks_for_money(request):
         # Create the instance.
         form = PayPalPaymentsForm(initial=paypal_dict)
         context = {"form": form}
-        return render(request, "leagueOfLegends/paypal.html", context,status=200)
+        return render(request, "accounts/paypal.html", context,status=200)
       # return JsonResponse({'error': serializer.errors}, status=400)
       messages.error(request, 'Ensure this value is greater than or equal to 10')
       return redirect(reverse_lazy('lol'))
@@ -106,3 +112,12 @@ def view_that_asks_for_money(request):
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
+@login_required
+def pay_with_cryptomus(request):
+  if request.method == 'POST':
+    context = {
+      "data": request.POST
+    }
+    return render(request, "accounts/cryptomus.html", context,status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

@@ -196,18 +196,9 @@ def booster_orders(request):
             'slug': None,
             }
             orders_with_percentage.append(order_data)
-
-    pubg_ranks = PubgRank.objects.all()  
-    tft_ranks = TFTRank.objects.all()  
-    hearthstone_ranks = HearthstoneRank.objects.all() 
-    lol_ranks = LeagueOfLegendsRank.objects.all()  
  
     context = {
         'orders': orders_with_percentage,
-        'pubg_ranks': pubg_ranks,
-        'lol_ranks': lol_ranks,
-        'tft_ranks': tft_ranks,
-        'hearthstone_ranks': hearthstone_ranks,
     }
     return render(request, 'booster/booster-order.html', context=context)
 

@@ -4,5 +4,6 @@ from tft.views import *
 
 urlpatterns = [
   path('', tftGetBoosterByRank, name='tft'),
-  path('paypal/', view_that_asks_for_money, name='tft-paypal-redirect'),
+  path('paypal/', pay_with_paypal, name='tft-paypal-redirect'),
+  path('cryptomus/', pay_with_cryptomus, name='tft-cryptomus-redirect'),
 ]

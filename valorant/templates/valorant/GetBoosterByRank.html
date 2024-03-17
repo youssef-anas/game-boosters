@@ -69,10 +69,8 @@
             <!-- Ranks -->
             <div class="ranks d-flex justify-content-start align-items-center flex-wrap mt-xl-2 mt-3">
               {% for rank in ranks|slice:":8" %}
-              {% with mark=rank.mark %}
-              <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 2 %} checked {% endif %}>
+              <input type="radio" id="radio{{rank.id}}" name="radio-group-current" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 2 %} checked {% endif %}>
               <label for="radio{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
-              {% endwith %}
               {% endfor %}
             </div>
 
@@ -120,10 +118,8 @@
             <!-- Ranks -->
             <div class="ranks d-flex justify-content-start align-items-center flex-wrap mt-xl-2 mt-3">
               {% for rank in ranks|slice:":8" %}
-              {% with mark=rank.mark %}
-              <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-mark="{{mark.mark_number}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 3 %} checked {% endif %}>
+              <input type="radio" id="radio{{rank.id}}{{rank.id}}" name="radio-group-desired" data-id="{{rank.id}}" data-name="{{rank.rank_name}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 3 %} checked {% endif %}>
               <label for="radio{{rank.id}}{{rank.id}}" class="me-2"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
-              {% endwith %}
               {% endfor %}
             </div>
 
@@ -272,7 +268,7 @@
               <!-- Placement -->
               <div class="placements-boost to d-flex justify-content-center align-items-center ms-md-3 ms-1">
 
-                <p class="game_count-selected-info text-capitalize mb-0 fs-5"></p>
+                <p class="game-count-selected-info text-capitalize mb-0 fs-5"></p>
                 
               </div>
             </div>

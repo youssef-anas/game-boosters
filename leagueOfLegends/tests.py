@@ -47,7 +47,7 @@ class SetUp(TestCase):
   ]
 
   placements = [
-    LeagueOfLegendsPlacement(rank_name = 'unrank', rank_image = '', price = 4.62),
+    LeagueOfLegendsPlacement(rank_name = 'unrank', rank_image = 'lol/images/unrank.png', price = 4.62),
     LeagueOfLegendsPlacement(rank_name = 'iron', rank_image = 'lol/images/iron.webp', price = 2.8),
     LeagueOfLegendsPlacement(rank_name = 'bronze', rank_image = 'lol/images/bronze.webp', price = 3.91),
     LeagueOfLegendsPlacement(rank_name = 'silver', rank_image = 'lol/images/silver.webp', price = 5.05),

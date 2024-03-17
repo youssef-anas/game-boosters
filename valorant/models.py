@@ -143,8 +143,8 @@ class ValorantDivisionOrder(models.Model):
     if not promo_code_amount:
       promo_code_amount = 0
 
-    current_rank = self.current_rank.id
-    reached_rank = self.reached_rank.id
+    current_rank = self.current_rank.pk
+    reached_rank = self.reached_rank.pk
 
     current_division = self.current_division
     reached_division = self.reached_division
@@ -206,6 +206,7 @@ class ValorantPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='valorant_placement_order')
   last_rank = models.ForeignKey(ValorantPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
   number_of_match = models.IntegerField(default=5)
+  created_at = models.DateTimeField(auto_now_add =True)
 
   select_champion = models.BooleanField(default=False, blank=True, null=True)
 
@@ -226,54 +227,69 @@ class ValorantPlacementOrder(models.Model):
     return self.get_details()
   
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/valorant/data/placements_data.json', 'r') as file:
-      placement_data = json.load(file)
-    
-          
-    promo_code_amount = self.order.promo_code
-    if not promo_code_amount:
-      promo_code_amount = 0
-
-    last_rank = self.last_rank.pk
-    number_of_match = self.number_of_match
-
-    total_percent = 0
-
-    if self.order.duo_boosting:
-      total_percent += 0.65
-
-    if self.order.select_booster:
-      total_percent += 0.10
-
-    if self.order.turbo_boost:
-      total_percent += 0.20
-
-    if self.order.streaming:
-      total_percent += 0.15
-    
-
-    custom_price = placement_data[last_rank - 1] * number_of_match
-    
-    custom_price += (custom_price * total_percent)
-
-    custom_price -= custom_price * (promo_code_amount/100)
-
-    ##############################################################
+    custom_price = self.order.money_owed
 
     actual_price = self.order.actual_price
     main_price = self.order.price
 
     percent = round(actual_price / (main_price/100))
 
-    booster_price = custom_price * (percent/100)
+    booster_price = self.order.money_owed
 
     percent_for_view = round((booster_price/actual_price)* 100)
-    if percent_for_view > 100:
-      percent_for_view = 100
 
-    if booster_price > actual_price:
-      booster_price = actual_price
+    return {"booster_price": booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
+  
+  # def get_order_price(self):
+  #   # Read data from JSON file
+  #   with open('static/valorant/data/placements_data.json', 'r') as file:
+  #     placement_data = json.load(file)
+    
+          
+  #   promo_code_amount = self.order.promo_code
+  #   if not promo_code_amount:
+  #     promo_code_amount = 0
+
+  #   last_rank = self.last_rank.pk
+  #   number_of_match = self.number_of_match
+
+  #   total_percent = 0
+
+  #   if self.order.duo_boosting:
+  #     total_percent += 0.65
+
+  #   if self.order.select_booster:
+  #     total_percent += 0.10
+
+  #   if self.order.turbo_boost:
+  #     total_percent += 0.20
+
+  #   if self.order.streaming:
+  #     total_percent += 0.15
+    
+
+  #   custom_price = placement_data[last_rank - 1] * number_of_match
+    
+  #   custom_price += (custom_price * total_percent)
+
+  #   custom_price -= custom_price * (promo_code_amount/100)
+
+  #   ##############################################################
+
+  #   actual_price = self.order.actual_price
+  #   main_price = self.order.price
+
+  #   percent = round(actual_price / (main_price/100))
+
+  #   booster_price = custom_price * (percent/100)
+
+  #   percent_for_view = round((booster_price/actual_price)* 100)
+  #   if percent_for_view > 100:
+  #     percent_for_view = 100
+
+  #   if booster_price > actual_price:
+  #     booster_price = actual_price
 
 
-    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  #   return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
