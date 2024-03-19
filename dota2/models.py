@@ -45,6 +45,10 @@ class Dota2MmrPrice(SingletonModel):
   def __str__(self):
     return f"Price for 50 RPs is {self.price_0_2000}, {self.price_2000_3000}, {self.price_3000_4000}, {self.price_4000_5000}, {self.price_5000_5500}, {self.price_5500_6000}, {self.price_6000_extra}"
   
+  def save(self, *args, **kwargs):
+    self.pk = 1
+    super().save(*args, **kwargs)
+  
 class Dota2Placement(models.Model):
   rank_name = models.CharField(max_length=25)
   rank_image = models.ImageField(upload_to='dota2/images/', blank=True, null=True)

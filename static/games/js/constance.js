@@ -4,19 +4,17 @@ const urlParams = new URLSearchParams(window.location.search);
 const extend_order = urlParams.get('extend');  // to get if extend_order choose 
 const chooseBoosterValue = urlParams.get('choose_booster'); // to get if booster bootser choose after order
 
-
 const orderContainer = document.getElementById('order-container'); // this an html part only to hold data from order extend if user need to exted order
 const orderValue = orderContainer.dataset.order; // values of extended order as string 
 const valuesAsList = orderValue.split(',') // values of extended order as list of strings
 const list1 = valuesAsList.slice(0, 5); // values of extended order as {current_rank.id}, {current_division}, {current_marks}, {desired_rank.id}, {desired_division}
 const list2 = valuesAsList.slice(5, 10);  // values of extended order as {duo_boosting}, {False}, {turbo_boost}, {streaming }, {choose_champions}
 
-const list3 = valuesAsList.slice(15, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
+const list3 = valuesAsList.slice(14, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
 const server = valuesAsList[10]
 const extendPromoCode = valuesAsList[11] != 'None' ? valuesAsList[11] : 'null'
 const discountAmount = valuesAsList[12] != 'None' ? parseFloat(valuesAsList[12]) : 0
 const roleValue = parseInt(valuesAsList[13]) || 0
-const MMR_PRICE = parseFloat(valuesAsList[14]) || 0
 
 const valuesToSet = list1.map(function(item) {
     return parseInt(item, 10); // Use parseInt to convert list1 from srting to int as list

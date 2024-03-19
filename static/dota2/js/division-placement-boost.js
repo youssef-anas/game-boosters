@@ -10,7 +10,6 @@ const ROLE_PRICES = [0, 0, 0.30]
 const ranks = ["unrank", "herald", "guardian", "crusader", "archon", "legend", "ancient", "divine", "immortal"]
 const MIN_DESIRED_VALUE = 50
 
-
 function getRangeCurrent(mmr) {
   const MAX_LISTS = [0, 2000, 3000, 4000, 5000, 5500, 6000, 8000];
   for (let idx = 1; idx < MAX_LISTS.length; idx++) {
@@ -81,23 +80,23 @@ function getRank(mmr)  {
 }
 
 
-function getPrice(currentMmr, desiredMmr) {
-  function getRange(mmr) {
-    if (mmr <= 2000) return MMR_PRICES[1]
-    if (mmr <= 3000) return MMR_PRICES[2]
-    if (mmr <= 4000) return MMR_PRICES[3]
-    if (mmr <= 5000) return MMR_PRICES[4]
-    if (mmr <= 5500) return MMR_PRICES[5]
-    if (mmr <= 6000) return MMR_PRICES[6]
-    if (mmr > 6000) return MMR_PRICES[7]
-  }
+// function getPrice(currentMmr, desiredMmr) {
+//   function getRange(mmr) {
+//     if (mmr <= 2000) return MMR_PRICES[1]
+//     if (mmr <= 3000) return MMR_PRICES[2]
+//     if (mmr <= 4000) return MMR_PRICES[3]
+//     if (mmr <= 5000) return MMR_PRICES[4]
+//     if (mmr <= 5500) return MMR_PRICES[5]
+//     if (mmr <= 6000) return MMR_PRICES[6]
+//     if (mmr > 6000) return MMR_PRICES[7]
+//   }
 
-  const currentRange = getRange(currentMmr);
-  const desiredRange = getRange(desiredMmr);
+//   const currentRange = getRange(currentMmr);
+//   const desiredRange = getRange(desiredMmr);
 
-  if(currentRange === desiredRange) return currentRange
-  else return (desiredRange + currentRange) / 2
-}
+//   if(currentRange === desiredRange) return currentRange
+//   else return (desiredRange + currentRange) / 2
+// }
 
 function changeUI(achivedValue, arena, steps, miuns = 0) {
   const progress = ((achivedValue - miuns) / (arena.prop("max") - miuns) ) * 100;

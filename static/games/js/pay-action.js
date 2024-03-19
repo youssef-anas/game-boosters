@@ -137,5 +137,61 @@ document.addEventListener('DOMContentLoaded', function() {
         tournamentForm.submit();
       });
     }
+  } 
+
+  if(game_id == 13) {
+    // --------------------- Premier ---------------------
+    const premierForm = document.getElementById('premier-boost-form');
+    const premierPaypalBtn = document.getElementById('premier-paypal-btn');
+    const fpremierCryptomusBtn = document.getElementById('premier-cryptomus-btn');
+
+    if(premierPaypalBtn){
+      premierPaypalBtn.addEventListener('click', function() {
+        // Get the PayPal URL from data attribute
+        const paypalUrl = urls.dataset.paypalUrl;
+        // Set the form action
+        premierForm.action = paypalUrl;
+        // Submit the form
+        premierForm.submit();
+      });
+    }
+
+    if(fpremierCryptomusBtn){
+      fpremierCryptomusBtn.addEventListener('click', function() {
+        // Get the Cryptomus URL from data attribute
+        const cryptomusUrl = urls.dataset.cryptomusUrl;
+        // Set the form action
+        premierForm.action = cryptomusUrl;
+        // Submit the form
+        premierForm.submit();
+      });
+    }
+
+    // --------------------- FACEIT ---------------------
+    const faceitForm = document.getElementById('faceit-boost-form');
+    const faceitPaypalBtn = document.getElementById('faceit-paypal-btn');
+    const faceitCryptomusBtn = document.getElementById('faceit-cryptomus-btn');
+
+    if(faceitPaypalBtn){
+      faceitPaypalBtn.addEventListener('click', function() {
+        // Get the PayPal URL from data attribute
+        const paypalUrl = urls.dataset.paypalUrl;
+        // Set the form action
+        faceitForm.action = paypalUrl;
+        // Submit the form
+        faceitForm.submit();
+      });
+    }
+
+    if(faceitCryptomusBtn){
+      faceitCryptomusBtn.addEventListener('click', function() {
+        // Get the Cryptomus URL from data attribute
+        const cryptomusUrl = urls.dataset.cryptomusUrl;
+        // Set the form action
+        faceitForm.action = cryptomusUrl;
+        // Submit the form
+        faceitForm.submit();
+      });
+    }
   }
 });

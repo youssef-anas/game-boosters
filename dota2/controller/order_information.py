@@ -20,15 +20,17 @@ rank_names = ['UNRANK', 'HERALD', 'GUARDIAN', 'CRUSADER', 'ARCHON', 'LEGEND', 'A
 role_names = ['NoRole', 'Core', 'Support']
 ROLE_PRICES = [0, 0, 0.30]
 prices = None
+
 with open('static/dota2/data/prices.json', 'r') as file:
   prices = json.load(file)
   pass
+
 def get_rank_boost_order_result_by_rank(data,extend_order_id):
   MIN_DESIRED_VALUE = 50
   # Division
-  with open('static/dota2/data/prices.json', 'r') as file:
-    prices = json.load(file)
-    pass
+  # with open('static/dota2/data/prices.json', 'r') as file:
+  #   prices = json.load(file)
+  #   pass
 
   divison_prices = prices['division']
   divison_prices.insert(0,0)
@@ -42,23 +44,23 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   full_price_val = [price1, price2, price3, price4, price5, price6, price7]
 
   def get_range_current(mmr):
-      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
-      for idx, max_val in enumerate(MAX_LISTS, start=1):
-          if mmr <= max_val:
-              val = max_val - mmr
-              return math.floor(val/50), idx
-      print('out_of_range')
-      return None, None
+    MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+    for idx, max_val in enumerate(MAX_LISTS, start=1):
+      if mmr <= max_val:
+        val = max_val - mmr
+        return math.floor(val/50), idx
+    print('out_of_range')
+    return None, None
       
   def get_range_desired(mmr):
-      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
-      for idx, max_val in enumerate(MAX_LISTS, start=1):
-          if mmr <= max_val:
-              val = mmr-MAX_LISTS[idx-2]
-              return math.floor(val/50), idx
-      print('out_of_range')
-      return None, None
-# Ranks
+    MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+    for idx, max_val in enumerate(MAX_LISTS, start=1):
+      if mmr <= max_val:
+        val = mmr-MAX_LISTS[idx-2]
+        return math.floor(val/50), idx
+    print('out_of_range')
+    return None, None
+  # Ranks
   current_rank = data['current_rank']
   desired_rank = data['desired_rank']
 
@@ -127,14 +129,14 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   
   curent_mmr_in_c_range, current_range = get_range_current(current_division)
   desired_mmr_in_d_range, derired_range = get_range_desired(desired_division)
-  sliced_prices = full_price_val[current_range :derired_range - 1]
+  sliced_prices = full_price_val[current_range : derired_range - 1]
   sum_current = curent_mmr_in_c_range * divison_prices[current_range]
   sum_desired = desired_mmr_in_d_range * divison_prices[derired_range]
   clear_res = sum(sliced_prices)
   # full price for all rank [159.2, 92.6, 116.4, 213, 198.6, 244.6, 1520.4]
 
   if current_range == derired_range:
-    range_value = math.floor((desired_division - current_division )/50)
+    range_value = math.floor((desired_division - current_division ) / MIN_DESIRED_VALUE)
     price = round(range_value * divison_prices[current_range], 2)
   else:
     price = round(sum_current + sum_desired + clear_res,2)

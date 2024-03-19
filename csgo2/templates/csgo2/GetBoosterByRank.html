@@ -9,9 +9,9 @@
 <!-- OUR STYLE -->
 <link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
 <link href="{% static 'games/css/division.css'%}" rel="stylesheet" />
-<link href="{% static 'games/css/placement.css'%}" rel="stylesheet" />
-<!-- WILD RIFT RANKS COLORS -->
-<!-- <link href="{% static 'csgo2/css/ranks-colors.css'%}" rel="stylesheet" /> -->
+<link href="{% static 'games/css/premier-faceit.css'%}" rel="stylesheet" />
+<!-- CS:GO2 RANKS COLORS -->
+<link href="{% static 'csgo2/css/ranks-colors.css'%}" rel="stylesheet" />
 <!-- STYLE FEEDBACK -->
 <link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
 <!-- STYLE MOTIVATION -->
@@ -23,7 +23,7 @@
 <div id="order-container" data-order="{{ order_get_rank_value }}"></div>
 <div class="game-container">
 
-  <div class="game-landing mobileLegends">
+  <div class="game-landing csgo">
     <div class="heading">
       <h1>CS 2</h1>
       <p>Global Elite player will boost you to your desired rank.</p>
@@ -47,8 +47,8 @@
       <div class="choise mb-3">
         <input type="radio" id="division-boost" name="radio-group-type" checked>
         <label for="division-boost" class="radio-btn" style="width: 147px;">Rank Boost</label>
-        <input type="radio" id="placements-boost" name="radio-group-type">
-        <label for="placements-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Premier</label>
+        <input type="radio" id="premier-boost" name="radio-group-type">
+        <label for="premier-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Premier</label>
         <input type="radio" id="faceit-boost" name="radio-group-type">
         <label for="faceit-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">FACEIT Boost</label>
       </div>
@@ -152,34 +152,41 @@
 
         </div>
 
-        <!-- Placements Boost -->
-        <div class="placements-boost">
+        <!-- Premier Boost -->
+        <div class="premier-boost">
+           <!-- Current Premier -->
+           <div class="current-premier" id="current-premier">
+            <div class="d-flex align-item-center">
 
-          <!-- Pervious Rank -->
-          <div class="pervious" id="pervious">
-            <div class="d-flex justift-content-center align-item-center">
-              <div class="image me-4">
-                <img src="" alt="Pervious Rank Image" class="pervious-rank-selected-img" class="img-fluid" width="60" height="60">
+              <div class="current-premier-number me-4">
+                <h1 class="current-premier-number mb-0">0</h1>
               </div>
+
               <div class="text-white text">
-                <h5>Pervious Rank</h5>
-                <p>Select your pervious rank & information</p>
+                <h5>Current Premier Rank</h5>
+                <p>Select your current premier rank</p>
               </div>
+
             </div>
 
-            <!-- Ranks -->
-            <div class="ranks d-flex justify-content-start align-items-center flex-wrap mt-4">
-              {% for rank in placements %}
-              <input type="radio" id="rank{{rank.id}}" name="placement-ranks" data-id="{{rank.id}}" data-price="{{rank.price}}" data-img="{{rank.get_image_url}}" {% if forloop.counter0 == 0 %} checked {% endif %}>
-              <label for="rank{{rank.id}}" class="me-2 mb-xl-3 mb-4"><img class="text-center" src="{{rank.get_image_url}}" width="30" height="30" /></label>
-              {% endfor %}
+            <div class="range-container mt-5 pt-xl-0 pt-5">
+              <input type="range" min="0" max="30000" value="0" step="1" id="current-premier-rank" /> 
+              <div class="current-premier-step step-indicator">
+                <span class="step">0</span>
+                <span class="step">5000</span>
+                <span class="step">10000</span>
+                <span class="step">15000</span>
+                <span class="step">20000</span>
+                <span class="step">25000</span>
+                <span class="step">30000</span>
+              </div>
             </div>
 
             <!-- Servers -->
-            <div class="server-container mt-3">
-              <p class="text-white" style="font-size: 16px;">Server</p>
+            <div class="server-container">
+              <p class="text-white mt-4" style="font-size: 16px;">Server</p>
               <div class="select-container">
-                <select class="placement-servers-select">
+                <select class="premier-servers-select">
                   <option value="North America">North America (NA)</option>
                   <option value="Europe">Europe (EU)</option>
                   <option value="Latin America">Latin America (LATAM)</option>
@@ -195,33 +202,124 @@
                 </select>
               </div>
             </div>
-
           </div>
 
-          <!-- Matches Amount -->
-          <div class="matches-amount" id="matches-amount">
+          <!-- Desired Premier -->
+          <div class="desired-premier" id="desired-premier">
+            <div class="d-flex align-item-center">
 
-            <div class="d-flex justift-content-center align-item-center">
-              <div class="matches-number me-4">
-                <h1 class="num-of-match mb-0"></h1>
+              <div class="desired-premier-number me-4">
+                <h1 class="desired-premier-number mb-0">0</h1>
               </div>
+
               <div class="text-white text">
-                <h5>Matches Amount</h5>
-                <p>Select your desired amount of matches.</p>
+                <h5>Desired Premier Rank</h5>
+                <p>Select your desired premier rank</p>
               </div>
+
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="1" max="5" value="0" id="game-count" /> 
-              <div class="step-indicator">
+              <input type="range" min="0" max="30000" value="0" step="500" id="desired-premier-rank" /> 
+              <div class="desired-premier-step step-indicator">
+                <span class="step">0</span>
+                <span class="step">5000</span>
+                <span class="step">10000</span>
+                <span class="step">15000</span>
+                <span class="step">20000</span>
+                <span class="step">25000</span>
+                <span class="step">30000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FACEIT Boost -->
+        <div class="faceit-boost">
+
+          <!-- Current Faceit -->
+          <div class="current-faceit" id="current-faceit">
+            <div class="d-flex align-item-center">
+
+              <div class="current-faceit-number me-4">
+                <h1 class="current-faceit-number mb-0">1</h1>
+              </div>
+
+              <div class="text-white text">
+                <h5>Current FACEIT Level</h5>
+                <p>Select your current FACEIT level</p>
+              </div>
+
+            </div>
+
+            <div class="range-container mt-5 pt-xl-0 pt-5">
+              <input type="range" min="1" max="10" value="1" step="1" id="current-faceit-level" /> 
+              <div class="current-faceit-step step-indicator">
                 <span class="step">1</span>
                 <span class="step">2</span>
                 <span class="step">3</span>
                 <span class="step">4</span>
                 <span class="step">5</span>
+                <span class="step">6</span>
+                <span class="step">7</span>
+                <span class="step">8</span>
+                <span class="step">9</span>
+                <span class="step">10</span>
               </div>
             </div>
 
+            <!-- Servers -->
+            <div class="server-container">
+              <p class="text-white mt-4" style="font-size: 16px;">Server</p>
+              <div class="select-container">
+                <select class="faceit-servers-select">
+                  <option value="North America">North America (NA)</option>
+                  <option value="Europe">Europe (EU)</option>
+                  <option value="Latin America">Latin America (LATAM)</option>
+                  <option value="Brazil">Brazil (BR)</option>
+                  <option value="Korea">Korea (KR)</option>
+                  <option value="Southeast Asia">Southeast Asia (SEA)</option>
+                  <option value="Japan">Japan (JP)</option>
+                  <option value="Oceania">Oceania (OCE)</option>
+                  <option value="Russia">Russia (RU)</option>
+                  <option value="Turkey">Turkey (TR)</option>
+                  <option value="Middle East">Middle East (MEA)</option>
+                  <option value="India">India (IN)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desired Faceit -->
+          <div class="desired-faceit" id="desired-faceit">
+            <div class="d-flex align-item-center">
+
+              <div class="desired-faceit-number me-4">
+                <h1 class="desired-faceit-number mb-0">1</h1>
+              </div>
+
+              <div class="text-white text">
+                <h5>Desired FACEIT Level</h5>
+                <p>Select your desired FACEIT level</p>
+              </div>
+
+            </div>
+
+            <div class="range-container mt-5 pt-xl-0 pt-5">
+              <input type="range" min="1" max="10" value="1" step="1" id="desired-faceit-level" /> 
+              <div class="desired-faceit-step step-indicator">
+                <span class="step">1</span>
+                <span class="step">2</span>
+                <span class="step">3</span>
+                <span class="step">4</span>
+                <span class="step">5</span>
+                <span class="step">6</span>
+                <span class="step">7</span>
+                <span class="step">8</span>
+                <span class="step">9</span>
+                <span class="step">10</span>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -239,11 +337,16 @@
                   <p class="current-selected-info text-capitalize mb-0"></p>
               </div>
 
-              <!-- Placement -->
-              <div class="placements-boost from d-flex justify-content-center align-items-center me-md-3 me-1">
-                <img src="" alt="Pervious Rank Image" class="pervious-rank-selected-img me-md-2 me-0" class="img-fluid" width="40" height="40">
+              <!-- Premier -->
+              <div class="premier-boost from d-flex justify-content-center align-items-center me-md-3 me-1">
 
-                <p class="pervious-selected-info text-capitalize mb-0 fs-5"></p>
+                <p class="current-premier-selected-info text-capitalize mb-0 fs-5">0 Premier Rank</p>
+              </div>
+
+              <!-- Faceit -->
+              <div class="faceit-boost from d-flex justify-content-center align-items-center me-md-3 me-1">
+
+                <p class="current-faceit-selected-info text-capitalize mb-0 fs-5">1 FACEIT Rank</p>
               </div>
 
               <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
@@ -255,10 +358,17 @@
                   <p class="desired-selected-info text-capitalize mb-0"></p>
               </div>
 
-              <!-- Placement -->
-              <div class="placements-boost to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+              <!-- Premier -->
+              <div class="premier-boost to d-flex justify-content-center align-items-center ms-md-3 ms-1">
 
-                <p class="game_count-selected-info text-capitalize mb-0 fs-5"></p>
+                <p class="desired-premier-selected-info text-capitalize mb-0 fs-5">0 Premier Rank</p>
+                
+              </div>
+
+              <!-- Faceit -->
+              <div class="faceit-boost to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+
+                <p class="desired-faceit-selected-info text-capitalize mb-0 fs-5">1 FACEIT Rank</p>
                 
               </div>
             </div>
@@ -281,7 +391,7 @@
             </div>
 
             <!-- Other Extra Charges -->
-            <div class="extra py-xl-2 py-3">
+            <div class="extra py-xl-2 py-3 mb-5 mt-4">
               <!-- Turbo Boosting -->
               <div class="turbo py-xl-2 py-3 d-flex justify-content-between align-items-center">
                 <div class="info">
@@ -296,47 +406,33 @@
                   </div>
               </div>
 
-                <!-- Booster Agents -->
-                <div class="champions py-xl-2 py-3 d-flex justify-content-between align-items-center">
-                  <div class="info">
-                    <p class="mb-0">Booster Agents <span class="percent ms-1" style="background: #46D17980; color: #43C372">Free</span></p>
-                  </div>
-
-                    <div class="choose">
-                      <label class="switch" for="booster-agents">
-                        <input type="checkbox" id="booster-agents" name="extra-checkbox" value="selectChampion">
-                          <span class="slider round"></span>
-                      </label>
-                    </div>
+              <!-- Stream Games -->
+              <div class="stream py-xl-2 py-3 d-flex justify-content-between align-items-center">
+                <div class="info">
+                  <p class="mb-0">Stream Games <span class="percent ms-1">15%</span></p>
                 </div>
 
-                <!-- Stream Games -->
-                <div class="stream py-xl-2 py-3 d-flex justify-content-between align-items-center">
-                  <div class="info">
-                    <p class="mb-0">Stream Games <span class="percent ms-1">15%</span></p>
+                  <div class="choose">
+                    <label class="switch" for="stream-games">
+                      <input type="checkbox" id="stream-games" name="extra-checkbox" value="streaming">
+                        <span class="slider round"></span>
+                    </label>
                   </div>
+              </div>
 
-                    <div class="choose">
-                      <label class="switch" for="stream-games">
-                        <input type="checkbox" id="stream-games" name="extra-checkbox" value="streaming">
-                          <span class="slider round"></span>
-                      </label>
-                    </div>
+              <!-- Select Booster -->
+              <div class="select-booster py-xl-2 py-3 d-flex justify-content-between align-items-center">
+                <div class="info">
+                  <p class="mb-0">Select Booster <span class="percent ms-1">10%</span></p>
                 </div>
 
-                <!-- Select Booster -->
-                <div class="select-booster py-xl-2 py-3 d-flex justify-content-between align-items-center">
-                  <div class="info">
-                    <p class="mb-0">Select Booster <span class="percent ms-1">10%</span></p>
+                  <div class="choose">
+                    <label class="switch" for="select-booster">
+                      <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
+                        <span class="slider round"></span>
+                    </label>
                   </div>
-
-                    <div class="choose">
-                      <label class="switch" for="select-booster">
-                        <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
-                          <span class="slider round"></span>
-                      </label>
-                    </div>
-                </div>
+              </div>
             </div>
 
             <div class="discount mt-xl-0 mt-3">
@@ -360,7 +456,8 @@
             <div class="total-price d-flex justify-content-between align-item-center">
               <p>Total Price:</p>
               <p id="division-boost-price" class="division-boost price">$0</p>
-              <p id="placements-boost-price" class="placements-boost price">$0</p>
+              <p id="faceit-boost-price" class="faceit-boost price">$0</p>
+              <p id="premier-boost-price" class="premier-boost price">$0</p>
             </div>
 
             <div class="pay-form">
@@ -372,7 +469,7 @@
               <!-- Division Form -->
               <form method="post" id="division-boost-form" class="division-boost purchaseForm">
                 {% csrf_token %}
-                <input type="hidden" name="game_id" value="12">
+                <input type="hidden" name="game_id" value="13">
                 <input type="hidden" name="game_type" value="D">
                 <!-- Division -->
                 <input type="hidden" name="current_rank" value="1">
@@ -384,7 +481,6 @@
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="select_champion" id="selectChampion" value=false>
                 <input type="hidden" name="streaming" id="streaming" value=false>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
@@ -402,19 +498,20 @@
                 </div>
               </form>
 
-              <!-- Placement Form -->
-              <form method="post" id="placements-boost-form" class="placements-boost purchaseForm">
+              <!-- Premier Form -->
+              <form method="post" id="premier-boost-form" class="premier-boost purchaseForm">
                 {% csrf_token %}
-                <input type="hidden" name="game_id" value="12">
-                <input type="hidden" name="game_type" value="P">
-                <!-- Placement -->
-                <input type="hidden" name="last_rank" value="0">
-                <input type="hidden" name="number_of_match" value="1">
+                <input type="hidden" name="game_id" value="13">
+                <input type="hidden" name="game_type" value="A">
+                <!-- Premier -->
+                <input type="hidden" name="current_rank" value="1">
+                <input type="hidden" name="desired_rank" value="1">
+                <input type="hidden" name="current_division" value="1">
+                <input type="hidden" name="desired_division" value="1">
                 <!-- Extra Fields -->
                 <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
                 <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="booster_agents" id="boosterAgents" value=false>
                 <input type="hidden" name="streaming" id="streaming" value=false>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
@@ -424,10 +521,38 @@
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
-                  <button id="placement-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                  <button id="premier-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
 
                   <!-- Cryptomus -->
-                  <button id="placement-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                  <button id="premier-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                </div>
+              </form>
+
+              <!-- Faceit Form -->
+              <form method="post" id="faceit-boost-form" class="faceit-boost purchaseForm">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="13">
+                <input type="hidden" name="game_type" value="F">
+                <!-- Faceit -->
+                <input type="hidden" name="current_level" value="1">
+                <input type="hidden" name="desired_level" value="1">
+                <!-- Extra Fields -->
+                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
+                <input type="hidden" name="select_booster" id="selectBooster" value=false>
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="streaming" id="streaming" value=false>
+                <!-- Other -->
+                <input type="hidden" name="server" id="server" value=false>
+                <input type="hidden" name="price" value="1">
+                <input type="hidden" id="chooseBoosterInput" name="choose_booster" value=0 readonly>
+                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
+                <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <div class="purchase d-flex justify-content-between align-items-center">
+                  <!-- Paypal -->
+                  <button id="faceit-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+
+                  <!-- Cryptomus -->
+                  <button id="faceit-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
                 </div>
               </form>
             </div>
@@ -452,7 +577,7 @@
 <!-- SWIPER JS -->
 <script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
 <!-- OUR SCRIPTS -->
-<script src="{% static 'games/js/main.js' %}"></script>
+<script src="{% static 'csgo2/js/main.js' %}"></script>
 <script src="{% static 'games/js/pay-action.js' %}"></script>
 <!-- <script src="{% static 'games/js/range.js' %}"></script> -->
 <script src="{% static 'games/js/functions.js' %}"></script> 
