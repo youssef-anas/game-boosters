@@ -124,6 +124,7 @@ def get_division_order_result_by_rank(data, extend_order_id):
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 def get_premier_order_result_by_rank(data, extend_order_id):
+    print("Data: ", data)
     # Read data from JSON file
     with open('static/csgo2/data/premier_data.json', 'r') as file:
         premier_prices = json.load(file)
@@ -238,17 +239,19 @@ def get_premier_order_result_by_rank(data, extend_order_id):
     else:
         price = round(sum_current + sum_desired + clear_res,2)
 
+    print("Price1: ", price)
     price += (price * total_percent)
 
     price -= price * (promo_code_amount/100)
 
     price = round(price, 2)
-
+    print("Price2: ", price)
     if extend_order_id > 0:
         try:
             # get extend order 
             extend_order = BaseOrder.objects.get(id=extend_order_id)
             extend_order_price = extend_order.price
+            print("extend_order_price: ", extend_order_price)
             price = round(price - extend_order_price , 2)
         except: ####
             pass

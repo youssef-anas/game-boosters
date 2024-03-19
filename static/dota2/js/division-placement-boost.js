@@ -225,15 +225,11 @@ if(extend_order) {
 
     // Apply extra charges to the result
     price += price * total_Percentage_with_role_result;
-    console.log("Price 3: ", price)
-
   
     // Apply promo code 
     price -= price * (discountAmount / 100 )
-    console.log("Price 4: ", price)
   
     price = parseFloat(price.toFixed(2));
-    console.log("Price 5: ", price)
   
     // Current
     $('#current .current-rp').html(currentMmrValue);
@@ -241,7 +237,7 @@ if(extend_order) {
     $('.current-selected-img:not(.checkout-img)').attr('src', RANKS_IMAGES[getRank(currentMmrValue)[1]]);
     $('.current-selected-img.checkout-img').attr('src', RANKS_IMAGES[getRank(valuesToSet[4])[1]])
 
-    $('.current').removeClass().addClass(`current ${getRank(currentMmrValue)[0]}`);
+    $('.current').removeClass().addClass(`current ${currentRank}`);
     $('.current-selected-info').html(`${valuesToSet[4]} MMR`)
   
     // Desired

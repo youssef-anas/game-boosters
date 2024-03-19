@@ -147,14 +147,11 @@ Promise.all([
   const faceit_server_select_element = $('.faceit-servers-select');
 
   // -------------------------------------------------------------------------------------
-
-
   if(extend_order) {
     const extends_from_divison = valuesToSetExtra[0]
     $('input[type="radio"]#faceit-boost').prop('disabled', true)
 
     let orderID = parseInt(extend_order, 10);
-    document.getElementById('extendOrder').value = orderID; 
 
     // Solo Or Duo Boosting Change
     if (valuesToSetAdditional[0]) {
@@ -200,7 +197,12 @@ Promise.all([
     if (extends_from_divison) {
       divisionBoostRadio.checked = true
       divisionBoostChecked()
+
       $('input[type="radio"]#premier-boost').prop('disabled', true)
+
+      $('.division-boost input[name="extend_order"]').val(orderID); 
+      // SET PROMO CODE IN FORM
+      $('.division-boost input[name="promo_code"]').val(extendPromoCode);
 
       // Set the checked state for each group of radio buttons using the specified order
       setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
@@ -261,9 +263,6 @@ Promise.all([
         $('.division-boost input[name="marks"]').val(mark_index);
         $('.division-boost input[name="desired_rank"]').val(desired_rank);
         $('.division-boost input[name="price"]').val(result_with_mark);
-  
-        // SET PROMO CODE IN FORM
-        $('.division-boost input[name="promo_code"]').val(extendPromoCode);
       }
 
       // Get Result 
@@ -272,13 +271,84 @@ Promise.all([
     } else {
       // Premier
       premierBoostRadio.checked = true
-      premierBoostChecked()
+      premierBoostChecked() 
+
       $('input[type="radio"]#division-boost').prop('disabled', true)
+
+      $('.premier-boost input[name="extend_order"]').val(orderID); 
+      // SET PROMO CODE IN FORM
+      $('.premier-boost input[name="promo_code"]').val(extendPromoCode);
+
+      // Current Varible
+      currentDivision = valuesToSet[1]
+      currentRank = getRank(valuesToSet[1])[1]
+      currentRankName = getRank(valuesToSet[1])[0]
+
+      // Desired Varible
+      desiredDivision = valuesToSet[4]
+      desiredRank = getRank(valuesToSet[4])[1]
+      desiredRankName = getRank(valuesToSet[4])[0]
+
+      // Change Range Value
+      currentPremierRank.val(currentDivision)
+      desiredPremierRank.val(desiredDivision)
+
+      // Disable Current
+      currentPremierRank.prop('disabled', true)
+
+      changeUI(currentDivision, currentPremierRank, currentPremierSteps);
+      changeUI(desiredDivision, desiredPremierRank, desiredPremierSteps);
 
       premier_server_select_element.prop("disabled", true)
 
       function getPremierPrice() {
+        // Server
+        premier_server_select_element.val(server);
+
+        let [current_mmr_in_c_range, current_range] = getRangeCurrent(valuesToSet[4]);
+        let [desired_mmr_in_d_range, desired_range] = getRangeDesired(desiredDivision);
+        let sliced_prices = full_price_val.slice(current_range, desired_range - 1);
+        let sum_current = current_mmr_in_c_range * premierPrices[current_range];
+        let sum_desired = desired_mmr_in_d_range * premierPrices[desired_range];
+        let clear_res = sliced_prices.reduce((acc, val) => acc + val, 0);
+        let price = 0
+        if (current_range==desired_range) {
+          let range_value = Math.floor((desiredDivision - valuesToSet[4]) / 500)
+          price = range_value * premierPrices[current_range]
+        } else {
+          price = sum_current + sum_desired + clear_res
+        }
+
+        // Apply extra charges to the result
+        price += price * total_Percentage;
+      
+        // Apply promo code 
+        price -= price * (discountAmount / 100 )
+      
+        price = parseFloat(price.toFixed(2));
+
+        // Current Premier
+        $('#current-premier .current-premier-number').html(currentDivision);
+        $('.current-premier-selected-info').html(`${valuesToSet[4]} Premier Rank`);
+        $('.current-premier').removeClass().addClass(`current-premier ${currentRankName}`);
         
+        // Desired Premier
+        $('#desired-premier .desired-premier-number').html(desiredDivision);
+        $('.desired-premier-selected-info').html(`${desiredDivision} Premier Rank`);
+        $('.desired-premier').removeClass().addClass(`desired-premier ${desiredRankName}`);
+        
+        // Price
+        $('.total-price #premier-boost-price').text(`$${price}`)
+
+        // Form
+        if($('.premier-boost input[name="game_type"]').val() == 'A') {
+          $('.premier-boost input[name="current_rank"]').val(currentRank);
+          $('.premier-boost input[name="current_division"]').val(currentDivision);
+          $('.premier-boost input[name="desired_rank"]').val(desiredRank);
+          $('.premier-boost input[name="desired_division"]').val(desiredDivision);
+          $('.premier-boost input[name="server"]').val(server);
+          $('.premier-boost input[name="price"]').val(price);
+        }
       }
 
       // Get Result 
