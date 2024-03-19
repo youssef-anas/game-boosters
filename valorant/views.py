@@ -11,6 +11,8 @@ from paypal.standard.forms import PayPalPaymentsForm
 from valorant.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
+from customer.models import Champion
+from booster.models import Booster
 
 
 def valorantGetBoosterByRank(request):
@@ -23,6 +25,8 @@ def valorantGetBoosterByRank(request):
   divisions  = ValorantTier.objects.all().order_by('id')
   marks = ValorantMark.objects.all().order_by('id')
   placements = ValorantPlacement.objects.all().order_by('id')
+  champions = Champion.objects.filter(game__id =2).order_by('id')
+  boosters = Booster.objects.filter(is_valo_player=True, can_choose_me= True).order_by('id')
 
   divisions_data = [
     [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
@@ -59,6 +63,8 @@ def valorantGetBoosterByRank(request):
     "placements": placements,
     "order":order,
     "feedbacks": feedbacks,
+    'champions' : champions,
+    'boosters': boosters,
   }
   return render(request,'valorant/GetBoosterByRank.html', context)
 
@@ -69,7 +75,7 @@ def pay_with_paypal(request):
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
         return redirect(reverse_lazy('valorant'))
-    try:
+    # try:
       # Division
       if request.POST.get('game_type') == 'D':
         serializer = DivisionSerializer(data=request.POST)
@@ -102,10 +108,12 @@ def pay_with_paypal(request):
         context = {"form": form}
         return render(request, "accounts/paypal.html", context,status=200)
       # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
+      for field, errors in serializer.errors.items():
+        for error in errors:
+            messages.error(request, f"{field}: {error}")
       return redirect(reverse_lazy('valorant'))
-    except Exception as e:
-      return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
+    # except Exception as e:
+    #   return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
