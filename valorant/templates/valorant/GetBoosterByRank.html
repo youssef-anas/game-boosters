@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
-{% block title %}Game Boosters{% endblock %}
+{% block title %}Valorant{% endblock %}
 {% block style %}
 <!-- BASE CSS -->
 <link href="{% static 'base/css/range.css'%}" rel="stylesheet" >
@@ -20,9 +20,76 @@
 <link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
 {% endblock %}
 {% block container %}
+
+<!-- ------------------------------ Champion Select Popup ------------------------------ -->
+<div id="popup-champion-form" class="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closeFormChampion()">&times;</span>
+    <h3 class="p-2 text-center">Select Your Roles & Agents</h3>
+
+    <div class="container d-flex justify-content-between">
+        <p >Select Your Agents</p>
+      <div>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-button">
+            <button class="btn btn-outline-secondary" type="submit" id="search-button">Search</button>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex container row">
+      {% for champion in champions %}
+      <div class="champions-icons col-2">
+        <input type="checkbox" id="ch{{champion.id}}" class="hidden-checkbox">
+        <label for="ch{{champion.id}}" class="icon-as-checkbox">
+          <img src="{{champion.get_image_url}}" alt="{{champion.name}}" width="48" height="48">
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" onclick="closeFormChampion()">Close</button>
+  </div>
+</div>
+<!-- ------------------------------ Booster Select Popup ------------------------------ -->
+<div id="popup-booster-form" class="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closeFormBooster()">&times;</span>
+    <h3 class="p-2 text-center">Select Your Booster</h3>
+
+    <div class="container">
+      <div>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="search-button">
+            <button class="btn btn-outline-secondary" type="submit" id="search-button">Search</button>
+        </div>
+      </div>
+      {% for booster in boosters %}
+      <div id="{{booster.booster.pk}}" class="booster-card m-1 mx-auto rounded" onclick="SetBooster(this)">
+        <div class="p-1 row">
+            <div class="col-2 my-auto">
+                <img src="{{booster.booster.get_image_url}}" alt="{{booster.booster.first_name}}" width="48" height="48" class="rounded">
+            </div>
+            <p class="col-2 my-auto">{{booster.booster.first_name}}</p>
+            <p class="col-2 my-auto">{{booster.achived_rank_valo}}</p>
+            <p class="col-2 my-auto">*****</p>
+            <p class="col-2 my-auto">orders</p>
+            <a class="col-2 my-auto" href="" >profile</a>
+        </div>
+      </div>  
+      {% endfor %} 
+
+    </div>
+    <div class="d-flex container">
+    </div>
+    <button type="button" onclick="closeFormBooster()">Close</button>
+  </div>
+</div>
+<!-- ------------------------------ End Popups ------------------------------ -->
+
+
+
+
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
 <div class="game-container">
-
   <div class="game-landing valorant">
     <div class="heading">
       <h1>VALORANT</h1>
@@ -313,9 +380,9 @@
                 </div>
 
                 <div class="choose">
-                  <label class="switch" for="select_champion">
+                  <label class="switch" for="select_champion" onclick="togglePopupChampion()">
                     <input type="checkbox" id="select_champion" name="extra-checkbox" value="selectChampion">
-                      <span class="slider round"></span>
+                    <span class="slider round"></span>
                   </label>
                 </div>
               </div>
@@ -341,7 +408,7 @@
                 </div>
 
                   <div class="choose">
-                    <label class="switch" for="select-booster">
+                    <label class="switch" for="select-booster" onclick="togglePopupBooster()">
                       <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
                         <span class="slider round"></span>
                     </label>
@@ -399,9 +466,10 @@
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" value="120">
-                <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
+                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" readonly>
                 <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <input type="hidden" class="champion-data" id="champion_data" name="champion_data" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
                   <button id="division-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
@@ -428,9 +496,10 @@
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" value="120">
-                <input type="hidden" id="chooseBoosterInput" name="choose_booster" value=0 readonly>
+                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" value=0 readonly>
                 <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <input type="hidden" class="champion-data" id="champion_data" name="champion_data" value='' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
                   <button id="placement-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
