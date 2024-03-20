@@ -65,7 +65,7 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
   created_at = models.DateTimeField(auto_now_add =True)
 
   def validate_division(self):
-    if self.is_Arena_2x2:
+    if self.is_arena_2vs2:
       if not (self.current_division > 0 and self.current_division <= 2200):
         raise ValidationError("Current division must be between 0 and 2200.")
     else:
@@ -127,7 +127,7 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     if self.order.promo_code != None:
       promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
 
-    return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{self.is_arena_2vs2}"
+    return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},{self.is_arena_2vs2}"
   
   def get_order_price(self):
     with open('static/wow/data/prices.json', 'r') as file:

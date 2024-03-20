@@ -32,6 +32,9 @@
   background-image: url('./../images/lol_bg.png');
   background-position-y: -50px;
 }
+.game-landing.csgo {
+  background-image: url('./../images/csgo_bg.jpg');
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */

@@ -146,7 +146,7 @@ def check_csgo2_type(type) -> Model:
     CSGO2_MODELS = {
         'D': Csgo2DivisionOrder,
         'A': Csgo2PremierOrder,
-        'T': CsgoFaceitOrder,
+        'F': CsgoFaceitOrder,
     }
     Game = CSGO2_MODELS.get(type, None)
     if not Game:

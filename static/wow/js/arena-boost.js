@@ -79,7 +79,7 @@ let selected3vs3ArenaServer = arena_3vs3_server_select_element.val()
 if(extend_order) {
   let orderID = parseInt(extend_order, 10);
   document.getElementById('extendOrder').value = orderID; 
-  extends_from_2vs2 = valuesToSetExtra[0]
+  const extends_from_2vs2 = valuesToSetExtra[0]
 
   arena_2vs2_server_select_element.disabled = true
   arena_3vs3_server_select_element.disabled = true

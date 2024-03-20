@@ -5,16 +5,14 @@ from booster.models import Booster
 class DivisionSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=17)
     desired_rank = serializers.IntegerField(min_value=1, max_value=18)
-
     server = serializers.CharField(max_length=300)
-    price = serializers.FloatField(min_value=10)
     promo_code = serializers.CharField()
 
     duo_boosting = serializers.BooleanField()
     select_booster = serializers.BooleanField()
     turbo_boost = serializers.BooleanField()
     streaming = serializers.BooleanField()
-
+    price = serializers.FloatField(min_value=10)
     choose_booster = serializers.IntegerField()
     extend_order = serializers.IntegerField()
 
@@ -48,3 +46,20 @@ class DivisionSerializer(serializers.Serializer):
             data['choose_booster'] = 'another_value'
 
         return data            
+    
+class FaceitSerializer(serializers.Serializer):
+    current_level = serializers.IntegerField(min_value=1, max_value=10)
+    desired_level = serializers.IntegerField(min_value=1, max_value=10)
+
+    duo_boosting = serializers.BooleanField()
+    select_booster = serializers.BooleanField()
+    turbo_boost = serializers.BooleanField()
+    streaming = serializers.BooleanField()
+
+    server = serializers.CharField(max_length=300)
+
+    price = serializers.FloatField(min_value=10)
+
+    choose_booster = serializers.IntegerField()
+
+    extend_order = serializers.IntegerField()    

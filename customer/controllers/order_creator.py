@@ -30,6 +30,9 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             number_of_wins = int(invoice_values[4])
         elif type == 'T':
             current_league = int(invoice_values[3])
+        elif type == 'F':
+            current_level =  int(invoice_values[3])
+            desired_level = int(invoice_values[6])
 
         duo_boosting = bool(int(invoice_values[8]))
         select_booster = bool(int(invoice_values[9]))
@@ -174,8 +177,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             elif game_id == 12 and type == 'D':
                 order = Game.objects.create(**default_fields, role=role)
             # csgo2
-            elif game_id == 13:
+            elif game_id == 13 and type == 'D':
                 order = Game.objects.create(**default_fields)
+            elif game_id == 13 and type == 'A':
+                order = Game.objects.create(**default_fields)
+            elif game_id == 13 and type == 'F':
+                order = Game.objects.create(order=baseOrder, current_level=current_level, desired_level=desired_level)
             else:
                 print('error in game id')    
 
@@ -256,8 +263,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             elif game_id == 12 and type == 'D':
                 order = Game.objects.create(**extend_fields, role= extend_order_role)
             # csgo2
-            elif game_id == 13:
+            elif game_id == 13 and type == 'D':
                 order = Game.objects.create(**extend_fields)
+            elif game_id == 13 and type == 'A':
+                order = Game.objects.create(**extend_fields)
+            elif game_id == 13 and type == 'F':
+                order = Game.objects.create(order=baseOrder, current_level=current_level, desired_level=desired_level)
             else:
                 print('error in game id')  
         content_type = ContentType.objects.get_for_model(order)
