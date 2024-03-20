@@ -47,6 +47,13 @@ class DivisionSerializer(serializers.Serializer):
                 Booster.objects.get(booster_id = choose_booster, is_valo_player= True, can_choose_me= True)
             except Booster.DoesNotExist:
                 raise serializers.ValidationError("This Booster is not belong to Valorent.")
+            
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+
+        if data['choose_booster'] and data['select_booster'] :
+            data['choose_booster'] = 0
+        return data           
 
     
     def champion_validate(self, attrs):
