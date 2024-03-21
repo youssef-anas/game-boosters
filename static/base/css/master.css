@@ -7,6 +7,7 @@
 :root {
   --main-color: #433733;
   --secondary-color: #F26E3E;
+  --alt-secondary-color: #DE4949;
   --alternative-color: #2F271F;
   --background-color: #201914;
   --heading-font: heading-font;
@@ -27,10 +28,10 @@
   color: white;
 }
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #281F1B;
 }
 ::-webkit-scrollbar-thumb {
   background-color: var(--secondary-color);

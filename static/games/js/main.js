@@ -64,9 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-
-
 //popup champion
 const championDataInputs= document.querySelectorAll('.champion-data')
 const checkboxes = document.querySelectorAll('.hidden-checkbox');
@@ -85,7 +82,7 @@ function togglePopupChampion() {
 }
 
 function openFormChampoin() {
-  document.getElementById("popup-champion-form").style.display = "block";
+  document.getElementById("popup-champion-form").style.display = "flex";
   championDataInputs.forEach(input => {
     input.value = 'null'; 
   });

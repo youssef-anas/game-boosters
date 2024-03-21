@@ -52,7 +52,7 @@ Promise.all([
 
   // ----------------------------- Premier Funtion ---------------------------------
 
-  const premierRanksNames = ['', 'silver', 'red', 'pink', 'purple', 'blue', 'grey']
+  const premierRanksNames = ['', 'silver', 'grey', 'blue', 'purple', 'pink', 'red']
 
   function getRangeCurrent(amount) {
     const MAX_LISTS = [4999, 7999, 11999, 18999, 20999, 24999, 30000];
@@ -305,6 +305,8 @@ Promise.all([
         // Server
         premier_server_select_element.val(server);
 
+        desiredRankName = getRank(desiredDivision)[0]
+
         let [current_mmr_in_c_range, current_range] = getRangeCurrent(valuesToSet[4]);
         let [desired_mmr_in_d_range, desired_range] = getRangeDesired(desiredDivision);
         let sliced_prices = full_price_val.slice(current_range, desired_range - 1);
@@ -410,6 +412,8 @@ Promise.all([
 
     // ----------------------------- Premier Boost ---------------------------------
     function getPremierPrice() {
+      currentRankName = getRank(currentDivision)[0]
+      desiredRankName = getRank(desiredDivision)[0]
 
       // Server
       const selectedPremierServer = premier_server_select_element.val();
@@ -488,12 +492,20 @@ Promise.all([
   currentPremierRank.on("input", function(event) {
     currentDivision = Number(event.target.value)
     currentRank = getRank(currentDivision)[1]
-    currentRankName = getRank(currentDivision)[0]
 
     // Check Difference
     if((desiredDivision - currentDivision) < 500) {
-      desiredPremierRank.val(currentDivision + 500);
-      desiredDivision = currentDivision + 500;
+      let newValue = currentDivision + 500
+
+      if(newValue > 30000){
+        newValue = 30000
+        currentPremierRank.val(newValue - 500)
+        currentDivision = newValue - 500
+        currentRank = getRank(currentDivision)[1]
+      }
+
+      desiredPremierRank.val(newValue);
+      desiredDivision = newValue;
       desiredRank = getRank(desiredDivision)[0];
   
       changeUI(desiredDivision, desiredPremierRank, desiredPremierSteps);
@@ -508,12 +520,20 @@ Promise.all([
   desiredPremierRank.on("input", function(event) {
     desiredDivision = Number(event.target.value);
     desiredRank = getRank(desiredDivision)[1]
-    desiredRankName = getRank(desiredDivision)[0]
 
     // Check Difference
     if((desiredDivision - currentDivision) < 500) {
-      desiredPremierRank.val(currentDivision + 500);
-      desiredDivision = currentDivision + 500;
+      let newValue = currentDivision + 500
+
+      if(newValue > 30000){
+        newValue = 30000
+        currentPremierRank.val(newValue - 500)
+        currentDivision = newValue - 500
+        currentRank = getRank(currentDivision)[1]
+      }
+
+      desiredPremierRank.val(newValue);
+      desiredDivision = newValue;
       desiredRank = getRank(desiredDivision)[0];
   
       changeUI(desiredDivision, desiredPremierRank, desiredPremierSteps);
