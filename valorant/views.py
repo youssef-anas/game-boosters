@@ -12,8 +12,9 @@ from valorant.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
 from customer.models import Champion
-from booster.models import Booster
-
+from accounts.models import BaseUser
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
 
 def valorantGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -26,7 +27,24 @@ def valorantGetBoosterByRank(request):
   marks = ValorantMark.objects.all().order_by('id')
   placements = ValorantPlacement.objects.all().order_by('id')
   champions = Champion.objects.filter(game__id =2).order_by('id')
-  boosters = Booster.objects.filter(is_valo_player=True, can_choose_me= True).order_by('id')
+
+  # Boosters Information
+  # Here I make condition when game_id = 2
+  game_pk_condition = Case(
+    When(booster_division__game__pk=2, then=1),
+    default=0,
+    output_field=IntegerField()
+  )
+  
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_valo_player=True,
+      booster__can_choose_me=True
+    ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+    ).order_by('id')
+
 
   divisions_data = [
     [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]

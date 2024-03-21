@@ -61,6 +61,22 @@ class Booster(models.Model):
     achived_rank_modleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
     achived_rank_wow = models.ForeignKey(WorldOfWarcraftRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank')
     achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
+
+
+    # @property
+    # def average_rating(self):
+    #     ratings = self.ratings_received.all()
+    #     if ratings:
+    #         total_ratings = sum(rating.rate for rating in ratings)
+    #         return total_ratings / len(ratings)
+    #     return 0  # Default value if no ratings exist
+
+    # @property
+    # def order_count(self):
+    #     return self.booster_division.count()
+
+    # def filtered_order_count(self, **filters):
+    #     return self.booster_division.filter(**filters).count()
     
     
     # achived_rank_dota2= models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')
