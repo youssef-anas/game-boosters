@@ -87,7 +87,7 @@
                 <span class="ms-1"></span>{{booster.average_rating}}/5
               </p>
               <p class="col mb-0">{{booster.order_count}} Orders</p>
-              <a class="col mb-0 view-profile" href="">View Profile</a>
+              <a class="col mb-0 view-profile" href="{% url 'booster.profile' booster_id=booster.booster.booster.pk %}">View Profile</a>
             </div>
           </div>  
           {% endfor %} 
