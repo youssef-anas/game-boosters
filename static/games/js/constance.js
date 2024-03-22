@@ -54,7 +54,7 @@ const extraOptions = document.querySelectorAll('input[name="extra-checkbox"]');
 const duoBoosting = document.querySelector('input[name="switch-between-solo-duo"][value="duo"]')
 const soloBoosting = document.querySelector('input[name="switch-between-solo-duo"][value="solo"]')
 
-const promo_form = document.querySelector('.discount form');
+const promo_form = document.querySelector('.discount #promo-form');
 if(extend_order) {
   promo_form.style.visibility = 'hidden';
 } else {

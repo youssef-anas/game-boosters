@@ -5,6 +5,7 @@
   top: -280px;
   left: 50%;
   transform: translateX(-50%);
+  text-align: center;
 }
 @media (max-width: 767px) {
   .message-container {
@@ -12,10 +13,12 @@
   }
 }
 .error-message {
-  background-color: #4f1a0f91;
-  box-shadow: 0px 0px 8px 2px red;
+  color: #f56868;
+  background-color: #5d0202;
+  border: 1px solid #ed3535;
 }
 .success-message {
-  background-color: #4f1a0f91;
-  box-shadow: 0px 0px 8px 2px yellowgreen;
+  color: #3FBA6E;
+  background-color: #172924;
+  border: 1px solid #40BB6F33;
 }

@@ -173,50 +173,54 @@ function getCookie(name) {
 // Function to fetch promo data
 async function fetch_promo() {
   return new Promise((resolve, reject) => {
-      const discountInput = document.querySelector('input[name="discount"]');
-      const discountCode = discountInput.value.trim();
-      const promoDetails = $('#promo-details h6');
-      const applyFormInput = document.getElementById('promo-form-submit')
-      applyFormInput.disabled = true;
-      $('input[id="promo_send"]').val(discountCode);
-      if (discountCode) {
-          applyFormInput.value = 'Please Wait...';
-          const csrfToken = getCookie('csrftoken');
-          $.ajax({
-              url: '/accounts/promo-codes/',
-              type: 'POST',
-              headers: {
-                  'X-CSRFToken': csrfToken
-              },
-              contentType: 'application/json',
-              data: JSON.stringify({ code: discountCode }),
-              success: function(data) {
-                  promoDetails.css('visibility', 'visible');
-                  promoDetails.text(data.description);
-                  promoDetails.css('color', 'green');
-                  applyFormInput.value = 'Apply';
-                  applyFormInput.disabled = false;
-                  resolve(data.discount_amount); // Resolve the promise with data when the request is successful
-              },
-              error: function(xhr, textStatus, errorThrown) {
-                  promoDetails.css('visibility', 'visible');
-                  promoDetails.text(xhr.responseJSON.error);
-                  promoDetails.css('color', 'red');
-                  applyFormInput.value = 'Apply';
-                  applyFormInput.disabled = false;
-                  resolve(0); // Reject the promise when there's an error
-              }
-          });
-      } else {
-          $('input[id="promo_send"]').val('null');
-          promoDetails.css('visibility', 'visible');
-          promoDetails.text('Please enter a discount code');
-          promoDetails.css('color', 'red');
-          applyFormInput.value = 'Apply';
-          applyFormInput.disabled = false;
-          resolve(0); // Resolve the promise with null if there's no discount code
-      }
-      
+    const promo_form = document.querySelector('.discount #promo-form');
+    const discountInput = document.querySelector('input[name="discount"]');
+    const discountCode = discountInput.value.trim();
+    const promoDetails = $('#promo-details');
+    const applyFormInput = document.getElementById('promo-form-submit')
+    applyFormInput.disabled = true;
+    $('input[id="promo_send"]').val(discountCode);
+    if (discountCode) {
+      applyFormInput.value = 'Please Wait...';
+      const csrfToken = getCookie('csrftoken');
+      $.ajax({
+          url: '/accounts/promo-codes/',
+          type: 'POST',
+          headers: {
+            'X-CSRFToken': csrfToken
+          },
+          contentType: 'application/json',
+          data: JSON.stringify({ code: discountCode }),
+          success: function(data) {
+            promo_form.classList.add('d-none');
+            promoDetails.css('visibility', 'visible');
+            promoDetails.text(`%${data.discount_amount} Discount applied successfully \uD83C\uDF89`);
+            promoDetails.addClass('success-message');
+            promoDetails.removeClass('error-message');
+            applyFormInput.value = 'Apply';
+            applyFormInput.disabled = false;
+            resolve(data.discount_amount); // Resolve the promise with data when the request is successful
+          },
+          error: function(xhr, textStatus, errorThrown) {
+            promoDetails.css('visibility', 'visible');
+            promoDetails.text(`${xhr.responseJSON.error} \uD83D\uDE1E`);
+            promoDetails.removeClass('success-message');
+            promoDetails.addClass('error-message');
+            applyFormInput.value = 'Apply';
+            applyFormInput.disabled = false;
+            resolve(0); // Reject the promise when there's an error
+          }
+      });
+    } else {
+      $('input[id="promo_send"]').val('null');
+      promoDetails.css('visibility', 'visible');
+      promoDetails.text('Please enter a discount code \uD83D\uDE1E');
+      promoDetails.removeClass('success-message');
+      promoDetails.addClass('error-message');
+      applyFormInput.value = 'Apply';
+      applyFormInput.disabled = false;
+      resolve(0); // Resolve the promise with null if there's no discount code
+    }
   });
   
 }

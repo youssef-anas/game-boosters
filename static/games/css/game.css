@@ -351,6 +351,17 @@ select::-ms-expand {
 }
 /* End Complate Order */
 
+/* Start PromoCode */
+#promo-details {
+  visibility: hidden;
+  margin-top: 0.8rem;
+  text-align: center;
+}
+#promo-details.success-message {
+  margin: 1rem 0 !important;
+}
+/* End PromoCode */
+
 /* Start Select Champion */
 /* Hide the default checkbox */
 .champions-container {
@@ -376,12 +387,10 @@ select::-ms-expand {
   border-radius: 4px;
 }
 input[type="checkbox"]:hover + .icon-as-checkbox img {
-  background-color: var(--alt-secondary-color);
-  
+  border: 3px solid var(--alt-secondary-color);
 }
 input[type="checkbox"]:checked + .icon-as-checkbox img {
-  background-color: var(--secondary-color);
-
+  border: 3px solid var(--secondary-color);
 }
 /* End Select Champion */
 

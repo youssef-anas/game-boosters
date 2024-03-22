@@ -16,6 +16,18 @@
 .landing .text h1 span, .landing .text p span {
   color: var(--secondary-color);
 }
+@media (max-width: 991px) {
+  .landing {
+    height: 560px;
+    padding-top: 14rem;
+  }
+  .landing .text h1 {
+    font-size: 50px;
+  }
+  .landing .text p {
+    font-size: 20px;
+  }
+}
 /* End Landing */
 
 /* Start Swiper & Heading Style */

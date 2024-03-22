@@ -35,19 +35,9 @@
   font-family: var(--heading-font);
   letter-spacing: 3px;
 }
-@media (max-width: 1199px) {
-  .games-landing .heading h1 {
-    font-size: 32px !important;
-  }
-}
 .games-landing .heading p {
   font-size: 1.5rem;
   font-weight: 300;
-}
-@media (max-width: 1199px) {
-  .games-landing .heading p {
-    font-size: 16px;
-  }
 }
 /* Start Games */
 .games {
@@ -61,6 +51,7 @@
   border: 1px solid #332A27;
   position: relative;
   background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
+  transition: 1s linear;
 }
 .games .game::after {
   content: "";
@@ -71,6 +62,10 @@
   left: 0;
   border-radius: calc(var(--main-radius) * 2);
   background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
+  transition: 1s linear;
+}
+.games .game:hover::after {
+  background: linear-gradient(360deg, #1E1814 31.88%, rgb(30 24 20 / 44%) 69.08%);
 }
 .games .game .banner {
   width: 100%;

@@ -37,23 +37,29 @@
               <li>
                 <ul class="main-links">
                   <li>
-                    <a href="{% url 'games.games' %}">Games</a>
+                    <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
                   </li>
       
                   <li>
-                    <a href="">Store</a>
+                    <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
                   </li>
       
                   <li>
-                    <a href="">Boosters</a>
+                    <a href="" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                   </li>
+
+                  {% if request.user.is_booster %}
+                  <li>
+                    <a href="{% url 'booster.orders' %}" {% if request.path == '/booster/orders/' %}class="active"{% endif %}>My Orders</a>
+                  </li>
+                  {% else %}
+                  <li>
+                    <a href="" {% if request.path == '/accounts/customer_side/' %}class="active"{% endif %}>Last Orders</a>
+                  </li>
+                  {% endif %}
       
                   <li>
-                    <a href="">Reviews</a>
-                  </li>
-      
-                  <li>
-                    <a href="">How We Work</a>
+                    <a href="" {% if request.path == '/howtowork/' %}class="active"{% endif %}>How We Work</a>
                   </li>
                 </ul>
               </li>
@@ -63,22 +69,22 @@
                   {% if request.user.id %}
                     {% if request.user.is_booster %}
                       <li>
-                        <a href="{% url 'edit.booster.profile' %}" class="custom-btn filled me-3" style="width: 200px;">Profile</a>
+                        <a href="{% url 'edit.booster.profile' %}" class="custom-btn filled me-3" style="width: 200px;" {% if request.path == '/booster/edit_profile/' %}class="active"{% endif %}>Profile</a>
                       </li>
                     {% else %}
                       <li>
-                        <a href="{% url 'edit.customer.profile' %}" class="custom-btn filled me-3" style="width: 200px;">Profile</a>
+                        <a href="{% url 'edit.customer.profile' %}" class="custom-btn filled me-3" style="width: 200px;" {% if request.path == '/customer/boosters/' %}class="active"{% endif %}>Profile</a>
                       </li>
                     {% endif %}
                     <li>
-                      <a href="{% url 'account.logout' %}" class="custom-btn filled" style="width: 180px;">Log Out</a>
+                      <a href="{% url 'account.logout' %}" class="custom-btn filled" style="width: 180px;" {% if request.path == '/accounts/logout/' %}class="active"{% endif %}>Log Out</a>
                     </li>
                     {% else %}
                       <li>
-                        <a href="{% url 'accounts.signup' %}" class="custom-btn outline me-3" >Sign Up</a>
+                        <a href="{% url 'accounts.signup' %}" class="custom-btn outline me-3" {% if request.path == '/accounts/signup/' %}class="active"{% endif %}>Sign Up</a>
                       </li>
                       <li>
-                        <a href="{% url 'account.login' %}" class="custom-btn filled">Log In</a>
+                        <a href="{% url 'account.login' %}" class="custom-btn filled" {% if request.path == '/accounts/login/' %}class="active"{% endif %}>Log In</a>
                       </li>
                     {% endif %}
                 </ul>
@@ -125,19 +131,19 @@
             <div class="col-md-9 col-12">
               <ul class="links">
                 <li>
-                  <a href="">Contact us</a>
+                  <a href="" >Contact us</a>
                 </li>
     
                 <li>
-                  <a href="">Report</a>
+                  <a href="" >Report</a>
                 </li>
     
                 <li>
-                  <a href="">Terms of Service</a>
+                  <a href="" >Terms of Service</a>
                 </li>
     
                 <li>
-                  <a href="">Privacy Policy</a>
+                  <a href="" >Privacy Policy</a>
                 </li>
               </ul>
             </div>
