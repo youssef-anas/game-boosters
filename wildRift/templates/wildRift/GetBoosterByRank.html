@@ -7,6 +7,8 @@
 <!-- OUR STYLE -->
 <link href="{% static 'games/css/game.css'%}" rel="stylesheet" />
 <link href="{% static 'games/css/division.css'%}" rel="stylesheet" />
+<!-- POP UP STYLE -->
+<link href="{% static 'base/css/popup.css'%}" rel="stylesheet" >
 <!-- WILD RIFT RANKS COLORS -->
 <link href="{% static 'wildRift/css/ranks-colors.css'%}" rel="stylesheet" />
 <!-- STYLE FEEDBACK -->
@@ -18,6 +20,84 @@
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
+<!-- ------------------------------ Champion Select Popup ------------------------------ -->
+<div id="popup-champion-form" class="popup">
+    <div class="popup-content">
+      <span class="close" onclick="closeFormChampion()">&times;</span>
+      <h3 class="p-2 text-center my-4">Select Your Roles & Agents</h3>
+  
+      <div class="container d-flex justify-content-between">
+        <p class="fw-bolder">Select Your Agents</p>
+        <div>
+          <div class="search">
+            <i class="search-icon fa-solid fa-magnifying-glass"></i>
+            <input type="search" class="search-input" placeholder="Search Champions">
+          </div>
+        </div>
+      </div>
+      <div class="container champions-container my-4 py-4">
+        {% for champion in champions %}
+        <div class="champions-icons">
+          <input type="checkbox" id="ch{{champion.id}}" class="hidden-checkbox">
+          <label for="ch{{champion.id}}" class="icon-as-checkbox">
+            <img src="{{champion.get_image_url}}" alt="{{champion.name}}" width="48" height="48">
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- <button type="button" onclick="closeFormChampion()">Close</button> -->
+    </div>
+  </div>
+<!-- ------------------------------ Booster Select Popup ------------------------------ -->
+<div id="popup-booster-form" class="popup">
+    <div class="popup-content">
+      <span class="close" onclick="closeFormBooster()"><i class="fa-solid fa-xmark"></i></span>
+      <h3 class="p-2 text-center my-4">Select Your Booster</h3>
+  
+      <div class="container">
+        <div class="search">
+          <i class="search-icon fa-solid fa-magnifying-glass"></i>
+          <input type="search" class="search-input" placeholder="Search Champions">
+        </div>
+  
+        <div class="container boosters-container my-4 py-4">
+          <div class="boosters">
+            {% for booster in boosters %}
+            <div id="{{booster.booster.booster.pk}}" class="booster-card m-1 mb-3 mx-auto rounded" onclick="SetBooster(this)">
+              <div class="p-1 row row-cols-5 align-items-center">
+                <div class="col d-flex align-items-center">
+                  <img src="{{booster.get_image_url}}" alt="{{booster.username}}" width="48" height="48" class="rounded">
+                  <p class="ms-4 mb-0 booster-username">{{booster.username}}</p>
+                </div>
+                <div class="col d-flex align-items-center">
+                  <img src="{{booster.booster.achived_rank_valo.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
+                  <p class="ms-4 mb-0">{{booster.booster.achived_rank_valo.rank_name}}</p>
+                </div>
+                <p class="col mb-0">
+                  {% for star in "*****" %}
+                    {% if forloop.counter <= booster.average_rating %}
+                      <i class="fa-solid fa-star" style="color: #FFD700;"></i>
+                    {% else %}
+                      <i class="fa-regular fa-star" style="color: #808080;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="ms-1"></span>{{booster.average_rating}}/5
+                </p>
+                <p class="col mb-0">{{booster.order_count}} Orders</p>
+                <a class="col mb-0 view-profile" href="{% url 'booster.profile' booster_id=booster.booster.booster.pk %}">View Profile</a>
+              </div>
+            </div>  
+            {% endfor %} 
+          </div>
+        </div>
+  
+      </div>
+      <div class="d-flex container">
+      </div>
+      <!-- <button type="button" onclick="closeFormBooster()">Close</button> -->
+    </div>
+  </div>
+  <!-- ------------------------------ End Popups ------------------------------ -->
 <div class="game-container">
 
     <div class="game-landing wildrift">
@@ -224,8 +304,8 @@
                                 </div>
 
                                 <div class="choose">
-                                    <label class="switch" for="select-champion">
-                                        <input type="checkbox" id="select-champion" name="extra-checkbox" value="selectChampion">
+                                    <label class="switch" for="select_champion" onclick="togglePopupChampion()">
+                                        <input type="checkbox" id="select_champion" name="extra-checkbox" value="selectChampion">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -252,7 +332,7 @@
                                 </div>
 
                                 <div class="choose">
-                                    <label class="switch" for="select-booster">
+                                    <label class="switch" for="select-booster" onclick="togglePopupBooster()">
                                         <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
                                         <span class="slider round"></span>
                                     </label>
@@ -305,9 +385,10 @@
                                 <input type="hidden" name="streaming" id="streaming" value=false>
                                 <input type="hidden" name="server" id="server" value=false>
                                 <input type="hidden" name="price" value="120">
-                                <input type="hidden" id="chooseBoosterInput" name="choose_booster" readonly>
+                                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" readonly>
                                 <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
                                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                                <input type="hidden" class="champion-data" id="champion_data" name="champion_data" value='null' readonly>
                                 <div class="purchase d-flex justify-content-between align-items-center">
                                     <!-- Paypal -->
                                     <button id="division-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
@@ -337,6 +418,7 @@
 <!-- SWIPER JS -->
 <script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
 <!-- OUR SCRIPTS -->
+<script src="{% static 'games/js/main.js' %}"></script>
 <script src="{% static 'games/js/pay-action.js' %}"></script>
 <script src="{% static 'games/js/functions.js' %}"></script> 
 <script src="{% static 'games/js/constance.js' %}"></script> 

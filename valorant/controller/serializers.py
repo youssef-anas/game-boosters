@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
-from valorant.models import ValorantDivisionOrder
 from customer.models import Champion
 from booster.models import Booster
 
@@ -50,29 +49,30 @@ class DivisionSerializer(serializers.Serializer):
             
     def to_internal_value(self, data):
         data = super().to_internal_value(data)
-
-        if data['choose_booster'] and data['select_booster'] :
+        if data['select_booster'] == False  :
             data['choose_booster'] = 0
-        return data           
+        if data['select_champion'] == False:
+            data['champion_data'] = 0
+        return data                
 
     
     def champion_validate(self, attrs):
-            champion_data = attrs.get('champion_data', '')
-            select_champion = attrs.get('select_champion', '')
+            champion_data = attrs.get('champion_data', None)
+            select_champion = attrs.get('select_champion', None)
             if champion_data and champion_data != 'null' and select_champion:
-                print(champion_data)
-                try :
+                numbers_list = None
+                try:
                     numbers_list = [int(num) for num in champion_data.split("ch") if num]
-                    if len(numbers_list) > 3:
-                        raise serializers.ValidationError("3 champion IDs only can be selected.")
-                    for id in numbers_list:
-                        try:
-                            Champion.objects.get(id=id, game__id = 2)
-                        except Champion.DoesNotExist:
-                            raise serializers.ValidationError("This champion is not belong to Valorent.")
-                except:
-                    raise serializers.ValidationError("Error, when try to set champions.") 
-
+                except ValueError:
+                    raise serializers.ValidationError("Error in champions")
+                if len(numbers_list) > 3:
+                    raise serializers.ValidationError("You can choose max 3 champions.")
+                for id in numbers_list:
+                    try:
+                        Champion.objects.get(id=id, game__id = 2)
+                    except Champion.DoesNotExist:
+                        raise serializers.ValidationError("This champion is not belong to Valorent.")
+                    
 
 class PlacementSerializer(serializers.Serializer):
     last_rank = serializers.IntegerField(min_value=0, max_value=8)
@@ -85,11 +85,58 @@ class PlacementSerializer(serializers.Serializer):
     select_champion = serializers.BooleanField()
 
     server = serializers.CharField(max_length=300)
-
     price = serializers.FloatField(min_value=10)
 
     choose_booster = serializers.IntegerField()
-
-    extend_order = serializers.IntegerField()
-
+    champion_data = serializers.CharField(allow_blank=True)
     promo_code = serializers.CharField()
+
+    def validate(self, attrs):
+        self.extend_order_validate(attrs)
+        self.booster_validate(attrs)
+        self.champion_validate(attrs)
+        return attrs
+    
+    def extend_order_validate(self, attrs):
+        extend_order = attrs.get('extend_order', '')
+        if extend_order > 0:
+            try:
+                BaseOrder.objects.get(id=extend_order, game__id=2, game_type='P')
+            except BaseOrder.DoesNotExist:
+                raise serializers.ValidationError("This order can't be extended")
+  
+            
+    def booster_validate(self, attrs):
+        choose_booster = attrs.get('choose_booster', None)
+        select_booster = attrs.get('select_booster', None)
+        if choose_booster > 0 and select_booster:
+            try :
+                Booster.objects.get(booster_id = choose_booster, is_valo_player= True, can_choose_me= True)
+            except Booster.DoesNotExist:
+                raise serializers.ValidationError("This Booster is not belong to Valorent.")
+            
+    def to_internal_value(self, data):
+        data = super().to_internal_value(data)
+        if data['select_booster'] == False  :
+            data['choose_booster'] = 0
+        if data['select_champion'] == False:
+            data['champion_data'] = 0
+        return data                
+
+    
+    def champion_validate(self, attrs):
+            champion_data = attrs.get('champion_data', None)
+            select_champion = attrs.get('select_champion', None)
+            if champion_data and champion_data != 'null' and select_champion:
+                numbers_list = None
+                try:
+                    numbers_list = [int(num) for num in champion_data.split("ch") if num]
+                except ValueError:
+                    raise serializers.ValidationError("Error in champions")
+                if len(numbers_list) > 3:
+                    raise serializers.ValidationError("You can choose max 3 champions.")
+                for id in numbers_list:
+                    try:
+                        Champion.objects.get(id=id, game__id = 2)
+                    except Champion.DoesNotExist:
+                        raise serializers.ValidationError("This champion is not belong to Valorent.")

@@ -90,16 +90,17 @@ def pay_with_paypal(request):
         serializer = FaceitSerializer(data=request.POST)
 
       if serializer.is_valid():
-        extend_order_id = serializer.validated_data['extend_order']
         # Division
         if request.POST.get('game_type') == 'D':
+          extend_order_id = serializer.validated_data['extend_order']
           order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Premier
         if request.POST.get('game_type') == 'A':
+          extend_order_id = serializer.validated_data['extend_order']
           order_info = get_premier_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Faceit
         elif request.POST.get('game_type') == 'F':
-          order_info = get_faceit_order_result_by_rank(serializer.validated_data,extend_order_id)
+          order_info = get_faceit_order_result_by_rank(serializer.validated_data)
 
         request.session['invoice'] = order_info['invoice']
         token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])

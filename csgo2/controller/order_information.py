@@ -272,7 +272,7 @@ def get_premier_order_result_by_rank(data, extend_order_id):
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 
-def get_faceit_order_result_by_rank(data, extend_order_id):
+def get_faceit_order_result_by_rank(data, extend_order_id = 0):
     current_level = data['current_level']
     desired_level = data['desired_level']
 

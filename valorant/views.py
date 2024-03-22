@@ -83,7 +83,6 @@ def valorantGetBoosterByRank(request):
     "feedbacks": feedbacks,
     'champions' : champions,
     'boosters': boosters,
-    'rating': 4, # Just For Test
   }
   return render(request,'valorant/GetBoosterByRank.html', context)
 
