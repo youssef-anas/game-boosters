@@ -20,6 +20,7 @@
   border-radius: calc(var(--main-radius) * 2);
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
   animation: slideIn 0.5s forwards;
+  position: relative;
 }
 
 @keyframes slideIn {

@@ -1,0 +1,32 @@
+ <!-- Button trigger modal -->
+ <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#tipBooster">
+  Tip
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="tipBooster" tabindex="-1" aria-labelledby="tipBoosterLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="tipBoosterLabel">Tip Booster</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
+          {% csrf_token %}
+          
+          <input type="hidden" name="order_id" value="{{ order.order.id }}">
+          <input type="hidden" name="booster" value="{{ order.order.booster }}">
+          <div class="input-group mb-3">
+            <!-- <span class="input-group-text" id="basic-addon1">$</span> -->
+            <input type="number" required name="tip" class="form-control" placeholder="Tip"
+              aria-label="Tip">
+          </div>
+          <button id='submitTipButton' type="submit" class="pay-with-paypal">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+        </form>
+  
+      </div>
+    </div>
+  </div>
+</div>

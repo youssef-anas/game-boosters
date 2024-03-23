@@ -1,5 +1,7 @@
 from django import template
 from django.utils import timezone
+from django.utils.timesince import timesince
+from django.utils.timezone import now
 
 register = template.Library()
 
@@ -137,3 +139,22 @@ def dota2_ranks(value):
     return ['immortal', 8]
   else:
     return value
+  
+# Custom Time
+@register.filter(name='custom_timesince')
+def custom_timesince(value):
+  if not value:
+    return ''
+
+  delta = now() - value
+  if delta.total_seconds() < 60:
+    return '{} second{} ago'.format(int(delta.total_seconds()), '' if int(delta.total_seconds()) == 1 else 's')
+  elif delta.total_seconds() < 3600:
+    minutes = int(delta.total_seconds() // 60)
+    return '{} minute{} ago'.format(minutes, '' if minutes == 1 else 's')
+  elif delta.total_seconds() < 86400:
+    hours = int(delta.total_seconds() // 3600)
+    return '{} hour{} ago'.format(hours, '' if hours == 1 else 's')
+  else:
+    days = int(delta.total_seconds() // 86400)
+    return '{} day{} ago'.format(days, '' if days == 1 else 's')

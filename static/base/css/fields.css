@@ -67,3 +67,25 @@
 .search-icon {
   color: #FFFFFF80;
 }
+
+/* PayPal & Crypto */
+.paypal-btn, .cryptomus-btn {
+  width: 256px;
+  padding: 10px;
+  border-radius: 48px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.paypal-btn {
+  color: black;
+  background: #FFC439;
+}
+.cryptomus-btn {
+  color: white;
+  background: #DE4949;
+}

@@ -1,4 +1,4 @@
-// ######################################### Toggle Function #########################################
+// -------------------------- Toggle Function --------------------------
 const buttons = {
     AdminsChat: document.querySelector('#AdminsChatButton'),
     BoosterChat: document.querySelector('#BoosterChatButton'),
@@ -35,7 +35,7 @@ for (const key in buttons) {
 }
 
 
-// ######################################### Chats #########################################
+// -------------------------- Chats --------------------------
 const user = JSON.parse(document.getElementById('user').textContent);
 const admin_room = JSON.parse(document.getElementById('admin_room').textContent);
 const booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
@@ -127,7 +127,7 @@ connectAdminsChatSocket();
 
 
 
-// ################ Booster Chat 
+// -------------------------- Booster Chat --------------------------
 const chatbox = document.querySelector(".chat-customer-container");
 // Function to scroll to the bottom of the chatbox
 function scrollToBottom() {

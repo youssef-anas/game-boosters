@@ -123,10 +123,6 @@ checkboxes.forEach(checkbox => {
 });
 
 
-
-
-
-
 // popup booster
 const boostersCards = document.querySelectorAll('.booster-card');
 const chooseBoosterInput = document.querySelectorAll('.choose-booster')

@@ -367,11 +367,12 @@ select::-ms-expand {
 .champions-container {
   display: flex;
   justify-content: start;
-  align-items: center;
+  align-items: flex-start; /* Change align-items to flex-start */
   flex-wrap: wrap;
   gap: 50px;
   max-height: 290px;
-  overflow: auto;
+  overflow-y: auto;
+  position: relative; /* Add relative positioning */
 }
 .hidden-checkbox {
   position: absolute;
@@ -410,6 +411,7 @@ input[type="checkbox"]:checked + .icon-as-checkbox img {
 .boosters .booster-card {
   transition: background-color 0.3s ease; 
 }
+
 .boosters .booster-card:hover {
   background-color: var(--alt-secondary-color);
   cursor: pointer;

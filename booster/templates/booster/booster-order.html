@@ -10,7 +10,7 @@
   <div class="overlay py-5">
     <div class="container py-5 booster-order text-white">
       
-      <div class="orders-switch d-flex justify-content-between align-items-center p-4">
+      <div class="orders-switch d-flex flex-wrap justify-content-between align-items-center p-4">
         {% if orders %}
         {% for order in orders %}
           <input type="radio" id="order-{{order.order.order.id}}" data-order="order-{{order.order.order.id}}" name="radio-order" {% if forloop.counter0 == 0 %} checked {% endif %}>
@@ -43,12 +43,12 @@
             <hr>
   
             <p class="text-start">Order Information</p>
-            <div class="d-flex justify-content-between align-item-center">
+            <div class="d-flex flex-wrap justify-content-between align-item-center">
               <p class="text-secondary">Order Name</p>
               <p>{{order.order.order.name}}</p>
             </div>
 
-            <div class="d-flex justify-content-between align-item-center">
+            <div class="d-flex flex-wrap justify-content-between align-item-center">
               <p class="text-secondary">Order Type</p>
               {% if order.order.order.game_type == 'D' and order.order.order.game.link != 'rocketLeague' %}
               <p>Ranked Boost</p>
