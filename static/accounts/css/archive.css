@@ -46,7 +46,7 @@
   margin: 0;
 }
 
-#AdminsChatButton, #BoosterChatButton {
+/* #AdminsChatButton, #BoosterChatButton {
   color: white;
   background-color: transparent;
   padding: 8px 12px;
@@ -54,16 +54,16 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   margin: 0 5px;
-}
+} */
 
-.clicked_button  {
+/* .clicked_button  {
 background-color: var(--secondary-color) !important;
 color: white !important;
-}
+} */
 
-.AdminsChatContent{
+/* .AdminsChatContent{
   display: none;
-}
+} */
 
 .messages-section {
   /* margin: 4rem auto 0 auto;

@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
 {% endblock %}
 {% block container %}
+
+
+
 <div id="user-id" data-user-id="{{ order.order.booster.id }}"></div>
 <div class="containter-fluid customer-order-body">
   <div class="container py-5 customer-order text-white">
@@ -74,19 +77,19 @@
             {% endif %}
 
             {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
-            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+            <p class="current-info text-capitalize mb-0">{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
 
             {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
-            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
+            <p class="current-info text-capitalize mb-0">{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
 
             {% elif order.order.game.link == 'hearthstone' %}
-            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
+            <p class="current-info text-capitalize mb-0">{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
 
             {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
-            <p class="my-3 text-uppercase col-4 px-0">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
+            <p class="current-info text-capitalize mb-0">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
 
             {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
-            <p class="my-3 text-uppercase col-4 px-0">{{ order.reached_division }} MMR</p>
+            <p class="current-info text-capitalize mb-0">{{ order.reached_division }} MMR</p>
 
             {% elif order.order.game.link == 'csgo2' %}
             <p class="my-3 text-uppercase col-8 px-0">{{ order.reached_division }} Premier Rank</p>
@@ -172,6 +175,7 @@
             {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
             <input type="hidden" name="order_id" value="{{ order.order.id }}">
             <input type="hidden" name="admins_chat_slug" value="{{ admins_chat_slug }}">
+            
             <div class="input-group mb-3">
               <input type="text" required name="gamename" class="form-control" placeholder="Username" value="{% if order.order.customer_gamename %} {{order.order.customer_gamename}} {% endif %}" {% if order.order.data_correct %}readonly{% endif %} aria-label="Username" aria-describedby="basic-addon1">
             </div>
@@ -207,56 +211,57 @@
                 <div class="col-12 row-cols-1 align-content-between">
                   <div class="form-group px-4 py-2 chat-customer-container">
                     {% if messages %}
-                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
-                      {% for message in messages %}
-                      <div
-                        class="chat-message {% if message.user == request.user %} {% if message.msg_type == 2 %} tip-message {%else%} userMessage {% endif %} {% else %} otherMessage {% endif %}" style="background-color: transparent !important;">
-                        {% if message.msg_type == 2 %}
-                        <h4><span class="badge" style="background-color: var(--secondary-color);">{{ message.content }}</span></h4>
-                          <!-- <div class="mb-1 message-tip"></div> -->
-                        {% else %}
-                          {% if request.user != message.user %}
-                          <div class="image">
-                            {% if message.user.user.image %}
-                            <img src="{{message.user.user.image.url}}" alt="" width="40" height="40">
-                            {% else %}
-                            <img src="{% static 'base/images/no_profile_image.jpg' %}" alt="" width="40" height="40">
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;">
+                        {% for message in messages %}
+                        <div id = "chat-message"
+                          class="chat-message{% if message.user == request.user %} {% if message.msg_type == 2 %} tip-message {% elif message.msg_type == 3 %} changes-message {% else %} user-message {% endif %} {% else %} {% if message.msg_type == 4 %} from-admin-message {% else %} booster-message {% endif %} {% endif %}" style="background-color: transparent !important;">
+                          {% if message.msg_type == 2 %}
+                          
+                          <h4><span class="badge" style="background-color: var(--secondary-color);">{{ message.content }}</span></h4>
+                            <!-- <div class="mb-1 message-tip"></div> -->
+                          {% else %}
+                            {% if request.user != message.user %}
+                            <div class="image">
+                              {% if message.user.user.image %}
+                              <img src="{{message.user.user.image.url}}" alt="" width="40" height="40">
+                              {% else %}
+                              <img src="{% static 'base/images/no_profile_image.jpg' %}" alt="" width="40" height="40">
+                              {% endif %}
+                            </div>
                             {% endif %}
-                          </div>
+                            <div class="message p-3 rounded-3 ">
+                              {% if message.user.username != request.user.username  %}
+                              <p class="username mb-1">
+                                {{ message.user.first_name }} {{ message.user.last_name }}
+                              </p>
+                              {% endif %}
+                              <p class="content mb-1">{{ message.content }}</p>
+                              <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf"> {{message.created_on}} </p>
+                            </div>
                           {% endif %}
-                          <div class="message p-3 rounded-3 ">
-                            {% if message.user.username != request.user.username  %}
-                            <p class="username mb-1">
-                              {{ message.user.first_name }} {{ message.user.last_name }}
-                            </p>
-                            {% endif %}
-                            <p class="content mb-1">{{ message.content }}</p>
-                            <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf"> {{message.created_on}} </p>
-                          </div>
-                        {% endif %}
+                        </div>
+                        {% endfor %}
                       </div>
-                      {% endfor %}
-                    </div>
                     {% else %}
-                    <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
-                    <b class="noMessageBooster">No Messages in this Room.</b>
+                      <div class="chatbox" id="chatbox" style="padding: 4px 2px;"></div>
+                      <b class="noMessageBooster">No Messages in this Room.</b>
                     {% endif %}
                   </div>
                   <form id='booster_chat_form'>
                     {% if room.active %}
-                    <div class="form-group d-flex justify-content-center mx-4 mt-2">
-                      <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
-                        type="text" required>
-                        <button class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
-                          <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    {% else %}
-                    <div class="chatbox fw-bold" id="chatbox">
-                      <div class="chat-message text-center">
-                        Closed Chat
+                      <div class="form-group d-flex justify-content-center mx-4 mt-2">
+                        <input class="form-control" style="width: 80%;" placeholder="Enter text here" id="my_input"
+                          type="text" required>
+                          <button class="btn sendButton mx-3" id="submit_button" type="button" value="Send">
+                            <i class="fa-solid fa-paper-plane"></i>
+                          </button>
                       </div>
-                    </div>
+                    {% else %}
+                      <div class="chatbox fw-bold" id="chatbox">
+                        <div class="chat-message text-center">
+                          Closed Chat
+                        </div>
+                      </div>
                     {% endif %}
                   </form>
                 </div>

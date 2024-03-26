@@ -56,7 +56,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         Message.objects.create(user=user,room=room,content=message)
 
 
-
     @database_sync_to_async
     def set_user_online(self, username):
         user = BaseUser.objects.filter(username=username).first()

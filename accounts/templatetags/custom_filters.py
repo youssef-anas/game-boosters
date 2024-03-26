@@ -2,6 +2,7 @@ from django import template
 from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.timezone import now
+# from datetime import datetime
 
 register = template.Library()
 
@@ -139,14 +140,17 @@ def dota2_ranks(value):
     return ['immortal', 8]
   else:
     return value
-  
-# Custom Time
+
+
+#Custom Filter To Time 
 @register.filter(name='custom_timesince')
 def custom_timesince(value):
+  
   if not value:
     return ''
 
   delta = now() - value
+
   if delta.total_seconds() < 60:
     return '{} second{} ago'.format(int(delta.total_seconds()), '' if int(delta.total_seconds()) == 1 else 's')
   elif delta.total_seconds() < 3600:
@@ -155,6 +159,28 @@ def custom_timesince(value):
   elif delta.total_seconds() < 86400:
     hours = int(delta.total_seconds() // 3600)
     return '{} hour{} ago'.format(hours, '' if hours == 1 else 's')
-  else:
+  elif delta.total_seconds() < 2592000:  # 30 days
     days = int(delta.total_seconds() // 86400)
     return '{} day{} ago'.format(days, '' if days == 1 else 's')
+  elif delta.total_seconds() < 31536000:  # 365 days
+    months = int(delta.total_seconds() // 2592000)  # 30 days per month approximation
+    return '{} month{} ago'.format(months, '' if months == 1 else 's')
+  else:
+    years = int(delta.total_seconds() // 31536000)  # 365 days per year
+    return '{} year{} ago'.format(years, '' if years == 1 else 's')
+  
+
+
+@register.filter
+def format_date(created_on):
+    today = timezone.now().date()
+    yesterday = today - timezone.timedelta(days=1)
+    
+    if created_on.date() == today:
+      return 'Today'
+    elif created_on.date() == yesterday:
+      return 'Yesterday'
+    elif created_on.year != today.year:
+      return created_on.strftime('%d %B %Y')  # Format as 'day month year' (e.g., '23 March 2023')
+    else:
+      return created_on.strftime('%d %B')  # Format as 'day month' (e.g., '23 March')
