@@ -16,8 +16,37 @@ $(document).ready(function() {
     $('#saveDetailsBtn').toggleClass('d-none');
   }
 
+  // Validation Before Submit
+  // Validate gameName
+  $('#gameNameInput').on('input', function(){
+    let value = $(this).val().trim();
+
+    value = value.replace(/\s/g, '');
+
+    if(value.length > 300) {
+      value = value.substring(0, 300);
+    }
+
+    $(this).val(value);
+  })
+
+  // Validate username
+  $('#usernameInput').on('input', function(){
+    let value = $(this).val().trim();
+
+    value = value.replace(/\s/g, '');
+
+    if(value.length > 300) {
+      value = value.substring(0, 300);
+    }
+
+    $(this).val(value);
+  })
+
   function saveChanges(event) {
     event.preventDefault(); // Prevent default form submission
+
+
     
     let formData = {
       'order_id': $('#order_id').val(),

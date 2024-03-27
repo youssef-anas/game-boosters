@@ -281,6 +281,7 @@ input[type="radio"]:disabled+label {
   border-radius: 0 var(--main-radius) var(--main-radius) var(--main-radius);
   background-color: var(--alternative-color);
 }
+/* .no-messages {} */
 /* Day Date Design */
 
 .chat-messages .day-date {
