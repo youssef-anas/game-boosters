@@ -12,6 +12,11 @@
     width: 100% !important;
   }
 }
+.message {
+  width: fit-content;
+  padding: 0.5rem;
+  border-radius: var(--main-radius);
+}
 .error-message {
   color: #f56868;
   background-color: #5d0202;
@@ -21,4 +26,9 @@
   color: #3FBA6E;
   background-color: #172924;
   border: 1px solid #40BB6F33;
+}
+.info-message {
+  background-color: #201914;
+  border: 1px solid #ffffff33;
+  color: #534540;
 }

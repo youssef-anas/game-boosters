@@ -91,6 +91,8 @@ class Message(models.Model):
     MSG_TYPE = (
         (1, 'normal'),
         (2, 'tip'),
+        (3, 'changes'),
+        (4, 'admin')
     )
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     content = models.TextField()
@@ -114,6 +116,17 @@ class Message(models.Model):
             room=room,
             created_on=timezone.now(),
             msg_type= 2
+        )
+        return new_message
+    
+    @classmethod
+    def create_change_message(cls, user, content, room):
+        new_message = cls.objects.create(
+            user=user,
+            content=content,
+            room=room,
+            created_on=timezone.now(),
+            msg_type= 3
         )
         return new_message
     

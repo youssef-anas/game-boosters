@@ -30,7 +30,7 @@ class DivisionSerializer(serializers.Serializer):
         return attrs
     
     def extend_order_validate(self, attrs):
-        extend_order = attrs.get('extend_order', '')
+        extend_order = attrs.get('extend_order', 0)
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=2, game_type='D')
@@ -98,7 +98,7 @@ class PlacementSerializer(serializers.Serializer):
         return attrs
     
     def extend_order_validate(self, attrs):
-        extend_order = attrs.get('extend_order', '')
+        extend_order = attrs.get('extend_order', 0)
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=2, game_type='P')

@@ -127,29 +127,40 @@ class BaseOrder(models.Model):
         ('F', 'Faceit'),      
     ]
     name = models.CharField(max_length=30, null = True)
+    
     details = models.CharField(max_length=300, default='no details')
+
     game = models.ForeignKey(Game, null=True, on_delete=models.DO_NOTHING, default=None, related_name='game')
     game_type = models.CharField(max_length=10, choices=GAME_TYPE, null=True)
+
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=300)
+
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='New', null=True, blank=True)
+
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.DO_NOTHING, default=None, related_name='customer_orders', limit_choices_to= {'is_customer': True})
     booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.DO_NOTHING, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+
     duo_boosting = models.BooleanField(default=False, blank=True)
     select_booster = models.BooleanField(default=False, blank=True)
     turbo_boost = models.BooleanField(default=False, blank=True)
     streaming = models.BooleanField(default=False, blank=True)
+
     finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True) # TODO not wildRift folder 
     is_done = models.BooleanField(default=False, blank=True)
     is_drop = models.BooleanField(default=False, blank=True)
     is_extended = models.BooleanField(default=False, blank=True)
+
     customer_gamename = models.CharField(max_length=300, blank=True, null=True)
     customer_password = models.CharField(max_length=300, blank=True, null=True)
+    customer_username = models.CharField(max_length=300, blank=True, null=True)
     customer_server = models.CharField(max_length=300, blank=True, null=True)   # TODO make it interger filed and relational choise
+
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
+
     payer_id = models.CharField(blank=True, null=True, max_length=50)
 
     promo_code = models.ForeignKey(PromoCode, on_delete=models.DO_NOTHING, null= True, blank=True)
@@ -161,6 +172,9 @@ class BaseOrder(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null= True)
     object_id = models.PositiveIntegerField(null =True)
     related_order = GenericForeignKey('content_type', 'object_id')
+
+    # Pause
+    pause = models.BooleanField(default=False, blank=True)
 
     def update_actual_price(self):
         if self.status == 'Continue':

@@ -69,22 +69,22 @@
                   {% if request.user.id %}
                     {% if request.user.is_booster %}
                       <li>
-                        <a href="{% url 'edit.booster.profile' %}" class="custom-btn filled me-3" style="width: 200px;" {% if request.path == '/booster/edit_profile/' %}class="active"{% endif %}>Profile</a>
+                        <a href="{% url 'edit.booster.profile' %}" class="custom-btn header-btn filled me-3" style="width: 200px;" {% if request.path == '/booster/edit_profile/' %}class="active"{% endif %}>Profile</a>
                       </li>
                     {% else %}
                       <li>
-                        <a href="{% url 'edit.customer.profile' %}" class="custom-btn filled me-3" style="width: 200px;" {% if request.path == '/customer/boosters/' %}class="active"{% endif %}>Profile</a>
+                        <a href="{% url 'edit.customer.profile' %}" class="custom-btn header-btn filled me-3" style="width: 200px;" {% if request.path == '/customer/boosters/' %}class="active"{% endif %}>Profile</a>
                       </li>
                     {% endif %}
                     <li>
-                      <a href="{% url 'account.logout' %}" class="custom-btn filled" style="width: 180px;" {% if request.path == '/accounts/logout/' %}class="active"{% endif %}>Log Out</a>
+                      <a href="{% url 'account.logout' %}" class="custom-btn header-btn filled" style="width: 180px;" {% if request.path == '/accounts/logout/' %}class="active"{% endif %}>Log Out</a>
                     </li>
                     {% else %}
                       <li>
-                        <a href="{% url 'accounts.signup' %}" class="custom-btn outline me-3" {% if request.path == '/accounts/signup/' %}class="active"{% endif %}>Sign Up</a>
+                        <a href="{% url 'accounts.signup' %}" class="custom-btn header-btn outline me-3" {% if request.path == '/accounts/signup/' %}class="active"{% endif %}>Sign Up</a>
                       </li>
                       <li>
-                        <a href="{% url 'account.login' %}" class="custom-btn filled" {% if request.path == '/accounts/login/' %}class="active"{% endif %}>Log In</a>
+                        <a href="{% url 'account.login' %}" class="custom-btn header-btn filled" {% if request.path == '/accounts/login/' %}class="active"{% endif %}>Log In</a>
                       </li>
                     {% endif %}
                 </ul>

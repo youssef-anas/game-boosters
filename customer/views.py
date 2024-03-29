@@ -15,7 +15,7 @@ from gameBoosterss.utils import get_boosters
 import secrets
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
-
+from customer.controllers.serializers import *
 
 @login_required
 def edit_customer_profile(request):
@@ -123,21 +123,44 @@ def choose_booster(request, order_id, booster_id):
 def set_customer_data(request):
     if request.method == 'POST':
         # TODO use serializer better to validate data
+        serializer = BaseOrderSerializer(data=request.POST)
         order_id = request.POST.get('order_id')
-        customer_gamename = request.POST.get('gamename')
-        customer_password = request.POST.get('password')
-        booster = request.POST.get('chosen_booster_id')
-        if customer_gamename and order_id:
+        
+        if serializer.is_valid():
+            customer_gamename = serializer.validated_data.get('customer_gamename')
+            customer_password = serializer.validated_data.get('customer_password')
+            customer_server = serializer.validated_data.get('customer_server')
+            customer_username = serializer.validated_data.get('customer_username')
+            # booster = serializer.validated_data.get('chosen_booster_id')
+
             order = get_object_or_404(BaseOrder, pk=order_id)
             order.customer_gamename = customer_gamename
-            if customer_password :
-                order.customer_password = customer_password
+            order.customer_server = customer_server
+            order.customer_username = customer_username
+            
+            if customer_password:
+                order.customer_password = serializer.validated_data.get('customer_password')
             order.save()
-            if booster:
-                # pass the booster to chat
-                pass
-            return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
-    return JsonResponse({'success': False})
+
+            room = Room.get_specific_room(request.user, order.name)
+            msg = 'You changed your account details.'
+            Message.create_change_message(request.user,msg,room)
+
+            # if booster:
+            #     # pass the booster to chat
+            #     pass
+            return JsonResponse({
+                'message': 'Data updated successfully!',
+                'updated_data': serializer.data,
+                'success': True
+            })
+        else:
+            return JsonResponse({
+                'message': 'Invalid data!',
+                'errors': serializer.errors,
+                'success': False
+            }, status=400)
+    return JsonResponse({'message': 'Invalid request!'}, status=400)
 
 
 def tip_booster(request):
@@ -186,7 +209,7 @@ def success_tip(request,token):
     invoice = request.session.get('invoice', 'unknown')
     if request.user == token_with_data.user and request.user.username == username and payer_id:
         room = Room.get_specific_room(request.user, order.name)
-        msg = f'{request.user.first_name} Tips {booster} with {tip}$'
+        msg = f'You Sent a tip of {tip}$, Thank you!'
         Message.create_tip_message(request.user,msg,room)
         token_with_data.delete()
         if invoice != 'unknown':
