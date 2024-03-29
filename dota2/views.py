@@ -11,6 +11,9 @@ from dota2.controller.order_information import *
 from accounts.models import TokenForPay
 from booster.models import OrderRating
 import json
+from accounts.models import BaseUser
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
 
 def dota2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -33,6 +36,20 @@ def dota2GetBoosterByRank(request):
     "division": division_prices,
     "placement": placement_prices,
   }
+  game_pk_condition = Case(
+    When(booster_division__game__pk=10, then=1),
+    default=0,
+    output_field=IntegerField()
+  )
+  
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_dota2_player=True,
+      booster__can_choose_me=True
+    ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+    ).order_by('id')
 
   ranks_images = [rank.rank_image.url for rank in Dota2Rank.objects.all()]
   ranks_images = json.dumps(ranks_images)
@@ -48,7 +65,8 @@ def dota2GetBoosterByRank(request):
     "feedback": feedbacks,
     "division_price": division_prices,
     "placement_prices": placement_prices,
-    "ranks_images": ranks_images
+    "ranks_images": ranks_images,
+    "boosters": boosters,
   }
 
   return render(request,'dota2/GetBoosterByRank.html', context)
