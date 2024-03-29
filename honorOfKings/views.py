@@ -11,9 +11,10 @@ from honorOfKings.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
+from accounts.models import BaseUser
 
-
-# Create your views here.
 
 def honerOfKingeGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -45,12 +46,27 @@ def honerOfKingeGetBoosterByRank(request):
 
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 11)
+  game_pk_condition = Case(
+        When(booster_division__game__pk=11, then=1),
+    default=0,
+    output_field=IntegerField()
+    )
+    
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_hok_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
   
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "order":order,
     "feedbacks": feedbacks,
+    "boosters": boosters,
   }
   return render(request,'honorOfKings/GetBoosterByRank.html', context)
 

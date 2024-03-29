@@ -11,7 +11,9 @@ from paypal.standard.forms import PayPalPaymentsForm
 from hearthstone.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
-
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
+from accounts.models import BaseUser
 
 # Create your views here.
 def hearthstoneGetBoosterByRank(request):
@@ -44,12 +46,27 @@ def hearthstoneGetBoosterByRank(request):
 
    # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 7)
+  game_pk_condition = Case(
+        When(booster_division__game__pk=7, then=1),
+    default=0,
+    output_field=IntegerField()
+    )
+    
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_hearthstone_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
   
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "order": order,
     "feedbacks": feedbacks,
+    "boosters":boosters,
   }
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
