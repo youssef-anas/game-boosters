@@ -13,7 +13,6 @@ class DivisionSerializer(serializers.Serializer):
     turbo_boost         = serializers.BooleanField()
     streaming           = serializers.BooleanField()
     price               = serializers.FloatField(min_value=10)
-    select_champion     = serializers.BooleanField()
     choose_booster      = serializers.IntegerField()
     extend_order        = serializers.IntegerField()
     promo_code          = serializers.CharField()
@@ -54,7 +53,6 @@ class PlacementSerializer(serializers.Serializer):
     promo_code          = serializers.CharField()
     select_booster      = serializers.BooleanField()
     server              = serializers.CharField()
-    select_champion     = serializers.BooleanField()
     choose_booster      = serializers.IntegerField()
 
     def validate(self, attrs):
