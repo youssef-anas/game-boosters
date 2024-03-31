@@ -126,8 +126,10 @@ def view_that_asks_for_money(request):
         context = {"form": form}
         return render(request, "mobileLegends/paypal.html", context,status=200)
       # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
-      return redirect(reverse_lazy('lol'))
+      for field, errors in serializer.errors.items():
+        for error in errors:
+          messages.error(request, f"{field}: {error}")
+      return redirect(reverse_lazy('overwatch2'))
     except Exception as e:
       return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
 

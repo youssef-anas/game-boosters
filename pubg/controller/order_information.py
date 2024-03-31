@@ -23,7 +23,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  select_champion = data['select_champion']
+  select_champion = False
   server = data['server']
   promo_code = data['promo_code']
 
