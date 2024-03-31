@@ -23,6 +23,7 @@ def get_order_result_by_rank(data,extend_order_id):
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
     select_champion = data['select_champion']
+    champions_data = data['champion_data']
     
     server = data['server']
     promo_code = data['promo_code']
@@ -106,7 +107,7 @@ def get_order_result_by_rank(data,extend_order_id):
     else:
         booster_id = 0
     #####################################
-    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{timezone.now()}'
+    invoice = f'wr-1-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{champions_data}-{timezone.now()}'
 
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

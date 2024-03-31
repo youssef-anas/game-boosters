@@ -3,6 +3,7 @@ from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division_original
 import requests
 import json
+from customer.models import Champion
 
 # Create your models here.
 class ValorantRank(models.Model):
@@ -69,7 +70,9 @@ class ValorantDivisionOrder(models.Model):
   current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+
   select_champion = models.BooleanField(default=True, blank=True, null=True)
+  champions = models.ManyToManyField(Champion, related_name='valo_division_champions', blank=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -208,7 +211,8 @@ class ValorantPlacementOrder(models.Model):
   number_of_match = models.IntegerField(default=5)
   created_at = models.DateTimeField(auto_now_add =True)
 
-  select_champion = models.BooleanField(default=False, blank=True, null=True)
+  select_champion = models.BooleanField(default=True, blank=True, null=True)
+  champions = models.ManyToManyField(Champion, related_name='valo_placement_champions', blank=True)
 
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 2

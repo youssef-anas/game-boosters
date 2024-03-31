@@ -3,6 +3,7 @@ from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
 import requests
 import json
+from customer.models import Champion
 
 # Create your models here.
 class LeagueOfLegendsRank(models.Model):
@@ -73,7 +74,9 @@ class LeagueOfLegendsDivisionOrder(models.Model):
   current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+
   select_champion = models.BooleanField(default=True, blank=True, null=True)
+  champions = models.ManyToManyField(Champion, related_name='lol_division_champions', blank=True)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':
@@ -213,6 +216,8 @@ class LeagueOfLegendsPlacementOrder(models.Model):
   created_at = models.DateTimeField(auto_now_add =True)
 
   select_champion = models.BooleanField(default=False, blank=True, null=True)
+  champions = models.ManyToManyField(Champion, related_name='lol_placement_champions', blank=True)
+
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':

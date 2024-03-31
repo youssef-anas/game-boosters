@@ -94,7 +94,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-{ranked_type}-0-{timezone.now()}'
+  invoice = f'rl-9-D-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-{ranked_type}-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
@@ -181,7 +181,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
+  invoice = f'rl-9-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -270,7 +270,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
     booster_id = 0
 
 
-  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
+  invoice = f'rl-9-S-{current_rank}-{number_of_wins}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
@@ -357,7 +357,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-{timezone.now()}'
+  invoice = f'rl-9-T-{current_league}-{0}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-0-{timezone.now()}'
   print('Invoice', invoice)
 
   invoice_with_timestamp = str(invoice)
