@@ -75,12 +75,10 @@ def dota2GetBoosterByRank(request):
 # Paypal
 @login_required
 def pay_with_paypal(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('dota2'))
-    # try:
+  if request.method == 'POST' and request.user.is_authenticated:
+    if request.user.is_booster:
+      messages.error(request, "You are a booster!, You can't make order.")
+      return redirect(reverse_lazy('dota2'))
       # Division
     if request.POST.get('game_type') == 'A':
       serializer = RankBoostSerializer(data=request.POST)
@@ -88,7 +86,6 @@ def pay_with_paypal(request):
     elif request.POST.get('game_type') == 'P':
       serializer = PlacementSerializer(data=request.POST)
     
-
     if serializer.is_valid():
       extend_order_id = serializer.validated_data['extend_order']
       # Division
@@ -114,9 +111,11 @@ def pay_with_paypal(request):
       form = PayPalPaymentsForm(initial=paypal_dict)
       context = {"form": form}
       return render(request, "accounts/paypal.html", context,status=200)
-    return JsonResponse({'error': serializer.errors}, status=400)
-    # except Exception as e:
-    #   return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
+    
+    for field, errors in serializer.errors.items():
+      for error in errors:
+          messages.error(request, f"{field}: {error}")
+    return redirect(reverse_lazy('dota2'))
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 

@@ -93,7 +93,6 @@ def pay_with_paypal(request):
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
         return redirect(reverse_lazy('valorant'))
-    # try:
       # Division
       if request.POST.get('game_type') == 'D':
         serializer = DivisionSerializer(data=request.POST)
@@ -130,9 +129,6 @@ def pay_with_paypal(request):
         for error in errors:
             messages.error(request, f"{field}: {error}")
       return redirect(reverse_lazy('valorant'))
-    # except Exception as e:
-    #   return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
-
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 @login_required
