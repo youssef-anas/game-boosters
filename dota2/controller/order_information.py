@@ -163,7 +163,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
   
-  invoice = f'DOTA2-10-A-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role}-0-0-{timezone.now()}'
+  invoice = f'DOTA2-10-A-{current_rank}-{current_division}-0-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role}-0-0-0-{timezone.now()}'
   
   invoice_with_timestamp = str(invoice)
 
@@ -263,7 +263,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'DOTA2-10-P-{last_rank}-{number_of_match}-{last_division}-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role}-0-0-{timezone.now()}'
+  invoice = f'DOTA2-10-P-{last_rank}-{number_of_match}-{last_division}-none-none-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role}-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
 

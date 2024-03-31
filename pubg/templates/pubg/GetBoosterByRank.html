@@ -17,9 +17,69 @@
 <link href="{% static 'components/css/motivation.css'%}" rel="stylesheet" />
 <!-- STYLE INFORMATION -->
 <link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
+<!-- POP UP STYLE -->
+<link href="{% static 'base/css/popup.css'%}" rel="stylesheet" >
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order_get_rank_value }}"></div>
+
+<!-- ------------------------------ Booster Select Popup ------------------------------ -->
+<div id="popup-booster-form" class="popup">
+  <div class="popup-content">
+    <span class="close" onclick="closeFormBooster()"><i class="fa-solid fa-xmark"></i></span>
+    <h3 class="p-2 text-center my-4">Select Your Booster</h3>
+
+    <div class="container">
+      <div class="search">
+        <i class="search-icon fa-solid fa-magnifying-glass"></i>
+        <input type="search" class="search-input" placeholder="Search Booster">
+      </div>
+
+      <div class="container boosters-container my-4 py-4">
+        <div class="boosters">
+          {% for booster in boosters %}
+          <div id="{{booster.booster.booster.pk}}" class="booster-card m-1 mb-3 mx-auto rounded" onclick="SetBooster(this)">
+            <div class="p-1 row row-cols-lg-5 row-cols-md-3 row-cols-1 justify-content-lg-start justify-content-center align-items-center">
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                <img src="{{booster.get_image_url}}" alt="{{booster.username}}" width="48" height="48" class="rounded">
+                <p class="ms-4 mb-0 booster-username">{{booster.username}}</p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                <img src="{{booster.booster.achived_rank_pubg.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
+                <p class="ms-4 mb-0">{{booster.booster.achived_rank_pubg.rank_name}}</p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                  <p class="mb-0">
+                    {% for star in "*****" %}
+                      {% if forloop.counter <= booster.average_rating %}
+                        <i class="fa-solid fa-star" style="color: #FFD700;"></i>
+                      {% else %}
+                        <i class="fa-regular fa-star" style="color: #808080;"></i>
+                      {% endif %}
+                    {% endfor %}
+                    <span class="ms-1"></span>{{booster.average_rating}}/5
+                  </p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                  <p class="mb-0">{{booster.order_count}} Orders</p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                  <a class="mb-0 view-profile" href="{% url 'booster.profile' booster_id=booster.booster.booster.pk %}">View Profile</a>
+              </div>
+            </div>
+          </div>  
+          {% endfor %} 
+        </div>
+      </div>
+
+    </div>
+    <div class="d-flex container">
+    </div>
+    <!-- <button type="button" onclick="closeFormBooster()">Close</button> -->
+  </div>
+</div>
+<!-- ------------------------------ End Popups ------------------------------ -->
+
 <div class="game-container">
 
   <div class="game-landing pubg">
@@ -258,7 +318,14 @@
                         <span class="slider round"></span>
                     </label>
                   </div>
-              </div>
+
+                    <div class="choose">
+                      <label class="switch" for="select-booster" onclick="togglePopupBooster()">
+                        <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
+                          <span class="slider round"></span>
+                      </label>
+                    </div>
+                </div>
             </div>
 
             <div class="discount mt-xl-0 mt-3">
@@ -308,7 +375,7 @@
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" value="100">
-                <input type="hidden" id="chooseBoosterInput" name="choose_booster" value=0 readonly>
+                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" readonly>
                 <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">

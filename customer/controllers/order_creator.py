@@ -2,6 +2,7 @@ from accounts.models import BaseUser, BaseOrder
 from django.contrib.contenttypes.models import ContentType
 from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
+from customer.models import Champion
 
 def create_order(invoice, payer_id, customer, status='New', name = None, extra = 1):
     # try :
@@ -46,6 +47,23 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         ranked_type = int(invoice_values[19])   
         is_arena_2vs2 = bool(int(invoice_values[20]))
 
+        champions_selected = str(invoice_values[21])
+
+        champions_list = []
+        
+        if champions_selected and select_champion and champions_selected != 'null':
+            try:
+                champions_list = [int(num) for num in champions_selected.split("ch") if num]
+            except ValueError:
+                champions_list = []
+            if len(champions_list) > 3:
+                champions_list = []
+            for id in champions_list:
+                try:
+                    Champion.objects.get(id=id, game__id = game_id)
+                except Champion.DoesNotExist:
+                    champions_list = []
+        
         if promo_code == 0:
             promo_code = None
         
@@ -274,6 +292,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         content_type = ContentType.objects.get_for_model(order)
         baseOrder.content_type = content_type
         baseOrder.object_id = order.pk
+
+        if champions_list :
+            order.champions.add(*champions_list)
+
         order.save_with_processing()
         baseOrder.customer_wallet()
         return order

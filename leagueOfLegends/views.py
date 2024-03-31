@@ -92,46 +92,44 @@ def pay_with_paypal(request):
         return redirect(reverse_lazy('lol'))
       
     print('request POST:  ', request.POST)
-    try:
+    # Division
+    if request.POST.get('game_type') == 'D':
+      serializer = DivisionSerializer(data=request.POST)
+    # Placement
+    elif request.POST.get('game_type') == 'P':
+      serializer = PlacementSerializer(data=request.POST)
+
+    if serializer.is_valid():
+      extend_order_id = serializer.validated_data['extend_order']
       # Division
       if request.POST.get('game_type') == 'D':
-        serializer = DivisionSerializer(data=request.POST)
+        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
+        print('Order Info: ', order_info)
       # Placement
       elif request.POST.get('game_type') == 'P':
-        serializer = PlacementSerializer(data=request.POST)
+        order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
-      if serializer.is_valid():
-        extend_order_id = serializer.validated_data['extend_order']
-        # Division
-        if request.POST.get('game_type') == 'D':
-          order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-          print('Order Info: ', order_info)
-        # Placement
-        elif request.POST.get('game_type') == 'P':
-          order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
+      request.session['invoice'] = order_info['invoice']
+      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
-        request.session['invoice'] = order_info['invoice']
-        token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-        paypal_dict = {
-            "business": settings.PAYPAL_EMAIL,
-            "amount": order_info['price'],
-            "item_name": order_info['name'],
-            "invoice": order_info['invoice'],
-            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-        }
-        # Create the instance.
-        form = PayPalPaymentsForm(initial=paypal_dict)
-        context = {"form": form}
-        return render(request, "accounts/paypal.html", context,status=200)
-      # return JsonResponse({'error': serializer.errors}, status=400)
-      messages.error(request, 'Ensure this value is greater than or equal to 10')
+      paypal_dict = {
+          "business": settings.PAYPAL_EMAIL,
+          "amount": order_info['price'],
+          "item_name": order_info['name'],
+          "invoice": order_info['invoice'],
+          "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
+      }
+      form = PayPalPaymentsForm(initial=paypal_dict)
+      context = {"form": form}
+      return render(request, "accounts/paypal.html", context,status=200)
+  
+    for field, errors in serializer.errors.items():
+      for error in errors:
+          messages.error(request, f"{field}: {error}")
       return redirect(reverse_lazy('lol'))
-    except Exception as e:
-      return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
-
+    
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 @login_required

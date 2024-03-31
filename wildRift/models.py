@@ -7,6 +7,7 @@ from accounts.models import BaseOrder
 from accounts.templatetags.custom_filters import romanize_division
 import requests
 import json
+from customer.models import Champion
 
 User = settings.AUTH_USER_MODEL
 
@@ -84,6 +85,7 @@ class WildRiftDivisionOrder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     select_champion = models.BooleanField(default=False, blank=True)
+    champions = models.ManyToManyField(Champion, related_name='wr_division_champions', blank=True)
 
 
     def send_discord_notification(self):

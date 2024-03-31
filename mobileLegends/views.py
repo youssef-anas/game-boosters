@@ -11,6 +11,9 @@ from mobileLegends.controller.order_information import *
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
 from booster.models import OrderRating
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
+from accounts.models import BaseUser
 
 
 # Create your views here.
@@ -53,6 +56,20 @@ def MobileLegendsGetBoosterByRank(request):
   
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 8)
+  game_pk_condition = Case(
+        When(booster_division__game__pk=8, then=1),
+    default=0,
+    output_field=IntegerField()
+    )
+    
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_mobleg_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
 
   context = {
     "ranks": ranks,
@@ -60,6 +77,7 @@ def MobileLegendsGetBoosterByRank(request):
     "placements": placements,
     "order_get_rank_value":order_get_rank_value,
     "feedbacks": feedbacks,
+    "boosters" : boosters,
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
@@ -67,51 +85,45 @@ def MobileLegendsGetBoosterByRank(request):
 @login_required
 def view_that_asks_for_money(request):
   print('hi')
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('mobileLegends'))
-    try:
+  if request.method == 'POST' and request.user.is_authenticated:
+    if request.user.is_booster:
+      messages.error(request, "You are a booster!, You can't make order.")
+      return redirect(reverse_lazy('mobileLegends'))
+    # Division
+    if request.POST.get('game_type') == 'D':
+      serializer = DivisionSerializer(data=request.POST)
+    # Placement
+    elif request.POST.get('game_type') == 'P':
+      serializer = PlacementSerializer(data=request.POST)
+
+    if serializer.is_valid():
+      extend_order_id = serializer.validated_data['extend_order']
       # Division
       if request.POST.get('game_type') == 'D':
-        serializer = DivisionSerializer(data=request.POST)
+        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
+        print('Order Info: ', order_info)
       # Placement
       elif request.POST.get('game_type') == 'P':
-        serializer = PlacementSerializer(data=request.POST)
+        order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
 
-      if serializer.is_valid():
-        extend_order_id = serializer.validated_data['extend_order']
-        # Division
-        if request.POST.get('game_type') == 'D':
-          order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-          print('Order Info: ', order_info)
-        # Placement
-        elif request.POST.get('game_type') == 'P':
-          order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
+      request.session['invoice'] = order_info['invoice']
+      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
-        request.session['invoice'] = order_info['invoice']
-        token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-        paypal_dict = {
-            "business": settings.PAYPAL_EMAIL,
-            "amount": order_info['price'],
-            "item_name": order_info['name'],
-            "invoice": order_info['invoice'],
-            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-        }
-        # Create the instance.
-        form = PayPalPaymentsForm(initial=paypal_dict)
-        context = {"form": form}
-        return render(request, "mobileLegends/paypal.html", context,status=200)
-      # return JsonResponse({'error': serializer.errors}, status=400)
-      for field, errors in serializer.errors.items():
-          for error in errors:
-              messages.error(request, f"{field}: {error}")
-      return redirect(reverse_lazy('mobileLegends'))
-    except Exception as e:
-      return JsonResponse({'error': f'Error processing form data: {str(e)}'}, status=400)
-
+      paypal_dict = {
+          "business": settings.PAYPAL_EMAIL,
+          "amount": order_info['price'],
+          "item_name": order_info['name'],
+          "invoice": order_info['invoice'],
+          "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
+          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
+      }
+      # Create the instance.
+      form = PayPalPaymentsForm(initial=paypal_dict)
+      context = {"form": form}
+      return render(request, "mobileLegends/paypal.html", context,status=200)
+    for field, errors in serializer.errors.items():
+        for error in errors:
+            messages.error(request, f"{field}: {error}")
+    return redirect(reverse_lazy('mobileLegends'))
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
