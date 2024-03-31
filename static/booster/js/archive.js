@@ -80,10 +80,9 @@ function chat(booster_room_name, roomName, orderId) {
   }
 
   const user = JSON.parse(document.getElementById('user').textContent);
-  
-  const chatbox = document.getElementById(`customer-messages-container-${orderId}`);
-  
-  
+
+  const chatbox = document.getElementById(`chat-box-${orderId}`);
+
   // Function to scroll to the bottom of the chatbox
   function scrollToBottom() {
     chatbox.scrollTop = chatbox.scrollHeight;
@@ -101,7 +100,7 @@ function chat(booster_room_name, roomName, orderId) {
     console.log("WebSocket closed." , orderId);
   };
   $(`#message-input-${orderId}`).focus();
-  document.querySelector(`#chat-form-${orderId}`).addEventListener("submit", function (e) {
+  document.querySelector(`#booster_chat_form-${orderId}`).addEventListener("submit", function (e) {
     e.preventDefault();
   });
   $(`#message-input-${orderId}`).on('keyup', function (e) {
@@ -136,66 +135,48 @@ function chat(booster_room_name, roomName, orderId) {
 
     // Create and append the message time element
     let messageTimeElement = document.createElement("p");
+    messageTimeElement.classList.add("message-time", "mb-0", "me-1");
     messageTimeElement.textContent = "Just Now";
     
-    if (data.username === user) {
-      messageTimeElement.classList.add("message-time", "mb-0", "me-2");
-      const booster_image = JSON.parse(document.getElementById('booster_image').textContent);
-    
-      const imageDiv = document.createElement('div');
-      imageDiv.className = 'image ms-3';
-      
-      const imgElement = document.createElement('img');
-      imgElement.src = booster_image || staticUrl; // Use booster_image if available, otherwise fallback to staticUrl
-      imgElement.alt = '';
-      imgElement.width = 40;
-      imgElement.height = 40;
-    
-      imageDiv.appendChild(imgElement);
-    
+    if(data.username === user){
       div.appendChild(messageTimeElement);
       div.appendChild(messageElement);
-      div.appendChild(imageDiv);
-    } else {
-      messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
-      if (data.message.msg_type == 4) {
-        const imageDiv = document.createElement('div');
-        imageDiv.className = 'image ms-3';
-        
-        const imgElement = document.createElement('img');
-        imgElement.src = staticUrl; // Use booster_image if available, otherwise fallback to staticUrl
-        imgElement.alt = '';
-        imgElement.width = 40;
-        imgElement.height = 40;
-      
-        imageDiv.appendChild(imgElement);
+    }
+    else {
+      const customer_first_name = JSON.parse(document.getElementById('customer_first_name').textContent);
+      const customer_last_name = JSON.parse(document.getElementById('customer_last_name').textContent);
 
+      if (booster_image){
         div.appendChild(messageTimeElement);
         div.appendChild(messageElement);
-        div.appendChild(imageDiv);
-      } else {
-        div.appendChild(messageElement);   
-        div.appendChild(messageTimeElement);
       }
+
+      div.innerHTML = `
+          <div class="image">
+            <img src="${staticUrl}" alt="" width="40" height="40">
+          </div>
+          <div class="message p-3 rounded-3 ">
+              <p class="username mb-1">
+              ${customer_first_name} ${customer_last_name}
+              </p>
+              <p class="content mb-1">${data.message}</p>
+              <p class="text-end mb-1" style="font-size: 10px; color:#ffffffbf">Just Now</p>
+          </div>
+          `
     }
-    
 
     // Add class based on user authentication
     if (data.username === user) {
-      div.classList.add("chat-message", "user-message");
+      div.classList.add("chat-message", "userMessage");
     } else {
       if (data.message.msg_type == 2) {
-        div.classList.add("chat-message", "tip-message");
-      } else if (data.message.msg_type == 3) {
-        div.classList.add("chat-message", "changes-message");
-      } else if (data.message.msg_type == 4) {
-        div.classList.add("chat-message", "from-admin-message");
+        div.classList.add("tip-message");
       } else {
-        div.classList.add("chat-message", "customer-message");
+        div.classList.add("chat-message", "otherMessage");
       }
     }
 
-    $(`#message-input-${orderId}`).val("");
+    $(`#my_input_${orderId}`).val("");
   
     document.querySelector(`#chatbox-${orderId}`).appendChild(div);
     scrollToBottom();
@@ -207,11 +188,11 @@ $('.finish_image').on('change', function () {
 });
 
 function previewImage(input) {
-  let preview = $(input).closest('.modal-content').find('.image-preview')[0];
-  let file = input.files[0];
+  var preview = $(input).closest('.modal-content').find('.image-preview')[0];
+  var file = input.files[0];
 
   if (file) {
-    let reader = new FileReader();
+    var reader = new FileReader();
 
     reader.onload = function (e) {
       $(preview).attr('src', e.target.result);

@@ -110,7 +110,7 @@ Promise.all([
       return [premierRanksNames[5], 5]
     }
 
-    if (division > 25000) {
+    if (division >= 25000) {
       return [premierRanksNames[6], 6]
     }
 

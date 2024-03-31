@@ -40,7 +40,6 @@ def edit_customer_profile(request):
     return render(request, 'accounts/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
 
 
-
 @login_required
 def payment_sucess_view(request, token):
     # invoice = request.session.get('invoice')
@@ -62,11 +61,29 @@ def payment_sucess_view(request, token):
     return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
     
 
+def customer_orders(request):
+    base_orders = BaseOrder.objects.filter(customer= request.user, is_done= False, is_drop = False).order_by('id')
+
+    orders = []
+
+    for base_order in base_orders:
+        content_type = base_order.content_type
+
+        if content_type:
+            order =  content_type.model_class().objects.get(order_id=base_order.object_id)
+            orders.append(order)
+
+    context = {
+        "orders": orders
+    }
+    
+    return render(request, 'customer/customer-orders.html', context=context)
+
 # TODO fix error : order = BaseOrder.objects.filter(customer=customer).last()
 @login_required
 def customer_side(request, order_name):
     customer = request.user
-    base_order = BaseOrder.objects.filter(customer=customer,name=order_name).order_by('id').last()
+    base_order = BaseOrder.objects.filter(customer=customer,name=order_name,is_drop=False, is_done=False).order_by('id').last()
     if base_order:
         if base_order.is_done:
             return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))
@@ -98,12 +115,11 @@ def customer_side(request, order_name):
                 'admins_messages':admins_messages,
                 'admins_chat_slug':admins_chat_slug
             }    
-            template_name = 'accounts/customer_side.html'
+            template_name = 'customer/customer_side.html'
             return render(request, template_name, context)
         return  HttpResponse("error on creating chat")
     messages.error(request, "This order dosent belong to you, dont try to cheat (:")
     return  redirect(reverse('homepage.index'))
-
 
 
 def choose_booster(request, order_id, booster_id):
@@ -137,6 +153,9 @@ def set_customer_data(request):
             order.customer_gamename = customer_gamename
             order.customer_server = customer_server
             order.customer_username = customer_username
+
+            order.message = None
+            order.data_correct = True
             
             if customer_password:
                 order.customer_password = serializer.validated_data.get('customer_password')

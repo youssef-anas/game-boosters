@@ -80,7 +80,6 @@ class FaceitSerializer(serializers.Serializer):
             data['choose_booster'] = 0
         return data       
     
-
 class PremierSerializer(serializers.Serializer):
 
     current_rank = serializers.IntegerField(min_value=1, max_value=8)

@@ -140,6 +140,24 @@ def dota2_ranks(value):
     return ['immortal', 8]
   else:
     return value
+  
+@register.filter(name='csgo2_ranks')
+def csgo2_ranks(value):
+  value = int(value)
+  if value < 5000:
+    return ['silver', 1]
+  elif value < 10000:
+    return ['grey', 2]
+  elif value < 15000:
+    return ['blue', 3]
+  elif value < 20000:
+    return ['purple', 4]
+  elif value < 25000:
+    return ['pink', 5]
+  elif value >= 25000:
+    return ['red', 6]
+  else:
+    return value
 
 
 #Custom Filter To Time 

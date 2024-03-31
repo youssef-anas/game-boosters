@@ -8,7 +8,9 @@ def is_customer(user):
     return user.is_authenticated and (user.is_customer or not user.is_booster)
 
 urlpatterns = [
-    path('customer_side/<str:order_name>/', user_passes_test(is_customer)(customer_side), name='accounts.customer_side'),
+    path('customer_orders/', user_passes_test(is_customer)(customer_orders), name='customer.orders'),
+
+    path('customer_orders/<str:order_name>/', user_passes_test(is_customer)(customer_side), name='customer.orders.details'),
 
     path('payment-success/<str:token>/', payment_sucess_view, name='payment.success'),
     path('payment-canceled/<str:token>/', payment_canceled ,name='payment.canceled'),

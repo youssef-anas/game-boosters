@@ -5,9 +5,11 @@
 {% load static %}
 {% block title %}Orders: {{order.order.name}} {% endblock %}
 {% block style %}
+<!-- BASE CSS -->
+<link rel="stylesheet" href="{% static 'accounts/css/base.css' %}">
 <!-- OUR STYLE -->
 <link rel="stylesheet" href="{% static 'base/css/popup.css' %}">
-<link rel="stylesheet" href="{% static 'accounts/css/customer_order.css' %}">
+<link rel="stylesheet" href="{% static 'customer/css/customer_order.css' %}">
 <!-- Ranks Colors -->
 <link rel="stylesheet" href="{% static 'games/css/ranks-colors.css' %}">
 {% endblock %}
@@ -110,7 +112,9 @@
               {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
                 <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
                   <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
-                    {% if order.order.game_id != 13  %}
+                    {% if order.order.game_type == 'D' %}
+                      <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                    {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
                       <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
                     {% endif %}
 
@@ -129,16 +133,20 @@
                     {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
                       <p class="current-info text-capitalize mb-0">{{ order.current_division }} MMR</p>
 
-                    {% elif order.order.game.link == 'csgo2' %}
-                      <p class="my-3 text-uppercase col-8 px-0">{{ order.current_division }} Premier Rank</p>
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                      <p class="current-info text-capitalize mb-0">{{ order.current_rank }}</p>
 
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                      <p class="current-info text-capitalize mb-0">{{ order.current_division }} Premier Rank</p>
                     {% endif %}
                   </div>
   
                   <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
     
                   <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
-                    {% if order.order.game_id != 13  %}
+                    {% if order.order.game_type == 'D' %}
+                      <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                    {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
                       <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
                     {% endif %}
 
@@ -157,16 +165,21 @@
                     {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
                       <p class="desired-info text-capitalize mb-0">{{ order.desired_division }} MMR</p>
 
-                    {% elif order.order.game.link == 'csgo2' %}
-                      <p class="my-3 text-uppercase col-8 px-0">{{ order.desired_division }} Premier Rank</p>
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                      <p class="current-info text-capitalize mb-0">{{ order.desired_rank }}</p>
+                      
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                      <p class="current-info text-capitalize mb-0">{{ order.desired_division }} Premier Rank</p>
 
                     {% endif %}
                   </div>
                 </div>
 
                 <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
-                  <h4 style="font-weight: 7000;">Current Rank</h>
-                  {% if order.order.game_id != 13  %}
+                  <h4 style="font-weight: 700;">Current Rank</h>
+                  {% if order.order.game_type == 'D' %}
+                    <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
+                  {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
                     <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
                   {% endif %}
 
@@ -183,10 +196,13 @@
                     <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
 
                   {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
-                    <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{ order.reached_rank }} MMR</p>
+                    <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{ order.reached_division }} MMR</p>
+                  
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D'  %}
+                    <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{ order.reached_rank }}</p>
 
-                  {% elif order.order.game.link == 'csgo2' %}
-                    <p class="my-3 text-uppercase col-8 px-0" style="color:#FFFFFF80;">{{ order.reached_division }} Premier Rank</p>
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A'  %}
+                    <p class="current-info text-capitalize mb-0 mt-3" style="color:#FFFFFF80;">{{ order.reached_division }} Premier Rank</p>
 
                   {% endif %}
                 </div>
@@ -271,7 +287,7 @@
                 <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
                   <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
 
-                    <p class="current-info text-capitalize mb-0">{{order.current_level}} Level</p>
+                    <p class="current-info text-capitalize mb-0">Level {{order.current_level}}</p>
 
                   </div>
 
@@ -279,7 +295,7 @@
     
                   <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
 
-                    <p class="desired-info text-capitalize mb-0">{{order.desired_level}} Level</p>
+                    <p class="desired-info text-capitalize mb-0">Level {{order.desired_level}}</p>
 
                   </div>
                 </div>
@@ -287,24 +303,22 @@
                 <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
                   <h4 style="font-weight: 7000;">Current Level</h>
 
-                  <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.current_level}} Level<p>
+                  <p class="current-info text-capitalize mb-0 mt-3" style="color:#FFFFFF80;">Level {{order.current_level}}<p>
                 </div>
               {% endif %}
               <button class="btn pause custom-btn filled"><i class="fa-solid fa-pause me-1"></i> Pause</button>
 
-              <p class="text-center mt-3 mb-0" style="color: #FFFFFF80; font-weight: 300;"><i class="fa-solid fa-circle-info fe-2"></i> Pause if you want to stop the booster.</p>
+              <p class="text-center mt-3 mb-0" style="color: #FFFFFF80; font-weight: 300;"><i class="fa-solid fa-circle-info me-1"></i> Pause if you want to stop the booster.</p>
             </div>
 
             <div class="account-details">
               <h4 style="font-weight: 700;">Account Details</h4>
               
-              <form action="" class="details pt-2" method="POST">
+              <form action="" class="details pt-2" method="POST" id="details">
                 <input type="hidden" name="order_id" id="order_id" value="{{ order.order.id }}">
                 {% csrf_token %}
                 {% if order.order.message %}
-                  <p class="error-message">{{order.order.message}}</p>
-                  <p id="submit-error" class="error-message"></p>
-                  <p id="submit-success" class="success-message"></p>
+                  <p class="error-message message w-100 text-center" id="data-incorrect">{{order.order.message}}</p>
                 {% endif %}
 
                 <div class="d-flex justify-content-between align-items-center">
@@ -558,11 +572,11 @@
 {% endblock %}
 {% block script %}
 <script>
-  var staticUrl = "{% static 'base/images/no_profile_image.jpg' %}";
+  let staticUrl = "{% static 'base/images/no_profile_image.jpg' %}";
 </script>
 <script src='{% static "accounts/js/readmore.js" %}'></script>
-<script src='{% static "accounts/js/customer-side.js" %}'></script>
-<script src='{% static "accounts/js/customer-side-details.js" %}'></script>
+<script src='{% static "customer/js/customer-side.js" %}'></script>
+<script src='{% static "customer/js/customer-side-details.js" %}'></script>
 <script src='{% static "accounts/js/switch-chat.js" %}'></script>
 <!-- <script src='{% static "accounts/js/customer-side.js" %}'></script> -->
 {% endblock %}

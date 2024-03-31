@@ -54,7 +54,7 @@
                   </li>
                   {% else %}
                   <li>
-                    <a href="" {% if request.path == '/accounts/customer_side/' %}class="active"{% endif %}>Last Orders</a>
+                    <a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active"{% endif %}>My Orders</a>
                   </li>
                   {% endif %}
       

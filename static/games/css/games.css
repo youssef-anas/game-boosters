@@ -71,7 +71,9 @@
   width: 100%;
   position: relative;
 }
-
+.games .game .banner img {
+  border-radius: calc(var(--main-radius)* 2);
+}
 .games .game .banner::after {
   content: "";
   width: 100%;

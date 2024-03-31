@@ -69,16 +69,24 @@ class Dota2RankBoostOrder(models.Model):
     (2, 'Support'),
   )
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='dota2_division_order')
+
   current_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_current_rank')
+
   reached_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_reached_rank')
+
   desired_rank = models.ForeignKey(Dota2Rank, on_delete=models.CASCADE, default=None, related_name='dota2_desired_rank')
+
   current_division = models.IntegerField(default=0)
   reached_division = models.IntegerField(default=0)
   desired_division = models.IntegerField(default=0)
+
   current_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
   reached_marks = models.PositiveSmallIntegerField(blank=True, null=True, default= 0)
+
   select_champion = models.BooleanField(default=True, blank=True, null=True)
+
   role = models.PositiveSmallIntegerField(choices=ROLE_CHOISES, null=True, blank=True)
+  
   mmr_price = models.FloatField(default=0.0,null=True, blank=True)
 
   created_at = models.DateTimeField(auto_now_add =True)
