@@ -62,7 +62,7 @@ class Booster(models.Model):
     achived_rank_tft = models.ForeignKey(TFTRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='tft_rank')
     achived_rank_hearthstone = models.ForeignKey(HearthstoneRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='hearthstone_rank')
     achived_rank_rl= models.ForeignKey(RocketLeagueRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='rl_rank')
-    achived_rank_modleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
+    achived_rank_mobleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
     achived_rank_wow = models.ForeignKey(WorldOfWarcraftRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank')
     achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
     achived_rank_dota2 = models.ForeignKey(Dota2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')

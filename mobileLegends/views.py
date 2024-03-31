@@ -11,6 +11,9 @@ from mobileLegends.controller.order_information import *
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
 from booster.models import OrderRating
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
+from accounts.models import BaseUser
 
 
 # Create your views here.
@@ -53,6 +56,20 @@ def MobileLegendsGetBoosterByRank(request):
   
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 8)
+  game_pk_condition = Case(
+        When(booster_division__game__pk=8, then=1),
+    default=0,
+    output_field=IntegerField()
+    )
+    
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_mobleg_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
 
   context = {
     "ranks": ranks,
@@ -60,6 +77,7 @@ def MobileLegendsGetBoosterByRank(request):
     "placements": placements,
     "order_get_rank_value":order_get_rank_value,
     "feedbacks": feedbacks,
+    "boosters" : boosters,
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
