@@ -58,11 +58,11 @@ def payment_sucess_view(request, token):
     Room.create_room_with_booster(request.user, booster, order.order.name)
     refresh_order_page()
     async_task(update_database_task, order.order.id)
-    return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.order.name}))
+    return redirect(reverse('customer.orders.details', kwargs={'order_name': order.order.name}))
     
 
 def customer_orders(request):
-    base_orders = BaseOrder.objects.filter(customer= request.user, is_done= False, is_drop = False).order_by('id')
+    base_orders = BaseOrder.objects.filter(customer= request.user, is_done= False, is_drop = False).order_by('-id')
 
     orders = []
 

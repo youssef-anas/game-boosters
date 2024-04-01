@@ -24,7 +24,7 @@ input[type="radio"]:disabled+label {
 .customer-container .customer-contant {
   width: 100%;
   min-height: 690px;
-  background-image: url('./../images/customer_side_bg.jpg');
+  background-image: url('./../../accounts/images/customer_side_bg.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -35,7 +35,7 @@ input[type="radio"]:disabled+label {
 .customer-container .customer-contant .overlay {
   width: 100%;
   min-height: 690px;
-  background-image: url('./../images/bg_cover.png');
+  background-image: url('./../../accounts/images/bg_cover.png');
   padding-top: 8rem;
   padding-bottom: 8rem;
   background-size: 100% 800px;

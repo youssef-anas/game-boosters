@@ -1,5 +1,8 @@
 /* ----------------------------- Buttons ----------------------------- */
-.custom-btn {
+.btn:first-child:active, .btn.active, .btn.show  {
+  border-color: transparent !important;
+}
+.custom-btn, .custom-btn:active {
   padding: 7px 20px;
   border-radius: 32px;
   text-align: center;
@@ -26,17 +29,30 @@
   }
 }
 
-.custom-btn.filled {
+.custom-btn.filled, .custom-btn.filled:active {
   color: white;
   background-color: var(--secondary-color);
 }
 .custom-btn.filled:hover {
   background-color: var(--alt-secondary-color);
 }
-.custom-btn.outline {
+.custom-btn.outline, .custom-btn.outline:active {
   color: white;
 }
 
+/* ----------------------------- Drop Down ----------------------------- */
+.custom-dropdown .dropdown-toggle::after {
+  margin-left: 0.5rem !important;
+}
+.custom-dropdown .dropdown-menu {
+  background-color: var(--secondary-color) !important;
+}
+.custom-dropdown .dropdown-menu li a {
+  color: white !important;
+}
+.custom-dropdown .dropdown-menu li a:hover {
+  background-color: var(--alt-secondary-color) !important;
+}
 /* ----------------------------- Select ----------------------------- */
 /* Custom Select */
 select {

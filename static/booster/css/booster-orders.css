@@ -312,6 +312,20 @@ input[type="radio"]:checked + label {
   color: #FFFFFF80;
 }
 /* Customer Message */
+.champion {
+  border: 3px solid var(--background-color);
+}
+.avalible-to-play button {
+  padding: 8px 24px;
+  border-radius: 48px;
+  background-color: #FFC439;
+  color: #1E1814;
+  font-weight: 700;
+}
+.avalible-to-play button:hover {
+  background-color: #FFC439;
+  color: #1E1814;
+}
 .chat-message {
   display: flex;
   align-items: flex-end;

@@ -583,7 +583,7 @@
                     <p class="mb-0">Chat with the player</p>
                   </div>
                   
-                  <div class="customer-info d-flex flex-wrap align-items-center pt-4">
+                  <div class="customer-info d-flex flex-wrap justify-content-between align-items-center pt-4">
  
                     <div class="text ms-md-4 ms-0">
                       <h3>{{order.order.order.customer.username}}</h3>
@@ -592,6 +592,18 @@
                       {% else %}
                         <p class="status status-offline mb-0 mt-2" id="state{{order.order.order.customer.id}}-id"><span class="offline"></span>Last seen {{ order.order.order.customer.last_online|custom_timesince }}</p>
                       {% endif %}
+                    </div>
+
+                    {% if order.order.order.game.pk == 1 or  order.order.order.game.pk == 2 or  order.order.order.game.pk == 4 %}
+                      <div class="champions d-flex justify-content-between align-items-center">
+                        {% for champion in order.order.champions.all %}
+                          <img src="{{champion.get_image_url}}" class="champion me-2" alt="{{champion.name}}" width="48" height="48">
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+
+                    <div class="avalible-to-play flex-end">
+                      <button class="btn">Available to Play</button>
                     </div>
                   </div>
                   
