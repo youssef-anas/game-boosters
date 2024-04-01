@@ -120,7 +120,8 @@ class Message(models.Model):
         return new_message
     
     @classmethod
-    def create_change_message(cls, user, content, room):
+    def create_change_message(cls, user, room):
+        content = 'You changed your account details.'
         new_message = cls.objects.create(
             user=user,
             content=content,

@@ -31,4 +31,7 @@
   background-color: #201914;
   border: 1px solid #ffffff33;
   color: #534540;
+  width: fit-content;
+  padding: 0.5rem;
+  border-radius: var(--main-radius);
 }

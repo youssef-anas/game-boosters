@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data
 from customer.controllers.order_creator import create_order
 from chat.models import Room, Message
-from gameBoosterss.utils import refresh_order_page
+from gameBoosterss.utils import refresh_order_page, send_change_data_msg
 from accounts.tasks import update_database_task
 from django_q.tasks import async_task
 from django.utils import timezone
@@ -122,6 +122,7 @@ def choose_booster(request, order_id, booster_id):
 
 def set_customer_data(request):
     if request.method == 'POST':
+        
         # TODO use serializer better to validate data
         serializer = BaseOrderSerializer(data=request.POST)
         order_id = request.POST.get('order_id')
@@ -143,8 +144,9 @@ def set_customer_data(request):
             order.save()
 
             room = Room.get_specific_room(request.user, order.name)
-            msg = 'You changed your account details.'
-            Message.create_change_message(request.user,msg,room)
+            
+            message_change = Message.create_change_message(request.user,room)
+            send_change_data_msg(message_change)
 
             # if booster:
             #     # pass the booster to chat
@@ -160,6 +162,7 @@ def set_customer_data(request):
                 'errors': serializer.errors,
                 'success': False
             }, status=400)
+    
     return JsonResponse({'message': 'Invalid request!'}, status=400)
 
 

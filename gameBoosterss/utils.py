@@ -250,3 +250,14 @@ def send_activation_code(user) -> int:
     user.activation_time = timezone.now()
     user.save()
     return secret_key
+
+def send_change_data_msg(message):
+
+    event_data = {
+        'type': 'change_data',
+        'message': message.content,
+        "username": message.user.username,
+        "room_name": message.room.order_name,
+        "msg_type": message.msg_type
+    }
+    async_to_sync(channel_layer.group_send)(f'chat_roomFor-{message.user}-{message.room.order_name}', event_data)
