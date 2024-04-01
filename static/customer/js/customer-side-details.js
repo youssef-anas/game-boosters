@@ -45,8 +45,6 @@ $(document).ready(function() {
 
   function saveChanges(event) {
     event.preventDefault(); // Prevent default form submission
-
-
     
     let formData = {
       'order_id': $('#order_id').val(),
@@ -72,11 +70,34 @@ $(document).ready(function() {
           $('#serverText').text(response.updated_data.customer_server);
           $('#usernameText').text(response.updated_data.customer_username);
           $('#passwordText').text(response.updated_data.customer_password);
-          // $('#booster-chatbox.there-is-messages').append(`
-          //   <div class="booster-chat-message changes-message">
-          //     <div class="message info-message"><i class="fa-solid fa-circle-info"></i> You changed your account details.</div>
-          //   </div>
-          // `)
+          $('#data-incorrect').text('').remove();
+          
+          console.log("Check: ", $('#booster-chatbox there-is-messages').length)
+          if($('#booster-chatbox.there-is-messages').length) {
+       
+            console.log("Yessssss")
+            $('#booster-chatbox.there-is-messages').append(`
+              <div class="booster-chat-message changes-message">
+                <p class="message-time mb-0 me-1"> Just Now </p>
+
+                <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
+              </div>
+            `)
+          } else {
+            console.log("NOOOOOO")
+            $("#booster-chatbox.there-is-not-messages").html('').remove();
+            $("#booster-messages-container").append(`
+              <div class="booster-chatbox there-is-messages" id="booster-chatbox">
+                <p class="day-date">Today</p>
+
+                <div class="booster-chat-message changes-message">
+                  <p class="message-time mb-0 me-1"> Just Now </p>
+
+                  <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
+                </div>
+              </div>
+            `)
+          }
           scrollToBottom();
         } else {
           $('#error-success').text(response.message);

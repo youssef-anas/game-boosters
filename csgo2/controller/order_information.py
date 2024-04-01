@@ -271,7 +271,6 @@ def get_premier_order_result_by_rank(data, extend_order_id):
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-
 def get_faceit_order_result_by_rank(data, extend_order_id = 0):
     current_level = data['current_level']
     desired_level = data['desired_level']
@@ -343,7 +342,7 @@ def get_faceit_order_result_by_rank(data, extend_order_id = 0):
             # get extend order 
             extend_order = BaseOrder.objects.get(id=extend_order_id)
             extend_order_price = extend_order.price
-            price = round((price / (1 + total_percent)) - (extend_order_price / (1 + total_percent)), 2)
+            price = round(price - extend_order_price, 2)
         except: ####
             pass
         

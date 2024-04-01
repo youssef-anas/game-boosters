@@ -24,7 +24,7 @@ input[type="radio"]:disabled+label {
 .customer-container .customer-contant {
   width: 100%;
   min-height: 690px;
-  background-image: url('./../images/customer_side_bg.jpg');
+  background-image: url('./../../accounts/images/customer_side_bg.jpg');
   background-size: cover;
   background-position: center;
   position: relative;
@@ -35,7 +35,7 @@ input[type="radio"]:disabled+label {
 .customer-container .customer-contant .overlay {
   width: 100%;
   min-height: 690px;
-  background-image: url('./../images/bg_cover.png');
+  background-image: url('./../../accounts/images/bg_cover.png');
   padding-top: 8rem;
   padding-bottom: 8rem;
   background-size: 100% 800px;
@@ -62,19 +62,6 @@ input[type="radio"]:disabled+label {
 .booster-info .status {
   font-family: var(--sharp-font);
   color: var(--text-color);
-}
-.booster-info .status span {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-.booster-info .status span.offline {
-  background-color: #EE3E3E;
-}
-.booster-info .status span.online {
-  background-color: #3FBA6E;
 }
 /* Actions */
 .actions .avalible-to-play button {
@@ -109,65 +96,11 @@ input[type="radio"]:disabled+label {
 /* End Action For Booster */
 
 /* Start Order Info And Chat */
-/* Order Info */
-.order-info {
-  border-radius: calc(var(--main-radius) * 2);
-  padding: 30px;
-  background-color: #433733;
-  margin-bottom: 2rem;
-  min-height: 424px;
-  background: 
-  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #917a65 0%, #43373300 100%);
-}
-.order-info .from-to {
-  border-radius: var(--main-radius);
-  background-color: var(--background-color);
-}
 .order-info button.pause {
   width: 100% !important;
   font-size: 1.5rem;
 }
-/* Account Details */
-.account-details {
-  border-radius: calc(var(--main-radius) * 2);
-  padding: 30px;
-  background-color: #433733;
-  margin-bottom: 2rem;
-  min-height: 424px;
-  background: linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
-  linear-gradient(180deg, rgba(40, 32, 27, 0.7) 0%, rgba(67, 55, 51, 0) 100%);
-
-}
-.account-details form > div {
-  height: 60px;
-  padding: 1.7rem 0;
-}
-.account-details form > div:not(:last-of-type) {
-  border-bottom: 0.2px solid #1E1814;
-}
-.account-details form > div > label {
-  color: #FFFFFF80;
-  font-weight: 300;
-}
-.account-details form button {
-  width: 100%;
-  padding: 1rem;
-  color: white;
-  text-align: center;
-  border-radius: 48px;
-  border: 1px solid var(--secondary-color);
-}
-.account-details form button:hover {
-  border: 1px solid var(--alt-secondary-color);
-}
 /* Chat */
-.chat-header {
-  min-height: 180px;
-  background-color: #332A27;
-  border-top-left-radius: calc(var(--main-radius) * 2);
-  border-top-right-radius: calc(var(--main-radius) * 2);
-}
 .chat-header  .switch-chat {
   background-color: var(--background-color);
   border-radius: 40px;

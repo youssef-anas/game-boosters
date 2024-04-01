@@ -1,15 +1,14 @@
 <div class="updata-now">
-  <h5 class="my-4">Now MMR</h5>
   <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
     {% csrf_token %}
-    {% if error %} <p class="text-danger">{{error}}</p> {% endif %}
+    {% if error %} <p class="error-message message">{{error}}</p> {% endif %}
 
     <div class="mb-3">
-      <input class="form-control" type="number" name="reached_division" value={{order.order.reached_division}} placeholder="Reached MMR" aria-label="Reached MMR" min="{{ order.order.current_division }}" step="1" max="2500">
+      <input class="custom-input form-control" type="number" name="reached_division" value={{order.order.reached_division}} placeholder="Reached MMR" aria-label="Reached MMR" min="{{ order.order.current_division }}" step="1" max="2500">
     </div>
 
     <div class="text-end">
-      <button type="submit" class="btn submit-btn">Update Rating</button>
+      <button type="submit" class="btn update-rating-btn">Update Rating</button>
     </div>
   </form>
 </div>

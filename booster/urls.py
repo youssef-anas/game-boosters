@@ -17,10 +17,10 @@ urlpatterns = [
     path('can_choose_me/', CanChooseMe.as_view(), name='can_choose_me'),
     path('jobs/', jobs ,name='orders.jobs'),
     path('jobs/<str:game_name>/<int:id>/', calm_order, name='calm.order'),
-    path('confirm_details/',confirm_details,name='confirm.details'),
-    path('ask_customer/',ask_customer,name='ask.customer'),
+    # path('confirm_details/',confirm_details,name='confirm.details'),
+    path('alert_customer/<int:order_id>/',alert_customer, name='alert.customer'),
     # path('get_latest_price/', get_latest_price, name='get_latest_price'),
     path('upload-image/',upload_finish_image,name='order.upload.image'),
-    path('drop-order/',drop_order,name='drop.order'),
+    path('drop-order/<int:order_id>',drop_order,name='drop.order'),
     path('update-rating/<int:order_id>',update_rating,name='order.update.rating'),
 ]

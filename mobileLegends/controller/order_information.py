@@ -6,7 +6,7 @@ from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
 
-division_names = ['','IV','IV','III','II','I']  
+division_names = ['','IV','III','II','I']  
 rank_names = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
 def get_division_order_result_by_rank(data,extend_order_id):

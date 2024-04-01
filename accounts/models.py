@@ -148,7 +148,7 @@ class BaseOrder(models.Model):
     turbo_boost = models.BooleanField(default=False, blank=True)
     streaming = models.BooleanField(default=False, blank=True)
 
-    finish_image = models.ImageField(upload_to='wildRift/images/orders', blank=True, null=True) # TODO not wildRift folder 
+    finish_image = models.ImageField(upload_to='orders/images/', blank=True, null=True) # TODO not wildRift folder 
     is_done = models.BooleanField(default=False, blank=True)
     is_drop = models.BooleanField(default=False, blank=True)
     is_extended = models.BooleanField(default=False, blank=True)

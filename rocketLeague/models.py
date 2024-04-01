@@ -69,13 +69,19 @@ class RocketLeagueDivisionOrder(models.Model):
     (3, "3 vs 3 Ranked"),
   ]
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_division_order')
+
   ranked_type = models.IntegerField(choices=RANKED_TYPE,blank=True, null=True)
+
   current_rank = models.ForeignKey(RocketLeagueRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
+
   reached_rank = models.ForeignKey(RocketLeagueRank, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
+
   desired_rank = models.ForeignKey(RocketLeagueRank, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
+
   current_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   reached_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
   desired_division = models.IntegerField(choices=DIVISION_CHOICES,blank=True, null=True)
+  
   current_marks = models.IntegerField(default=0,blank=True, null=True)
   reached_marks = models.IntegerField(default=0,blank=True, null=True)
 

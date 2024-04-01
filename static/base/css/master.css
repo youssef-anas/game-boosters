@@ -12,6 +12,7 @@
   --background-color: #201914;
   --heading-font: heading-font;
   --sharp-font: sharp-medium-font;
+  --sharp-thin-font: sharp-thin-font;
   --main-radius: 8px;
   --text-color: #fafafa;
   --section-padding: 100px;
@@ -47,6 +48,10 @@
 @font-face {
   font-family: sharp-medium-font;
   src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Medium25.otf');
+}
+@font-face {
+  font-family: sharp-thin-font;
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Thin20.otf');
 }
 html {
   scroll-behavior: smooth;
@@ -103,6 +108,9 @@ ul {
   align-items: center;
   flex-wrap: wrap;
   position: relative;
+}
+.nav .main-nav {
+  flex: 1;
 }
 .nav .nav-row {
   width: 100vw !important; 
@@ -166,11 +174,23 @@ ul {
   height: 72px;
   padding: 0 20px;
 }
-.nav .links .main-links  > li > a:hover {
-  color: var(--alt-secondary-color);
+.nav .links .main-links  > li > a:hover, .nav .links .main-links  > li > a:hover > span {
+  color: var(--alt-secondary-color) !important;
 }
-.nav .links .main-links  > li > a.active {
-  color: var(--secondary-color);
+.nav .links .main-links  > li > a.active, .nav .links .main-links  > li > a.active > span {
+  color: var(--secondary-color) !important;
+}
+/* Links Hidden */
+.nav .links .main-links .links-hidden {
+  display: none;
+}
+@media (max-width: 767px) {
+  .nav .links .main-links .links-hidden {
+    display: inline-block;
+  }
+  .dropdown.custom-dropdown {
+    display: none;
+  }
 }
 @media (max-width: 1199px) { 
   .nav .links .main-links  > li > a {

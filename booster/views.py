@@ -28,7 +28,7 @@ from django.http import HttpResponseBadRequest
 from itertools import chain
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
-from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks
+from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -170,7 +170,7 @@ def booster_orders(request):
             percentage = update_rating_result['percent_for_view']
             # games.append(game)
         current_room = Room.get_specific_room(base_order.customer, base_order.name)
-
+        
         if current_room is not None:
             messages=Message.objects.filter(room=current_room) 
             slug = current_room.slug
@@ -178,6 +178,7 @@ def booster_orders(request):
                 'order': game,
                 'percentage': percentage,
                 'now_price': update_rating_result['booster_price'],
+                'half_price': round(base_order.actual_price / 2, 2),
                 'user': request.user,
                 'room': current_room,
                 'messages': messages,
@@ -189,6 +190,7 @@ def booster_orders(request):
             'order': game,
             'percentage': percentage,
             'now_price': update_rating_result['booster_price'],
+            'half_price': round(base_order.actual_price / 2, 2),
             'user': request.user,
             'room': None,
             'messages': None,
@@ -199,7 +201,7 @@ def booster_orders(request):
     context = {
         'orders': orders_with_percentage,
     }
-    return render(request, 'booster/booster-order.html', context=context)
+    return render(request, 'booster/booster-orders.html', context=context)
 
 
 class CanChooseMe(APIView):
@@ -219,26 +221,26 @@ def booster_history(request):
     history = Transaction.objects.filter(user=request.user)
     return render(request, 'booster/booster_histoty.html', context={'history' : history})
 
-def confirm_details(request):
-    if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(BaseOrder, id=order_id)
-            order.message = None
-            order.data_correct = True
-            order.save()
-            return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
+# def confirm_details(request):
+#     if request.method == 'POST':
+#         order_id = request.POST.get('order_id')
+#         if order_id:
+#             order = get_object_or_404(BaseOrder, id=order_id)
+#             order.message = None
+#             order.data_correct = True
+#             order.save()
+#             return redirect(reverse_lazy('booster.orders'))
+#     return JsonResponse({'success': False})
 
-def ask_customer(request):
+def alert_customer(request, order_id):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
+        order_id = order_id
         if order_id:
             order = get_object_or_404(BaseOrder, id=order_id)
             order.message = 'Pleace Specify Your Details'
             order.data_correct = False
             order.save()
-            return redirect(reverse_lazy('booster.orders'))
+            return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
     
@@ -256,9 +258,8 @@ def upload_finish_image(request):
     return JsonResponse({'success': False})
 
 # Drop
-def drop_order(request):
+def drop_order(request, order_id):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
         base_order = get_object_or_404(BaseOrder ,id =order_id)
         content_type = base_order.content_type
         if content_type:
@@ -266,8 +267,7 @@ def drop_order(request):
             order = content_type.model_class().objects.get(order_id=base_order.object_id)
             base_order.is_drop = True
             base_order.is_done = True
-            invoice = order.order.invoice.split('-')            
-            print('old invoice:', '-'.join(invoice))
+            invoice = order.order.invoice.split('-')
 
 
             invoice[3]= str(order.reached_rank.id) 
@@ -280,7 +280,6 @@ def drop_order(request):
 
 
             new_invoice = '-'.join(invoice)
-            print('New Invoice: ', new_invoice)
             
             payer_id = order.order.payer_id
             customer = order.order.customer
@@ -306,13 +305,15 @@ def update_rating(request, order_id):
         if contect_type :
             game = contect_type.model_class().objects.get(order_id = base_order.object_id)
         
-        reached_division = request.POST.get('reached_division')
+        reached_division = request.POST.get('reached_division', 1)
         reached_marks = request.POST.get('reached_marks', 0)
 
         if base_order.game.id == 6:
             reached_rank_id = wow_ranks(reached_division)[1]
         if base_order.game.id == 10:
             reached_rank_id = dota2_ranks(reached_division)[1]
+        if base_order.game.id == 13 and base_order.game_type == 'A':
+            reached_rank_id = csgo2_ranks(reached_division)[1]
         else:
             reached_rank_id = request.POST.get('reached_rank')
 

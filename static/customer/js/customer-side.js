@@ -167,40 +167,46 @@ chatSocket.onmessage = function (e) {
   messageTimeElement.classList.add("message-time", "mb-0", "me-1");
   messageTimeElement.textContent = "Just Now";
   
-  if(data.username === user){
+  if(data.username === user) {
+    messageTimeElement.classList.add("message-time", "mb-0", "me-2");
     div.appendChild(messageTimeElement);
     div.appendChild(messageElement);
-}
-  else{
+  }
+  else {
+    messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
     const booster_image = JSON.parse(document.getElementById('booster_image').textContent);
 
-    if (booster_image){
-      div.appendChild(`
-      <div class="image me-3">
-        <img src="${booster_image}" alt="" width="40" height="40">
-      </div>`)
-      div.appendChild(messageTimeElement);
-      div.appendChild(messageElement);
-    }
-    else{
-      div.append(`
-      <div class="image me-3">
-        <img src="${staticUrl}" alt="" width="40" height="40">
-      </div>`)
-      div.appendChild(messageTimeElement);
-      div.appendChild(messageElement);
-    }
+    const imageDiv = document.createElement('div');
+    imageDiv.className = 'image me-3';
+    
+    const imgElement = document.createElement('img');
+    imgElement.src = booster_image || staticUrl; // Use booster_image if available, otherwise fallback to staticUrl
+    imgElement.alt = '';
+    imgElement.width = 40;
+    imgElement.height = 40;
+  
+    imageDiv.appendChild(imgElement);
+
+    div.appendChild(imageDiv);
+    div.appendChild(messageElement);
+    div.appendChild(messageTimeElement);
+    
   }
 
   // Add class based on user authentication
   if (data.username === user) {
-      if (data.message.msg_type == 2) {
-          div.classList.add("tip-message");
-      } else {
-          div.classList.add("booster-chat-message", "user-message");
-      }
+    if (data.message.msg_type == 2) {
+      div.classList.add("booster-chat-message", "tip-message");
+    } else if (data.message.msg_type == 3) {
+      div.classList.add("booster-chat-message", "changes-message");
+    } else if (data.message.msg_type == 4) {
+      div.classList.add("booster-chat-message", "from-admin-message");
+    } else {
+      div.classList.add("booster-chat-message", "user-message");
+    }
+
   } else {
-      div.classList.add("booster-chat-message", "booster-message");
+    div.classList.add("booster-chat-message", "booster-message");
   }
   
 
@@ -224,8 +230,8 @@ function fetchData() {
     })
     .then(data => {
       const message = data.status
-      statusElement
-      if (data.status == 'online') {
+      
+      if (data.status == 'Online') {
         statusElement.html(`
           <span class="online"></span> ${message}
         `);

@@ -1,0 +1,311 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}My Orders{% endblock %}
+{% block style %}
+<!-- OUR STYLE -->
+<link rel="stylesheet" href="{% static 'customer/css/customer-orders.css' %}">
+{% endblock %}
+{% block container %}
+<div class="orders-container">
+  <div class="orders-landing">
+
+    <div class="heading">
+      <h1>My Orders</h1>
+      <p>Take a look and get to know our boosters first hand</p>
+    </div>
+  </div>
+
+  <div class="orders container">
+    <div class="search-and-filter mb-4 pb-2">
+      <p>Select Game</p>
+
+      <div class="d-flex flex-md-row flex-column">
+
+        <div class="select-container" style="width: 380px !important;">
+          <select required name="reached_marks" id="reached_marks_wildrift">
+            <option value="">All Games</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="search ms-md-4 ms-0 mt-md-0 mt-4" style="width: 380px !important;">
+            <i class="search-icon fa-solid fa-magnifying-glass"></i>
+            <input type="search" class="search-input" placeholder="Search Champions">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row row-cols-xl-2 row-cols-1 justify-content-between">
+      {% for order in orders %}
+      <div class="col">
+
+        <div class="order d-flex flex-wrap mb-5 {% if forloop.counter|divisibleby:'2' %}ms-lg-2{% else %}me-lg-2{% endif %}">
+  
+          <div class="game-banner p-0">
+            <img src="{{order.order.game.get_banner_image_url}}" alt="Game Banner" class="img-fluid">
+          </div>
+
+          <div class="order-info p-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+              {% if order.order.booster %}
+                <div class="booster-info d-flex flex-wrap align-items-center">
+
+                  <div class="image">
+                    {% if order.order.booster.get_image_url %}
+                      <img src="{{ order.order.booster.get_image_url }}" class="profile-image" width="75" height="75" alt="Booster Photo" />
+                    {% else %}
+                      <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" width="75" height="75" alt="No Profile Photo">
+                    {% endif %}
+                  </div>
+      
+                  <div class="name ms-3">
+                    <p class="mb-0">Booster</p>
+                    <p class="mb-0">{{order.order.booster.username}}</p>
+                  </div>
+                </div>
+              {% else %}
+                <center class="fw-bold pt-4"><i class="fa-regular fa-clock"></i> Waiting For Booster ...</center>
+              {% endif %}
+
+              {% if order.order.game_type == 'A' or order.order.game_type == 'D' %}
+                <div class="reached-info-container text-center">
+                  <p class="mb-0">Current Rank</p>
+                  <div class="d-flex align-items-center mt-2">
+
+                    {% if order.order.game_type == 'D' %}
+                      <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
+                    {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                      <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
+                    {% endif %}
+
+                    {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                      <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                      <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
+
+                    {% elif order.order.game.link == 'hearthstone' %}
+                      <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                      <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                      <p class="reached-info text-capitalize mb-0" >{{ order.reached_division }} MMR</p>
+                    
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D'  %}
+                      <p class="reached-info text-capitalize mb-0">{{ order.reached_rank }}</p>
+
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A'  %}
+                      <p class="reached-info text-capitalize mb-0 mt-3" reached-info>{{ order.reached_division }} Premier Rank</p>
+
+                    {% endif %}
+                    
+                  </div>
+                </div>
+              {% elif order.order.game_type == 'P' %}
+                <div class="reached-info-container text-center">
+                  <p class="mb-0">Last Rank</p>
+                  <div class="d-flex align-items-center mt-2">
+                    <img src="{{order.last_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+
+                    {% if order.order.game_id == 10 %}
+                      <p class="reached-info text-capitalize mb-0">{{order.last_division}} MMR</p>
+                    {% else %}
+                      <p class="reached-info text-capitalize mb-0">{{order.last_rank.rank_name}}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              {% elif order.order.game_type == 'S' %}
+                <div class="reached-info-container text-center">
+                  <p class="mb-0">Current Rank</p>
+
+                  <div class="d-flex align-items-center mt-2">
+                    <img src="{{order.current_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+  
+                    <p class="reached-info text-capitalize mb-0">{{order.current_rank.rank_name}}</p>
+                  </div>
+                  
+                </div>
+              {% elif order.order.game_type == 'T' %}
+                <div class="reached-info-container text-center">
+                  <p class="mb-0">Current League</p>
+
+                  <div class="d-flex align-items-center mt-2">
+                    <img src="{{order.current_league.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+  
+                    <p class="reached-info text-capitalize mb-0">{{order.current_league.rank_name}}</p>
+                  </div>
+                  
+                </div>
+              {% elif order.order.game_type == 'F' %}
+                <div class="reached-info-container text-center">
+                  <p class="mb-0">Current Level</p>
+  
+                  <p class="reached-info text-capitalize mb-0 mt-2">Level {{order.current_level}}</p>
+                  
+                </div>
+              {% endif %}
+
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center game-name my-4">
+              <p class="mb-0" style="color: #FFFFFF80">In game name:</p>
+              <p class="mb-0 fw-bold">{{order.order.customer_gamename}}</p>
+            </div>
+
+            {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
+              <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+                  {% if order.order.game_type == 'D' %}
+                    <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                    <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  {% endif %}
+
+                  {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                    <p class="current-info text-capitalize mb-0">{{order.current_rank}} {{ order.current_division|romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                    <p class="current-info text-capitalize mb-0">{{order.current_rank}} {{ order.current_division|romanize_division_original }}</p>
+
+                  {% elif order.order.game.link == 'hearthstone' %}
+                    <p class="current-info text-capitalize mb-0">{{order.current_rank}} {{ order.current_division|ten_romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                    <p class="current-info text-capitalize mb-0">{{order.current_rank}} {{ order.current_division|five_romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                    <p class="current-info text-capitalize mb-0">{{ order.current_division }} MMR</p>
+
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                    <p class="current-info text-capitalize mb-0">{{ order.current_rank }}</p>
+
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                    <p class="current-info text-capitalize mb-0">{{ order.current_division }} Premier Rank</p>
+                  {% endif %}
+                </div>
+
+                <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
+
+                <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+                  {% if order.order.game_type == 'D' %}
+                    <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                    <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  {% endif %}
+
+                  {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                    <p class="desired-info text-capitalize mb-0">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                    <p class="desired-info text-capitalize mb-0">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
+
+                  {% elif order.order.game.link == 'hearthstone' %}
+                    <p class="desired-info text-capitalize mb-0">{{order.desired_rank}} {{ order.desired_division|ten_romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                    <p class="desired-info text-capitalize mb-0">{{order.desired_rank}} {{ order.desired_division|five_romanize_division }}</p>
+
+                  {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                    <p class="desired-info text-capitalize mb-0">{{ order.desired_division }} MMR</p>
+
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                    <p class="current-info text-capitalize mb-0">{{ order.desired_rank }}</p>
+                    
+                  {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                    <p class="current-info text-capitalize mb-0">{{ order.desired_division }} Premier Rank</p>
+
+                  {% endif %}
+                </div>
+              </div>
+            {% elif order.order.game_type == 'P' %}
+              <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+                
+                  <img src="{{order.last_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  {% if order.order.game_id == 10 %}
+                    <p class="current-info text-capitalize mb-0">{{order.last_division}} MMR</p>
+                  {% else %}
+                    <p class="current-info text-capitalize mb-0">{{order.last_rank.rank_name}}</p>
+                  {% endif %}
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
+
+                <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+
+                  <p class="num-info text-capitalize mb-0">{{order.number_of_match}} Matches</p>
+
+                </div>
+              </div>
+            {% elif order.order.game_type == 'S' %}
+              <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+                
+                  <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  
+                  <p class="current-info text-capitalize mb-0">{{order.current_rank.rank_name}}</p>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
+
+                <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+
+                  <p class="num-info text-capitalize mb-0">{{order.number_of_wins}} Wins</p>
+
+                </div>
+              </div>
+            {% elif order.order.game_type == 'T' %}
+              <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+                
+                  <img src="{{order.current_league.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                  
+                  <p class="current-info text-capitalize mb-0">{{order.current_league.rank_name}}</p>
+
+                </div>
+              </div>
+            {% elif order.order.game_type == 'F' %}
+              <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+
+                  <p class="current-info text-capitalize mb-0">Level {{order.current_level}}</p>
+
+                </div>
+
+                <i class="fa-solid fa-chevron-right fs-4" style="color: var(--secondary-color);"></i>
+
+                <div class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+
+                  <p class="desired-info text-capitalize mb-0">Level {{order.desired_level}}</p>
+
+                </div>
+              </div>
+            {% endif %}
+
+            <a href="{% url 'customer.orders.details' order_name=order.order.name %}" class="custom-btn filled mt-4 open-order">Open Order</a>
+          </div>
+  
+        </div>
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script>
+   function redirectToOrder(link) {
+    window.location.href = link;
+  }
+</script>
+{% endblock %}
