@@ -242,7 +242,7 @@ def success_tip(request,token):
         booster_wallet = booster_instance.wallet
         booster_wallet.money += tip
         booster_wallet.save()
-        return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
+        return redirect(reverse('accounts.customer_orders', kwargs={'order_name': order.name}))
     return HttpResponse("error while adding tip to bosster, check your wallet and call page admin")
 
 def cancel_tip(request, token, order_id):
@@ -250,7 +250,7 @@ def cancel_tip(request, token, order_id):
     TokenForPay.delete_token(token)
     order = BaseOrder.objects.get(id=order_id)
     request.session['success_tip'] = 'false'
-    return redirect(reverse('accounts.customer_side', kwargs={'order_name': order.name}))
+    return redirect(reverse('accounts.customer_orders', kwargs={'order_name': order.name}))
 
 
 @login_required

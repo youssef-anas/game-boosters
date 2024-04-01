@@ -114,19 +114,17 @@ class Message(models.Model):
             user=user,
             content=content,
             room=room,
-            created_on=timezone.now(),
             msg_type= 2
         )
         return new_message
     
     @classmethod
     def create_change_message(cls, user, room):
-        content = 'You changed your account details.'
+        content = 'Account Details Changed.'
         new_message = cls.objects.create(
             user=user,
             content=content,
             room=room,
-            created_on=timezone.now(),
             msg_type= 3
         )
         return new_message
