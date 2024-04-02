@@ -202,3 +202,26 @@ def format_date(created_on):
       return created_on.strftime('%d %B %Y')  # Format as 'day month year' (e.g., '23 March 2023')
     else:
       return created_on.strftime('%d %B')  # Format as 'day month' (e.g., '23 March')
+    
+
+@register.filter
+def extract_order_from(text):
+  start_marker = "From "
+  end_marker = " To"
+  start_index = text.find(start_marker)
+  end_index = text.find(end_marker, start_index + len(start_marker))
+  
+  if start_index != -1 and end_index != -1:
+    return text[start_index + len(start_marker):end_index]
+  else:
+    return ""
+  
+@register.filter
+def extract_order_to(text):
+  start_marker = "To "
+  start_index = text.find(start_marker)
+
+  if start_index != -1:
+    return text[start_index + len(start_marker):]
+  else:
+    return ""

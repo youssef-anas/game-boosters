@@ -54,7 +54,12 @@
   font-weight: 300;
   font-size: 1rem;
 }
-
+.account-details #duo-or-solo.duo {
+  background-color: #06A5B0 !important;
+}
+.account-details #duo-or-solo.solo {
+  background-color: var(--secondary-color) !important;
+}
 /* Order Info */
 .order-info {
   border-radius: calc(var(--main-radius) * 2);

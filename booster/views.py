@@ -68,7 +68,7 @@ def edit_booster_profile(request):
     return render(request, 'booster/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
 
 # Orders Page
-def jobs(request):
+def orders_jobs(request):
     # TODO check this data pls
     orders = BaseOrder.objects.filter(booster__isnull=True)
     booster_percents = BoosterPercent.objects.get(pk=1)
@@ -77,7 +77,7 @@ def jobs(request):
         "orders": orders,
         'booster_percents':booster_percents
     }
-    return render(request,'booster/Orders.html', context)
+    return render(request,'booster/orders_jobs.html', context)
 
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
@@ -97,9 +97,9 @@ def calm_order(request, game_name, id):
         except Exception as e:
             print(f"Error updating order: {e}")
             return HttpResponseBadRequest(f"Error updating order{e}")
-    else:
-        messages.error(request, "You aren't play this game, Calm order for your game!")
-        return redirect(reverse_lazy('orders.jobs'))
+    # else:
+    #     messages.error(request, "You aren't play this game, Calm order for your game!")
+    #     return redirect(reverse_lazy('orders.jobs'))
     refresh_order_page()
     return redirect(reverse_lazy('booster.orders'))
 

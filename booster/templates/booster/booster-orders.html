@@ -197,7 +197,7 @@
                 <div class="account-details">
                   <h4 style="font-weight: 700;">
                     Account Details 
-                    <span id="duo-or-solo">
+                    <span id="duo-or-solo" class="{% if order.order.order.duo_boosting %}duo{% else %}solo{% endif %}">
                       {% if order.order.order.duo_boosting %} Duo {% else %} Solo {% endif %}
                     </span>
 

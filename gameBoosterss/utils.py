@@ -208,12 +208,16 @@ def live_orders():
         print("ORDER: ",order)
         order_dict = {
             "id": order.pk,
-            'name': order.game.name,
+            'name': order.name,
             'server': order.customer_server,
             'status': order.status,
             'price': order.price,
             'game_name':order.game.name,
             'details':order.details,
+            'duo_boosting': order.duo_boosting,
+            'turbo_boost': order.turbo_boost,
+            'streaming': order.streaming,
+            'select_champion': order.related_order.select_champion if hasattr(order, 'related_order') and hasattr(order.related_order, 'select_champion') else 0,
             'url':f'{order.game.link}/{order.pk}/',
         }
         all_orders_dict.append(order_dict)

@@ -1,0 +1,249 @@
+/* Start Base Design For Form Element */
+input[type="radio"] {
+  display: none;
+}
+label {
+  display: inline-block;
+  cursor: pointer;
+}
+/* Start Container */
+.orders-jobs-container {
+  position: relative;
+  background-color: var(--background-color);
+}
+/* Start Landing */
+.orders-jobs-container .orders-jobs-contant {
+  width: 100%;
+  min-height: 690px;
+  background-image: url('./../../accounts/images/customer_side_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  background-position-y: -10px;
+  background-size: 100% 800px;
+  background-repeat: no-repeat;
+}
+.orders-jobs-container .orders-jobs-contant .overlay {
+  width: 100%;
+  min-height: 690px;
+  background-image: url('./../../accounts/images/bg_cover.png');
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+  background-size: 100% 800px;
+  background-repeat: no-repeat;
+}
+/* End Container */
+
+/* Strat Heading */
+.orders-jobs-contant .heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+}
+.orders-jobs-contant .heading h1 {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: var(--heading-font);
+  letter-spacing: 3px;
+}
+@media (max-width: 1199px) {
+  .orders-jobs-contant .heading h1 {
+    font-size: 32px !important;
+  }
+}
+.orders-jobs-contant .heading p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+@media (max-width: 1199px) {
+  .orders-jobs-contant .heading p {
+    font-size: 16px;
+  }
+}
+/* End Heading */
+
+/* Start Roles */
+.roles-container .role-heading button {
+ width: 280px !important;
+ font-size: 1.5rem !important;
+ padding-top: 0 !important;
+ padding-bottom: 0 !important;
+}
+.roles-container .roles {
+  border-radius: calc(var(--main-radius) * 2);
+  background-color: var(--main-color);
+  display: none;
+}
+.roles .image img {
+  width: 312px;
+  height: 312px;
+  border-radius: 50%;
+}
+.roles .section h3 {
+  position: relative;
+  width: fit-content;
+  margin-bottom: 3rem;
+}
+.roles .section h3::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -63%;
+  left: 0;
+  background-color: var(--secondary-color);
+}
+.roles .instruction {
+  counter-reset: section;
+}
+.roles .instruction p {
+  counter-increment: section;
+}
+.roles .instruction p::before {
+  content: counter(section) ". ";
+}
+.roles .understand-btn {
+  margin-top: 4.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.roles .understand-btn button {
+  width: 448px;
+  font-size: 2rem;
+}
+@media (max-width: 768px) {
+  .roles .understand-btn button {
+    font-size: 1.5rem;
+  }
+}
+/* End Roles */
+
+/* Start Checkout Info */
+.checkout-info {
+  padding: 4rem;
+  background-color: var(--main-color);
+  border-radius: calc(var(--main-radius) * 2);
+}
+.checkout-info > p > span {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: var(--main-radius);
+  margin-right: 0.5rem;
+}
+#turbo-boost {
+  background: #FFC43980;
+}
+#stream-games {
+  background: #BB00FF80;
+}
+#solo-game {
+  background: #F36E3F80;
+}
+#duo-game {
+  background: #00B0BD80;
+}
+#select-champion {
+  background: #46D17980;
+}
+/* End Checkout Info */
+
+#duo-or-solo {
+  margin-left: 18px;
+  padding: 4px 8px 6px;
+  border-radius: var(--main-radius);
+  font-weight: 300;
+  font-size: 1rem;
+}
+#duo-or-solo.duo {
+  background-color: #06A5B0 !important;
+}
+#duo-or-solo.solo {
+  background-color: var(--secondary-color) !important;
+}
+.extra {
+  padding: 0.5rem;
+  background-color: var(--main-color);
+  border-radius: var(--main-radius);
+  width: fit-content;
+}
+.select-champion {
+  color: #43BF70;
+}
+.stream-games {
+  color: #BB00FF;
+}
+.order-container {
+  width: 100%;
+  overflow-x: auto;
+}
+.order {
+  li {
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+  }
+  .table-header {
+    width: 1384px;
+    background-color: var(--main-color);
+    border-bottom: 0.2px solid #aca1a140;
+    box-shadow: 0px 0px 7px 0px #00000040;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-top-left-radius: calc(var(--main-radius) * 2);
+    border-top-right-radius: calc(var(--main-radius) * 2);
+    overflow-x: auto;
+  }
+  .table-row {
+    height: 224px;
+    width: 1384px;
+    overflow-x: auto;
+    background: #362c29;
+    border-bottom-left-radius: calc(var(--main-radius) * 2);
+    border-bottom-right-radius: calc(var(--main-radius) * 2);
+  }
+  .col {
+    flex-basis: calc(100% / 7);
+  }
+  .table-row .col {
+    padding: 3.5rem 0;
+  }
+  .table-row .col-1 {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* @media all and (max-width: 767px) {
+    .table-header {
+      display: none;
+    }
+    .table-row{
+      
+    }
+    li {
+      display: block;
+    }
+    .col {
+      flex-basis: 100%;
+    }
+    .col-6, .col-7 {
+      display: inline-block;
+    }
+    .col {
+      display: flex;
+      padding: 10px 0;
+      &:before {
+        color: #6C7A89;
+        padding-right: 10px;
+        content: attr(data-label);
+        flex-basis: 50%;
+        text-align: right;
+      }
+    }
+  } */
+}
+/* End Incoming Orders */

@@ -1,0 +1,339 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% load static %}
+{% block title %}Calm Orders{% endblock %}
+{% block style %}
+<!-- OUR STYLE -->
+<link rel="stylesheet" href="{% static 'booster/css/orders_jobs.css'%}">
+{% endblock %}
+{% block container %}
+<div class="orders-jobs-container">
+
+  <div class="orders-jobs-contant">
+    <div class="overlay">
+
+      <div class="container">
+        <!-- Errors -->
+        {% if messages %}
+          {% for message in messages %}
+          <div class="py-3 mx-auto message-container">
+            <div class="alert {{ message.tags }} alert-dismissible mb-0 error-message" role="alert" >
+            {{ message }}
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="heading">
+        <h1>Orders</h1>
+        <p>Scan the orders and claim what suits you</p>
+      </div>
+
+      <div class="container roles-container">
+
+        <div class="role-heading d-flex flex-md-row flex-column justify-content-center align-items-center gap-4 mt-4">
+          <h3 class="fw-bold fs-2">Service Rules: </h3>
+          <button class="btn custom-btn filled" id="read-roles">Read</button>
+        </div>
+        <div class="roles mt-5 p-5" id="roles">
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-12 px-3">
+              <div class="image text-md-start text-center">
+                <img src="{% static 'booster/images/roles-img.png' %}" class="img-fluid" alt="Image">
+              </div>
+            </div>
+  
+            <div class="col-lg-4 col-md-6 col-12 px-3 mt-md-0 mt-4">
+              <div class="general section">
+                <h3 class="fw-bold">General</h3>
+  
+                <div class="instruction">
+                  <p>
+                    We protect our customers' base, thus direct
+                    boosting of our customers comes under ban
+                    without a payout.
+                  </p>
+                  <p>
+                    The use of any hacks or scripts on a customer's
+                    account will lead to a ban on the service without
+                    a payout.
+                  </p>
+                  <p>
+                    Direct contacts with customers outside of the
+                    service (and League game client during duo q
+                    boosting) are forbidden.
+                  </p>
+                  <p>
+                    In order to complete the order properly, you
+                    have to upload a screenshot of the customer's
+                    profile, which should be taken after the final game.
+                    We need it as a proof to fight against the fraud
+                    chargebacks.
+                  </p>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-lg-4 col-md-6 col-12 px-3 mt-lg-0 mt-4">
+              <div class="quality-service section">
+                <h3 class="fw-bold">Quality of the Service</h3>
+  
+                <div class="instruction">
+                  <p>
+                    To introduce yourself first to the customer
+                    and then to ask him, whether he has any
+                    questions would be a great start of the
+                    conversation and will definitely increase
+                    your chances to get 5 stars feedback and
+                    the tips when the boost is over.
+                  </p>
+                  <p>
+                    You have to start working on order within
+                    15 minutes after you claimed it. You cannot
+                    save the orders for later.
+                  </p>
+                  <p>
+                    Stay always online in the service chat
+                    during boosting to be in a regular contact
+                    with the customer.
+                  </p>
+                  <p>
+                    Warn the customer, if your boosting
+                    session is over and inform, when
+                    you plan to continue.
+                  </p>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col-md-6 col-12 px-3 mt-lg-0 mt-4">
+              <div class="boosting-process section">
+                <h3 class="fw-bold">Boosting Process</h3>
+  
+                <div class="instruction row row-cols-md-2 row-cols-1">
+                  <p>
+                    Never flame during your games on
+                    the customer's account. Causing a
+                    ranked restriction or ban on the
+                    customer's account will lead to a cash
+                    penalty or ban on the service.
+                  </p>
+                  <div>
+                    <p>
+                      Never spoil yourself as a booster.
+                    </p>
+                    <p>
+                      Do not chat with the people from
+                      the customer's friend list unless you're
+                      asked by the customer to do that.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="understand-btn">
+            <button class="btn custom-btn filled text-center" id="understand-roles">I Understand</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+
+        <div class="checkout-info-container my-5">
+          <h3 class="mb-4 fs-5">Checkout Info</h3>
+          
+          <div class="checkout-info d-flex flex-wrap gy-3 justify-content-between align-items-center">
+            <p class="my-2"><span id="turbo-boost">Turbo Boost</span>20%</p>
+            <p class="my-2"><span id="stream-games">Stream Games</span>15%</p>
+            <p class="my-2"><span id="solo-game">Solo Game</span></p>
+            <p class="my-2"><span id="duo-game">Duo Game</span></p>
+            <p class="my-2"><span id="select-champion">Select Champion</span>Free</p>
+          </div>
+        </div>
+
+        <div class="incoming-orders-container">
+          <h3 class="mb-4 fs-5">Incoming Orders</h3>
+
+          <div class="incoming-orders" id="order_list">
+           
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script src="{% static 'booster/js/slice-order-details.js' %}"></script>
+<script>
+
+  function changeTimer(seconds, onTimeOut, orderId) {
+    const timerElement = document.getElementById(`timer_${orderId}`);
+    const noFinalPrice = document.getElementById(`not-final-price-${orderId}`);
+    noFinalPrice.classList.remove('d-none');
+    if (!timerElement) {
+      console.error(`Timer element with id 'timer_${orderId}' not found.`);
+      return;
+    }
+    let refresher = 0;
+    function updateTimerDisplay() {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+
+      const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+      timerElement.textContent = `${formattedTime}`;
+
+      // Execute the callback when the timer reaches zero
+      if (seconds === 0 && typeof onTimeOut === 'function') {
+        onTimeOut(orderId);
+        clearTimeout(timeoutId);
+      }
+
+      seconds--;
+      refresher++;
+      console.log(refresher)
+      if(refresher%20 === 0){
+        onTimeOut(orderId);
+        clearTimeout(timeoutId);
+      }
+
+      console.log(seconds)
+
+      if (seconds >= 0) {
+          var timeOut = setTimeout(updateTimerDisplay, 1000);
+      } else{
+        console.log("Will Be Add NONE!!!")
+        noFinalPrice.classList.add('d-none')
+      }
+    }
+
+
+    // Initial call to start the timer
+    updateTimerDisplay();
+  }
+  let host = window.location.host
+  const orderSocket = new WebSocket('ws://' + window.location.host + '/ws/order/');
+  orderSocket.onmessage = function(e){
+    let data = JSON.parse(e.data)
+    console.log('data',data)
+    if(data.type === 'order') {
+      let orderContainer = document.getElementById('order_list')
+      orderContainer.innerHTML = '';
+      data.order.forEach(order => {
+        const timeSocket = new WebSocket('ws://' + window.location.host + '/ws/price/' + order.id + '/');
+        timeSocket.onmessage = function (e) {
+        let time_price = JSON.parse(e.data);
+        console.log(time_price);
+          if (time_price.type === 'time_with_price'){
+            console.log('${order.details}')
+            orderContainer.insertAdjacentHTML('beforeend',
+            `
+              <div class="order-container mb-4">
+                <ul class="order">
+                  <li class="table-header">
+                    <div class="col col-1">Order ID</div>
+                    <div class="col col-2">From</div>
+                    <div class="col col-3">To</div>
+                    <div class="col col-4">Server</div>
+                    <div class="col col-5">Queue</div>
+                    <div class="col col-6">Payout</div>
+                    <div class="col col-7"></div>
+                  </li>
+                  <li class="table-row">
+                    <div class="col col-1 fw-bold" data-label="Order ID">ID: ${order.name}</div>
+
+                    <div class="col col-2 fw-bold" data-label="From">
+                      ${extractOrderFrom(order.details)}
+                      <div class="extra select-champion mt-4">
+                        ${
+                          order.select_champion 
+                          ?
+                            '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                          :
+                            '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
+                        Select Champion
+                      </div>
+                    </div>
+
+                    <div class="col col-3 fw-bold" data-label="To">
+                      ${extractOrderTo(order.details)}
+                      <div class="extra stream-games mt-4 ms-4">
+                        ${
+                          order.streaming
+                          ?
+                            '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                          :
+                            '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
+                        Stream Games
+                      </div>
+                    </div>
+
+                    <div class="col col-4 fw-bold" data-label="Server">${order.server}</div>
+
+                    <div class="col col-5 fw-bold" data-label="Queue">
+                      <span id="duo-or-solo" class="${ order.duo_boosting ?"duo":"solo"}">
+                        ${ order.duo_boosting ?" Duo ":" Solo "}
+                      </span>
+                    </div>
+
+                    <div class="col col-6 fw-bold" data-label="Payout">
+                      <div id='not-final-price-${order.id}'>
+                        <p class="mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
+
+                        <p id="timer_${order.id}" class="mb-0 ms-2"></p>
+                      </div>
+
+                      <div id='final-price-${order.id}' class='d-none'>
+                        <p class="h5 mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
+
+                        <p id="final_price_${order.id}" class="mb-0 ms-2">
+                          <i class="fa-solid fa-star" style="color: gold;"></i> Final Price
+                        </p>
+                      </div>
+                      
+                    </div>
+
+                    <div class="col col-7" data-label="claim">
+                      <a href='${order.url}' class="btn custom-btn filled">Claim</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            `
+          );
+          }
+          if (time_price.type === 'update_price'){
+            document.querySelector(`#actual_price_${order.id}`).innerText=
+            `${time_price.price}$`
+            console.log('price updated')
+          }
+          if (time_price.time > 0){
+            changeTimer(time_price.time+2, onTimeOutFunction,order.id);
+            }
+            else{
+              let finalPriceElement = document.getElementById(`final-price-${order.id}`);
+              finalPriceElement.classList.remove("d-none");
+              noFinalPrice
+            }
+            function onTimeOutFunction() {
+              console.log("Executing onTimeOutFunction.");
+              timeSocket.send(JSON.stringify({ order_id: order.id }));
+            }
+        };
+      });
+    }
+  }
+
+
+</script>
+<!-- OUR SCRIPTS -->
+<script src="{% static 'booster/js/toggle-roles.js' %}"></script>
+{% endblock %}

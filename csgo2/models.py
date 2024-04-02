@@ -231,7 +231,7 @@ class Csgo2PremierOrder(models.Model):
         # self.send_discord_notification() 
 
     def get_details(self):
-        return f"From {str(self.current_rank).upper()} Premier  To {str(self.desired_rank).upper()} Premier"
+        return f"From {str(self.current_rank).upper()} Premier To {str(self.desired_rank).upper()} Premier"
 
     def __str__(self):
         return self.get_details()
