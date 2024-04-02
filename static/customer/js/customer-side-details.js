@@ -76,27 +76,27 @@ $(document).ready(function() {
           if($('#booster-chatbox.there-is-messages').length) {
        
             console.log("Yessssss")
-            $('#booster-chatbox.there-is-messages').append(`
-              <div class="booster-chat-message changes-message">
-                <p class="message-time mb-0 me-1"> Just Now </p>
+            // $('#booster-chatbox.there-is-messages').append(`
+            //   <div class="booster-chat-message changes-message">
+            //     <p class="message-time mb-0 me-1"> Just Now </p>
 
-                <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
-              </div>
-            `)
+            //     <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
+            //   </div>
+            // `)
           } else {
             console.log("NOOOOOO")
             $("#booster-chatbox.there-is-not-messages").html('').remove();
-            $("#booster-messages-container").append(`
-              <div class="booster-chatbox there-is-messages" id="booster-chatbox">
-                <p class="day-date">Today</p>
+            // $("#booster-messages-container").append(`
+            //   <div class="booster-chatbox there-is-messages" id="booster-chatbox">
+            //     <p class="day-date">Today</p>
 
-                <div class="booster-chat-message changes-message">
-                  <p class="message-time mb-0 me-1"> Just Now </p>
+            //     <div class="booster-chat-message changes-message">
+            //       <p class="message-time mb-0 me-1"> Just Now </p>
 
-                  <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
-                </div>
-              </div>
-            `)
+            //       <p class="message info-message mb-0"><i class="fa-solid fa-circle-info ms-1"></i> You changed your account details.</p>
+            //     </div>
+            //   </div>
+            // `)
           }
           scrollToBottom();
         } else {

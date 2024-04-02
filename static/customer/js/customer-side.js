@@ -139,17 +139,32 @@ document.querySelector("#booster-message-submit").onclick = function (e) {
 
 chatSocket.onmessage = function (e) {
   const data = JSON.parse(e.data);
-  $('.no-messages').html('')
+  console.log(data.msg_type);
+  
+  $('.no-messages').html('');
+
   let div = document.createElement("div");
   let messageContent = data.message;
   let messageElement = document.createElement("p");
-  messageElement.classList.add("message", "mb-0");
-  messageElement.textContent = messageContent;
 
-  applyReadMore(messageElement)
-  
   // Create and append the message time element
   let messageTimeElement = document.createElement("p");
+
+  if (data.msg_type === 1) {
+    messageElement.classList.add("message", "mb-0");
+    messageElement.textContent = messageContent;
+
+  } else if (data.msg_type === 3) {
+
+    div.classList.add("booster-chat-message", "changes-message");
+    div.style.backgroundColor = "transparent";
+
+    messageElement.classList.add("info-message", "mb-0");
+    messageElement.innerHTML = `<i class="fa-solid fa-circle-info ms-1"></i> ${data.message}`;
+  }
+
+  applyReadMore(messageElement)
+  messageTimeElement.classList.add("message-time", "mb-0", "me-1");
   messageTimeElement.textContent = "Just Now";
   
   if(data.username === user) {

@@ -129,8 +129,20 @@ function chat(booster_room_name, roomName, orderId) {
     let div = document.createElement("div");
     let messageContent = data.message;
     let messageElement = document.createElement("p");
-    messageElement.classList.add("message", "mb-0");
-    messageElement.textContent = messageContent;
+    
+    if (data.msg_type === 1) {
+      messageElement.classList.add("message", "mb-0");
+      messageElement.textContent = messageContent;
+  
+    } else if (data.msg_type === 3) {
+  
+      div.classList.add("booster-chat-message", "changes-message");
+      div.style.backgroundColor = "transparent";
+  
+      messageElement.classList.add("info-message", "mb-0");
+      messageElement.innerHTML = `<i class="fa-solid fa-circle-info ms-1"></i> ${data.message}`;
+    }
+  
 
     applyReadMore(messageElement)
 
