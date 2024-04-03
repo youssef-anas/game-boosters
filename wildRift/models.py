@@ -87,7 +87,6 @@ class WildRiftDivisionOrder(models.Model):
     select_champion = models.BooleanField(default=False, blank=True)
     champions = models.ManyToManyField(Champion, related_name='wr_division_champions', blank=True)
 
-
     def send_discord_notification(self):
         if self.order.status == 'Extend':
             return print('Extend Order')
@@ -158,12 +157,13 @@ class WildRiftDivisionOrder(models.Model):
             marks_data.insert(0,[0,0,0,0,0,0,0])
         ##   
             
-        promo_code_amount = self.order.promo_code.discount_amount
-        if not promo_code_amount:
+        try:
+            promo_code_amount = self.order.promo_code.discount_amount
+        except:
             promo_code_amount = 0
 
-        current_rank = self.current_rank.id
-        reached_rank = self.reached_rank.id
+        current_rank = self.current_rank.pk
+        reached_rank = self.reached_rank.pk
 
         current_division = self.current_division
         reached_division = self.reached_division

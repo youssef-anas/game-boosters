@@ -22,7 +22,9 @@ channel_layer = get_channel_layer()
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.core.serializers.json import DjangoJSONEncoder
 import random
+import json
 
 
 def check_rl_type(type) -> Model:
@@ -205,6 +207,24 @@ def live_orders():
     orders = BaseOrder.objects.filter(booster=None).order_by('-created_at')
     all_orders_dict = []
     for order in orders:
+
+        if order.game.pk == 1 or order.game.pk == 2 or order.game.pk == 4:
+            champions_queryset = order.related_order.champions.all()
+            champions = []
+            for champion in champions_queryset:
+                champion_dict = {
+                    "id": champion.pk,
+                    "name": champion.name,
+                    "image": champion.get_image_url(),
+                    "game_id": champion.game_id
+                }
+                champions.append(champion_dict)
+            # champions_list = list(champions_queryset.values())
+            # champions = json.dumps(champions_list, cls=DjangoJSONEncoder)
+            
+        else:
+            champions = None
+
         print("ORDER: ",order)
         order_dict = {
             "id": order.pk,
@@ -218,6 +238,8 @@ def live_orders():
             'turbo_boost': order.turbo_boost,
             'streaming': order.streaming,
             'select_champion': order.related_order.select_champion if hasattr(order, 'related_order') and hasattr(order.related_order, 'select_champion') else 0,
+
+            'champions': champions,
             'url':f'{order.game.link}/{order.pk}/',
         }
         all_orders_dict.append(order_dict)

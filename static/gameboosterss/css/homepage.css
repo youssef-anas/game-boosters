@@ -99,13 +99,6 @@
   font-family: var(--sharp-font);
   font-size: 1.3rem;
 }
-.order .title p.solo-or-duo {
-  padding: 8px 10px;
-  background-color: var(--secondary-color);
-  border-radius: calc(var(--main-radius) * 2);
-  color: white;
-}
-
 .order .information .booster .image {
   width: 75px;
   height: 75px;
@@ -114,13 +107,27 @@
   border-radius: calc(var(--main-radius) * 2);
 }
 .order .information .booster .name p:first-child,
-.order .information .rank p:first-child {
+.order .information .reached-info-container p:first-child {
   color: #FFFFFF80;
   font-family: var(--sharp-font);
 }
 .order .information .booster .name p:last-child,
-.order .information .rank p:last-child{
+.order .information .reached-info-container p:last-child{
   color: #ffffff;
   font-family: var(--sharp-font);
+}
+#duo-or-solo {
+  margin-left: 18px;
+  padding: 4px 8px 6px;
+  border-radius: var(--main-radius);
+  background-color: var(--secondary-color);
+  font-weight: 300;
+  font-size: 1rem;
+}
+#duo-or-solo.duo {
+  background-color: #06A5B0 !important;
+}
+#duo-or-solo.solo {
+  background-color: var(--secondary-color) !important;
 }
 /* End Last Orders */

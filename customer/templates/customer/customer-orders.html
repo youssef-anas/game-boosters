@@ -42,7 +42,7 @@
       {% for order in orders %}
       <div class="col">
 
-        <div class="order d-flex flex-wrap mb-5 {% if forloop.counter|divisibleby:'2' %}ms-lg-2{% else %}me-lg-2{% endif %}">
+        <div class="order d-flex flex-wrap mb-5 {% if forloop.counter|divisibleby:'2' %}ms-lg-2 ms-0{% else %}me-lg-2 me-0{% endif %}">
   
           <div class="game-banner p-0">
             <img src="{{order.order.game.get_banner_image_url}}" alt="Game Banner" class="img-fluid">

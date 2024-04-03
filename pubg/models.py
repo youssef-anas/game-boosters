@@ -130,10 +130,10 @@ class PubgDivisionOrder(models.Model):
           marks_data = json.load(file)
           marks_data.insert(0,[0,0,0,0,0,0,0])
       ##   
-      try:    
-          promo_code_amount = self.order.promo_code.discount_amount
+      try:
+        promo_code_amount = self.order.promo_code.discount_amount
       except:
-          promo_code_amount = 0
+        promo_code_amount = 0
 
       current_rank = self.current_rank.id
       reached_rank = self.reached_rank.id

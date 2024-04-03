@@ -2,13 +2,14 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from gameBoosterss.views import index
+from gameBoosterss.views import index, last_orders
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 
 
 urlpatterns = [
     path('', index, name="homepage.index"),
+    path('last_orders/', last_orders, name="last.orders"),
     path('admin/', admin.site.urls),
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),

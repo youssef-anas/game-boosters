@@ -140,8 +140,9 @@ class HearthstoneDivisionOrder(models.Model):
       marks_data.insert(0,[0,0,0,0])
     ##   
           
-    promo_code_amount = self.order.promo_code
-    if not promo_code_amount:
+    try:
+      promo_code_amount = self.order.promo_code.discount_amount
+    except:
       promo_code_amount = 0
 
     current_rank = self.current_rank.id

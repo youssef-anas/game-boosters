@@ -1,0 +1,223 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<!-- SWIPER CSS -->
+<link href="{% static 'swiper/css/swiper-bundle.min.css'%}" rel="stylesheet">
+<!-- OUR STYLE -->
+<link href="{% static 'gameboosterss/css/homepage.css' %}" rel="stylesheet">
+<!-- STYLE FEEDBACK -->
+<link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
+<!-- STYLE MOTIVATION -->
+<link href="{% static 'components/css/motivation.css'%}" rel="stylesheet" />
+<!-- STYLE INFORMATION -->
+<link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+<div class="homepage">
+  <div class="container">
+    <!-- ------------------------- Landing ------------------------- -->
+    <div class="landing row justify-content-xl-between justify-content-center align-items-center">
+      <div class="text text-xl-start text-center col-xl-6 col-12 d-xl-block d-flex justify-content-center align-items-center flex-wrap ">
+        <h1>REACH YOUR RANK <span>GOALS</span></h1>
+        <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+      </div>
+      <div class="image col-xl-6 d-xl-block d-none">
+        <img src="{% static 'gameboosterss/images/Logo.png' %}" class="img-fluid" alt="Landing">
+      </div>
+    </div>
+
+
+    <!-- ------------------------- Gaming ------------------------- -->
+    <div class="games swiper py-5">
+      <div class="games-swiper" id="games">
+
+        <div class="head d-flex justify-content-between align-items-center">
+          <h1>Games</h1>
+
+          <div class="navigation-buttons">
+            <!-- Navigation Buttons -->
+            <div class="games-swiper-button-prev">
+              <i class="fa-solid fa-chevron-left fs-3"></i>
+            </div>
+  
+            <div class="games-swiper-button-next">
+              <i class="fa-solid fa-chevron-right fs-3"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-wrapper mt-4">
+          {% for game in games %}
+            <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')">
+              <div class="game-logo">
+                <img src="{{game.get_logo_image_url}}" class="img-fluid" alt="{{game.name}}">
+              </div>
+              <p class="mt-2 text-center">{{game.name}}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------- Last Orders ------------------------- -->
+    <div class="last-orders swiper py-5">
+      <div class="last-orders-swiper" id="last-orders">
+
+        <div class="head d-flex justify-content-between align-items-center">
+          <h1>Last Orders</h1>
+
+          <div class="navigation-buttons">
+            <!-- Navigation Buttons -->
+            <div class="last-orders-swiper-button-prev">
+              <i class="fa-solid fa-chevron-left fs-3"></i>
+            </div>
+  
+            <div class="last-orders-swiper-button-next">
+              <i class="fa-solid fa-chevron-right fs-3"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="swiper-wrapper mt-4">
+          {% for order in last_orders %}
+            <div class="swiper-slide order">
+
+              <div class="banner">
+                <img src="{{order.order.game.get_banner_image_url}}" class="img-fluid" alt="{{order.order.game.name}}">
+              </div>
+
+              <div class="title d-flex justify-content-between align-items-center my-2">
+                <h1>{{order.order.game.name}}</h1>
+                <p id="duo-or-solo" class="{% if order.order.duo_boosting %}duo{% else %}solo{% endif %}">{% if order.order.duo_boosting %}Duo{% else %}Solo{% endif %}</p>
+              </div>
+
+              <div class="information d-flex justify-content-between align-items-center">
+                <div class="booster d-flex justify-content-center align-items-center">
+
+                  <div class="image">
+                    <img src="{{order.order.booster.get_image_url}}" class="img-fluid" alt="Booster Image">
+                  </div>
+
+                  <div class="name ms-3">
+                    <p class="mb-0">Booster</p>
+                    <p class="mb-0">{{order.order.booster.username}}</p>
+                  </div>
+                </div>
+
+                {% if order.order.game_type == 'A' or order.order.game_type == 'D' %}
+                  <div class="reached-info-container text-center">
+                    <p class="mb-0">Current Rank</p>
+                    <div class="d-flex align-items-center mt-2">
+
+                      {% if order.order.game_type == 'D' %}
+                        <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
+                      {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                        <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
+                      {% endif %}
+
+                      {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                        <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|romanize_division }}</p>
+
+                      {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                        <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|romanize_division_original }}</p>
+
+                      {% elif order.order.game.link == 'hearthstone' %}
+                        <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|ten_romanize_division }}</p>
+
+                      {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                        <p class="reached-info text-capitalize mb-0" >{{order.reached_rank}} {{ order.reached_division|five_romanize_division }}</p>
+
+                      {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                        <p class="reached-info text-capitalize mb-0" >{{ order.reached_division }} MMR</p>
+                      
+                      {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D'  %}
+                        <p class="reached-info text-capitalize mb-0">{{ order.reached_rank }}</p>
+
+                      {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A'  %}
+                        <p class="reached-info text-capitalize mb-0" reached-info>{{ order.reached_division }} Premier</p>
+
+                      {% endif %}
+                      
+                    </div>
+                  </div>
+                {% elif order.order.game_type == 'P' %}
+                  <div class="reached-info-container text-center">
+                    <p class="mb-0">Last Rank</p>
+                    <div class="d-flex align-items-center mt-2">
+                      <img src="{{order.last_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+
+                      {% if order.order.game_id == 10 %}
+                        <p class="reached-info text-capitalize mb-0">{{order.last_division}} MMR</p>
+                      {% else %}
+                        <p class="reached-info text-capitalize mb-0">{{order.last_rank.rank_name}}</p>
+                      {% endif %}
+                    </div>
+                  </div>
+                {% elif order.order.game_type == 'S' %}
+                  <div class="reached-info-container text-center">
+                    <p class="mb-0">Current Rank</p>
+
+                    <div class="d-flex align-items-center mt-2">
+                      <img src="{{order.current_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+    
+                      <p class="reached-info text-capitalize mb-0">{{order.current_rank.rank_name}}</p>
+                    </div>
+                    
+                  </div>
+                {% elif order.order.game_type == 'T' %}
+                  <div class="reached-info-container text-center">
+                    <p class="mb-0">Current League</p>
+
+                    <div class="d-flex align-items-center mt-2">
+                      <img src="{{order.current_league.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid me-2" width="29" height="29">
+    
+                      <p class="reached-info text-capitalize mb-0">{{order.current_league.rank_name}}</p>
+                    </div>
+                    
+                  </div>
+                {% elif order.order.game_type == 'F' %}
+                  <div class="reached-info-container text-center">
+                    <p class="mb-0">Current Level</p>
+    
+                    <p class="reached-info text-capitalize mb-0 mt-2">Level {{order.current_level}}</p>
+                    
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ------------------------- Import Feedback Component ------------------------- -->
+    {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
+
+    <!-- ------------------------- Import Information Component ------------------------- -->
+    {% include 'components/information.html' %}
+
+    <!-- ------------------------- Import Motivation ------------------------- -->
+    {% include 'components/motivation.html' %}
+
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+  function redirectToGame(link) {
+    window.location.href = link;
+  }
+  $('#make-order').click(function() {
+    window.location.href = 'games'
+  })
+</script>
+<!-- SWIPER JS -->
+<script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
+<!-- OUR SCRIPTS -->
+<script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
+<script src="{% static 'gameboosterss/js/games.js'%}"></script>
+<script src="{% static 'gameboosterss/js/last-orders.js'%}"></script>
+{% endblock %}

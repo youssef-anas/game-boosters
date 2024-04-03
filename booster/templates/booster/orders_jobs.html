@@ -186,7 +186,7 @@
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
 
-      const formattedTime = `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+      const formattedTime = `00:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}/`;
       timerElement.textContent = `${formattedTime}`;
 
       // Execute the callback when the timer reaches zero
@@ -206,7 +206,7 @@
       console.log(seconds)
 
       if (seconds >= 0) {
-          var timeOut = setTimeout(updateTimerDisplay, 1000);
+        var timeOut = setTimeout(updateTimerDisplay, 1000);
       } else{
         console.log("Will Be Add NONE!!!")
         noFinalPrice.classList.add('d-none')
@@ -228,15 +228,34 @@
       data.order.forEach(order => {
         const timeSocket = new WebSocket('ws://' + window.location.host + '/ws/price/' + order.id + '/');
         timeSocket.onmessage = function (e) {
-        let time_price = JSON.parse(e.data);
-        console.log(time_price);
+          let time_price = JSON.parse(e.data);
+
+          console.log("Champions: ", order.champions)
+
           if (time_price.type === 'time_with_price'){
-            console.log('${order.details}')
+      
             orderContainer.insertAdjacentHTML('beforeend',
             `
               <div class="order-container mb-4">
+                
+                ${
+                  order.champions !== null ?
+                    order.select_champion && order.champions.length > 0 ?
+                      `
+                        <div class='champions d-flex align-item-center justify-content-center'> 
+                          ${order.champions.map(champion => `
+                            <div class='champion'>
+                              <img src='${location.origin+champion.image}' alt="${champion.name}" width='48' height='48'>
+                            </div>
+                          `).join('')}
+                        </div>
+                      `
+                    : ''
+                  : ''
+                }
+
                 <ul class="order">
-                  <li class="table-header">
+                  <li class="table-header ${order.turbo_boost&&"turbo-boost-header"}">
                     <div class="col col-1">Order ID</div>
                     <div class="col col-2">From</div>
                     <div class="col col-3">To</div>
@@ -245,7 +264,7 @@
                     <div class="col col-6">Payout</div>
                     <div class="col col-7"></div>
                   </li>
-                  <li class="table-row">
+                  <li class="table-row ${order.turbo_boost&&"turbo-boost-row"}">
                     <div class="col col-1 fw-bold" data-label="Order ID">ID: ${order.name}</div>
 
                     <div class="col col-2 fw-bold" data-label="From">
@@ -288,14 +307,19 @@
                       <div id='not-final-price-${order.id}'>
                         <p class="mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
 
-                        <p id="timer_${order.id}" class="mb-0 ms-2"></p>
+                        <p class="mb-0 increase-amount">
+                          <span>Increase in </span>
+                          <span id="timer_${order.id}"></span>
+                          
+                          <span id="amount_of_increase_${order.id}">+$1.99</span>
+                        </p>
                       </div>
 
-                      <div id='final-price-${order.id}' class='d-none'>
-                        <p class="h5 mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
+                      <div id='final-price-${order.id}' class='d-none d-flex align-items-center'>
+                        <p class="mb-0 division-price me-2" id='actual_price_${order.id}'>$${time_price.price}</p> 
 
-                        <p id="final_price_${order.id}" class="mb-0 ms-2">
-                          <i class="fa-solid fa-star" style="color: gold;"></i> Final Price
+                        <p id="final_price_${order.id}" class="mb-0 ms-2 d-flex align-items-center  final-price">
+                          <i class="fa-solid fa-star me-2 fs-4"></i> <span>Final <br /> Price<span>
                         </p>
                       </div>
                       
@@ -308,7 +332,7 @@
                 </ul>
               </div>
             `
-          );
+            );
           }
           if (time_price.type === 'update_price'){
             document.querySelector(`#actual_price_${order.id}`).innerText=
@@ -317,16 +341,16 @@
           }
           if (time_price.time > 0){
             changeTimer(time_price.time+2, onTimeOutFunction,order.id);
-            }
-            else{
-              let finalPriceElement = document.getElementById(`final-price-${order.id}`);
-              finalPriceElement.classList.remove("d-none");
-              noFinalPrice
-            }
-            function onTimeOutFunction() {
-              console.log("Executing onTimeOutFunction.");
-              timeSocket.send(JSON.stringify({ order_id: order.id }));
-            }
+          } else {
+            const finalPriceElement = document.getElementById(`final-price-${order.id}`);
+            finalPriceElement.classList.remove("d-none");
+            const noFinalPrice = document.getElementById(`not-final-price-${order.id}`);
+            noFinalPrice.classList.add("d-none")
+          }
+          function onTimeOutFunction() {
+            console.log("Executing onTimeOutFunction.");
+            timeSocket.send(JSON.stringify({ order_id: order.id }));
+          }
         };
       });
     }
