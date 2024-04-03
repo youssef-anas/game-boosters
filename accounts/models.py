@@ -99,6 +99,7 @@ class BoosterPercent(models.Model):
     booster_percent2 = models.IntegerField(default=24)
     booster_percent3 = models.IntegerField(default=27)
     booster_percent4 = models.IntegerField(default=30)
+    booster_percent5 = models.IntegerField(default=35)
         
 # Base Order
 class BaseOrder(models.Model):
@@ -184,7 +185,7 @@ class BaseOrder(models.Model):
         current_time = timezone.now()
 
         try:
-            booster_percent = BoosterPercent.objects.get(pk=1)
+            booster_percent = BoosterPercent.objects.all().first()
         except BoosterPercent.DoesNotExist:
             # Handle the case where BoosterPercent with pk=1 doesn't exist
             booster_percent = None
@@ -197,6 +198,7 @@ class BaseOrder(models.Model):
         percent2 = booster_percent.booster_percent2
         percent3 = booster_percent.booster_percent3
         percent4 = booster_percent.booster_percent4
+        percent5 = booster_percent.booster_percent5
 
         time_difference = (current_time - self.created_at).total_seconds() if self.created_at else None
 
@@ -219,8 +221,11 @@ class BaseOrder(models.Model):
             data = {'time': int(900 - time_difference), 'price': self.actual_price, 'progress': 3, 'extra': extra}
         elif time_difference <= 1800:
             self.actual_price = round(self.price * (percent4 / 100), 2)
-            data = {'time': int(1800 - time_difference), 'price': self.actual_price, 'progress': 4, 'extra': 0}
+            next_price = round(self.price * (percent5 / 100), 2)
+            extra = round(next_price - self.actual_price, 2)
+            data = {'time': int(1800 - time_difference), 'price': self.actual_price, 'progress': 4, 'extra': extra}
         else:
+            self.actual_price = round(self.price * (percent5 / 100), 2)
             data = {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
 
         self.save()
