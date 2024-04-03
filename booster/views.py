@@ -8,24 +8,20 @@ from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.views import APIView
-from booster.controller.serializers import RatingSerializer, CanChooseMeSerializer
+from booster.controller.serializers import RatingSerializer, CanChooseMeSerializer, TransactionSerializer
 User = get_user_model()
 from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
-from pubg.models import PubgRank
-from leagueOfLegends.models import LeagueOfLegendsRank
-from tft.models import TFTRank
-from hearthstone.models import  HearthstoneRank
 from django.http import JsonResponse
 from django.db.models import Sum
-import json
 from accounts.models import BaseOrder, Transaction, BoosterPercent
 from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
-from itertools import chain
+from rest_framework.pagination import PageNumberPagination
+from booster.controller.permissions import IsBooster
+
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks
@@ -324,3 +320,16 @@ def update_rating(request, order_id):
         game.save()    
         return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
+
+
+class TransactionListView(APIView):
+    permission_classes = [IsBooster]
+
+    def get(self, request, *args, **kwargs):
+        queryset = Transaction.objects.filter(user=request.user).order_by('-id')
+        paginator = PageNumberPagination()
+        paginator.page_size = 20
+
+        result_page = paginator.paginate_queryset(queryset, request)
+        serializer = TransactionSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)

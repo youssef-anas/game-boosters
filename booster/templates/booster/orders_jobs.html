@@ -197,18 +197,15 @@
 
       seconds--;
       refresher++;
-      console.log(refresher)
       if(refresher%20 === 0){
         onTimeOut(orderId);
         clearTimeout(timeoutId);
       }
 
-      console.log(seconds)
 
       if (seconds >= 0) {
         var timeOut = setTimeout(updateTimerDisplay, 1000);
       } else{
-        console.log("Will Be Add NONE!!!")
         noFinalPrice.classList.add('d-none')
       }
     }
@@ -229,9 +226,7 @@
         const timeSocket = new WebSocket('ws://' + window.location.host + '/ws/price/' + order.id + '/');
         timeSocket.onmessage = function (e) {
           let time_price = JSON.parse(e.data);
-
-          console.log("Champions: ", order.champions)
-
+          console.log(time_price)
           if (time_price.type === 'time_with_price'){
       
             orderContainer.insertAdjacentHTML('beforeend',
@@ -311,7 +306,7 @@
                           <span>Increase in </span>
                           <span id="timer_${order.id}"></span>
                           
-                          <span id="amount_of_increase_${order.id}">+$1.99</span>
+                          <span id="amount_of_increase_${order.id}">+$${time_price.extra}</span>
                         </p>
                       </div>
 
@@ -337,6 +332,10 @@
           if (time_price.type === 'update_price'){
             document.querySelector(`#actual_price_${order.id}`).innerText=
             `${time_price.price}$`
+            
+            document.getElementById(`amount_of_increase_${order.id}`).innerText=
+            `${time_price.extra}$`
+
             console.log('price updated')
           }
           if (time_price.time > 0){

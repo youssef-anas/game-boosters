@@ -63,6 +63,7 @@ class PriceConsumer(WebsocketConsumer):
             'type':'time_with_price',
             'time':details['time'],
             'price':details['price'],
+            'extra':details['extra'],
             
         }))
 
@@ -79,16 +80,19 @@ class PriceConsumer(WebsocketConsumer):
             'type':'update_price',
             'time':details['time'],
             'price':details['price'],
+            'extra':details['extra'],
         }))
 
 
     def update_price(self, event):
         price = event['price']
         time = event['time']
-        print('all work good bro')
+        extra =event['extra'],
+        print(event)
         self.send(text_data=json.dumps({
             'type':'update_price',
             'time':time,
             'price':price,
+            'extra':extra
         }))
         

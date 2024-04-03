@@ -177,46 +177,54 @@ class BaseOrder(models.Model):
     pause = models.BooleanField(default=False, blank=True)
 
     def update_actual_price(self):
-        if self.status == 'Continue':
-            return {'time':-1,'price':self.actual_price,'progress':5}
-        
-        elif self.status == 'Extend':
-            # get the percent of booster that user take old order on it
-            # actual_price will be the old price and new price with percent
-            # we can make this process in order_creator file
-            return {'time':-1,'price':self.actual_price,'progress':5}
-
-
+        """
+        Updates the actual price based on certain conditions and calculates various parameters.
+        Returns a dictionary containing time, price, progress, and extra.
+        """
         current_time = timezone.now()
-        
-        # TODO make this numbers in json file to stop calling db every time
-        percent1 = BoosterPercent.objects.get(pk=1).booster_percent1
-        percent2 = BoosterPercent.objects.get(pk=1).booster_percent2
-        percent3 = BoosterPercent.objects.get(pk=1).booster_percent3
-        percent4 = BoosterPercent.objects.get(pk=1).booster_percent4
-        
 
-        # TODO add turbo_boost here to be the max and ignore it from tasks
-        if not self.created_at:
-            self.actual_price = round(self.price * (percent1 / 100) , 2)
+        try:
+            booster_percent = BoosterPercent.objects.get(pk=1)
+        except BoosterPercent.DoesNotExist:
+            # Handle the case where BoosterPercent with pk=1 doesn't exist
+            booster_percent = None
+
+        if not booster_percent:
+            # Handle the scenario where booster_percent is not available
+            return {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
+
+        percent1 = booster_percent.booster_percent1
+        percent2 = booster_percent.booster_percent2
+        percent3 = booster_percent.booster_percent3
+        percent4 = booster_percent.booster_percent4
+
+        time_difference = (current_time - self.created_at).total_seconds() if self.created_at else None
+
+        if time_difference is None:
+            self.actual_price = round(self.price * (percent1 / 100), 2)
+        elif time_difference <= 60:
+            self.actual_price = round(self.price * (percent1 / 100), 2)
+            next_price = round(self.price * (percent2 / 100), 2)
+            extra = round(next_price - self.actual_price, 2)
+            data = {'time': int(60 - time_difference), 'price': self.actual_price, 'progress': 1, 'extra': extra}
+        elif time_difference <= 180:
+            self.actual_price = round(self.price * (percent2 / 100), 2)
+            next_price = round(self.price * (percent3 / 100), 2)
+            extra = round(next_price - self.actual_price, 2)
+            data = {'time': int(180 - time_difference), 'price': self.actual_price, 'progress': 2, 'extra': extra}
+        elif time_difference <= 900:
+            self.actual_price = round(self.price * (percent3 / 100), 2)
+            next_price = round(self.price * (percent4 / 100), 2)
+            extra = round(next_price - self.actual_price, 2)
+            data = {'time': int(900 - time_difference), 'price': self.actual_price, 'progress': 3, 'extra': extra}
+        elif time_difference <= 1800:
+            self.actual_price = round(self.price * (percent4 / 100), 2)
+            data = {'time': int(1800 - time_difference), 'price': self.actual_price, 'progress': 4, 'extra': 0}
         else:
-            time_difference = (current_time - self.created_at).total_seconds()
-            if time_difference <= 60:
-                self.actual_price = round(self.price * (percent1 / 100), 2)
-                data = {'time':int(60-time_difference),'price':self.actual_price,'progress':1}
-            elif time_difference <= 180:
-                self.actual_price = round(self.price * (percent2 / 100), 2)
-                data = {'time':int(180-time_difference),'price':self.actual_price,'progress':2}
-            elif time_difference <= 900:
-                self.actual_price = round(self.price * (percent3 / 100), 2)
-                data = {'time':int(900-time_difference),'price':self.actual_price,'progress':3}
-            elif time_difference <= 1800 :
-                self.actual_price = round(self.price * (percent4 / 100), 2)
-                data = {'time':int(1800-time_difference),'price':self.actual_price,'progress':4}
-            else:
-                data = {'time':-1,'price':self.actual_price,'progress':5}
-        self.save()        
-        return data    
+            data = {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
+
+        self.save()
+        return data 
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
