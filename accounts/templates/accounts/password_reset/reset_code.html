@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password</title>
+</head>
+<body>
+    <h2>Enter Reset Code</h2>
+    <form action="{% url 'password.check.code' user.id %}" method="post">
+        {% csrf_token %}
+        <label for="reset_code">Reset Code:</label>
+        <input maxlength="5" type="number" id="reset_code" name="reset_code" required>
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

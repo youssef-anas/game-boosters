@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from customer.forms import Registeration
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import timezone
 from django.contrib.auth import login
 from accounts.models import BaseUser, PromoCode
@@ -13,7 +13,8 @@ from rest_framework import status
 from accounts.serializers import PromoCodeSerializer
 from datetime import timedelta
 from django.contrib.auth.views import LoginView, LogoutView
-from gameBoosterss.utils import send_activation_code
+from gameBoosterss.utils import send_activation_code, reset_password
+from accounts.forms import EmailForm, ResetCodeForm, PasswordChangeCustomForm
 
 
 class CustomLoginView(LoginView):
@@ -68,14 +69,64 @@ def activate_account(request, code):
         return HttpResponseBadRequest("Activation time hasn't elapsed yet")
 
     user.is_active = True
+    user.activation_code = None
     user.save()
 
     # Set the backend attribute on the user
     user.backend = 'django.contrib.auth.backends.ModelBackend'
     login(request, user)
+    request.session.pop('email', None)
 
     messages.success(request, 'Your account has been activated successfully')
     return redirect(reverse_lazy('homepage.index'))
+
+
+def reset_password_request(request):
+    if request.method == 'POST':
+        form = EmailForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = get_object_or_404(BaseUser, email=email)
+            reset_password(user)
+            return render(request, 'accounts/password_reset/reset_code.html', {'user': user})
+    else:
+        form = EmailForm()
+    return render(request, 'accounts/password_reset/reset_password.html', {'form': form})
+
+
+def check_reset_code(request, id):
+    user = get_object_or_404(BaseUser, id=id)
+    if request.method == 'POST':
+        form = ResetCodeForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            if user.rest_password_code == form.cleaned_data['reset_code']:
+                user.rest_password_code = None
+                user.save()
+                return redirect(reverse_lazy('password.change', kwargs={'id': user.id}))
+    form = ResetCodeForm()        
+    return render(request, 'accounts/password_reset/reset_code.html', context={'user':user, 'form':form})
+
+
+def change_password_page(request, id):
+    user = get_object_or_404(BaseUser, id=id)
+    
+    if request.method == 'POST':
+        form = PasswordChangeCustomForm(user=user, data=request.POST)
+        if form.is_valid():
+            password = form.cleaned_data['new_password1']
+            user.set_password(password)
+            user.reset_password_code = None
+            user.save()
+            # Set the backend attribute on the user
+            # user.backend = 'django.contrib.auth.backends.ModelBackend'
+            # login(request, user)
+            messages.success(request, 'Password reset successfully.')
+            return redirect(reverse_lazy('account_login'))
+    else:
+        form = PasswordChangeCustomForm(user=user)
+    
+    return render(request, 'accounts/password_reset/change_password.html', {'form': form})
 
 
 class PromoCodeAPIView(APIView):

@@ -17,13 +17,13 @@ class BaseUser(AbstractUser):
     is_admin = models.BooleanField(default= False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    profile_image = models.ImageField(upload_to='accounts/images/', null=True)
+    profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
     is_online = models.BooleanField(default = False)
     last_online = models.DateTimeField(default=timezone.now)
-    activation_code = models.IntegerField(null=True)
-    activation_time = models.DateTimeField(null=True)
-    rest_password_code = models.IntegerField(null=True)
-    rest_password_time = models.DateTimeField(null=True)
+    activation_code = models.IntegerField(null=True,blank=True)
+    activation_time = models.DateTimeField(null=True,blank=True)
+    rest_password_code = models.IntegerField(null=True,blank=True)
+    rest_password_time = models.DateTimeField(null=True, blank=True)
 
     def get_image_url(self):
         if self.profile_image:

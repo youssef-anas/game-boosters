@@ -265,7 +265,7 @@ def send_activation_code(user) -> int:
     users_list = [user.email]
     secret_key = generate_random_5_digit_number()
 
-    html_content = render_to_string('chat/activation_email.html', {'secret_key': secret_key, 'user':user})
+    html_content = render_to_string('accounts/activation_email.html', {'secret_key': secret_key, 'user':user})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
@@ -276,6 +276,23 @@ def send_activation_code(user) -> int:
     user.activation_time = timezone.now()
     user.save()
     return secret_key
+
+def reset_password(user) -> int:
+    subject = 'Password Reset'
+    users_list = [user.email]
+    secret_key = generate_random_5_digit_number()
+
+    html_content = render_to_string('accounts/password_reset/reset_password_form.html', {'secret_key': secret_key, 'user': user})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    user.rest_password_code = secret_key
+    user.reset_password_time = timezone.now()
+    user.save()
+    return secret_key
+
 
 def send_change_data_msg(message):
 
