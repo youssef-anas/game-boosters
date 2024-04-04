@@ -214,7 +214,7 @@ class CanChooseMe(APIView):
     
 @login_required
 def booster_history(request):
-    history = Transaction.objects.filter(user=request.user)
+    history = Transaction.objects.filter(user=request.user).order_by('-id')
     return render(request, 'booster/booster_histoty.html', context={'history' : history})
 
 # def confirm_details(request):
@@ -303,12 +303,12 @@ def update_rating(request, order_id):
         
         reached_division = request.POST.get('reached_division', 1)
         reached_marks = request.POST.get('reached_marks', 0)
-
-        if base_order.game.id == 6:
+        
+        if base_order.game.pk == 6:
             reached_rank_id = wow_ranks(reached_division)[1]
-        if base_order.game.id == 10:
+        elif base_order.game.pk == 10:
             reached_rank_id = dota2_ranks(reached_division)[1]
-        if base_order.game.id == 13 and base_order.game_type == 'A':
+        elif base_order.game.pk == 13 and base_order.game_type == 'A':
             reached_rank_id = csgo2_ranks(reached_division)[1]
         else:
             reached_rank_id = request.POST.get('reached_rank')

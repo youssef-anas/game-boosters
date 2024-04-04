@@ -253,7 +253,8 @@ class BaseOrder(models.Model):
                     amount=round(self.money_owed, 3),
                     order=self,
                     status='Drop',  
-                    type='DEPOSIT'
+                    type='DEPOSIT',
+                    notice=f'{self.details} - {self.game.name}'
                 )
 
             else :
@@ -262,7 +263,28 @@ class BaseOrder(models.Model):
                     amount=round(self.money_owed, 3),
                     order=self,
                     status='Done',  
-                    type='DEPOSIT'
+                    type='DEPOSIT',
+                    notice=f'{self.details} - {self.game.name}'
+                )
+        
+        elif (self.is_done or self.is_drop) and not self.is_extended and self.booster and (self.game_type != 'D' or self.game_type != 'A'):
+            try:
+                booster_wallet = self.booster.wallet
+                booster_wallet.money += self.actual_price
+                booster_wallet.save()
+            except:
+                Wallet.objects.create (
+                    user=self.booster,
+                    money=round(self.actual_price, 3)
+                )
+            
+            Transaction.objects.create (
+                    user=self.booster,
+                    amount=round(self.actual_price, 3),
+                    order=self,
+                    status='Done',  
+                    type='DEPOSIT',
+                    notice=f'{self.details} - {self.game.name}'
                 )
 
     def customer_wallet(self):        
@@ -287,7 +309,8 @@ class BaseOrder(models.Model):
                 amount=round(self.price, 3),
                 order=self,
                 status='New',  
-                type='WITHDRAWAL'
+                type='WITHDRAWAL',
+                notice=f'{self.details} - {self.game.name}'
             )
 
     def __str__(self):

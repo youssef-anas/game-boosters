@@ -3,7 +3,7 @@
   padding: 30px;
   background-color: #433733; /* Fallback solid background color */
   margin-bottom: 3rem;
-  min-height: 368px;
+  min-height: 350px;
 }
 @media (max-width: 1199px) {
   .placements-boost #pervious, .placements-boost #matches-amount {

@@ -101,9 +101,10 @@ def pay_with_paypal(request):
         serializer = PlacementSerializer(data=request.POST)
 
       if serializer.is_valid():
-        extend_order_id = serializer.validated_data['extend_order']
+        extend_order_id = 0
         # Division
         if request.POST.get('game_type') == 'D':
+          extend_order_id = serializer.validated_data['extend_order']
           order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         # Placement
         elif request.POST.get('game_type') == 'P':
