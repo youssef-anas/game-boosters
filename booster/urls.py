@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from booster.views import *
 from django.contrib.auth.decorators import user_passes_test
+from django.views.generic import RedirectView
 
 def is_booster(user):
     return user.is_authenticated and user.is_booster
@@ -24,4 +25,9 @@ urlpatterns = [
 
     path('transactions/',TransactionListView.as_view(),name='booster.transaction'),
 
+    path('work-with-us/', RedirectView.as_view(url='/booster/work-with-us/one-of-three/')),
+    path('work-with-us/one-of-three/',work_with_us_level1_view,name='workwithus.level1'),
+    path('work-with-us/two-of-three/',work_with_us_level2_view,name='workwithus.level2'),
+    path('work-with-us/three-of-three/',work_with_us_level3_view,name='workwithus.level3'),
+    path('work-with-us/accepted-data/',work_with_us_accepted_data,name='workwithus.accepted-data'),
 ]
