@@ -114,9 +114,7 @@ ul {
   flex: 1;
 }
 .nav .nav-row {
-  width: 100vw !important; 
-  padding-right: 0.75rem !important;
-  padding-left: 0.75rem !important;
+  width: 100vw !important;
 }
 @media (min-width: 768px) {
   .nav .nav-row {

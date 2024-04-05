@@ -1,0 +1,206 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{% static 'booster/css/boosters.css' %}">
+{% endblock %}
+{% block container %}
+<div class="boosters-container">
+  <div class="boosters-landing">
+
+    <div class="heading">
+      <h1>Boosters</h1>
+      <p>Take a look and get to know our boosters first hand</p>
+    </div>
+  </div>
+
+  <div class="boosters container">
+    <div class="search-and-filter mb-4 pb-2">
+      <p>Select Game</p>
+
+      <div class="d-flex flex-md-row flex-column">
+
+        <div class="select-container" style="width: 380px !important;">
+          <select required name="selectGame" id="selectGame">
+            <option value=1>Lol: Wild Rift</option>
+            <option value=2>VALORANT</option>
+            <option value=3>Pubg Mobile</option>
+            <option value=4>League of Legends</option>
+            <option value=5>Team Fight Tactics</option>
+            <option value=6>World of Warcraft</option>
+            <option value=7>Hearthstone</option>
+            <option value=8>Mobile Legends</option>
+            <option value=9>Rocket League</option>
+            <option value=10>Dota 2</option>
+            <option value=11>Honer Of King</option>
+            <option value=12>Overwatch 2</option>
+            <option value=13>CS GO 2</option>
+          </select>
+        </div>
+
+        <div>
+          <div class="search ms-md-4 ms-0 mt-md-0 mt-4" style="width: 380px !important;">
+            <i class="search-icon fa-solid fa-magnifying-glass"></i>
+            <input type="search" class="search-input" placeholder="Search Booster">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-between" id="boostersList">
+      {% for booster in boosters %}
+        <div class="booster mb-5 p-0">
+
+          <div class="banner">
+            <img src="{{booster.get_image_url}}" alt="{{booster.username}}" class="img-fluid">
+          </div>
+
+          <div class="booster-data px-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="mb-0">{{booster.username}}</h3>
+              <p class="fw-bold mb-0">
+                <img src="/media/{{booster.achived_rank_image}}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
+                {{booster.achived_rank_name}}
+              </p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <p class="mb-0">Languages:</p>
+              <p class="language mb-0">Eng</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <p class="mb-0">Completed boosts:</p>
+              <p class="mb-0">{{booster.order_count}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <p class="mb-0">Last Boost:</p>
+              <p class="mb-0">{{booster.last_boost|custom_timesince}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <p class="mb-0">On MadBoost:</p>
+              <p class="mb-0">{{booster.created_at|format_date}}</p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <p class="mb-0">Rating:</p>
+              <p class="mb-0">
+                {% for star in "*****" %}
+                  {% if forloop.counter <= booster.average_rating %}
+                    <i class="fa-solid fa-star" style="color: #FFD700;"></i>
+                  {% else %}
+                    <i class="fa-regular fa-star" style="color: #808080;"></i>
+                  {% endif %}
+                {% endfor %}
+                <span class="ms-1"></span>{{booster.average_rating}}
+              </p>
+            </div>
+
+            <a href="{% url 'booster.details' booster_id=booster.id %}" class="btn custom-btn filled">See Profile</a>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  $(document).ready(function(){
+    function generateStarRating(averageRating) {
+      let starsHtml = '';
+      const maxRating = 5;
+
+      for (let i = 1; i <= maxRating; i++) {
+        if (i <= averageRating) {
+          starsHtml += '<i class="fa-solid fa-star" style="color: #FFD700;"></i>';
+        } else {
+          starsHtml += '<i class="fa-regular fa-star" style="color: #808080;"></i>';
+        }
+      }
+
+      return starsHtml;
+    }
+    $('#selectGame').change(function(){
+      var selectedGameId = $(this).val();
+      $.ajax({
+        url: "{% url 'booster.boosters' %}",
+        method: 'POST',
+        headers: {'X-CSRFToken': '{{ csrf_token }}'},
+        data: {'game_id': parseInt(selectedGameId)},
+        dataType: 'json',
+        success: function(response){
+          // Handle successful response
+          let boosters = response.boosters;
+          console.log("boosters: ", boosters)
+          $('#boostersList').empty();
+          $.each(boosters, function(index, booster){
+            const starRatingHtml = generateStarRating(booster.average_rating);
+            $('#boostersList').append(`
+            <div class="booster mb-5 p-0">
+  
+              <div class="banner">
+                <img src="${booster.profile_image}" alt="${booster.username}" class="img-fluid">
+              </div>
+  
+              <div class="booster-data px-4">
+  
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h3 class="mb-0">${booster.username}</h3>
+                  <p class="fw-bold mb-0">
+                    <img src="/media/${booster.achived_rank_image}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
+                    ${booster.achived_rank_name}
+                  </p>
+                </div>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <p class="mb-0">Languages:</p>
+                  <p class="language mb-0">Eng</p>
+                </div>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <p class="mb-0">Completed boosts:</p>
+                  <p class="mb-0">${booster.order_count}</p>
+                </div>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <p class="mb-0">Last Boost:</p>
+                  <p class="mb-0">${booster.last_boost}</p>
+                </div>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <p class="mb-0">On MadBoost:</p>
+                  <p class="mb-0">${booster.on_madboost}</p>
+                </div>
+  
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <p class="mb-0">Rating:</p>
+                  <p class="mb-0">
+                    
+                    ${starRatingHtml}
+                    <span class="ms-1"></span>${booster.average_rating}
+                  </p>
+                </div>
+  
+                <a href="${booster.id}/" class="btn custom-btn filled">See Profile</a>
+  
+              </div>
+            </div>
+            `);  
+          });
+        },
+        error: function(xhr, errmsg, err){
+          // Handle error response
+          console.log(xhr.status + ": " + xhr.responseText);
+        }
+      });
+    });
+  });
+  </script>
+{% endblock %}

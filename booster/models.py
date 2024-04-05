@@ -41,34 +41,46 @@ class Booster(models.Model):
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
-    is_wf_player = models.BooleanField(default=False)
-    is_valo_player = models.BooleanField(default=False)
-    is_pubg_player = models.BooleanField(default=False)
-    is_lol_player = models.BooleanField(default=False)
-    is_tft_player = models.BooleanField(default=False)
-    is_hearthstone_player = models.BooleanField(default=False)
-    is_rl_player = models.BooleanField(default=False)
-    is_mobleg_player = models.BooleanField(default=False)
-    is_wow_player = models.BooleanField(default=False)
-    is_overwatch2_player = models.BooleanField(default=False)
-    is_dota2_player = models.BooleanField(default=False)
-    is_hok_player = models.BooleanField(default=False)
-    is_csgo2_player = models.BooleanField(default=False)
 
+    is_wr_player = models.BooleanField(default=False)
     achived_rank_wr = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank')
+
+    is_valo_player = models.BooleanField(default=False)
     achived_rank_valo = models.ForeignKey(ValorantRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank')
+
+    is_pubg_player = models.BooleanField(default=False)
     achived_rank_pubg = models.ForeignKey(PubgRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank')
+
+    is_lol_player = models.BooleanField(default=False)
     achived_rank_lol = models.ForeignKey(LeagueOfLegendsRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='lol_rank')
+
+    is_tft_player = models.BooleanField(default=False)
     achived_rank_tft = models.ForeignKey(TFTRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='tft_rank')
-    achived_rank_hearthstone = models.ForeignKey(HearthstoneRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='hearthstone_rank')
-    achived_rank_rl= models.ForeignKey(RocketLeagueRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='rl_rank')
-    achived_rank_mobleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
+
+    is_wow_player = models.BooleanField(default=False)
     achived_rank_wow = models.ForeignKey(WorldOfWarcraftRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank')
-    achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
+
+    is_hearthstone_player = models.BooleanField(default=False)
+    achived_rank_hearthstone = models.ForeignKey(HearthstoneRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='hearthstone_rank')
+
+    is_mobleg_player = models.BooleanField(default=False)
+    achived_rank_mobleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
+
+    is_rl_player = models.BooleanField(default=False)
+    achived_rank_rl= models.ForeignKey(RocketLeagueRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='rl_rank')
+
+    is_dota2_player = models.BooleanField(default=False)
     achived_rank_dota2 = models.ForeignKey(Dota2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')
-    achived_rank_csgo2 = models.ForeignKey(Csgo2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
+
+    is_hok_player = models.BooleanField(default=False)
     achived_rank_hok = models.ForeignKey(HonorOfKingsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='hok_rank')
 
+    is_overwatch2_player = models.BooleanField(default=False)
+    achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
+
+    is_csgo2_player = models.BooleanField(default=False)
+    achived_rank_csgo2 = models.ForeignKey(Csgo2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
+       
 
     # @property
     # def average_rating(self):

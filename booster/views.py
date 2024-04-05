@@ -21,10 +21,13 @@ from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from rest_framework.pagination import PageNumberPagination
 from booster.controller.permissions import IsBooster
-
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
-from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks
+from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField, Max, F
+from django.db.models.functions import Coalesce
+from django.forms.models import model_to_dict
+from .models import Booster
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -99,7 +102,84 @@ def calm_order(request, game_name, id):
     refresh_order_page()
     return redirect(reverse_lazy('booster.orders'))
 
-def profile_booster_view(request, booster_id):
+# All Boosters
+def boosters(request):
+    def get_booster_info(game_id):
+        game_fields_map = {
+            1: ('is_wr_player', 'achived_rank_wr'),
+            2: ('is_valo_player', 'achived_rank_valo'),
+            3: ('is_pubg_player', 'achived_rank_pubg'),
+            4: ('is_lol_player', 'achived_rank_lol'),
+            5: ('is_tft_player', 'achived_rank_tft'),
+            6: ('is_wow_player', 'achived_rank_wow'),
+            7: ('is_hearthstone_player', 'achived_rank_hearthstone'),
+            8: ('is_mobleg_player', 'achived_rank_mobleg'),
+            9: ('is_rl_player', 'achived_rank_rl'),
+            10: ('is_dota2_player', 'achived_rank_dota2'),
+            11: ('is_hok_player', 'achived_rank_hok'),
+            12: ('is_overwatch2_player', 'achived_rank_overwatch2'),
+            13: ('is_csgo2_player', 'achived_rank_csgo2'),
+        }
+
+        return game_fields_map.get(game_id)
+
+    if request.method == 'POST':
+        game_id = request.POST.get('game_id', 1)
+        game_id = int(game_id)
+    else:
+        game_id = 1 
+
+    game_pk_condition = Case(
+        When(booster_division__game__pk=game_id , booster_division__is_done=True, then=1),
+        default=0,
+        output_field=IntegerField()
+    )
+
+    is_player_field, rank_field = get_booster_info(game_id)
+    query_kwargs = {
+        'is_booster': True,
+        'booster__can_choose_me': True,
+        f'booster__{is_player_field}': True,
+    }
+    boosters = User.objects.filter(**query_kwargs).annotate(
+        achived_rank_name=F(f'booster__{rank_field}__rank_name'),
+        achived_rank_image=F(f'booster__{rank_field}__rank_image'),
+        average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+        order_count=Sum(game_pk_condition),
+        last_boost=Max('booster_division__created_at'),
+    ).order_by('id')
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        boosters_with_additional_data = []
+        for booster in boosters:
+            profile_image_url = booster.profile_image.url if booster.profile_image else None
+            achived_rank_image_url = booster.achived_rank_image if booster.achived_rank_image else None
+            data = {
+                "id": booster.pk,
+                "username": booster.username,
+                "first_name": booster.first_name,
+                "last_name": booster.last_name,
+                "profile_image": profile_image_url,
+                "achived_rank_name": booster.achived_rank_name,
+                "achived_rank_image": achived_rank_image_url,
+                "order_count": booster.order_count,
+                "average_rating": booster.average_rating,
+
+                'languages': ['En', 'Ar'], # TODO , I Want Get Language From DataBase
+                'last_boost': custom_timesince(booster.last_boost),
+                'on_madboost': format_date(booster.created_at),
+            }
+            boosters_with_additional_data.append(data)
+        return JsonResponse({'boosters': boosters_with_additional_data})
+
+    else:
+        context = {
+            "boosters": boosters,
+        }
+        return render(request, 'booster/boosters.html', context)
+
+
+def booster_details(request, booster_id):
     booster = get_object_or_404(User, id=booster_id,is_booster = True)
     ratings = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
     total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']

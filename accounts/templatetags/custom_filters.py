@@ -33,24 +33,7 @@ def server_name(value):
     return 'Oceania'
   else:
     return value
-  
-@register.filter(name='format_time_difference')
-def format_time_difference(updated_at):
-  now = timezone.now()
-  time_difference = now - updated_at
 
-  days = time_difference.days
-  months = days // 30
-  years = days // 365
-
-  if years >= 1:
-    return f'{years} {"year" if years == 1 else "years"}'
-  elif months >= 1:
-    return f'{months} {"month" if months == 1 else "months"}'
-  elif days >= 1:
-    return f'{days} {"day" if days == 1 else "days"}'
-  else:
-    return 'today'
   
 @register.filter(name='romanize_division_original')
 def romanize_division_original(value):
@@ -158,7 +141,24 @@ def csgo2_ranks(value):
     return ['red', 6]
   else:
     return value
+  
+@register.filter(name='format_time_difference')
+def format_time_difference(updated_at):
+  now = timezone.now()
+  time_difference = now - updated_at
 
+  days = time_difference.days
+  months = days // 30
+  years = days // 365
+
+  if years >= 1:
+    return f'{years} {"year" if years == 1 else "years"}'
+  elif months >= 1:
+    return f'{months} {"month" if months == 1 else "months"}'
+  elif days >= 1:
+    return f'{days} {"day" if days == 1 else "days"}'
+  else:
+    return 'today'
 
 #Custom Filter To Time 
 @register.filter(name='custom_timesince')
@@ -187,7 +187,6 @@ def custom_timesince(value):
     years = int(delta.total_seconds() // 31536000)  # 365 days per year
     return '{} year{} ago'.format(years, '' if years == 1 else 's')
   
-
 
 @register.filter
 def format_date(created_on):

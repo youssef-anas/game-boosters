@@ -9,7 +9,8 @@ def is_booster(user):
 urlpatterns = [
     path('register/',register_booster_view,name='booster.register'),
     path('edit_profile/', edit_booster_profile, name='edit.booster.profile'),
-    path('profile/<booster_id>/',profile_booster_view,name='booster.profile'),
+    path('boosters/', boosters, name='booster.boosters'),
+    path('boosters/<booster_id>/',booster_details,name='booster.details'),
     path('rate/<int:order_id>/',get_rate,name='booster.rate'), # form to get rate if order done
     path('rating/<int:order_id>/', rate_page, name='rate.page'), # test page , only for test
     path('orders/', user_passes_test(is_booster)(booster_orders), name='booster.orders'),
@@ -21,7 +22,6 @@ urlpatterns = [
     path('upload-image/',upload_finish_image,name='order.upload.image'),
     path('drop-order/<int:order_id>',drop_order,name='drop.order'),
     path('update-rating/<int:order_id>',update_rating,name='order.update.rating'),
-
     path('transactions/',TransactionListView.as_view(),name='booster.transaction'),
 
 ]
