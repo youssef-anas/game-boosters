@@ -3,7 +3,7 @@ from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEdi
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from booster.models import OrderRating
+from booster.models import OrderRating, Photo
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -26,8 +26,7 @@ from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField, Max, F
 from django.db.models.functions import Coalesce
-from django.forms.models import model_to_dict
-from .models import Booster
+from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsForm
 
 def register_booster_view(request):
     form = Registeration_Booster()
@@ -413,3 +412,99 @@ class TransactionListView(APIView):
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = TransactionSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+
+def work_with_us_level1_view(request):
+    id = request.session.get('accepted_data_id')
+    if id:
+        return redirect(reverse('workwithus.accepted-data')) 
+    if request.method == 'POST':
+        form = WorkWithUsLevel1Form(request.POST)
+        if form.is_valid():
+            request.session['level'] = '2'
+            request.session.pop('level', None)
+            fields = ['nickname', 'email', 'discord_id', 'languages']
+            for field in fields:
+                request.session[field] = form.cleaned_data[field]
+            return redirect(reverse_lazy('workwithus.level2'))  
+    else:
+        form = WorkWithUsLevel1Form()
+    return render(request, 'booster/work_with_us/workwithus_lvl1.html', {'form': form})
+
+def work_with_us_level2_view(request):
+    id = request.session.get('accepted_data_id')
+    if id:
+        return redirect(reverse('workwithus.accepted-data')) 
+    if request.method == 'POST':
+        form = WorkWithUsLevel2Form(request.POST)
+        if form.is_valid():
+            request.session['level'] = '3'
+            request.session.pop('level', None)
+            fields = ['rank', 'server']
+            for field in fields:
+                request.session[field] = form.cleaned_data[field]
+            
+            # Store primary keys of selected games in session
+            games_pk = list(form.cleaned_data['game'].values_list('pk', flat=True))
+            request.session['games_pk'] = games_pk
+            
+            return redirect(reverse_lazy('workwithus.level3'))  
+    else:
+        form = WorkWithUsLevel2Form()
+    return render(request, 'booster/work_with_us/workwithus_lvl2.html', {'form': form})
+
+def work_with_us_level3_view(request):
+    id = request.session.get('accepted_data_id')
+    if id:
+        return redirect(reverse('workwithus.accepted-data')) 
+    level = request.session.get('level')
+    if request.method == 'POST':
+        form = WorkWithUsLevel3Form(request.POST, request.FILES)
+        nickname = request.session.pop('nickname', None)
+        email = request.session.pop('email', None)
+        discord_id = request.session.pop('discord_id', None)
+        languages = request.session.pop('languages', None)
+        rank = request.session.pop('rank', None)
+        server = request.session.pop('server', None)
+        games_pk = request.session.pop('games_pk', None)
+        request.session.pop('level', None)
+        if form.is_valid():
+            form_data = {
+                'nickname': nickname,
+                'email': email,
+                'discord_id': discord_id,
+                'languages': languages,
+                'rank': rank,
+                'server': server,
+                'game': games_pk,
+            }
+            obj = WorkWithUsForm(form_data)
+            if obj.is_valid():
+                data = obj.create()
+                image = form.cleaned_data["image"]
+                image2 = form.cleaned_data["image2"]
+                image3 =  form.cleaned_data["image3"]
+                if image:
+                    Photo.objects.create(booster=data, image=image)
+                if image2:
+                    Photo.objects.create(booster=data, image=image2)
+                if image3:
+                    Photo.objects.create(booster=data, image=image3)
+                request.session.pop('level', None)
+                request.session['accepted_data_id'] = f'{data.id}'
+                return redirect(reverse('workwithus.accepted-data'))  
+            
+        for field, errors in obj.errors.items():
+            for error in errors:
+                print(f"{field}: {error}")  
+        return HttpResponse("form not valied")    
+    else:
+        form = WorkWithUsLevel3Form()
+        return render(request, 'booster/work_with_us/workwithus_lvl3.html', {'form': form})
+    
+
+def work_with_us_accepted_data(request):
+    id = request.session.get('accepted_data_id')
+    if not id :
+        return redirect(reverse('homepage.index'))
+    return render(request, 'booster/work_with_us/accepted_data.html', context={'id':id})  

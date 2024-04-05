@@ -13,6 +13,7 @@ from overwatch2.models import Overwatch2Rank
 from dota2.models import Dota2Rank
 from csgo2.models import Csgo2Rank
 from honorOfKings.models import HonorOfKingsRank
+from games.models import Game
 
 class OrderRating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -110,3 +111,21 @@ class Booster(models.Model):
         self.booster.is_booster = True
         self.booster.save()
         super().save(*args, **kwargs)
+
+
+class WorkWithUs(models.Model):
+    nickname        = models.CharField(max_length=30)
+    email           = models.EmailField()
+    discord_id      = models.CharField(max_length=100)
+    languages       = models.CharField(max_length=100)
+    game            = models.ManyToManyField(Game)
+    rank            = models.CharField(max_length=100)
+    server          = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.nickname
+
+
+class Photo(models.Model):
+    booster         = models.ForeignKey(WorkWithUs, related_name='photos', on_delete=models.CASCADE)
+    image           = models.ImageField(upload_to='photos/')
