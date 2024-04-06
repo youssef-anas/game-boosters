@@ -1,11 +1,12 @@
 from django.contrib import admin
-from booster.models import OrderRating, Booster, WorkWithUs, Photo
+from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio
 from django.utils.safestring import mark_safe
 
 
 admin.site.register(OrderRating)
 admin.site.register(Booster)
 admin.site.register(Photo)
+admin.site.register(BoosterPortfolio)
 
 class PhotoInline(admin.TabularInline):
     model = Photo

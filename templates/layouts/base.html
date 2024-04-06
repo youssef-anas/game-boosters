@@ -51,7 +51,7 @@
                     </li>
       
                     <li>
-                      <a href="" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
+                      <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                     </li>
 
                     <li>
@@ -141,7 +141,7 @@
                       </li>
         
                       <li>
-                        <a href="" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
+                        <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                       </li>
 
                       <li>

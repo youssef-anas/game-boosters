@@ -179,21 +179,32 @@ def boosters(request):
 
 
 def booster_details(request, booster_id):
-    booster = get_object_or_404(User, id=booster_id,is_booster = True)
-    ratings = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
-    total_ratings = ratings.aggregate(Sum('rate'))['rate__sum']
-    rate_count = ratings.count()
-    customer_reviews = total_ratings / rate_count if rate_count > 0 else 0
-    completed_orders = BaseOrder.objects.filter(is_done = True, booster=booster)
-    completed_boosts_count = completed_orders.count()
+    game_pk_condition = Case(
+        When(booster_division__is_done=True, then=1),
+        default=0,
+        output_field=IntegerField()
+    )
+
+    # Get the queryset of User objects and annotate fields
+    booster_queryset = User.objects.filter(
+        pk=booster_id,
+        is_booster=True
+    ).annotate(
+        average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
+        orders_count=Sum(game_pk_condition),
+        last_boost=Max('booster_division__created_at'),
+    ).order_by('id')
+
+    # Get the specific User object from the queryset or return a 404 error if not found
+    booster = get_object_or_404(booster_queryset)
+    
+    feedbacks = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
+
     context = {
-        "ratings":ratings,
-        'booster':booster,
-        'completed_boosts_count':completed_boosts_count,
-        'customer_reviews':customer_reviews,
-        'completed_orders':completed_orders,
-        }
-    return render(request, 'booster/booster_profile.html', context)
+        "feedbacks": feedbacks,
+        'booster': booster,
+    }
+    return render(request, 'booster/booster_details.html', context)
 
 @login_required
 def get_rate(request, order_id):

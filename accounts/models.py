@@ -11,17 +11,22 @@ from games.models import Game
 
 
 class BaseUser(AbstractUser):
+    profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
     country = CountryField(blank=True,null=True)
+
     is_booster = models.BooleanField(default= False)
     is_customer = models.BooleanField(default= False)
     is_admin = models.BooleanField(default= False)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
+    
     is_online = models.BooleanField(default = False)
     last_online = models.DateTimeField(default=timezone.now)
+
     activation_code = models.IntegerField(null=True,blank=True)
     activation_time = models.DateTimeField(null=True,blank=True)
+
     rest_password_code = models.IntegerField(null=True,blank=True)
     rest_password_time = models.DateTimeField(null=True, blank=True)
 

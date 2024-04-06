@@ -93,6 +93,10 @@ ul {
     max-width: 1440px !important;
   }
 }
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
 /* End Global Rule */
 
 /* Start Nav */

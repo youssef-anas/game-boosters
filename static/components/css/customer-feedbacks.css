@@ -18,12 +18,12 @@
 .feedbacks .feedback {
   background-color: var(--main-color);
   border-radius: calc(var(--main-radius) * 2);
-  height: 260px;
+  height: 230px;
   overflow: hidden;
 }
 @media (max-width: 992px) {
   .feedbacks .feedback {
-    height: 240px;
+    height: 230px;
   }
 }
 .feedback .customer-image img {

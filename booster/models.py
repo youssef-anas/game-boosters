@@ -14,6 +14,7 @@ from dota2.models import Dota2Rank
 from csgo2.models import Csgo2Rank
 from honorOfKings.models import HonorOfKingsRank
 from games.models import Game
+from django.contrib.postgres.fields import ArrayField
 
 class OrderRating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -35,12 +36,17 @@ class OrderRating(models.Model):
     def __str__(self):
         return f'{self.customer.username} rated {self.booster.username} with {self.rate}'
     
-
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
-    image = models.ImageField(null=True,upload_to='media/booster/', blank= True)
+
+    profile_image = models.ImageField(null=True,upload_to='media/booster/', blank= True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)
+
+    languages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    games = models.ManyToManyField(Game, related_name='games')
+
+    discord_id = models.CharField(max_length=300, default="", blank=True, null=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
 
     is_wr_player = models.BooleanField(default=False)
@@ -82,29 +88,15 @@ class Booster(models.Model):
     is_csgo2_player = models.BooleanField(default=False)
     achived_rank_csgo2 = models.ForeignKey(Csgo2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
        
-
-    # @property
-    # def average_rating(self):
-    #     ratings = self.ratings_received.all()
-    #     if ratings:
-    #         total_ratings = sum(rating.rate for rating in ratings)
-    #         return total_ratings / len(ratings)
-    #     return 0  # Default value if no ratings exist
-
-    # @property
-    # def order_count(self):
-    #     return self.booster_division.count()
-
-    # def filtered_order_count(self, **filters):
-    #     return self.booster_division.filter(**filters).count()
-    
-    
-    # achived_rank_dota2= models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')
-    # achived_rank_hok = models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='hok_rank')
-    # achived_rank_csgo2 = models.ForeignKey(, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
     
     def __str__(self):
         return f'{self.booster.username}'
+    
+    def get_languages_as_list(self):
+        return self.languages.split(',')
+
+    def set_languages_from_list(self, text_list):
+        self.languages = ','.join(text_list)
     
     def save(self, *args, **kwargs):
         # When saving a Booster instance, set is_booster to True for the associated BaseUser
@@ -112,14 +104,24 @@ class Booster(models.Model):
         self.booster.save()
         super().save(*args, **kwargs)
 
+    
+class BoosterPortfolio(models.Model):
+    booster         = models.ForeignKey(Booster, related_name='booster_portfolio', on_delete=models.CASCADE)
+    image           = models.ImageField(upload_to='booster/images')
+
+    def get_image_url(self):
+        return f"/media/{self.image}"
+    
+    def __str__(self):
+        return f'Portfolio of {self.booster.booster.username}'
 
 class WorkWithUs(models.Model):
     nickname        = models.CharField(max_length=30)
     email           = models.EmailField()
     discord_id      = models.CharField(max_length=100)
-    languages       = models.CharField(max_length=100)
+    languages       = models.CharField(max_length=300)
     game            = models.ManyToManyField(Game)
-    rank            = models.CharField(max_length=100)
+    rank            = models.CharField(max_length=300)
     server          = models.CharField(max_length=100)
 
     def __str__(self):
@@ -128,4 +130,4 @@ class WorkWithUs(models.Model):
 
 class Photo(models.Model):
     booster         = models.ForeignKey(WorkWithUs, related_name='photos', on_delete=models.CASCADE)
-    image           = models.ImageField(upload_to='photos/')
+    image           = models.ImageField(upload_to='booster/images')
