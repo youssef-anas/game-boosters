@@ -49,7 +49,7 @@ class RankSerializer(serializers.Serializer):
         select_booster = attrs.get('select_booster', None)
         if choose_booster > 0 and select_booster:
             try :
-                Booster.objects.get(booster_id = choose_booster, is_wf_player= True, can_choose_me= True)
+                Booster.objects.get(booster_id = choose_booster, is_wr_player= True, can_choose_me= True)
             except Booster.DoesNotExist:
                 raise serializers.ValidationError("This Booster is not belong to Wild Rift.")
             
@@ -107,7 +107,7 @@ class PlacementSerializer(serializers.Serializer):
         select_booster = attrs.get('select_booster', None)
         if choose_booster > 0 and select_booster:
             try :
-                Booster.objects.get(booster_id = choose_booster, is_wf_player= True, can_choose_me= True)
+                Booster.objects.get(booster_id = choose_booster, is_wr_player= True, can_choose_me= True)
             except Booster.DoesNotExist:
                 raise serializers.ValidationError("This Booster is not belong to Wild Rift.")
             

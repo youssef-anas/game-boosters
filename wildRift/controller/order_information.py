@@ -103,7 +103,7 @@ def get_order_result_by_rank(data,extend_order_id):
 
     booster_id = data['choose_booster']
     if booster_id > 0 :
-        get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_wf_player=True) # TODO add is_wr_player here pls 
+        get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_wr_player=True) # TODO add is_wr_player here pls 
     else:
         booster_id = 0
     #####################################

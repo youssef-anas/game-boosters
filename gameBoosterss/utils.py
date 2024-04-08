@@ -183,7 +183,7 @@ def get_game(id, type) -> Model:
 
 def get_boosters(id: int) -> List[Booster]:
     filter_conditions = {
-    1: {'can_choose_me': True, 'is_wf_player': True},
+    1: {'can_choose_me': True, 'is_wr_player': True},
     2: {'can_choose_me': True, 'is_valo_player': True},
     3: {'can_choose_me': True, 'is_pubg_player': True},
     4: {'can_choose_me': True, 'is_lol_player': True},
