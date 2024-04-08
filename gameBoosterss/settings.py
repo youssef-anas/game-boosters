@@ -81,7 +81,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'django_q',
-    'modeltranslation',
+    # 'modeltranslation',
     # 'oauth2_provider',
     'allauth',
     'allauth.account',
