@@ -1,6 +1,6 @@
 /*=============== SWIPER JS ===============*/
 let gamesSwiperCards = new Swiper('.games-swiper', {
-  loop: true,
+  // loop: true,
   spaceBetween: 32,
   grabCursor: true,
 

@@ -47,17 +47,16 @@ def honerOfKingeGetBoosterByRank(request):
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 11)
   game_pk_condition = Case(
-        When(booster_division__game__pk=11, then=1),
+    When(booster_orders__game__pk=11, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
     output_field=IntegerField()
-    )
+  )
     
   boosters = BaseUser.objects.filter(
       is_booster = True,
       booster__is_hok_player=True,
       booster__can_choose_me=True
       ).annotate(
-      average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
       order_count=Sum(game_pk_condition)
       ).order_by('id')
   

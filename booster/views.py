@@ -24,7 +24,7 @@ from booster.controller.permissions import IsBooster
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
-from django.db.models import Avg, Sum, Case, When, Value, IntegerField, Max, F
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField, Max, F, Count
 from django.db.models.functions import Coalesce
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsForm
 
@@ -129,7 +129,7 @@ def boosters(request):
         game_id = 1 
 
     game_pk_condition = Case(
-        When(booster_division__game__pk=game_id , booster_division__is_done=True, then=1),
+        When(booster_orders__game__pk=game_id , booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
         default=0,
         output_field=IntegerField()
     )
@@ -143,9 +143,8 @@ def boosters(request):
     boosters = User.objects.filter(**query_kwargs).annotate(
         achived_rank_name=F(f'booster__{rank_field}__rank_name'),
         achived_rank_image=F(f'booster__{rank_field}__rank_image'),
-        average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
         order_count=Sum(game_pk_condition),
-        last_boost=Max('booster_division__created_at'),
+        last_boost=Max('booster_orders__created_at'),
     ).order_by('id')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -162,7 +161,7 @@ def boosters(request):
                 "achived_rank_name": booster.achived_rank_name,
                 "achived_rank_image": achived_rank_image_url,
                 "order_count": booster.order_count,
-                "average_rating": booster.average_rating,
+                "average_rating": booster.get_average_rating,
 
                 'languages': ['En', 'Ar'], # TODO , I Want Get Language From DataBase
                 'last_boost': custom_timesince(booster.last_boost),
@@ -180,29 +179,47 @@ def boosters(request):
 
 def booster_details(request, booster_id):
     game_pk_condition = Case(
-        When(booster_division__is_done=True, then=1),
+        When(booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
         default=0,
         output_field=IntegerField()
     )
-
+    
     # Get the queryset of User objects and annotate fields
     booster_queryset = User.objects.filter(
         pk=booster_id,
         is_booster=True
     ).annotate(
-        average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
         orders_count=Sum(game_pk_condition),
-        last_boost=Max('booster_division__created_at'),
+        last_boost=Max('booster_orders__created_at'),
     ).order_by('id')
 
     # Get the specific User object from the queryset or return a 404 error if not found
     booster = get_object_or_404(booster_queryset)
-    
+
     feedbacks = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
+
+    feedbacks_count = feedbacks.count()
+
+    rate_with_5 = feedbacks.filter(rate=5).count()
+    
+    rate_5_percent = round((rate_with_5 / feedbacks_count) * 100, 2)
+
+    completed_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False, booster_id=booster_id)
+
+    completed_orders = []
+    for order in completed_orders_query:
+        content_type = order.content_type
+        if content_type:
+            completed_order = content_type.model_class().objects.get(order_id=order.object_id)
+
+        completed_orders.append(completed_order)
 
     context = {
         "feedbacks": feedbacks,
-        'booster': booster,
+        "booster": booster,
+        "feedbacks_count": feedbacks_count,
+        "rate_5_percent": rate_5_percent,
+        "completed_orders": completed_orders
     }
     return render(request, 'booster/booster_details.html', context)
 

@@ -48,17 +48,16 @@ def pubgGetBoosterByRank(request):
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 3)
   game_pk_condition = Case(
-        When(booster_division__game__pk=3, then=1),
+    When(booster_orders__game__pk=3, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
     output_field=IntegerField()
-    )
+  )
     
   boosters = BaseUser.objects.filter(
     is_booster = True,
     booster__is_overwatch2_player=True,
     booster__can_choose_me=True
     ).annotate(
-    average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
     order_count=Sum(game_pk_condition)
     ).order_by('id')
   

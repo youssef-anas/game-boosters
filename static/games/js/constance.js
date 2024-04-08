@@ -22,14 +22,6 @@ const valuesToSet = list1.map(function(item) {
 const valuesToSetAdditional = list2.map(value => JSON.parse(value.toLowerCase())); // to convert code to true and false for list2 
 const valuesToSetExtra = list3.map(value => JSON.parse(value.toLowerCase())); // to convert code to true and false for list3
 
-let autoSelectBooster = $('input#select-booster'); // select an input for select-booster 
-let chooseBoosterInt = 0 // inital value of choose booster
-if (chooseBoosterValue != null) {
-  chooseBoosterInt = parseInt(chooseBoosterValue, 10);
-  autoSelectBooster.val(true) // make select booster = checked
-}
-document.getElementById('chooseBoosterInput').value = chooseBoosterInt; // remove this soon because i will use new value
-
 let percentege = {    // Additional Initial Percent
   duoBoosting: 0.65,
   selectBooster: 0.10,
@@ -65,3 +57,14 @@ if(extend_order) {
 const soloOrDuoBoosting = document.querySelectorAll('input[name="switch-between-solo-duo"]');
 let total_Percentage = 0; // inital value for Additional value 
 let discount_amount = 0 // inital value of discount
+
+let autoSelectBooster = $('input#select-booster'); // select an input for select-booster 
+let chooseBoosterInt = 0 // inital value of choose booster
+if (chooseBoosterValue != null) {
+  chooseBoosterInt = parseInt(chooseBoosterValue, 10);
+  autoSelectBooster.prop('checked', true); // make select booster = checked
+  total_Percentage += percentege[autoSelectBooster.val()];
+  $(`input#${autoSelectBooster.val()}`).val(true)
+  autoSelectBooster.prop('disabled', true)
+}
+document.getElementById('chooseBoosterInput').value = chooseBoosterInt; // remove this soon because i will use new value

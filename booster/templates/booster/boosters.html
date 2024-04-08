@@ -90,13 +90,13 @@
               <p class="mb-0">Rating:</p>
               <p class="mb-0">
                 {% for star in "*****" %}
-                  {% if forloop.counter <= booster.average_rating %}
+                  {% if forloop.counter <= booster.get_average_rating %}
                     <i class="fa-solid fa-star" style="color: #FFD700;"></i>
                   {% else %}
                     <i class="fa-regular fa-star" style="color: #808080;"></i>
                   {% endif %}
                 {% endfor %}
-                <span class="ms-1"></span>{{booster.average_rating}}
+                <span class="ms-1"></span>{{booster.get_average_rating}}
               </p>
             </div>
 
@@ -184,7 +184,7 @@
                   <p class="mb-0">
                     
                     ${starRatingHtml}
-                    <span class="ms-1"></span>${booster.average_rating}
+                    <span class="ms-1"></span>${booster.average_rating.toFixed(2)}
                   </p>
                 </div>
   

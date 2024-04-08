@@ -1,12 +1,12 @@
 /*=============== SWIPER JS ===============*/
-let lastOrdersSwiperCards = new Swiper('.last-orders-swiper', {
+let portfolioSwiperCards = new Swiper('.portfolio-swiper', {
   // loop: true,
   spaceBetween: 32,
   grabCursor: true,
 
   navigation: {
-    nextEl: '.last-orders-swiper-button-next',
-    prevEl: '.last-orders-swiper-button-prev',
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
   },
 
   breakpoints: {

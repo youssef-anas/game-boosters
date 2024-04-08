@@ -35,7 +35,6 @@ def overwatch2GetBoosterByRank(request):
     for division in divisions
   ]
   
-
   marks_data = [
     [mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
     for mark in marks
@@ -59,17 +58,16 @@ def overwatch2GetBoosterByRank(request):
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 12)
   game_pk_condition = Case(
-        When(booster_division__game__pk=12, then=1),
+    When(booster_division__game__pk=12, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
     output_field=IntegerField()
-    )
+  )
     
   boosters = BaseUser.objects.filter(
     is_booster = True,
     booster__is_overwatch2_player=True,
     booster__can_choose_me=True
     ).annotate(
-    average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
     order_count=Sum(game_pk_condition)
     ).order_by('id')
 

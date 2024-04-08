@@ -29,17 +29,16 @@ def leagueOfLegendsGetBoosterByRank(request):
   champions = Champion.objects.filter(game__id =4).order_by('id')
 
   game_pk_condition = Case(
-    When(booster_division__game__pk=4, then=1),
+    When(booster_orders__game__pk=4, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
     output_field=IntegerField()
-    )
+  )
     
   boosters = BaseUser.objects.filter(
     is_booster = True,
     booster__is_lol_player=True,
     booster__can_choose_me=True
     ).annotate(
-    average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
     order_count=Sum(game_pk_condition)
     ).order_by('id')
 

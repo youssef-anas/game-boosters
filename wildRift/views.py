@@ -13,10 +13,10 @@ from customer.models import Champion
 from wildRift.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
-from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+
+from django.db.models import Count, Sum, Case, When, FloatField, F, Q, Avg, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
-
 
 def wildRiftGetBoosterByRank(request):
     extend_order = request.GET.get('extend')
@@ -30,20 +30,18 @@ def wildRiftGetBoosterByRank(request):
     champions = Champion.objects.filter(game__id =1).order_by('id')
 
     game_pk_condition = Case(
-        When(booster_division__game__pk=1, then=1),
-    default=0,
-    output_field=IntegerField()
+        When(booster_orders__game__pk=1, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
+        default=0,
+        output_field=IntegerField()
     )
-    
-    boosters = BaseUser.objects.filter(
-        is_booster = True,
-        booster__is_wf_player=True,
-        booster__can_choose_me=True
-        ).annotate(
-        average_rating=Coalesce(Avg('ratings_received__rate'), Value(0.0)),
-        order_count=Sum(game_pk_condition)
-        ).order_by('id')
 
+    boosters = BaseUser.objects.filter(
+        is_booster=True,
+        booster__is_wr_player=True,
+        booster__can_choose_me=True
+    ).annotate(
+        order_count=Sum(game_pk_condition)
+    ).order_by('id')
 
     divisions_data = [
         [division.from_IV_to_III] if division.rank.rank_name == 'master' else

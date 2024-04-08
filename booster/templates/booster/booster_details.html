@@ -23,188 +23,369 @@
   <div class="booster container">
     <div class="booster-info px-5 py-4 row justify-content-between">
 
-        <div class="image col-xl-4 col-12">
-            <img src="{{booster.get_image_url}}" alt="{{booster.username}} Profile Image" width="312" height="312" class="rounded-circle">
+      <div class="image col-xl-4 col-12">
+        <img src="{{booster.get_image_url}}" alt="{{booster.username}} Profile Image"
+          class="rounded-circle img-fluid profile-image">
+      </div>
+
+      <div class="col-xl-4 col-12">
+        <h1 class="fw-bold">{{booster.username}}</h1>
+        <div class="ranks d-flex">
+          {% if booster.booster.is_wr_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_wr.get_image_url %}
+            <img src="{{booster.booster.achived_rank_wr.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_wr.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_valo_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_valo.get_image_url %}
+            <img src="{{booster.booster.achived_rank_valo.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_valo.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_pubg_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_pubg.get_image_url %}
+            <img src="{{booster.booster.achived_rank_pubg.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_pubg.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_lol_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_lol.get_image_url %}
+            <img src="{{booster.booster.achived_rank_lol.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_lol.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_tft_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_tft.get_image_url %}
+            <img src="{{booster.booster.achived_rank_tft.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_tft.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_wow_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_wow.get_image_url %}
+            <img src="{{booster.booster.achived_rank_wow.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_wow.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_hearthstone_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_hearthstone.get_image_url %}
+            <img src="{{booster.booster.achived_rank_hearthstone.get_image_url}}" alt="Rank Name" class="img-fluid"
+              width="32" height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_hearthstone.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_mobleg_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_mobleg.get_image_url %}
+            <img src="{{booster.booster.achived_rank_mobleg.get_image_url}}" alt="Rank Name" class="img-fluid"
+              width="32" height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_mobleg.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_rl_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_rl.get_image_url %}
+            <img src="{{booster.booster.achived_rank_rl.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_rl.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_dota2_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_dota2.get_image_url %}
+            <img src="{{booster.booster.achived_rank_dota2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_dota2.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_hok_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_hok.get_image_url %}
+            <img src="{{booster.booster.achived_rank_hok.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_hok.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_overwatch2_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_overwatch2.get_image_url %}
+            <img src="{{booster.booster.achived_rank_overwatch2.get_image_url}}" alt="Rank Name" class="img-fluid"
+              width="32" height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_overwatch2.rank_name}}
+          </p>
+          {% endif %}
+
+          {% if booster.booster.is_csgo2_player %}
+          <p class="mb-0 me-2">
+            {% if booster.booster.achived_rank_csgo2.get_image_url %}
+            <img src="{{booster.booster.achived_rank_csgo2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
+            {% endif %}
+            {{booster.booster.achived_rank_csgo2.rank_name}}
+          </p>
+          {% endif %}
+
         </div>
 
-        <div class="col-xl-4 col-12">
-            <h1 class="fw-bold">{{booster.username}}</h1>
-            <div class="ranks d-flex">
-                {% if booster.booster.is_wr_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_wr.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_wr.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_wr.rank_name}}
-                    </p>
-                {% endif %}
+        <h3 class="fw-bold mt-4">Bio:</h3>
+        <p>{{booster.booster.about_you}}</p>
+      </div>
 
-                {% if booster.booster.is_valo_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_valo.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_valo.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_valo.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_pubg_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_pubg.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_pubg.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_pubg.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_lol_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_lol.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_lol.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_lol.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_tft_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_tft.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_tft.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_tft.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_wow_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_wow.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_wow.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_wow.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_hearthstone_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_hearthstone.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_hearthstone.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_hearthstone.rank_name}}
-                    </p>
-                {% endif %}
-                
-                {% if booster.booster.is_mobleg_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_mobleg.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_mobleg.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_mobleg.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_rl_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_rl.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_rl.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_rl.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_dota2_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_dota2.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_dota2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_dota2.rank_name}}
-                    </p>
-                {% endif %}
-                
-                {% if booster.booster.is_hok_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_hok.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_hok.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_hok.rank_name}}
-                    </p>
-                {% endif %}
-                
-                {% if booster.booster.is_overwatch2_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_overwatch2.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_overwatch2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_overwatch2.rank_name}}
-                    </p>
-                {% endif %}
-
-                {% if booster.booster.is_csgo2_player %}
-                    <p class="mb-0 me-2">
-                        {% if booster.booster.achived_rank_csgo2.get_image_url %}
-                            <img src="{{booster.booster.achived_rank_csgo2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32" height="32" />
-                        {% endif %}
-                        {{booster.booster.achived_rank_csgo2.rank_name}}
-                    </p>
-                {% endif %}
-                
-            </div>
-
-            <h3 class="fw-bold mt-4">Bio:</h3>
-            <p>{{booster.booster.about_you}}</p>
+      <div class="col-xl-2 col-12">
+        <div class="mb-5">
+          <p class="fw-bold">Completed Boosts:</p>
+          <p>{{booster.orders_count}}</p>
         </div>
 
-        <div class="col-xl-2 col-12">
-            <div class="mb-5">
-                <p class="fw-bold">Completed Boosts:</p>
-                <p>{{booster.orders_count}}</p>
-            </div>
+        <div>
+          <p class="fw-bold">On MadBoost:</p>
+          <p>{{booster.created_at|format_date}}</p>
+        </div>
+      </div>
 
-            <div>
-                <p class="fw-bold">On MadBoost:</p>
-                <p>{{booster.created_at|format_date}}</p>
-            </div>
+      <div class="col-xl-2 col-12">
+        <div class="mb-5">
+          <p class="fw-bold">Last Boost:</p>
+          <p>{{booster.last_boost|custom_timesince}}</p>
         </div>
 
-        <div class="col-xl-2 col-12">
-            <div class="mb-5">
-                <p class="fw-bold">Last Boost:</p>
-                <p>{{booster.last_boost|custom_timesince}}</p>
-            </div>
-
-            <div>
-                <p class="fw-bold">Customer Ratings:</p>
-                <p class="mb-0">
-                    {% for star in "*****" %}
-                      {% if forloop.counter <= booster.average_rating %}
-                        <i class="fa-solid fa-star" style="color: #FFD700;"></i>
-                      {% else %}
-                        <i class="fa-regular fa-star" style="color: #808080;"></i>
-                      {% endif %}
-                    {% endfor %}
-                    <span class="ms-1"></span>{{booster.average_rating}}/5
-                  </p>
-            </div>
+        <div>
+          <p class="fw-bold">Customer Ratings:</p>
+          <p class="mb-0">
+            {% for star in "*****" %}
+            {% if forloop.counter <= booster.get_average_rating %} <i class="fa-solid fa-star" style="color: #FFD700;">
+              </i>
+              {% else %}
+              <i class="fa-regular fa-star" style="color: #808080;"></i>
+              {% endif %}
+              {% endfor %}
+              <span class="ms-1"></span>{{booster.get_average_rating}}/5
+          </p>
         </div>
+      </div>
 
     </div>
 
     <div class="games-he-play mt-5">
-        <h3 class="fw-bold text-center">Select This Booster for:</h3>
-        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 justify-content-between mt-4">
-            {% for game in booster.booster.games.all %}
-            <div class="banner-container">
-                <a class="mt-3 game-link" href="{% url game.link %}?choose_booster={{ booster.id }}">
-                    <img src="{{game.get_banner_image_url}}" class="img-fluid game-banner" alt="{{game.link}}">
+      <h3 class="fw-bold text-center">Select This Booster for:</h3>
+      <div class="row row-cols-lg-3 d-flex flex-wrap justify-content-between mt-4">
+        {% for game in booster.booster.games.all %}
+        <div class="banner-container mb-3">
+          <a class="mt-3 game-link" href="{% url game.link %}?choose_booster={{ booster.id }}">
+            <img src="{{game.get_banner_image_url}}" class="img-fluid game-banner" alt="{{game.link}}">
 
-                    <img src="{{game.get_name_image_url}}" class="img-fluid game-name-img" alt="{{game.link}}">
-                </a>
-            </div>
-            {% endfor %}
+            <img src="{{game.get_name_image_url}}" class="img-fluid game-name-img" alt="{{game.link}}">
+          </a>
         </div>
+        {% endfor %}
+      </div>
     </div>
 
     <!-- Import Feedback Component -->
     {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks is_booster_page=True %}
+
+    <div class="special-data row row-cols-lg-4 row-cols-2 mb-4 pt-5">
+      <div class="col text-center mb-4">
+        <div class="icon-image" style="background-color: var(--secondary-color);">
+          <img src="{% static 'booster/images/review.png' %}" alt="" class="img-fluid" width="40" height="40">
+        </div>
+        <p class="fw-bold my-3 head">Reviews</p>
+        <p>{{feedbacks_count}} Reviews</p>
+      </div>
+      <div class="col text-center mb-4">
+        <div class="icon-image" style="background-color: #DE4949;">
+          <img src="{% static 'booster/images/five_star.png' %}" alt="" class="img-fluid" width="40" height="40">
+        </div>
+        <p class="fw-bold my-3 head">5 Star Reviews</p>
+        <p>{{rate_5_percent}}%</p>
+      </div>
+      <div class="col text-center mb-4">
+        <div class="icon-image" style="background-color: var(--secondary-color);">
+          <img src="{% static 'booster/images/rating.png' %}" alt="" class="img-fluid" width="40" height="40">
+        </div>
+        <p class="fw-bold my-3 head">Rating</p>
+        <p>{{booster.get_average_rating}}</p>
+      </div>
+      <div class="col text-center mb-4">
+        <div class="icon-image" style="background-color: #DE4949;">
+          <img src="{% static 'booster/images/time.png' %}" alt="" class="img-fluid" width="40" height="40">
+        </div>
+        <p class="fw-bold my-3 head">Last Review</p>
+        <p>
+          {% with last_feedback=feedbacks.last %}
+          {% if last_feedback %}
+          {{ last_feedback.created_at|format_date }}
+          {% endif %}
+          {% endwith %}
+        </p>
+      </div>
+    </div>
+
+    <div class="portfolio">
+      <div class="head text-center">
+        <h1>Portfolio</h1>
+        <p>Take a closer look at the achievements, level,<br />rank and progression of this booster.</p>
+      </div>
+
+      <div class="swiper mt-4">
+        <div class="portfolio-swiper">
+          {% if booster.booster.booster_portfolio %}
+          <div class="swiper-wrapper">
+            {% for portfolio in booster.booster.booster_portfolio.all %}
+            <div class="swiper-slide image">
+              <img src="{{portfolio.get_image_url}}" alt="" class="img-fluid">
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Navigation Buttons -->
+          <div class="swiper-button-prev">
+            <i class="fa-solid fa-chevron-left fs-3"></i>
+          </div>
+
+          <div class="swiper-button-next">
+            <i class="fa-solid fa-chevron-right fs-3"></i>
+          </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+    <div class="history py-5">
+      <h1 class="text-center pb-4">{{booster.username}} History</h1>
+
+      <div class="history-container">
+        <div class="history-table">
+          {% for order in completed_orders %}
+            {% if order.order.game_type == 'A' or order.order.game_type == 'D' %}
+              <div class="table-row d-flex justify-content-between py-4">
+                <div class="col">
+                  <p class="mb-4 fs-4">From</p>
+                  <div class="from d-flex align-items-center">
+                    {% if order.order.game_type == 'D' %}
+                      <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image"
+                      class="current-rank-selected-img me-3 img-fluid" width="75" height="75">
+                    {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                      <img src="{{order.current_rank.get_image_url}}" alt="Current Rank Image"
+                      class="current-rank-selected-img me-3 img-fluid" width="75" height="75">
+                    {% endif %}
+
+                    {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{order.current_rank}} {{order.current_division|romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{order.current_rank}} {{ order.current_division|romanize_division_original }}</p>
+
+                    {% elif order.order.game.link == 'hearthstone' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{order.current_rank}} {{ order.current_division|ten_romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{order.current_rank}} {{ order.current_division|five_romanize_division }}</p>
+
+                    {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{ order.current_division }} MMR</p>
+
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{ order.current_rank }}</p>
+
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{ order.current_division }} Premier</p>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col">
+                  <p class="mb-4 fs-4">To</p>
+
+                  <div class="to d-flex align-items-center">
+                    {% if order.order.game_type == 'D' %}
+                      <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-3 img-fluid" width="75" height="75">
+                    {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
+                      <img src="{{order.desired_rank.get_image_url}}" alt="Desired Rank Image" class="desired-rank-selected-img me-3 img-fluid" width="75" height="75">
+                    {% endif %}
+      
+                    {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
+                      <p class="desired-info text-capitalize mb-0 fw-bold fs-4">{{order.desired_rank}} {{ order.desired_division|romanize_division }}</p>
+      
+                    {% elif order.order.game.link == 'valorant' or order.order.game.link == 'rocketLeague' %}
+                      <p class="desired-info text-capitalize mb-0 fw-bold fs-4">{{order.desired_rank}} {{ order.desired_division|romanize_division_original }}</p>
+      
+                    {% elif order.order.game.link == 'hearthstone' %}
+                      <p class="desired-info text-capitalize mb-0 fw-bold fs-4">{{order.desired_rank}} {{ order.desired_division|ten_romanize_division }}</p>
+      
+                    {% elif order.order.game.link == 'hok' or order.order.game.link == 'pubg' or order.order.game.link == 'overwatch2' %}
+                      <p class="desired-info text-capitalize mb-0 fw-bold fs-4">{{order.desired_rank}} {{ order.desired_division|five_romanize_division }}</p>
+      
+                    {% elif order.order.game.link == 'wow' or order.order.game.link == 'dota2' %}
+                      <p class="desired-info text-capitalize mb-0 fw-bold fs-4">{{ order.desired_division }} MMR</p>
+      
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'D' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{ order.desired_rank }}</p>
+                      
+                    {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
+                      <p class="current-info text-capitalize mb-0 fw-bold fs-4">{{ order.desired_division }} Premier</p>
+      
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col date">
+                  <p class="fs-4 mb-4">Date</p>
+
+                  <div class="d-flex align-items-center">
+                    <img src="{% static 'booster/images/time.png' %}" alt="Clock Image" width="48" height="48" class="me-5">
+                    <p class="mb-0 fw-bold fs-4">{{order.order.created_at|format_date}}</p>
+                  </div>
+                </div>
+                <div class="col server">
+                  <p class="fs-4 mb-4">Server</p>
+
+                  <div class="d-flex align-items-center">
+                    <!-- <img src="{% static 'booster/images/time.png' %}" alt="Clock Image" width="48" height="48" class="me-5"> -->
+                    <p class="mb-0 fw-bold fs-4">{{order.order.customer_server}}</p>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -214,4 +395,5 @@
 <script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
 <!-- OUR SCRIPTS -->
 <script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
+<script src="{% static 'booster/js/portfolio.js'%}"></script>
 {% endblock %}

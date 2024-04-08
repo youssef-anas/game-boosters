@@ -1,6 +1,6 @@
 /*=============== SWIPER JS ===============*/
 let swiperCards = new Swiper('.feedbacks-swiper', {
-  loop: true,
+  // loop: true,
   spaceBetween: 32,
   grabCursor: true,
 

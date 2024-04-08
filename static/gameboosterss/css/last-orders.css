@@ -67,12 +67,10 @@
   width: 100%;
   height: 100%;
 }
-.order .information .booster .image {
-  width: 75px;
-  height: 75px;
-}
 .order .information .booster .image img {
   border-radius: calc(var(--main-radius) * 2);
+  width: 75px !important;
+  height: 75px !important;
 }
 .order .information .booster .name p:first-child,
 .order .information .reached-info-container p:first-child,

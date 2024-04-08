@@ -8,7 +8,7 @@ from django.core.validators import MinValueValidator
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from games.models import Game
-
+from django.db.models import Avg
 
 class BaseUser(AbstractUser):
     profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
@@ -34,6 +34,16 @@ class BaseUser(AbstractUser):
         if self.profile_image:
             return self.profile_image.url
         return None
+    
+    def get_average_rating(self):
+        # Check if the user is a booster
+        if self.is_booster:
+            # Calculate average rating for the user
+            average_rating = round(self.ratings_received.aggregate(avg_rating=Avg('rate'))['avg_rating'], 2) or 0.0
+            return average_rating
+        else:
+            # If the user is not a booster, return None or any other appropriate value
+            return None
     
     def save(self, *args, **kwargs):
         if self.is_booster:
@@ -147,7 +157,7 @@ class BaseOrder(models.Model):
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='New', null=True, blank=True)
 
     customer = models.ForeignKey(BaseUser, null=True, blank=True, on_delete=models.DO_NOTHING, default=None, related_name='customer_orders', limit_choices_to= {'is_customer': True})
-    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.DO_NOTHING, default=None, related_name='booster_division', limit_choices_to={'is_booster': True} ) 
+    booster = models.ForeignKey(BaseUser,null=True , blank=True, on_delete=models.DO_NOTHING, default=None, related_name='booster_orders', limit_choices_to={'is_booster': True} ) 
 
     duo_boosting = models.BooleanField(default=False, blank=True)
     select_booster = models.BooleanField(default=False, blank=True)
