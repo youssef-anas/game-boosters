@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect , HttpResponse, get_object_or_404
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_migrate
@@ -8,6 +8,7 @@ from accounts.templatetags.custom_filters import romanize_division
 import requests
 import json
 from customer.models import Champion
+from wildRift.validators import validate_marks_for_rank, validate_master_division
 
 User = settings.AUTH_USER_MODEL
 
@@ -86,6 +87,20 @@ class WildRiftDivisionOrder(models.Model):
 
     select_champion = models.BooleanField(default=False, blank=True)
     champions = models.ManyToManyField(Champion, related_name='wr_division_champions', blank=True)
+
+    
+    def clean(self):
+        validate_marks_for_rank(self.current_rank.id, self.current_marks)
+        validate_marks_for_rank(self.reached_rank.id, self.reached_marks)
+        validate_marks_for_rank(self.desired_rank.id, 0)
+
+        if self.current_rank.id == 8: 
+            raise ValidationError("Wrong MASTER rank cant be as current")
+        if self.reached_rank.id == 8:  # MASTER
+            validate_master_division(self.reached_division)
+        if self.desired_rank.id == 8:  # MASTER
+            validate_master_division(self.reached_division)
+
 
     def send_discord_notification(self):
         if self.order.status == 'Extend':

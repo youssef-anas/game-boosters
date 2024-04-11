@@ -2,6 +2,7 @@ from rest_framework import serializers
 from accounts.models import BaseOrder
 from customer.models import Champion
 from booster.models import Booster
+from wildRift.validators import validate_marks_for_rank, validate_master_division
 
 class RankSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=7)
@@ -30,6 +31,19 @@ class RankSerializer(serializers.Serializer):
     promo_code = serializers.CharField()
 
     def validate(self, attrs):
+        current_rank_id = attrs.get('current_rank')
+        current_marks = attrs.get('marks')
+        desired_rank_id = attrs.get('desired_rank')
+
+        # Validate current_marks
+        validate_marks_for_rank(current_rank_id, current_marks)
+        validate_marks_for_rank(desired_rank_id, 0)
+
+        # Validate desired_rank
+        if desired_rank_id == 8:  # MASTER
+            desired_division = attrs.get('desired_division')
+            validate_master_division(desired_division)
+
         self.extend_order_validate(attrs)
         self.booster_validate(attrs)
         self.champion_validate(attrs)
