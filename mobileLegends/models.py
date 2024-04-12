@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
 from django.core.validators import MinValueValidator, MaxValueValidator
-import requests
+import requests, json
 from django.core.exceptions import ValidationError
 from mobileLegends.validators import validate_current_rank_mobile_legends
 
@@ -196,7 +196,75 @@ class MobileLegendsDivisionOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
-    return {"booster_price":20, 'percent_for_view':30}
+    # Read data from JSON file
+    with open('static/mobileLegends/data/divisions_data.json', 'r') as file:
+      division_price = json.load(file)
+      flattened_data = [item for sublist in division_price for item in sublist]
+      flattened_data.insert(0,0)
+      pass
+    ##
+    with open('static/mobilelegends/data/marks_data.json', 'r') as file:
+      marks_data = json.load(file)
+      marks_data.insert(0,[0,0,0,0,0,0])
+      pass
+    ## 
+    total_percent = 0
+    if self.order.duo_boosting:
+        total_percent += 0.65
+
+    if self.order.select_booster:
+        total_percent += 0.10
+
+    if self.order.turbo_boost:
+        total_percent += 0.20
+
+    if self.order.streaming:
+        total_percent += 0.15   
+
+    try:
+        promo_code_amount = self.order.promo_code.discount_amount
+    except:
+        promo_code_amount = 0    
+
+    current_rank = self.current_rank.pk
+    reached_rank = self.reached_rank.pk
+
+    current_division = self.current_division
+    reached_division = self.reached_division
+
+    current_marks = self.current_marks
+    reached_marks = self.reached_marks
+    
+    start_division = ((current_rank-1) * 5) + current_division
+    end_division = ((reached_rank-1) * 5)+ reached_division
+
+    marks_price = marks_data[current_rank][current_marks]
+    marks_price_reached = marks_data[current_rank][reached_marks]
+
+    sublist = flattened_data[start_division:end_division ]
+    total_sum = sum(sublist)    
+    custom_price = total_sum - marks_price + marks_price_reached
+    custom_price += (custom_price * total_percent)
+    custom_price -= custom_price * (promo_code_amount/100)
+    ##############################################################
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    print(percent)
+
+    booster_price = custom_price * (percent/100)
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+    # if percent_for_view > 100:
+    #     percent_for_view = 100
+
+    # if booster_price > actual_price:
+    #     booster_price = actual_price
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
 class MobileLegendsPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='mob_leg_placement_order')
   last_rank = models.ForeignKey(MobileLegendsPlacement, on_delete=models.CASCADE, default=None, related_name='mob_leg_last_rank')

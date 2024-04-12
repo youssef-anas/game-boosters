@@ -44,7 +44,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -80,51 +80,51 @@ def get_division_order_result_by_rank(data,extend_order_id):
   ##
   with open('static/mobilelegends/data/marks_data.json', 'r') as file:
     marks_data = json.load(file)
-    marks_data.insert(0,[0,0,0,0,0,0])
+    # marks_data.insert(0,[0,0,0,0,0,0])
     pass
   ##    
     
-  if current_rank == 1:
-    if current_division not in [3, 4, 5]:
-      print(f"error in current rank cant be {current_division} in rank {current_rank}")
-      current_division = 3
-    if marks not in [1,2,3]:
-      print(f"error in current mark cant be {marks} in rank {current_rank}")
-      marks = 3
+  # if current_rank == 1:
+  #   if current_division not in [3, 4, 5]:
+  #     print(f"error in current division cant be {current_division} in rank {current_rank}")
+  #     current_division = 3
+  #   if marks not in [1,2,3]:
+  #     print(f"error in current mark cant be {marks} in rank {current_rank}")
+  #     marks = 3
 
-  elif current_rank == 2 :
-    if current_division not in [2, 3, 4, 5]:
-      print(f"error in current rank cant be {current_division} in rank {current_rank}")
-      current_division = 2
-    if marks not in [1,2,3]:
-      print(f"error in current mark cant be {marks} in rank {current_rank}")
-      marks = 3
+  # elif current_rank == 2 :
+  #   if current_division not in [2, 3, 4, 5]:
+  #     print(f"error in current rank cant be {current_division} in rank {current_rank}")
+  #     current_division = 2
+  #   if marks not in [1,2,3]:
+  #     print(f"error in current mark cant be {marks} in rank {current_rank}")
+  #     marks = 3
 
-  elif current_rank == 3 :
-    if current_division not in [2, 3, 4, 5]:
-      print(f"error in current rank cant be {current_division} in rank {current_rank}")
-      current_division = 2
-    if marks not in [1,2,3,4]:
-      print(f"error in current mark cant be {marks} in rank {current_rank}")
-      marks = 4 
+  # elif current_rank == 3 :
+  #   if current_division not in [2, 3, 4, 5]:
+  #     print(f"error in current rank cant be {current_division} in rank {current_rank}")
+  #     current_division = 2
+  #   if marks not in [1,2,3,4]:
+  #     print(f"error in current mark cant be {marks} in rank {current_rank}")
+  #     marks = 4 
 
-  elif current_rank in [4, 5, 6] :
-    if current_division not in [1, 2, 3, 4, 5]:
-      print(f"error in current rank cant be {current_division} in rank {current_rank}")
-      current_division = 1
-    if marks not in [1,2,3,4,5]:
-      print(f"error in current mark cant be {marks} in rank {current_rank}")
-      marks = 1
+  # elif current_rank in [4, 5, 6] :
+  #   if current_division not in [1, 2, 3, 4, 5]:
+  #     print(f"error in current rank cant be {current_division} in rank {current_rank}")
+  #     current_division = 1
+  #   if marks not in [1,2,3,4,5]:
+  #     print(f"error in current mark cant be {marks} in rank {current_rank}")
+  #     marks = 1
 
-  elif current_rank in [7, 8, 9] :
-    if current_division not in [1, 2, 3, 4, 5]:
-      print(f"error in current rank cant be {current_division} in rank {current_rank}")
-      current_division = 1
-    if marks not in [1,2,3,4,5]:
-      print(f"error in current mark cant be {marks} in rank {current_rank}")
-      marks = 0
-  else:
-    raise IndexError 
+  # elif current_rank in [7, 8, 9] :
+  #   if current_division not in [1, 2, 3, 4, 5]:
+  #     print(f"error in current rank cant be {current_division} in rank {current_rank}")
+  #     current_division = 1
+  #   if marks not in [1,2,3,4,5]:
+  #     print(f"error in current mark cant be {marks} in rank {current_rank}")
+  #     marks = 0
+  # else:
+  #   raise IndexError 
 
   if desired_rank > 10 or desired_rank < 0:
     raise IndexError 
@@ -134,8 +134,11 @@ def get_division_order_result_by_rank(data,extend_order_id):
   start_division = ((current_rank-1) * 5) + current_division
   end_division = ((desired_rank-1) * 5)+ desired_division
   marks_price = marks_data[current_rank][marks]
+  
   sublist = flattened_data[start_division:end_division ]
   total_sum = sum(sublist)
+  print(sublist)
+  print("marks_data", marks_data)
   price = total_sum - marks_price
   price += (price * total_percent)
   price -= price * (promo_code_amount/100)

@@ -200,7 +200,7 @@ class WildRiftDivisionOrder(models.Model):
         if self.order.streaming:
             total_percent += 0.15
 
-        if reached_rank != 8 :
+        if reached_rank == 8 :
             reached_division = 1
 
         start_division = ((current_rank-1)*4) + current_division
