@@ -3,6 +3,8 @@ from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
 from django.core.validators import MinValueValidator, MaxValueValidator
 import requests
+from django.core.exceptions import ValidationError
+from mobileLegends.validators import validate_current_rank_mobile_legends
 
 
 class MobileLegendsRank(models.Model):
@@ -16,7 +18,7 @@ class MobileLegendsRank(models.Model):
     return f"/media/{self.rank_image}"
   
 class MobileLegendsTier(models.Model):
-  rank = models.OneToOneField('MobileLegendsRank', related_name='tier', on_delete=models.CASCADE)
+  rank = models.OneToOneField(MobileLegendsRank, related_name='tier', on_delete=models.CASCADE)
   from_V_to_IV = models.FloatField(default=0)
   from_IV_to_III = models.FloatField(default=0)
   from_III_to_II = models.FloatField(default=0)
@@ -131,6 +133,10 @@ class MobileLegendsDivisionOrder(models.Model):
       if self.desired_rank:
           self._meta.get_field('desired_division').choices = self.generate_choices(self.desired_rank.id)
 
+  def clean(self):
+        validate_current_rank_mobile_legends(self.current_rank.id, self.current_division, self.current_marks)
+        validate_current_rank_mobile_legends(self.reached_rank.id, self.reached_division, self.reached_marks)
+        validate_current_rank_mobile_legends(self.desired_rank.id, self.desired_division, 1)
 
   def send_discord_notification(self):
     if self.order.status == 'Extend':

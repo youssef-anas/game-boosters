@@ -51,7 +51,10 @@ class PlacementSerializer(serializers.Serializer):
     last_rank           = serializers.IntegerField(min_value=0, max_value=11)
     number_of_match     = serializers.IntegerField(min_value=1, max_value=5)
     promo_code          = serializers.CharField()
+    duo_boosting        = serializers.BooleanField()
     select_booster      = serializers.BooleanField()
+    turbo_boost         = serializers.BooleanField()
+    streaming           = serializers.BooleanField()
     server              = serializers.CharField()
     choose_booster      = serializers.IntegerField()
 
