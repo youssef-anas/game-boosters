@@ -293,6 +293,9 @@
                         {% elif order.order.order.game.link == 'csgo2' and order.order.order.game_type == 'A' %}
                           <p class="current-info text-capitalize mb-0">{{ order.order.current_division }} Premier Rank</p>
     
+                        {% elif order.order.order.game.link == 'mobileLegends' and order.order.order.game_type == 'D' %}
+                          <p class="current-info text-capitalize mb-0">{{order.order.current_rank}} {{ order.order.current_division|five_romanize_division }}</p>
+    
                         {% endif %}
 
                       </div>
@@ -326,6 +329,9 @@
     
                         {% elif order.order.order.game.link == 'csgo2' and order.order.order.game_type == 'A' %}
                           <p class="desired-info text-capitalize mb-0">{{ order.order.desired_division }} Premier Rank</p>
+
+                        {% elif order.order.order.game.link == 'mobileLegends' and order.order.order.game_type == 'D' %} 
+                          <p class="desired-info text-capitalize mb-0">{{ order.order.desired_rank}} {{ order.order.desired_division|five_romanize_division }}</p> 
     
                         {% endif %}
                       </div>
@@ -359,7 +365,9 @@
 
                       {% elif order.order.order.game.link == 'csgo2' and order.order.order.game_type == 'A' %}
                         <p class="current-info text-capitalize mb-0 mt-3" style="color:#FFFFFF80;">{{ order.order.reached_division }} Premier Rank</p>
-    
+                      
+                      {% elif order.order.order.game.link == 'mobileLegends' and order.order.order.game_type == 'D' %} 
+                        <p class="current-info text-capitalize mb-0 mt-3" style="color:#FFFFFF80;">{{order.order.reached_rank}} {{ order.order.reached_division|five_romanize_division }}</p> 
                       {% endif %}
                     </div>
 
@@ -400,6 +408,9 @@
 
                       {% elif order.order.order.game.link == 'csgo2' %}
                         {% include 'csgo2/order_update.html' %}
+                      
+                      {% elif order.order.order.game.link == 'mobileLegends' %}
+                        {% include 'mobileLegends/order_update.html' %}
                         
                       {% endif %}
                     </div>

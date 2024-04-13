@@ -81,7 +81,7 @@ def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
     # TODO make this better
     if True:
-    # if (game_name == 'wildRift' and request.user.booster.is_wf_player) or \
+    # if (game_name == 'wildRift' and request.user.booster.is_wr_player) or \
     #     (game_name == 'valorant' and request.user.booster.is_valo_player) or \
     #     (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
     #     (game_name == 'lol' and request.user.booster.is_lol_player) or \
@@ -199,6 +199,7 @@ def booster_details(request, booster_id):
     feedbacks = OrderRating.objects.filter(booster=booster_id).order_by('-created_at')
 
     feedbacks_count = feedbacks.count()
+    if feedbacks_count == 0: feedbacks_count =1
 
     rate_with_5 = feedbacks.filter(rate=5).count()
     

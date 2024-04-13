@@ -42,8 +42,9 @@ class BaseUser(AbstractUser):
         # Check if the user is a booster
         if self.is_booster:
             # Calculate average rating for the user
-            average_rating = round(self.ratings_received.aggregate(avg_rating=Avg('rate'))['avg_rating'], 2) or 0.0
-            return average_rating
+            average_rating = self.ratings_received.aggregate(avg_rating=Avg('rate'))['avg_rating'] or 0.0
+            return round(average_rating,2)
+
         else:
             # If the user is not a booster, return None or any other appropriate value
             return None

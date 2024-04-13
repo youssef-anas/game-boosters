@@ -162,6 +162,7 @@ Promise.all([
       const startRank = ((current_rank - 1) * 5) + current_division;
       const endRank = ((desired_rank - 1) * 5) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
+      console.log(slicedArray)
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result
   

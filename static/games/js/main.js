@@ -128,13 +128,15 @@ const boostersCards = document.querySelectorAll('.booster-card');
 const chooseBoosterInput = document.querySelectorAll('.choose-booster')
 function togglePopupBooster() {
   const checkbox = document.getElementById("select-booster");
-  if (checkbox.checked == true) {
-    openFormBooster();
-  } else {
-    closeFormBooster();
-    chooseBoosterInput.forEach(input => {
-      input.value = 0; 
-    });
+  if (chooseBoosterValue == null){
+    if (checkbox.checked == true) {
+      openFormBooster();
+    } else {
+      closeFormBooster();
+      chooseBoosterInput.forEach(input => {
+        input.value = 0; 
+      });
+    }
   }
 }
 

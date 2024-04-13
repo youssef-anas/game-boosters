@@ -6,46 +6,37 @@
     <div class="d-flex flex-wrap justify-content-between">
       <div class="select-container mb-3">
         <select required name="reached_rank" id="reached_rank">
-          
-          <option value=1 {% if order.order.reached_rank|lower == 'warrior' %} selected {% endif %}>warrior</option>
-  
-          <option value=2 {% if order.order.reached_rank|lower == 'elite' %} selected {% endif %}>elite</option>
-  
-          <option value=3 {% if order.order.reached_rank|lower == 'master' %} selected {% endif %}>master</option>
-  
-          <option value=4 {% if order.order.reached_rank|lower == 'grandmaster' %} selected {% endif %}>grandmaster</option>
-  
-          <option value=5 {% if order.order.reached_rank|lower == 'epic' %} selected {% endif %}>epic</option>
-  
-          <option value=6 {% if order.order.reached_rank|lower == 'legend' %} selected {% endif %}>legend</option>
-  
-          <option value=7 {% if order.order.reached_rank|lower == 'mythic' %} selected {% endif %}>mythic</option>
-  
-          <option value=8 {% if order.order.reached_rank|lower == 'mythical honor' %} selected {% endif %}>mythical honor</option>
-  
-          <option value=9 {% if order.order.reached_rank|lower == 'mythical glory' %} selected {% endif %}>mythical glory</option>
-  
-          <option value=10 {% if order.order.reached_rank|lower == 'mythical immortal' %} selected {% endif %}>mythical immortal</option>
+          <option value=1 {% if order.order.id == 1 %} selected {% endif %}>Warrior</option>
+          <option value=2 {% if order.order.id == 2 %} selected {% endif %}>Elite</option>
+          <option value=3 {% if order.order.id == 3 %} selected {% endif %}>Master</option>
+          <option value=4 {% if order.order.id == 4 %} selected {% endif %}>Grandmaster</option>
+          <option value=5 {% if order.order.id == 5 %} selected {% endif %}>Epic</option>
+          <option value=6 {% if order.order.id == 6 %} selected {% endif %}>Legend</option>
+          <option value=7 {% if order.order.id == 7 %} selected {% endif %}>Mythic</option>
+          <option value=8 {% if order.order.id == 8 %} selected {% endif %}>Mythical Honor</option>
+          <option value=9 {% if order.order.id == 9 %}selected {% endif %}>Mythical Glory</option>
+          <option value=10 {% if order.order.id == 10 %} selected {% endif %}>Mythical Immortal</option>
         </select>
       </div>
   
       <div class="select-container mb-3">
         <select class="form-select custom-select" required name="reached_division" id="reached_division">
-          <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>IV</option>
-          <option value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>III</option>
-          <option value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>II</option>
-          <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>I</option>
+          <option value="1" {% if order.order.reached_division == 1 %}selected{% endif %}>V</option>
+          <option id="IV" value="2" {% if order.order.reached_division == 2 %}selected{% endif %}>IV</option>
+          <option id='III' value="3" {% if order.order.reached_division == 3 %}selected{% endif %}>III</option>
+          <option value="4" {% if order.order.reached_division == 4 %}selected{% endif %}>II</option>
+          <option value="5" {% if order.order.reached_division == 5 %}selected{% endif %}>I</option>
         </select>
       </div>
   
       <div class="select-container mb-3">
         <select class="form-select custom-select" required name="reached_marks" id="reached_marks">
-          <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 - 20</option>
-          <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>21 - 40</option>
-          <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>41 - 60</option>
-          <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>61 - 80</option>
-          <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>81 - 99</option>
-          <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>Series</option>
+          <option value="0" {% if order.order.reached_marks == 0 %}selected{% endif %}>0 Star</option>
+          <option value="1" {% if order.order.reached_marks == 1 %}selected{% endif %}>1 Star</option>
+          <option value="2" {% if order.order.reached_marks == 2 %}selected{% endif %}>2 Stars</option>
+          <option value="3" {% if order.order.reached_marks == 3 %}selected{% endif %}>3 Stars</option>
+          <option value="4" {% if order.order.reached_marks == 4 %}selected{% endif %}>4 Stars</option>
+          <option value="5" {% if order.order.reached_marks == 5 %}selected{% endif %}>5 Stars</option>
         </select>
       </div>
     </div>
@@ -55,3 +46,105 @@
     </div>
   </form>
 </div>
+<script>
+function getDivisionIconsMobilLegends(rank) {
+    let rank_icons = 5;
+    switch (rank) {
+      case 1:
+        rank_icons = 3;
+        break;
+      case 2:
+      case 3:
+        rank_icons = 4;
+        break;
+      default:
+        rank_icons = 5;
+    }
+    return rank_icons;
+  }
+
+  function getMarksIconsMobilLegends(rank) {
+    let rank_icons = 5;
+    switch (rank) {
+      case 1:
+      case 2:  
+        rank_icons = 3;
+        break;
+      case 3:
+        rank_icons = 4;
+        break;
+      case 4:
+      case 5:
+      case 6:
+        rank_icons = 5;
+        break;
+      case 7:
+      case 8:
+      case 9:
+        rank_icons = 0;
+        break;
+      default:
+        rank_icons = 5;
+    }
+    return rank_icons;
+    
+  }
+
+  function refreshDivisionBasedRankMobileLegends(selectedRank) {
+    const divisionIconsNumber = getDivisionIconsMobilLegends(selectedRank);
+    const selectElement = document.getElementById('reached_division');
+    for (let i = 0; i < selectElement.options.length; i++) {
+        const option = selectElement.options[i];
+        if (i < 5 - divisionIconsNumber) {
+            option.classList.add('d-none');
+        } else {
+            option.classList.remove('d-none');
+        }
+        if (selectedRank === 1){
+            const current_divisionIII = document.getElementById('III')
+            current_divisionIII.selected = true;
+        }
+        if (selectedRank === 2 || selectedRank === 3){
+            const current_divisionIV = document.getElementById('IV')
+            current_divisionIV.selected = true;
+        }
+    }
+  }
+
+
+  function refreshMarksBasedRankMobileLegends(current_rank) {
+    const markContainer = document.getElementById('reached_marks');
+    // const containerOfmarkContainer = document.querySelector('.current-mark-container')
+    markContainer.innerHTML = '';
+    const numberOfMarks = getMarksIconsMobilLegends(current_rank)
+    for (let i = 1; i <= numberOfMarks; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${i} Star`;
+        markContainer.appendChild(option);
+        if (i === 1) {
+            option.setAttribute('selected', 'selected');
+        }
+    };
+    if ([7, 8, 9].includes(current_rank)) {
+        containerOfmarkContainer.classList.add('d-none');
+    } else {
+        containerOfmarkContainer.classList.remove('d-none');
+    }
+  }
+
+  document.getElementById('reached_rank').addEventListener('change', function() {
+    const selectedRank = parseInt(this.value); 
+    refreshDivisionBasedRankMobileLegends(selectedRank);
+    refreshMarksBasedRankMobileLegends(selectedRank)
+  });
+
+  function getSelectedValueForDropList(selectElement) {
+    let selectedOption = selectElement.options[selectElement.selectedIndex];
+    let selectedIndex = Array.from(selectElement.options).indexOf(selectedOption);
+    return selectedIndex;
+  }
+  const rank = getSelectedValueForDropList(document.getElementById('reached_rank')) +1
+  refreshDivisionBasedRankMobileLegends(rank);
+  refreshMarksBasedRankMobileLegends(rank)
+</script>
