@@ -16,6 +16,7 @@
   width: fit-content;
   padding: 0.5rem;
   border-radius: var(--main-radius);
+  text-align: center !important;
 }
 .error-message {
   color: #f56868;

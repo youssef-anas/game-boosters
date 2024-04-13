@@ -9,10 +9,13 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from games.models import Game
 from django.db.models import Avg
+from datetime import date, timedelta
+from django.core.exceptions import ValidationError
 
 class BaseUser(AbstractUser):
     profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
     country = CountryField(blank=True,null=True)
+    date_of_birth = models.DateField(null=True, blank=True)
 
     is_booster = models.BooleanField(default= False)
     is_customer = models.BooleanField(default= False)
@@ -51,6 +54,21 @@ class BaseUser(AbstractUser):
         else:
             self.can_choose_me = False
             super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        
+        # Validation for date_of_birth
+        if self.date_of_birth:
+            today = date.today()
+            # Calculate 18 years ago from today
+            eighteen_years_ago = today - timedelta(days=18 * 365)
+            
+            # Check if date_of_birth is not in the future and is at least 18 years ago
+            if self.date_of_birth > today:
+                raise ValidationError("Date of birth cannot be in the future.")
+            elif self.date_of_birth > eighteen_years_ago:
+                raise ValidationError("You must be at least 18 years old.")
     
 # @receiver(post_save, sender=BaseUser)
 # def create_wallet(sender, instance, created, **kwargs):

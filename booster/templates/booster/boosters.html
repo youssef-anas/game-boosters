@@ -68,7 +68,11 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
               <p class="mb-0">Languages:</p>
-              <p class="language mb-0">Eng</p>
+              <div class="d-flex justify-content-between align-items-center">
+                {% for language in booster.booster.languages %}
+                  <p class="language mb-0 ms-2">{{ language | first_two_chars }}</p>
+                {% endfor %}
+              </div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -127,6 +131,14 @@
 
       return starsHtml;
     }
+
+    function generateLanguages(languages) {
+      let elements = ''
+      for(let i = 0; i < languages.length; i++) {
+        elements += `<p class="language mb-0 ms-2">${languages[i].slice(0, 2)}</p>`
+      }
+      return elements
+    }
     $('#selectGame').change(function(){
       var selectedGameId = $(this).val();
       $.ajax({
@@ -142,6 +154,7 @@
           $('#boostersList').empty();
           $.each(boosters, function(index, booster){
             const starRatingHtml = generateStarRating(booster.average_rating);
+            const languagesHtml = generateLanguages(booster.languages);
             $('#boostersList').append(`
             <div class="booster mb-5 p-0">
   
@@ -158,10 +171,12 @@
                     ${booster.achived_rank_name}
                   </p>
                 </div>
-  
+
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <p class="mb-0">Languages:</p>
-                  <p class="language mb-0">Eng</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    ${languagesHtml}
+                  </div>
                 </div>
   
                 <div class="d-flex justify-content-between align-items-center mb-3">

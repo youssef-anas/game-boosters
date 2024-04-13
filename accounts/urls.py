@@ -8,7 +8,6 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='account.login'),
     path('activate/sent/', activate_account_sent, name='accounts.activate.sent'),
     path('activate/<int:code>/',activate_account, name='accounts.activate.code'),
-    path('profile/', profile_view, name='accounts.profile'),
     path('promo-codes/', PromoCodeAPIView.as_view(), name='promo_code_detail'),
     
     path('password/reset/', reset_password_request, name='password.reset'),

@@ -1,0 +1,258 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+{% block style %}
+<!-- OUR STYLE -->
+<link rel="stylesheet" href="{% static 'accounts/css/profile-setting.css' %}">
+{% endblock %}
+{% block container %}
+<div class="setting-container container py-5">
+  <div class="row py-5 mt-5">
+    {% if messages %}
+    <div class="w-100 d-flex justify-content-center align-content-center ">
+      {% for message in messages %}
+        <div class="message success-message my-3 w-50">
+        {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="col-md-4 col-12 position-relative">
+      <div class="dropdown links-dropdown mb-5">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Account Management
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#email">Email</a></li>
+          <li><a class="dropdown-item" href="#password">Password</a></li>
+          <li><a class="dropdown-item" href="#personal-information">Personal Information</a></li>
+        </ul>
+      </div>
+      <h3>Account Management</h3>
+      <ul class="links">
+        <li><a href="#email" onclick="highlightLink(this)" class="active"><i class="fa-solid fa-envelope me-3"></i> Email</a></li>
+        <li><a href="#password" onclick="highlightLink(this)"><i class="fa-solid fa-key me-3"></i> Password</a></li>
+        <li><a href="#personal-information" onclick="highlightLink(this)"><i class="fa-solid fa-circle-info me-3"></i> Personal Information</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-8 col-12 ps-md-5 ps-0">
+      <div id="email" class="email-container row row-cols-xl-2 row-cols-1">
+
+        <div class="left-side p-4">
+          <p class="fs-4">Email</p>
+          <p style="color: #FFFFFF80;">We recommend that you change your email if you got hacked immediately.</p>
+        </div>
+        <div class="right-side py-4 px-5">
+          <p class="fs-5">Change Email</p>
+
+          <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Render old email field -->
+            <div class="form-group mb-4">
+              {{ email_edit_form.old_email }}
+              {% if email_edit_form.old_email.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ email_edit_form.old_email.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render new email field -->
+            <div class="form-group mb-4">
+              {{ email_edit_form.new_email }}
+              {% if email_edit_form.new_email.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ email_edit_form.new_email.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render confirm new email field -->
+            <div class="form-group mb-4">
+              {{ email_edit_form.confirm_new_email }}
+              {% if email_edit_form.confirm_new_email.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ email_edit_form.confirm_new_email.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Submit button for email form -->
+            <button type="submit" name="email_submit" class="btn update-btn">Save Changes</button>
+          </form>
+
+        
+        </div>
+
+      </div>
+
+      <div id="password" class="password-container row row-cols-xl-2 row-cols-1 mt-5">
+
+        <div class="left-side p-4">
+          <p class="fs-4">Password</p>
+          <p style="color: #FFFFFF80;">We recommend that you change your
+            regularly to prevent unauthorized access
+            to your account.</p>
+        </div>
+        <div class="right-side py-4 px-5">
+          <p class="fs-5">Change Password</p>
+
+          <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Render old password field -->
+            <div class="form-group mb-4">
+              {{ password_form.old_password  }}
+              {% if password_form.old_password.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.old_password.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render new password field -->
+            <div class="form-group mb-4">
+              {{ password_form.new_password1 }}
+              {% if password_form.new_password1.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.new_password1.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render confirm new password field -->
+            <div class="form-group mb-4">
+              {{ password_form.new_password2 }}
+              {% if password_form.new_password2.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.new_password2.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Submit button for password form -->
+            <button type="submit" name="password_submit" class="btn update-btn">Save Changes</button>
+          </form>
+
+        
+        </div>
+
+      </div>
+
+      <div id="personal-information" class="personal-container row row-cols-xl-2 row-cols-1 mt-5">
+        <div class="left-side p-4">
+          <p class="fs-4">Personal Information</p>
+          <p style="color: #FFFFFF80;">This information is private and will not be
+            shared with the boosters. Only the nickname
+            will be visible for boosters while chatting. For
+            more info read our <a href="{% url 'privacy.policy' %}" style="color: var(--secondary-color); text-decoration: underline !important;">Privacy Policy.</a></p>
+        </div>
+
+        <div class="right-side py-4 px-5">
+          <p class="fs-5">Age</p>
+          <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group mb-4">
+              <div class="form-inline d-flex justify-content-between align-items-center">
+                <!-- Render birth date fields with placeholders -->
+                <div class="input-group me-3">
+                  {{ profile_form.birth_day }}
+                </div>
+
+                <div class="input-group me-3">
+                  {{ profile_form.birth_month }}
+                </div>
+
+                <div class="input-group">
+                  {{ profile_form.birth_year }}
+                </div>
+
+              </div>
+              
+              {% if profile_form.non_field_errors  %}
+                <div class="message error-message mt-2 w-100">{{ profile_form.non_field_errors  }}</div>
+              {% endif %}
+            </div>
+            
+            <div class="form-group mb-4">
+              {{ profile_form.username }}
+              {% for error in profile_form.username.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+
+            <div class="form-group mb-4">
+              <div class="select-container w-100">
+                {{ profile_form.country }}
+              </div>
+              {% for error in profile_form.country.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+            
+            <!-- Submit button for Personal form -->
+            <button type="submit" name="profile_submit" class="btn update-btn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  // Function to highlight the clicked link and unhighlight the others
+  function highlightLink(link) {
+    // Get all the links in the document
+    let links = document.querySelectorAll('a');
+
+    // Remove the active class from all links
+    links.forEach(function(l) {
+        l.classList.remove('active');
+    });
+
+    // Add the active class to the clicked link
+    link.classList.add('active');
+  }
+
+  const daysInMonth = {
+      1: 31,
+      2: 28, // Change to 29 for leap years
+      3: 31,
+      4: 30,
+      5: 31,
+      6: 30,
+      7: 31,
+      8: 31,
+      9: 30,
+      10: 31,
+      11: 30,
+      12: 31
+    };
+
+    // Get the month and day input fields
+    const birthMonth = document.getElementById("id_birth_month");
+    const birthDay = document.getElementById("id_birth_day");
+
+    // Function to adjust the max value of the day field based on the selected month
+    function adjustDayMaxValue() {
+      const selectedMonth = birthMonth.value;
+      const maxDays = daysInMonth[selectedMonth] || 31; // Default to 31 if month is not set
+      birthDay.setAttribute("max", maxDays);
+    }
+
+    // Add an event listener to the month field to adjust the day field's max value when the month changes
+    birthMonth.addEventListener("change", adjustDayMaxValue);
+
+    // Call the function initially to set the correct max value when the page loads
+    adjustDayMaxValue();
+</script>
+{% endblock %}

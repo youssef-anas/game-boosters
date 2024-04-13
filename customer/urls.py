@@ -22,7 +22,6 @@ urlpatterns = [
     path('choose_booster/<int:order_id>/<int:booster_id>', choose_booster, name='choose.booster'),
     path('set_customer_data/', set_customer_data, name='set.customer.data'),
 
-    path('edit-profile/', user_passes_test(is_customer)(edit_customer_profile), name='edit.customer.profile'),
-    path('history/', user_passes_test(is_customer)(customer_history), name='customer.history'),
+    path('profile_setting/', user_passes_test(is_customer)(customer_setting), name='customer.setting'),
 
 ]

@@ -43,7 +43,10 @@ def last_orders(request):
     "last_orders": last_orders
   }
 
-  return render(request, 'gameboosterss/last-orders.html', context=context)  
+  return render(request, 'gameboosterss/last-orders.html', context=context)
+
+def privacy_policy(request):
+  return render(request, 'gameboosterss/privacy-policy.html')
 
 def custom_handler400(request, exception):
   return render(request, 'erorr_handler/400.html', status=400)

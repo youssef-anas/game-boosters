@@ -39,6 +39,19 @@
 .custom-btn.outline, .custom-btn.outline:active {
   color: white;
 }
+.update-btn {
+  width: 100%;
+  padding: 7px;
+  border-radius: 48px;
+  margin-top: 1rem;
+  color: #FFFFFF80;
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  background-color: #F26E3E80;
+}
+.update-btn:hover {
+  background-color: #de49499e;
+}
 
 /* ----------------------------- Drop Down ----------------------------- */
 .custom-dropdown .dropdown-toggle::after {
@@ -131,8 +144,11 @@ select::-ms-expand {
   border: none !important;
   box-shadow: 0px 0px 10px 0px #00000040 inset !important;
 }
-.custom-input::placeholder {
+input::placeholder {
   color:  #FFFFFF80 !important;
+}
+input:focus {
+  box-shadow: none !important;
 }
 
 /* ----------------------------- Input File ----------------------------- */

@@ -93,7 +93,8 @@ class Booster(models.Model):
         return f'{self.booster.username}'
     
     def get_languages_as_list(self):
-        return self.languages.split(',')
+        # Return the languages list as is
+        return self.languages
 
     def set_languages_from_list(self, text_list):
         self.languages = ','.join(text_list)

@@ -224,3 +224,8 @@ def extract_order_to(text):
     return text[start_index + len(start_marker):]
   else:
     return ""
+  
+@register.filter
+def first_two_chars(value):
+  # Return the first two characters of the string
+  return value[:2]

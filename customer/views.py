@@ -9,7 +9,7 @@ from gameBoosterss.utils import refresh_order_page, send_change_data_msg
 from accounts.tasks import update_database_task
 from django_q.tasks import async_task
 from django.utils import timezone
-from customer.forms import ProfileEditForm, PasswordEditForm
+from customer.forms import EmailEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages
 from gameBoosterss.utils import get_boosters
 import secrets
@@ -18,9 +18,10 @@ from paypal.standard.forms import PayPalPaymentsForm
 from customer.controllers.serializers import *
 
 @login_required
-def edit_customer_profile(request):
+def customer_setting(request):
     profile_form = ProfileEditForm(instance=request.user)
     password_form = PasswordEditForm(user=request.user)
+    email_edit_form = EmailEditForm(user=request.user)
 
     if request.method == 'POST':
         if 'profile_submit' in request.POST:
@@ -28,16 +29,27 @@ def edit_customer_profile(request):
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(request, 'Profile Updated Successfully.')
-                return redirect('edit.customer.profile')
+                return redirect('customer.setting')
 
         elif 'password_submit' in request.POST:
-            password_form = PasswordEditForm(request.user, request.POST)
+            password_form = PasswordEditForm(user=request.user, data=request.POST)
             if password_form.is_valid():
                 password_form.save()
                 messages.success(request, 'Password Changed Successfully.')
-                return redirect('edit.customer.profile')
+                return redirect('customer.setting')
 
-    return render(request, 'accounts/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
+        elif 'email_submit' in request.POST:
+            email_edit_form = EmailEditForm(request.POST, user=request.user)
+            if email_edit_form.is_valid():
+                email_edit_form.save()
+                messages.success(request, 'Email Updated Successfully.')
+                return redirect('customer.setting')
+
+    return render(request, 'customer/setting.html', {
+        'profile_form': profile_form,
+        'password_form': password_form,
+        'email_edit_form': email_edit_form
+    })
 
 
 @login_required
@@ -251,12 +263,6 @@ def cancel_tip(request, token, order_id):
     order = BaseOrder.objects.get(id=order_id)
     request.session['success_tip'] = 'false'
     return redirect(reverse('accounts.customer_orders', kwargs={'order_name': order.name}))
-
-
-@login_required
-def customer_history(request):
-    history = Transaction.objects.filter(user=request.user)
-    return render(request, 'accounts/customer_histoty.html', context={'history' : history})
 
 
 def payment_canceled(request):

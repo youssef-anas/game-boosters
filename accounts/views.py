@@ -26,11 +26,6 @@ class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('homepage.index')
 
 
-@login_required
-def profile_view(request):
-    return render(request, 'accounts/profile.html')
-
-
 def create_account(request):
     email = request.session.get('email')
     if email:

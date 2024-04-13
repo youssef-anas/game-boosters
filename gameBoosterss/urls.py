@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from gameBoosterss.views import index, last_orders
+from gameBoosterss.views import index, last_orders, privacy_policy
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 
@@ -10,6 +10,7 @@ from django.conf.urls import handler400, handler403, handler404, handler500
 urlpatterns = [
     path('', index, name="homepage.index"),
     path('last_orders/', last_orders, name="last.orders"),
+    path('privacy&policy/', privacy_policy, name="privacy.policy"),
     path('admin/', admin.site.urls),
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),

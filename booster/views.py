@@ -161,9 +161,9 @@ def boosters(request):
                 "achived_rank_name": booster.achived_rank_name,
                 "achived_rank_image": achived_rank_image_url,
                 "order_count": booster.order_count,
-                "average_rating": booster.get_average_rating,
+                "average_rating": booster.get_average_rating(),
 
-                'languages': ['En', 'Ar'], # TODO , I Want Get Language From DataBase
+                'languages': booster.booster.languages, # TODO , I Want Get Language From DataBase
                 'last_boost': custom_timesince(booster.last_boost),
                 'on_madboost': format_date(booster.created_at),
             }
