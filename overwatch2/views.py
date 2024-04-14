@@ -57,19 +57,20 @@ def overwatch2GetBoosterByRank(request):
 
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 12)
+
   game_pk_condition = Case(
-    When(booster_division__game__pk=12, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
+    When(booster_orders__game__pk=12, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
     output_field=IntegerField()
   )
     
   boosters = BaseUser.objects.filter(
-    is_booster = True,
-    booster__is_overwatch2_player=True,
-    booster__can_choose_me=True
-    ).annotate(
-    order_count=Sum(game_pk_condition)
-    ).order_by('id')
+      is_booster = True,
+      booster__is_overwatch2_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
 
 
   context = {
@@ -98,9 +99,10 @@ def view_that_asks_for_money(request):
       serializer = PlacementSerializer(data=request.POST)
 
     if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
+      extend_order_id = 0
       # Division
       if request.POST.get('game_type') == 'D':
+        extend_order_id = serializer.validated_data['extend_order']
         order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
       # Placement
       elif request.POST.get('game_type') == 'P':

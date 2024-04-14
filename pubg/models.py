@@ -63,6 +63,7 @@ class PubgDivisionOrder(models.Model):
   current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
 
   select_champion = models.BooleanField(default=True, blank=True, null=True)
 

@@ -134,6 +134,6 @@ class PlacementSerializer(serializers.Serializer):
                     raise serializers.ValidationError("You can choose max 3 champions.")
                 for id in numbers_list:
                     try:
-                        Champion.objects.get(id=id, game__id = 2)
+                        Champion.objects.get(id=id, game__id = 4)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champions is not belong to LOL.")

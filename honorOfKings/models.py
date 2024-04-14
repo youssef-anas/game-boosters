@@ -59,6 +59,7 @@ class HonorOfKingsDivisionOrder(models.Model):
   current_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.IntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
 
 
   def send_discord_notification(self):
@@ -71,13 +72,13 @@ class HonorOfKingsDivisionOrder(models.Model):
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f"From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} Marks {self.current_marks} "
-            f"To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)} \n server {self.order.customer_server}"
+            f"To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)} \nserver {self.order.customer_server}"
         ),
-        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "color": 0x3498db,
         "footer": {"text": f"{current_time}"}, 
     }
     data = {
-        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "content": "New order has arrived \n",
         "embeds": [embed],
     }
 
@@ -187,11 +188,11 @@ class HonorOfKingsDivisionOrder(models.Model):
     booster_price = custom_price * (percent/100)
 
     percent_for_view = round((booster_price/actual_price)* 100)
-    if percent_for_view > 100:
-      percent_for_view = 100
+    # if percent_for_view > 100:
+    #   percent_for_view = 100
 
-    if booster_price > actual_price:
-      booster_price = actual_price
+    # if booster_price > actual_price:
+    #   booster_price = actual_price
 
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

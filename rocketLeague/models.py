@@ -96,8 +96,8 @@ class RocketLeagueDivisionOrder(models.Model):
         "title": "Rocket League",
         "description": (
             f"**Order ID:** {self.order.name}\n"
-            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} "
-            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n {self.get_ranked_type_display()} server USA" # change server next
+            f" From {str(self.current_rank.rank_name).upper()} {romanize_division(self.current_division)} "
+            f" To {str(self.desired_rank.rank_name).upper()} {romanize_division(self.desired_division)}\n {self.get_ranked_type_display()}\nserver {self.order.customer_server}"
         ),
         "color": 0xff8c00,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
@@ -202,11 +202,11 @@ class RocketLeagueDivisionOrder(models.Model):
     booster_price = custom_price * (percent/100)
 
     percent_for_view = round((booster_price/actual_price)* 100)
-    if percent_for_view > 100:
-      percent_for_view = 100
+    # if percent_for_view > 100:
+    #   percent_for_view = 100
 
-    if booster_price > actual_price:
-      booster_price = actual_price
+    # if booster_price > actual_price:
+    #   booster_price = actual_price
 
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
@@ -224,10 +224,10 @@ class RocketLeaguePlacementOrder(models.Model):
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "Rocket League",
         "description": (
             f"**Order ID:** {self.order.name}\n"
-            f"Placement {self.number_of_match} matchs with last_rank {self.last_rank}"
+            f"Placement {self.number_of_match} matchs with last_rank {self.last_rank.rank_name}\nserver {self.order.customer_server}"
         ),
         "color": 0xff8c00,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
@@ -287,6 +287,35 @@ class RocketLeagueSeasonalOrder(models.Model):
 
   created_at = models.DateTimeField(auto_now_add =True)
 
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return None
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Rocket League",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"Seasonal {self.number_of_wins} Wins with rank {self.current_rank.rank_name}\nserver {self.order.customer_server}"
+        ),
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
     self.order.game_name = 'rocketLeague'
@@ -297,6 +326,7 @@ class RocketLeagueSeasonalOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
 
   def get_details(self):
     return f"Seasonal Reward Boosting by {self.number_of_wins} Wins With Rank {self.current_rank}"
@@ -324,6 +354,35 @@ class RocketLeagueTournamentOrder(models.Model):
 
   created_at = models.DateTimeField(auto_now_add =True)
 
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return None
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209761850678583346/X6pCjDZ4C65kbbshT9grGbgfVCf4rAYWg6isSN8qmJuIjZG7N4CQtXp0c3GKKzoJFbFf'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Rocket League",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f"Tournament boost with current league {self.current_league.rank_name}\nserver {self.order.customer_server}"
+        ),
+        "color": 0xff8c00,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
   def save_with_processing(self, *args, **kwargs):
     self.order.game_id = 9
     self.order.game_name = 'rocketLeague'
@@ -334,6 +393,7 @@ class RocketLeagueTournamentOrder(models.Model):
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
+    self.send_discord_notification()
 
   def get_details(self):
     return f"{self.current_league} League Tournament Win"

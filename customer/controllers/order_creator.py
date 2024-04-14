@@ -121,7 +121,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             actual_price = 0
             if status == 'Continue':
                 actual_price = round(price * (extra / 100),2)
-            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code, actual_price=actual_price)
+            baseOrder = BaseOrder.objects.create(game_id=game_id,invoice=invoice, booster=booster, payer_id=payer_id, customer=customer,status=status, price=price, duo_boosting=duo_boosting,select_booster=select_booster,turbo_boost=turbo_boost,streaming=streaming, name=name, customer_server=server,promo_code_id= promo_code, actual_price=actual_price, game_type=type)
             # Here I Make This Condition Because it Make Error in Placement
             if type == 'D' or type == 'A':
                 default_fields = {
@@ -194,6 +194,9 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             # Overwatch Division 
             elif game_id == 12 and type == 'D':
                 order = Game.objects.create(**default_fields, role=role)
+            # Overwatch Placement 
+            elif game_id == 12 and type == 'P':
+                order = Game.objects.create(order=baseOrder, number_of_match=number_of_match, last_rank_id=last_rank, role=role)
             # csgo2
             elif game_id == 13 and type == 'D':
                 order = Game.objects.create(**default_fields)
@@ -280,6 +283,10 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             # Overwatch Division 
             elif game_id == 12 and type == 'D':
                 order = Game.objects.create(**extend_fields, role= extend_order_role)
+            # Overwatch Placement 
+            elif game_id == 12 and type == 'P':
+                # order = Game.objects.create(order=baseOrder,)
+                pass
             # csgo2
             elif game_id == 13 and type == 'D':
                 order = Game.objects.create(**extend_fields)

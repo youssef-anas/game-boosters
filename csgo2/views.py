@@ -11,6 +11,9 @@ from csgo2.controller.order_information import *
 from accounts.models import TokenForPay, BaseOrder
 from django.contrib.auth.decorators import login_required
 from booster.models import OrderRating
+from django.db.models import Avg, Sum, Case, When, Value, IntegerField
+from django.db.models.functions import Coalesce
+from accounts.models import BaseUser
 
 def csgo2GetBoosterByRank(request):
   order_get_rank_value = None
@@ -60,13 +63,28 @@ def csgo2GetBoosterByRank(request):
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 12)
 
+  game_pk_condition = Case(
+    When(booster_orders__game__pk=13, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
+    default=0,
+    output_field=IntegerField()
+  )
+    
+  boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_csgo2_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
+
   context = {
     "ranks": ranks,
     "divisions": divisions_list,
     "order_get_rank_value": order_get_rank_value,
     "premier_prices": premier_prices,
     "faceit_prices": faceit_data,
-    "feedbacks": feedbacks
+    "feedbacks": feedbacks,
+    "boosters": boosters,
   }
   return render(request,'csgo2/GetBoosterByRank.html', context)
 

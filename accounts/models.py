@@ -234,6 +234,14 @@ class BaseOrder(models.Model):
         percent4 = booster_percent.booster_percent4
         percent5 = booster_percent.booster_percent5
 
+        if self.turbo_boost:
+            self.actual_price = round(self.price * (percent5 / 100), 2)
+            self.save()
+            return {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
+        
+        # if self.status == 'Continue':
+        #     
+
         time_difference = (current_time - self.created_at).total_seconds() if self.created_at else None
 
         if time_difference is None:
