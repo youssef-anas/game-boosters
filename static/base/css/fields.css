@@ -149,6 +149,7 @@ input::placeholder {
 }
 input:focus {
   box-shadow: none !important;
+  border: 1px solid var(--secondary-color);
 }
 
 /* ----------------------------- Input File ----------------------------- */

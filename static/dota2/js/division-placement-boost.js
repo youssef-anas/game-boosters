@@ -336,8 +336,16 @@ currentMmr.on("input", function (event) {
   currentRank = getRank(currentMmrValue)[0];
 
   if((desiredMmrValue - currentMmrValue) < MIN_DESIRED_VALUE) {
-    desiredMmr.val(currentMmrValue + MIN_DESIRED_VALUE);
-    desiredMmrValue = currentMmrValue + MIN_DESIRED_VALUE;
+    let newValue = currentMmrValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 8000) {
+      newValue = 8000;
+      currentMmr.val(newValue - MIN_DESIRED_VALUE);
+      currentMmrValue = newValue - MIN_DESIRED_VALUE;
+      currentRank = getRank(currentMmrValue)[0];
+    }
+    desiredMmr.val(newValue);
+    desiredMmrValue = newValue;
     desiredRank = getRank(desiredMmrValue)[0];
 
     changeUI(desiredMmrValue, desiredMmr, desiredSteps);
@@ -354,8 +362,16 @@ desiredMmr.on("input", function (event) {
   desiredRank = getRank(desiredMmrValue)[0];
 
   if((desiredMmrValue - currentMmrValue) < MIN_DESIRED_VALUE) {
-    desiredMmr.val(currentMmrValue + MIN_DESIRED_VALUE);
-    desiredMmrValue = currentMmrValue + MIN_DESIRED_VALUE;
+    let newValue = currentMmrValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 8000) {
+      newValue = 8000;
+      currentMmr.val(newValue - MIN_DESIRED_VALUE);
+      currentMmrValue = newValue - MIN_DESIRED_VALUE;
+      currentRank = getRank(currentMmrValue)[0];
+    }
+    desiredMmr.val(newValue);
+    desiredMmrValue = newValue;
     desiredRank = getRank(desiredMmrValue)[0];
 
     changeUI(desiredMmrValue, desiredMmr, desiredSteps);

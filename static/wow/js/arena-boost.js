@@ -339,8 +339,16 @@ current2vs2Arena.on("input", function (event) {
   current2vs2Rank = getRank(current2vs2ArenaValue)[0];
 
   if((desired2vs2ArenaValue - current2vs2ArenaValue) < MIN_DESIRED_VALUE) {
-    desired2vs2Arena.val(current2vs2ArenaValue + MIN_DESIRED_VALUE);
-    desired2vs2ArenaValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+    let newValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 2400) {
+      newValue = 2400;
+      current2vs2Arena.val(newValue - MIN_DESIRED_VALUE);
+      current2vs2ArenaValue = newValue - MIN_DESIRED_VALUE;
+      current2vs2Rank = getRank(current2vs2ArenaValue)[0];
+    }
+    desired2vs2Arena.val(newValue);
+    desired2vs2ArenaValue = newValue;
     desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
 
     changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
@@ -357,8 +365,16 @@ desired2vs2Arena.on("input", function (event) {
   desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
 
   if((desired2vs2ArenaValue - current2vs2ArenaValue) < MIN_DESIRED_VALUE) {
-    desired2vs2Arena.val(current2vs2ArenaValue + MIN_DESIRED_VALUE);
-    desired2vs2ArenaValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+    let newValue = current2vs2ArenaValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 2400) {
+      newValue = 2400;
+      current2vs2Arena.val(newValue - MIN_DESIRED_VALUE);
+      current2vs2ArenaValue = newValue - MIN_DESIRED_VALUE;
+      current2vs2Rank = getRank(current2vs2ArenaValue)[0];
+    }
+    desired2vs2Arena.val(newValue);
+    desired2vs2ArenaValue = newValue;
     desired2vs2Rank = getRank(desired2vs2ArenaValue)[0];
 
     changeUI(desired2vs2ArenaValue, desired2vs2Arena, desired2vs2Steps);
@@ -387,10 +403,18 @@ arena_2vs2_server_select_element.on("change", function() {
 current3vs3Arena.on("input", function (event) {
   current3vs3ArenaValue = Number(event.target.value);
   current3vs3Rank = getRank(current3vs3ArenaValue)[0];
-  
+
   if((desired3vs3ArenaValue - current3vs3ArenaValue) < MIN_DESIRED_VALUE) {
-    desired3vs3Arena.val(current3vs3ArenaValue + MIN_DESIRED_VALUE);
-    desired3vs3ArenaValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+    let newValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 2400) {
+      newValue = 2400;
+      current3vs3Arena.val(newValue - MIN_DESIRED_VALUE);
+      current3vs3ArenaValue = newValue - MIN_DESIRED_VALUE;
+      current3vs3Rank = getRank(current3vs3ArenaValue)[0];
+    }
+    desired3vs3Arena.val(newValue);
+    desired3vs3ArenaValue = newValue;
     desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
     changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
@@ -408,8 +432,16 @@ desired3vs3Arena.on("input", function (event) {
   desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
   if((desired3vs3ArenaValue - current3vs3ArenaValue) < MIN_DESIRED_VALUE) {
-    desired3vs3Arena.val(current3vs3ArenaValue + MIN_DESIRED_VALUE);
-    desired3vs3ArenaValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+    let newValue = current3vs3ArenaValue + MIN_DESIRED_VALUE;
+
+    if(newValue > 2400) {
+      newValue = 2400;
+      current3vs3Arena.val(newValue - MIN_DESIRED_VALUE);
+      current3vs3ArenaValue = newValue - MIN_DESIRED_VALUE;
+      current3vs3Rank = getRank(current3vs3ArenaValue)[0];
+    }
+    desired3vs3Arena.val(newValue);
+    desired3vs3ArenaValue = newValue;
     desired3vs3Rank = getRank(desired3vs3ArenaValue)[0];
 
     changeUI(desired3vs3ArenaValue, desired3vs3Arena, desired3vs3Steps);
