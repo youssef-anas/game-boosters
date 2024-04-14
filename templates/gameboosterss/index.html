@@ -97,7 +97,11 @@
                 <div class="booster d-flex justify-content-center align-items-center">
 
                   <div class="image">
-                    <img src="{{order.order.booster.get_image_url}}" class="img-fluid" alt="Booster Image">
+                    {% if order.order.booster.booster.get_image_url %}
+                      <img src="{{order.order.booster.booster.get_image_url}}" class="img-fluid" alt="Booster Image">
+                    {% else %}
+                      <img src="{% static 'base/images/no_profile_image.jpg' %}" class="img-fluid" alt="No Profile Photo">
+                    {% endif %}
                   </div>
 
                   <div class="name ms-3">

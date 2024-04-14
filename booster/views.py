@@ -44,7 +44,7 @@ def register_booster_view(request):
     return render(request, 'booster/registeration_booster.html', {'form': form})
 
 @login_required
-def edit_booster_profile(request):
+def booster_setting(request):
     profile_form = ProfileEditForm(instance=request.user)
     password_form = PasswordEditForm(user=request.user)
 
@@ -54,16 +54,16 @@ def edit_booster_profile(request):
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(request, 'Profile updated successfully.')
-                return redirect('edit.booster.profile')
+                return redirect('booster.setting')
 
         elif 'password_submit' in request.POST:
             password_form = PasswordEditForm(request.user, request.POST)
             if password_form.is_valid():
                 password_form.save()
                 messages.success(request, 'Password changed successfully.')
-                return redirect('edit.booster.profile')
+                return redirect('booster.setting')
 
-    return render(request, 'booster/edit_profile.html', {'profile_form': profile_form, 'password_form': password_form})
+    return render(request, 'booster/setting.html', {'profile_form': profile_form, 'password_form': password_form})
 
 # Orders Page
 def orders_jobs(request):
@@ -239,7 +239,7 @@ def get_rate(request, order_id):
                 if existing_rating:
                     return HttpResponse('Rate Already Added', status=status.HTTP_400_BAD_REQUEST)
                 serializer.save(order=order_obj)
-                return redirect('homepage.index')
+                return redirect('customer.orders')
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return HttpResponse('Method Not Allowed', status=status.HTTP_400_BAD_REQUEST)
     return HttpResponse('Order Not Done', status=status.HTTP_400_BAD_REQUEST)

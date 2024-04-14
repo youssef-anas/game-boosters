@@ -1,6 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
-{% block title %}Profile{% endblock %}
+{% block title %}Setting{% endblock %}
 {% block style %}
 <!-- OUR STYLE -->
 <link rel="stylesheet" href="{% static 'accounts/css/profile-setting.css' %}">
@@ -50,7 +50,7 @@
             {% csrf_token %}
             
             <!-- Render old email field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ email_edit_form.old_email }}
               {% if email_edit_form.old_email.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -60,7 +60,7 @@
             </div>
             
             <!-- Render new email field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ email_edit_form.new_email }}
               {% if email_edit_form.new_email.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -70,7 +70,7 @@
             </div>
             
             <!-- Render confirm new email field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ email_edit_form.confirm_new_email }}
               {% if email_edit_form.confirm_new_email.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -103,7 +103,7 @@
             {% csrf_token %}
             
             <!-- Render old password field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ password_form.old_password  }}
               {% if password_form.old_password.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -113,7 +113,7 @@
             </div>
             
             <!-- Render new password field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ password_form.new_password1 }}
               {% if password_form.new_password1.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -123,7 +123,7 @@
             </div>
             
             <!-- Render confirm new password field -->
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ password_form.new_password2 }}
               {% if password_form.new_password2.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -155,7 +155,7 @@
           <form method="POST">
             {% csrf_token %}
 
-            <div class="form-group mb-4">
+            <div class="form-group">
               <div class="form-inline d-flex justify-content-between align-items-center">
                 <!-- Render birth date fields with placeholders -->
                 <div class="input-group me-3">
@@ -177,7 +177,7 @@
               {% endif %}
             </div>
             
-            <div class="form-group mb-4">
+            <div class="form-group">
               {{ profile_form.username }}
               {% for error in profile_form.username.errors %}
                 <div class="message error-message mt-2 w-100">
@@ -186,7 +186,7 @@
               {% endfor %}
             </div>
 
-            <div class="form-group mb-4">
+            <div class="form-group">
               <div class="select-container w-100">
                 {{ profile_form.country }}
               </div>

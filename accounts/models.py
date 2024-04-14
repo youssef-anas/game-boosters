@@ -13,7 +13,7 @@ from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 
 class BaseUser(AbstractUser):
-    profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
+    # profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
     country = CountryField(blank=True,null=True)
     date_of_birth = models.DateField(null=True, blank=True)
 
@@ -33,10 +33,19 @@ class BaseUser(AbstractUser):
     rest_password_code = models.IntegerField(null=True,blank=True)
     rest_password_time = models.DateTimeField(null=True, blank=True)
 
-    def get_image_url(self):
-        if self.profile_image:
-            return self.profile_image.url
-        return None
+    def set_full_name(self, full_name):
+        names = full_name.split()
+        if len(names) > 1:
+            self.first_name = names[0]
+            self.last_name = " ".join(names[1:])
+        elif len(names) == 1:
+            self.first_name = names[0]
+            self.last_name = ''
+
+    # def get_image_url(self):
+    #     if self.profile_image:
+    #         return self.profile_image.url
+    #     return None
     
     def get_average_rating(self):
         # Check if the user is a booster
@@ -127,7 +136,6 @@ class PromoCode(models.Model):
             return True
         return False
     
-
 class BoosterPercent(models.Model):
     booster_percent1 = models.IntegerField(default=22)
     booster_percent2 = models.IntegerField(default=24)

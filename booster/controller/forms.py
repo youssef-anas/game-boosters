@@ -4,8 +4,19 @@ from phonenumber_field.formfields import PhoneNumberField
 from django.contrib.auth import get_user_model
 from booster.models import Booster
 from wildRift.models import WildRiftRank
+from valorant.models import ValorantRank
+from pubg.models import PubgRank
+from leagueOfLegends.models import LeagueOfLegendsRank
+from tft.models import TFTRank
+from hearthstone.models import HearthstoneRank
+from rocketLeague.models import RocketLeagueRank
+from mobileLegends.models import MobileLegendsRank
+from WorldOfWarcraft.models import WorldOfWarcraftRank
+from overwatch2.models import Overwatch2Rank
+from dota2.models import Dota2Rank
+from csgo2.models import Csgo2Rank
+from honorOfKings.models import HonorOfKingsRank
 BaseUser = get_user_model()
-
 
 class Registeration_Booster(UserCreationForm):
     image = forms.ImageField(label='Profile Picture', required=False)
@@ -45,57 +56,163 @@ class Registeration_Booster(UserCreationForm):
         return user
     
 class ProfileEditForm(UserChangeForm, forms.ModelForm):
-    image = forms.ImageField(label='Profile Picture', required=False)
-    about_you = forms.CharField(label='About You', widget=forms.Textarea(attrs={'rows': 4}), required=False)
-    is_wr_player = forms.BooleanField(label='Is Wild Rift Player', initial=False, required=False)
-    is_valo_player = forms.BooleanField(label='Is Valorant Player', initial=False, required=False)
-    achived_rank_wr = forms.ModelChoiceField(queryset=WildRiftRank.objects.all(), label='Achieved Rank in Wild Rift', required=False)
-    achived_rank_valo = forms.ModelChoiceField(queryset=WildRiftRank.objects.all(), label='Achieved Rank in Valorant', required=False)
+    full_name = forms.CharField(max_length=300, 
+    widget=forms.TextInput(attrs={'placeholder': 'Enter full name', 'class': 'form-control'}),
+    label='Name')
+
+    profile_image = forms.ImageField(required=False, widget=forms.ClearableFileInput())
+    about_you = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'About you', 'class': 'form-control'}), 
+        label='Bio',
+        required=False)
+
+    
+    # Define form fields for achived ranks
+    achived_rank_wr = forms.ModelChoiceField(queryset=WildRiftRank.objects.all(), required=False, label='Lol: Wild Rift')
+
+    achived_rank_valo = forms.ModelChoiceField(queryset=ValorantRank.objects.all(), required=False, label='VALORANT')
+
+    achived_rank_pubg = forms.ModelChoiceField(queryset=PubgRank.objects.all(), required=False, label='Pubg Mobile')
+
+    achived_rank_lol = forms.ModelChoiceField(queryset=LeagueOfLegendsRank.objects.all(), required=False, label='League of Legends')
+
+    achived_rank_tft = forms.ModelChoiceField(queryset=TFTRank.objects.all(), required=False, label='Team Fight Tactics')
+
+    achived_rank_wow = forms.ModelChoiceField(queryset=WorldOfWarcraftRank.objects.all(), required=False, label='World of Warcraft')
+
+    achived_rank_hearthstone = forms.ModelChoiceField(queryset=HearthstoneRank.objects.all(), required=False, label='Hearthstone')
+
+    achived_rank_mobleg = forms.ModelChoiceField(queryset=MobileLegendsRank.objects.all(), required=False, label='Mobile Legends')
+
+    achived_rank_rl = forms.ModelChoiceField(queryset=RocketLeagueRank.objects.all(), required=False, label='Rocket League')
+
+    achived_rank_dota2 = forms.ModelChoiceField(queryset=Dota2Rank.objects.all(), required=False, label='Dota 2')
+
+    achived_rank_hok = forms.ModelChoiceField(queryset=HonorOfKingsRank.objects.all(), required=False, label='Honer Of King')
+
+    achived_rank_overwatch2 = forms.ModelChoiceField(queryset=Overwatch2Rank.objects.all(), required=False, label='Overwatch 2')
+
+    achived_rank_csgo2 = forms.ModelChoiceField(queryset=Csgo2Rank.objects.all(), required=False, label='CS GO 2')
 
     class Meta:
         model = BaseUser
-        fields = ("email", "image", 'country')
+        fields = []
 
     class MetaBooster:
         model = Booster
-        fields = ("image", "about_you", "is_wr_player", "is_valo_player", "achived_rank_wr", "achived_rank_valo")
+        fields = [
+            'profile_image',
+            'about_you',
+            'achived_rank_wr',
+            'achived_rank_valo',
+            'achived_rank_pubg',
+            'achived_rank_lol',
+            'achived_rank_tft',
+            'achived_rank_wow',
+            'achived_rank_hearthstone',
+            'achived_rank_mobleg',
+            'achived_rank_rl',
+            'achived_rank_dota2',
+            'achived_rank_hok',
+            'achived_rank_overwatch2',
+            'achived_rank_csgo2',
+        ]
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if BaseUser.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
-            raise forms.ValidationError("Email already exists.")
-        return email
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ''
+        
+        # Get the Booster instance associated with the user
+        booster = None
+        if hasattr(self.instance, 'booster'):
+            booster = self.instance.booster
+
+        if hasattr(self.instance, 'first_name') and hasattr(self.instance, 'last_name'):
+            # Combine first name and last name for the full_name field
+            full_name = f"{self.instance.first_name} {self.instance.last_name}"
+            self.initial['full_name'] = full_name
+        
+        # Set the initial value for about_you field from the Booster instance
+        if booster and hasattr(booster, 'about_you'):
+            self.initial['about_you'] = booster.about_you
+        
+        # Define mapping from boolean flags to rank fields
+        mapping = {
+            'is_wr_player': 'achived_rank_wr',
+            'is_valo_player': 'achived_rank_valo',
+            'is_pubg_player': 'achived_rank_pubg',
+            'is_lol_player': 'achived_rank_lol',
+            'is_tft_player': 'achived_rank_tft',
+            'is_wow_player': 'achived_rank_wow',
+            'is_hearthstone_player': 'achived_rank_hearthstone',
+            'is_mobleg_player': 'achived_rank_mobleg',
+            'is_rl_player': 'achived_rank_rl',
+            'is_dota2_player': 'achived_rank_dota2',
+            'is_hok_player': 'achived_rank_hok',
+            'is_overwatch2_player': 'achived_rank_overwatch2',
+            'is_csgo2_player': 'achived_rank_csgo2',
+        }
+        
+        # If the booster instance exists, iterate over the mapping and remove achived rank fields if the corresponding boolean flag is False
+        if booster:
+            for bool_field, rank_field in mapping.items():
+                if not getattr(booster, bool_field, False):
+                    self.fields.pop(rank_field, None)
+
+                if hasattr(booster, rank_field):
+                    self.initial[rank_field] = getattr(booster, rank_field)
+                
+        # Remove password field if it exists
+        self.fields.pop('password', None)
+        self.fields.pop('last_name', None)
+        self.fields.pop('last_name', None)
+        self.fields.pop('username', None)
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        booster_data = {
-            'image': self.cleaned_data['image'],
-            'about_you': self.cleaned_data['about_you'],
-            'is_wr_player': self.cleaned_data['is_wr_player'],
-            'is_valo_player': self.cleaned_data['is_valo_player'],
-            'achived_rank_wr': self.cleaned_data['achived_rank_wr'],
-            'achived_rank_valo': self.cleaned_data['achived_rank_valo'],
-        }
+        
+        # Update user full name
+        if 'full_name' in self.cleaned_data:
+            full_name = self.cleaned_data['full_name']
+            user.set_full_name(full_name)
 
+        # Create a dictionary with the fields related to the Booster model
+        booster_data = {
+            'profile_image': self.cleaned_data.get('profile_image'),
+            'about_you': self.cleaned_data.get('about_you'),
+            'achived_rank_wr': self.cleaned_data.get('achived_rank_wr'),
+            'achived_rank_valo': self.cleaned_data.get('achived_rank_valo'),
+            'achived_rank_pubg': self.cleaned_data.get('achived_rank_pubg'),
+            'achived_rank_lol': self.cleaned_data.get('achived_rank_lol'),
+            'achived_rank_tft': self.cleaned_data.get('achived_rank_tft'),
+            'achived_rank_wow': self.cleaned_data.get('achived_rank_wow'),
+            'achived_rank_hearthstone': self.cleaned_data.get('achived_rank_hearthstone'),
+            'achived_rank_mobleg': self.cleaned_data.get('achived_rank_mobleg'),
+            'achived_rank_rl': self.cleaned_data.get('achived_rank_rl'),
+            'achived_rank_dota2': self.cleaned_data.get('achived_rank_dota2'),
+            'achived_rank_hok': self.cleaned_data.get('achived_rank_hok'),
+            'achived_rank_overwatch2': self.cleaned_data.get('achived_rank_overwatch2'),
+            'achived_rank_csgo2': self.cleaned_data.get('achived_rank_csgo2'),
+        }
+        
+        # Get or create the Booster instance for the user
         booster_instance, created = Booster.objects.get_or_create(booster=user)
+
+        # Update booster data
         if not created:
             for key, value in booster_data.items():
-                setattr(booster_instance, key, value)
+                if value is not None:
+                    setattr(booster_instance, key, value)
             booster_instance.save()
         else:
             Booster.objects.create(booster=user, **booster_data)
 
+        # Save the user if commit is True
         if commit:
             user.save()
+        
         return user
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields.pop('password', None)
-    
-    username = forms.CharField(
-        help_text=""
-    )
+
 
 class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
     class Meta:

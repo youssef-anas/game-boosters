@@ -1,0 +1,99 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Setting{% endblock %}
+{% block style %}
+<!-- OUR STYLE -->
+<link rel="stylesheet" href="{% static 'accounts/css/profile-setting.css' %}">
+{% endblock %}
+{% block container %}
+<div class="setting-container container py-5">
+  <div class="row py-5 mt-5">
+    {% if messages %}
+    <div class="w-100 d-flex justify-content-center align-content-center ">
+      {% for message in messages %}
+        <div class="message success-message my-3 w-50">
+        {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div class="col-md-4 col-12 position-relative">
+      <div class="dropdown links-dropdown mb-5">
+        <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Account Management
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#profile">Profile</a></li>
+          <li><a class="dropdown-item" href="#portfolio">Portfolio</a></li>
+          <li><a class="dropdown-item" href="#withdrawal-info">Withdrawal Info</a></li>
+          <li><a class="dropdown-item" href="#password">Password</a></li>
+        </ul>
+      </div>
+      <h3>Account Management</h3>
+      <ul class="links">
+        <li><a href="#profile" onclick="highlightLink(this)" class="active"><i class="fa-solid fa-circle-user me-3"></i> Profile</a></li>
+        <li><a href="#portfolio" onclick="highlightLink(this)"><i class="fa-solid fa-address-card me-3"></i> Portfolio</a></li>
+        <li><a href="#withdrawal-info" onclick="highlightLink(this)"><img src="{% static 'base/images/wallet.png' %}" alt="" width="19" height="19" class="me-3"> Withdrawal Info</a></li>
+        <li><a href="#password" onclick="highlightLink(this)"><i class="fa-solid fa-key me-3"></i> Password</a></li>
+      </ul>
+    </div>
+
+    <div class="col-md-8 col-12 ps-md-5 ps-0">
+      
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Render each field separately -->
+        <div class="form-group">
+          {{ profile_form.full_name.label_tag }}  <!-- Optional: Render the label for full_name field -->
+          {{ profile_form.full_name }}  <!-- Render the full_name field -->
+        </div>
+    
+        <div class="form-group">
+          {{ profile_form.profile_image.label_tag }}  <!-- Optional: Render the label for profile_image field -->
+          {{ profile_form.profile_image }}  <!-- Render the profile_image field -->
+        </div>
+    
+        <div class="form-group">
+          {{ profile_form.about_you.label_tag }}  <!-- Optional: Render the label for about_you field -->
+          {{ profile_form.about_you }}  <!-- Render the about_you field -->
+        </div>
+    
+        <!-- Render other fields similarly -->
+        {% for field in profile_form %}
+          {% if field.name not in 'full_name profile_image about_you' %}
+            <div class="form-group mb-4">
+              {{ field.label_tag }}  <!-- Optional: Render the label for each field -->
+              <div class="select-container w-100">
+                {{ field }}  <!-- Render each field -->
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+        
+        <button type="submit" name="profile_submit">Submit</button>
+      </form>    
+   
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+  // Function to highlight the clicked link and unhighlight the others
+  function highlightLink(link) {
+    // Get all the links in the document
+    let links = document.querySelectorAll('a');
+
+    // Remove the active class from all links
+    links.forEach(function(l) {
+        l.classList.remove('active');
+    });
+
+    // Add the active class to the clicked link
+    link.classList.add('active');
+  }
+
+</script>
+{% endblock %}

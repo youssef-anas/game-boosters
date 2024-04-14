@@ -14,15 +14,15 @@
               <div class="customer-info d-flex justify-content-between align-items-center mb-3">
                 <div class="d-flex">
                   <div class="customer-image me-3">
-                    {% if feedback.booster.get_image_url %}
-                      <img src="{{ feedback.booster.get_image_url }}" class="profile-image" alt="Booster Photo" />
+                    {% if feedback.booster.booster.get_image_url %}
+                      <img src="{{ feedback.booster.booster.get_image_url }}" class="profile-image" alt="Booster Photo" />
                     {% else %}
                       <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
                     {% endif %}
                   </div>
 
                   <div class="customer-data">
-                    <p class="mb-0">{{feedback.booster.first_name}} {{feedback.booster.last_name}}</p>
+                    <p class="mb-0">{{feedback.booster.username}}</p>
                     <p class="mb-0" style="color: #FFFFFF80;">{{feedback.booster.country}}</p>
                   </div>
                 </div>

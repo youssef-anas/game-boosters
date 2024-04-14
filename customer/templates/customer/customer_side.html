@@ -25,10 +25,10 @@
           {% if order.order.booster %}
             <div class="booster-info d-flex flex-wrap align-items-center">
               <div class="image">
-                {% if order.order.booster.booster.image %}
-                <img src="{{ order.order.booster.booster.image.url }}" class="profile-image" alt="Booster Photo" />
+                {% if order.order.booster.booster.get_image_url %}
+                <img src="{{ order.order.booster.booster.get_image_url }}" class="profile-image" alt="Booster Photo" />
                 {% else %}
-                <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
+                <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
                 {% endif %}
               </div>
   
@@ -387,10 +387,10 @@
               {% if order.order.booster %}
                 <div class="booster-info d-flex flex-wrap align-items-center pt-4">
                   <div class="image">
-                    {% if order.order.booster.booster.image %}
-                    <img src="{{ order.order.booster.booster.image.url }}" class="profile-image" alt="Booster Photo" />
+                    {% if order.order.booster.booster.get_image_url %}
+                    <img src="{{ order.order.booster.booster.get_image_url }}" class="profile-image" alt="Booster Photo" />
                     {% else %}
-                    <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
+                    <img src="{% static 'base/images/no_profile_image.png' %}" class="profile-image" alt="No Profile Photo">
                     {% endif %}
                   </div>
       
@@ -438,10 +438,10 @@
                             {% else %}
                               {% if request.user != message.user %}
                                 <div class="image me-3">
-                                  {% if message.user.get_image_url %}
-                                  <img src="{{message.user.get_image_url}}" alt="" width="40" height="40">
+                                  {% if message.user.booster.get_image_url %}
+                                  <img src="{{message.user.booster.get_image_url}}" alt="" width="40" height="40">
                                   {% else %}
-                                  <img src="{% static 'base/images/no_profile_image.jpg' %}" alt="" width="40" height="40">
+                                  <img src="{% static 'base/images/no_profile_image.png' %}" alt="" width="40" height="40">
                                   {% endif %}
                                 </div>
                                 
@@ -503,10 +503,10 @@
                           class="admin-chat-message {% if message.user == request.user %} user-message {% else %} admin-message {% endif %}">
                           {% if request.user != message.user %}
                             <div class="image me-3">
-                              {% if message.user.get_image_url %}
-                                <img src="{{message.user.get_image_url}}" alt="profile image" width="40" height="40">
+                              {% if message.user.booster.get_image_url %}
+                                <img src="{{message.user.booster.get_image_url}}" alt="profile image" width="40" height="40">
                               {% else %}
-                                <img src="{% static 'base/images/no_profile_image.jpg' %}" alt="no profile image" width="40" height="40">
+                                <img src="{% static 'base/images/no_profile_image.png' %}" alt="no profile image" width="40" height="40">
                               {% endif %}
                             </div>
 
@@ -567,12 +567,12 @@
   {{room.name|json_script:'booster_room_name'}}
   {{order.order.booster.first_name|json_script:'booster_first_name'}}
   {{order.order.booster.last_name|json_script:'booster_last_name'}}    
-  {{order.order.booster.image|json_script:'booster_image'}}    
+  {{order.order.booster.booster.get_image_url|json_script:'booster_image'}}    
 </div>
 {% endblock %}
 {% block script %}
 <script>
-  let staticUrl = "{% static 'base/images/no_profile_image.jpg' %}";
+  let staticUrl = "{% static 'base/images/no_profile_image.png' %}";
 </script>
 <script src='{% static "accounts/js/readmore.js" %}'></script>
 <script src='{% static "customer/js/customer-side.js" %}'></script>
