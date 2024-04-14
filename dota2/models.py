@@ -106,7 +106,7 @@ class Dota2RankBoostOrder(models.Model):
       "description": (
         f"**Order ID:** {self.order.name}\n"
         f" From {self.current_division} RP"
-        f" To {self.desired_division} RP server {self.order.customer_server}"
+        f" To {self.desired_division} RP role {self.get_role_display()} server {self.order.customer_server}"
       ),
       "color": 0xFFA500,  # Hex color code for a Discord color
       "footer": {"text": f"{current_time}"}, 
@@ -132,7 +132,7 @@ class Dota2RankBoostOrder(models.Model):
     self.order.game_type = 'A'
     self.order.details = self.get_details()
     if not self.order.name:
-      self.order.name = f'Dota2{self.order.id}'
+      self.order.name = f'Dot{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)

@@ -69,6 +69,7 @@ class HearthstoneDivisionOrder(models.Model):
   current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
 
   # select_champion = models.BooleanField(default=True, blank=True, null=True)
 
@@ -78,11 +79,11 @@ class HearthstoneDivisionOrder(models.Model):
     discord_webhook_url = 'https://discordapp.com/api/webhooks/1209758608599031858/PtdjMTcZq9dR5lo9uTVX-cJPSPEduMXcUjoiQrMchDHvyHv0oTuZnCIVIcsX6dwqGCy3'
     current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
     embed = {
-        "title": "Rift",
+        "title": "Hearth Stone",
         "description": (
             f"**Order ID:** {self.order.name}\n"
             f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
-            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n server us" # change server next
+            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n server {self.order.customer_server}"
         ),
         "color": 0x3498db,  # Hex color code for a Discord blue color
         "footer": {"text": f"{current_time}"}, 
@@ -108,7 +109,7 @@ class HearthstoneDivisionOrder(models.Model):
     self.order.game_type = 'D'
     self.order.details = self.get_details()
     if not self.order.name:
-      self.order.name = f'HEARTHSTONE{self.order.id}'
+      self.order.name = f'HS{self.order.id}'
     self.order.update_actual_price()
     self.order.save()
     super().save(*args, **kwargs)
@@ -197,11 +198,11 @@ class HearthstoneDivisionOrder(models.Model):
     booster_price = custom_price * (percent/100)
 
     percent_for_view = round((booster_price/actual_price)* 100)
-    if percent_for_view > 100:
-      percent_for_view = 100
+    # if percent_for_view > 100:
+    #   percent_for_view = 100
 
-    if booster_price > actual_price:
-      booster_price = actual_price
+    # if booster_price > actual_price:
+    #   booster_price = actual_price
 
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

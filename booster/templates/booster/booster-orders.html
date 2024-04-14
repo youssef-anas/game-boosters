@@ -267,9 +267,13 @@
                     <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
                       <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
                         {% if order.order.order.game_type == 'D' %}
+                        <div>
                           <img src="{{order.order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                        </div>
                         {% elif order.order.order.game_type == 'A' and order.order.order.game_id != 13 %}
+                        <div>
                           <img src="{{order.order.current_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                        </div>
                         {% endif %}
     
                         {% if order.order.order.game.link == 'wildRift' or order.order.order.game.link == 'lol' or order.order.order.game.link == 'tft' %}
@@ -429,8 +433,9 @@
                   {% elif order.order.order.game_type == 'P' %}
                     <div class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
                       <div class="from d-flex justify-content-center align-items-center me-md-3 me-1">
-                      
-                        <img src="{{order.order.last_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                        <div>
+                          <img src="{{order.order.last_rank.get_image_url}}" alt="Current Rank Image" class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40" height="40">
+                        </div>
                         {% if order.order.order.game_id == 10 %}
                           <p class="current-info text-capitalize mb-0">{{order.order.last_division}} MMR</p>
                         {% else %}
@@ -450,9 +455,9 @@
     
                     <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
                       <h4 style="font-weight: 7000;">Last Rank</h>
-                      
-                      <img src="{{order.order.last_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid d-block my-3" width="150" height="150">
-    
+                      <div class="d-block my-3">
+                        <img src="{{order.order.last_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid" width="150" height="150">
+                      </div>
                       {% if order.order.order.game_id == 10 %}
                         <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.last_division}} MMR</p>
                       {% else %}

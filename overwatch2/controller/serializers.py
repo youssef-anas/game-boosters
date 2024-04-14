@@ -71,7 +71,7 @@ class PlacementSerializer(serializers.Serializer):
 
     promo_code          = serializers.CharField()
     server              = serializers.CharField()
-    role                = serializers.IntegerField()
+    # role                = serializers.IntegerField()
 
     def validate(self, attrs):
         self.booster_validate(attrs)
@@ -86,10 +86,10 @@ class PlacementSerializer(serializers.Serializer):
             except Booster.DoesNotExist:
                 raise serializers.ValidationError("This Booster is not belong to Overwatch 2.")
 
-    def validate_role(self, value):
-        if value not in [1,2,3]:
-            raise serializers.ValidationError("Role must be 1, 2, or 3.")
-        return value        
+    # def validate_role(self, value):
+    #     if value not in [1,2,3]:
+    #         raise serializers.ValidationError("Role must be 1, 2, or 3.")
+    #     return value        
 
     def to_internal_value(self, data):
         data = super().to_internal_value(data)

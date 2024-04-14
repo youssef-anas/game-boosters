@@ -139,9 +139,9 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_booster = data['select_booster']
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
-  select_champion = data['select_champion']
+  select_champion = False
 
-  role_data = data['role']
+  role_data = 1
 
   server = data['server']
   promo_code = data['promo_code']
@@ -162,7 +162,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     duo_boosting_value = 1
 
   if select_booster:
-    total_percent += 0.05
+    total_percent += 0.10
     boost_options.append('SELECT BOOSTING')
     select_booster_value = 1
 
@@ -190,7 +190,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
       promo_code_amount = 0
 
   # Read data from JSON file
-  with open('static/overwatch/data/placements_data.json', 'r') as file:
+  with open('static/overwatch2/data/placements_data.json', 'r') as file:
     placement_data = json.load(file)
   ##    
   
@@ -201,7 +201,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
-    get_object_or_404(User,id=booster_id,is_booster=True)
+    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_overwatch2_player=True)
   else:
     booster_id = 0
 

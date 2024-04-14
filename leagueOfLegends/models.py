@@ -74,6 +74,7 @@ class LeagueOfLegendsDivisionOrder(models.Model):
   current_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   reached_marks = models.PositiveSmallIntegerField(choices=MARKS_CHOISES,blank=True, null=True)
   created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   select_champion = models.BooleanField(default=True, blank=True, null=True)
   champions = models.ManyToManyField(Champion, related_name='lol_division_champions', blank=True)
@@ -214,7 +215,9 @@ class LeagueOfLegendsPlacementOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='lol_placement_order')
   last_rank = models.ForeignKey(LeagueOfLegendsPlacement, on_delete=models.CASCADE, default=None, related_name='last_rank')
   number_of_match = models.IntegerField(default=5)
-  created_at = models.DateTimeField(auto_now_add =True)
+ 
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
 
   select_champion = models.BooleanField(default=False, blank=True, null=True)
   champions = models.ManyToManyField(Champion, related_name='lol_placement_champions', blank=True)
