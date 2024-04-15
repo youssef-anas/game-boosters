@@ -13,7 +13,7 @@ BaseUser = get_user_model()
 class Registeration(UserCreationForm):
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2",'country','profile_image')
+        fields = ("first_name","last_name","email","username","password1","password2",'country')
         # fields = '__all__'
 
     def clean_email(self):

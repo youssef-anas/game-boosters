@@ -46,7 +46,7 @@ class Booster(models.Model):
     languages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     games = models.ManyToManyField(Game, related_name='games')
 
-    paypal_account = models.EmailField(max_length=254, unique=True, blank=False)
+    paypal_account = models.EmailField(max_length=254, null=True, unique=True, blank=False)
 
     discord_id = models.CharField(max_length=300, default="", blank=True, null=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)

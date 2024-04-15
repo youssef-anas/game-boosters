@@ -207,11 +207,11 @@ class Overwatch2DivisionOrder(models.Model):
         percent_for_view = round((booster_price/actual_price)* 100)
         print('percent', percent)
 
-        # if percent_for_view > 100:
-        #     percent_for_view = 100
+        if percent_for_view > 100:
+            percent_for_view = 100
 
-        # if booster_price > actual_price:
-        #     booster_price = actual_price
+        if booster_price > actual_price:
+            booster_price = actual_price
 
         return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
 
