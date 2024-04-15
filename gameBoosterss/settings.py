@@ -106,6 +106,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'gameBoosterss.middleware.ImageSizeLimitMiddleware',
 ]
 
 ROOT_URLCONF = 'gameBoosterss.urls'
@@ -324,3 +325,18 @@ SOCIALACCOUNT_PROVIDERS = {
     #     }
     # }
 }
+
+# import firebase_admin
+# from firebase_admin import credentials
+
+# Initialize Firebase Admin SDK
+# cred = credentials.Certificate(os.path.join(BASE_DIR, 'fire-base.json'))
+# FIREBASE_STORAGE_BUCKET = "mad-boost.appspot.com"
+# firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
+
+# # Media files settings
+# MEDIA_URL = 'media/'
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# DEFAULT_FILE_STORAGE = 'path.to.firebase.FirebaseStorage'
+# DEFAULT_FILE_STORAGE = 'gameBoosterss.storage_backends.FirebaseStorage' 

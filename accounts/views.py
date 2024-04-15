@@ -37,6 +37,11 @@ def create_account(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
+            # profile_image = form.cleaned_data['profile_image']
+            # image_name = f"accounts/images/{profile_image.name}"
+            # image_data = profile_image.read()
+            # upload_image_to_firebase(image_data=image_data, filename=image_name)
+            # user.profile_image = image_name
             user.save()
             send_activation_code(user)
             request.session['email'] = user.email

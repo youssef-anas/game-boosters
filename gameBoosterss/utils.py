@@ -265,7 +265,7 @@ def send_activation_code(user) -> int:
     users_list = [user.email]
     secret_key = generate_random_5_digit_number()
 
-    html_content = render_to_string('accounts/activation_email.html', {'secret_key': secret_key, 'user':user})
+    html_content = render_to_string('accounts/activate_email_form.html', {'secret_key': secret_key, 'user':user})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
@@ -304,3 +304,14 @@ def send_change_data_msg(message):
         "msg_type": message.msg_type
     }
     async_to_sync(channel_layer.group_send)(f'chat_roomFor-{message.user}-{message.room.order_name}', event_data)
+
+
+
+# from firebase_admin import storage
+
+# def upload_image_to_firebase(image_data, filename):
+#     bucket = storage.bucket()
+#     blob = bucket.blob(filename)
+#     blob.upload_from_string(image_data)
+#     blob.make_public()
+#     return blob.public_url
