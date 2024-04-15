@@ -46,6 +46,8 @@ class Booster(models.Model):
     languages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     games = models.ManyToManyField(Game, related_name='games')
 
+    paypal_account = models.EmailField(max_length=254, unique=True, blank=False)
+
     discord_id = models.CharField(max_length=300, default="", blank=True, null=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
 
@@ -92,9 +94,8 @@ class Booster(models.Model):
     def __str__(self):
         return f'{self.booster.username}'
     
-    def get_languages_as_list(self):
-        # Return the languages list as is
-        return self.languages
+    def get_languages_as_string(self):
+        return ','.join(self.languages)
 
     def set_languages_from_list(self, text_list):
         self.languages = ','.join(text_list)
@@ -104,6 +105,11 @@ class Booster(models.Model):
         self.booster.is_booster = True
         self.booster.save()
         super().save(*args, **kwargs)
+
+    def get_image_url(self):
+        if self.profile_image:
+            return self.profile_image.url
+        return None
 
     
 class BoosterPortfolio(models.Model):

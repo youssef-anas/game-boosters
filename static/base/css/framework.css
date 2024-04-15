@@ -1,5 +1,6 @@
+/* ---------------------------- Messages ---------------------------- */
 .message-container {
-  width: 550px !important;
+  width: 500px !important;
   position: absolute;
   z-index: 100;
   top: -280px;
@@ -35,4 +36,49 @@
   width: fit-content;
   padding: 0.5rem;
   border-radius: var(--main-radius);
+}
+/* ---------------------------- Messages ---------------------------- */
+.alert {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: var(--main-radius);
+  background: #433733;
+  position: relative;
+  border: none;
+  padding: 1.9rem 1rem;
+  text-align: start !important;
+}
+.alert-success {
+  background: linear-gradient(180deg, #43373300 0%, #433733 80.27%), 
+  linear-gradient(180deg, #44d07a7d 0%, #433733 100%);
+}
+.alert-error {
+  background: linear-gradient(180deg, #43373300 0%, #433733 80.27%), 
+  linear-gradient(180deg, #F35757 0%, #433733 100%);
+}
+.alert::before {
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 1.5rem;
+  margin-right: 1rem; 
+}
+.alert-success::before {
+  content: '\f058';
+  color: #44D07A;
+}
+.alert-error::before {
+  content: '\f057';
+  color: #F35757;
+}
+.alert::after {
+  content: '';
+  width: 75%;
+  height: 11px;
+  border-radius: var(--main-radius);
+  border-top-left-radius: 0 !important;
+  background-color: var(--secondary-color);
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }

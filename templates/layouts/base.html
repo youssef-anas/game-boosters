@@ -77,7 +77,11 @@
                   <li class="mx-auto">
                     <ul class="main-links">
                       <li class="links-hidden">
-                        <a href="{% url 'edit.booster.profile' %}" >Profile</a>
+                        <a href="{% url 'booster.setting' %}" >Profile</a>
+                      </li>
+
+                      <li class="links-hidden">
+                        <a href="{% url 'booster.orders' %}">Orders</a>
                       </li>
 
                       <li class="links-hidden">
@@ -117,7 +121,8 @@
                       {{request.user.first_name}} {{request.user.last_name}}
                     </button>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="{% url 'edit.booster.profile' %}" >Profile</a></li>
+                      <li><a class="dropdown-item" href="{% url 'booster.setting' %}">Profile</a></li>
+                      <li><a class="dropdown-item" href="{% url 'booster.orders' %}">Orders</a></li>
                       <li><a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a></li>
                     </ul>
                   </div>

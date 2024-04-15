@@ -56,8 +56,8 @@
                 <div class="booster-info d-flex flex-wrap align-items-center">
 
                   <div class="image">
-                    {% if order.order.booster.get_image_url %}
-                      <img src="{{ order.order.booster.get_image_url }}" class="profile-image" width="75" height="75" alt="Booster Photo" />
+                    {% if order.order.booster.booster.get_image_url %}
+                      <img src="{{ order.order.booster.booster.get_image_url }}" class="profile-image" width="75" height="75" alt="Booster Photo" />
                     {% else %}
                       <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" width="75" height="75" alt="No Profile Photo">
                     {% endif %}

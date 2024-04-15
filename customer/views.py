@@ -16,6 +16,7 @@ import secrets
 from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 from customer.controllers.serializers import *
+from django.db.models import Q
 
 @login_required
 def customer_setting(request):
@@ -74,7 +75,14 @@ def payment_sucess_view(request, token):
     
 
 def customer_orders(request):
-    base_orders = BaseOrder.objects.filter(customer= request.user, is_done= False, is_drop = False).order_by('-id')
+    base_orders = BaseOrder.objects.filter(
+        customer=request.user,  # Filter orders for the current user
+        is_drop=False,           # Exclude orders that are dropped
+    ).exclude(
+        order_rated__customer=request.user  # Exclude orders where the current user has rated the booster
+    ).filter(
+        Q(is_done=False) | Q(is_done=True)  # Include orders that are either not done or already done
+    )
 
     orders = []
 
@@ -95,7 +103,16 @@ def customer_orders(request):
 @login_required
 def customer_side(request, order_name):
     customer = request.user
-    base_order = BaseOrder.objects.filter(customer=customer,name=order_name,is_drop=False, is_done=False).order_by('id').last()
+
+    base_order = BaseOrder.objects.filter(
+            customer=customer,
+            name=order_name,
+            is_drop=False, 
+        ).exclude(
+            order_rated__customer=customer
+        ).filter(
+            Q(is_done=False) | Q(is_done=True)  # Include orders that are either not done or already done
+        ).order_by('id').last()
     if base_order:
         if base_order.is_done:
             return redirect(reverse_lazy('rate.page', kwargs={'order_id': base_order.id}))

@@ -9,7 +9,7 @@ def is_booster(user):
 
 urlpatterns = [
     path('register/',register_booster_view,name='booster.register'),
-    path('edit_profile/', edit_booster_profile, name='edit.booster.profile'),
+    path('profile_setting/', user_passes_test(is_booster)(booster_setting), name='booster.setting'),
     path('boosters/', boosters, name='booster.boosters'),
     path('boosters/<booster_id>/',booster_details,name='booster.details'),
     path('rate/<int:order_id>/',get_rate,name='booster.rate'), # form to get rate if order done

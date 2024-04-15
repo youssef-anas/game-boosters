@@ -1,176 +1,118 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 {% load custom_filters %}
-{% block title %}Game Boosters:{{booster.username}}{% endblock %}
+{% block title %}Game Boosters{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{% static 'booster/css/booster-details.css' %}">
+<link rel="stylesheet" href="{% static 'booster/css/edit-profile.css' %}">
+<link rel="stylesheet" href="{% static 'booster/css/can-choose-me.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
 {% endblock %}
 {% block container %}
-    <div class="container-fluid booster-profile pt-5 pb-0 px-0">
-
-        <div class="container content text-center">
-            <!-- Profile picture -->
-            <div class="profile-view">
-                {% if booster.booster.image %}
-                <img class="rounded-circle shadow-4-strong mx-auto" alt="avatar" src="{{ booster.booster.image.url }}"  />
-                {% else %}
-                <img src="{% static 'base/images/no_profile_image.jpg' %}" class="profile-image" alt="No Profile Photo">
-                {% endif %}
-                <h1>{{booster.first_name}} {{booster.last_name}}@{{booster.username}}</h1>
-
-                {% if booster.booster.achived_rank_wr %}
-                <p class="text-capitalize fs-4 fw-bold">
-                    <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ booster.booster.achived_rank_wr.rank_image.url }}" style="width: 100px; height: 100px;"  />
-                    {{booster.booster.achived_rank_wr}}
-                </p>
-                {% endif %}
-
-                <div class="container text-center d-flex align-items-center justify-content-center pt-1">
-                    <p>{{booster.about_you}}</p>
-                </div>
-                <hr style="border-color: white; border-width: 1px; border-style: solid; width:70%;"/>
-            </div>
-            <!-- Boosters stats -->
-            <div class="row row-cols-lg-4 row-cols-md-2 row-cols-1 justify-content-between align-items-center my-4">
-                <div class="mb-lg-0 mb-4 ">
-                    <p class="fw-bold text-secondary">Completed Boosts:</p>
-                    <p>{{ completed_boosts_count }}</p>
-                </div>
-                <div class="mb-lg-0 mb-4 ">
-                    <p class="fw-bold text-secondary">Last Boost:</p>
-                    {% for order in completed_orders %}
-                        {% if forloop.last %}
-                        <p class="text-capitalize ">{{ order.updated_at }}</p>
-                        {% endif %}
-                    {% endfor %}
-                    
-                </div>
-                <div class="mb-lg-0 mb-4 ">
-                    <p class="fw-bold text-secondary">On Boost:</p>
-                    <p class="text-capitalize ">over {{ booster.created_at }}</p>
-                </div>
-                <div class="mb-lg-0 mb-4 ">
-                    <p class="fw-bold text-secondary">Customer Reviews:</p>
-                    <p>{{ customer_reviews|default:0 }} / 5</p>
-                </div>
-            </div>
-            {% if booster.can_choose_me %}
-            <a class="mt-3 btn btn-success" href="{% url 'wildrift' %}?choose_booster={{ booster.id }}">Chose Booster</a>
-            {% endif %}
+<div class="edit-container p-lg-5 p-0 text-white" style="padding-top: 6rem !important;">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="py-3 mx-auto" style="width: 550px;">
+        <div class="alert {{ message.tags }} alert-dismissible mb-0 success-message" role="alert" >
+          {{ message }}
         </div>
-
-        <div class="container-fluid reviews p-0 py-5">
-
-            <h2 class="main-title mt-5">{{booster.first_name}} {{booster.last_name}} Rating</h2>
-            <div class="ratings px-3">
-                {% for rate in ratings %}
-                <div class="rating-card p-4 {% if forloop.counter == 1 %} mt-0 {% else %} mt-3 {% endif %}">
-                    <div class="info d-flex justify-content-between align-items-center ">
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            {% if rate.anonymous %}
-                            <h4>Anonymous</h4>
-                            {% else %}
-                            <h4>{{ rate.customer.username }}</h4>
-                            {% endif %}
-                            <div class="stars-container mx-4">
-                                {% for i in '12345' %}
-                                    {% if forloop.counter <= rate.rate %}
-                                        <span class="fa fa-star checked"></span>
-                                    {% else %}
-                                        <span class="fa fa-star not-checked"></span>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-
-                        <div class="order d-flex justify-content-between align-items-center">
-                            <div class="from d-flex justify-content-between align-items-center">
-                                <img src="{{rate.order.wildrift_order.current_rank.get_image_url}}" class="me-2" width="30"/>
-                                <h5 class="text-uppercase">{{ rate.order.wildrift_order.current_rank }} {{ rate.order.wildrift_order.get_current_division_display }}</h5>
-                            </div>
-
-                            <div>
-                                <p class="mx-3 mb-0 fw-bold " style="color: var(--secondary-color);"> >>> </p>
-                            </div>
-
-                            <div class="to d-flex justify-content-between align-items-center">
-                                <img src="{{rate.order.wildrift_order.reached_rank.get_image_url}}" class="me-2" width="30"/>
-                                <h5 class="text-uppercase">{{rate.order.wildrift_order.reached_rank}} {{rate.order.wildrift_order.get_reached_division_display}}</h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="comment">
-                        <h5 class="text-start my-4">{{ rate.text }}</h5>
-                    </div>
-
-                    <div class="customer-rate text-start">
-                        <div class="d-flex justify-content-start align-item-center">
-                            <img src="{% static 'base/images/no_profile_image.jpg' %}" class="image me-2 rounded-circle" alt="No Profile Photo" width="40" height="40">
-                            {% if rate.anonymous %}
-                            <p class="fw-bold fs-5">Anonymous</p>
-                            {% else %}
-                            <p class="fw-bold fs-5">{{ rate.customer.first_name }} {{rate.customer.last_name}}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            
-            <div class="container py-5">
-                <h2 class="main-title mt-5">Order Completed By {{booster.username}}</h2>
-                {% for order in completed_orders %}
-                <div class="rank-img row m-1 p-1 row row-cols-4 my-5">
-                    <!-- From -->
-                    <div class="d-flex align-items-center text-center">
-                        <img src="{{order.wildrift_order.current_rank.get_image_url}}" />
-                        <div>
-                            <p class="text-secondary">From</p>
-                            <h5 class="text-uppercase ">{{ order.wildrift_order.current_rank }} {{ order.wildrift_order.get_current_division_display }}</h5>
-                        </div>
-                    </div>
-
-                    <!-- To -->
-                    <div class="d-flex align-items-center text-center">
-                        <img src="{{order.wildrift_order.reached_rank.get_image_url}}" />
-                        <div>
-                            <p class="text-secondary">To</p>
-                            <h5 class="text-uppercase ">{{ order.wildrift_order.reached_rank }} {{ order.wildrift_order.get_reached_division_display }}</h5>
-                        </div>
-                    </div>
-
-                    <!-- Date -->
-                    <div class="d-flex align-items-center text-center">
-                        <i class="fa-regular fa-clock fs-1 me-3"></i>
-                        <div>
-                            <p class="text-secondary">Date</p>
-                            <h5>{{ order.updated_at }}</h5>
-                        </div>
-                    </div>
-
-                    <!-- Server -->
-                    <div class="d-flex align-items-center text-center">
-                        
-                        <img src="{% static 'base/images/Servers/' %}{{ order.customer_server|server_name }}.svg" style="width: 50px; height: 50px;" class="me-3" />
-
-
-                        <div>
-                            <p class="text-secondary">Server</p>
-                            <h5 class="text-capitalize ">{{ order.customer_server|server_name }}</h5>
-                        </div>
-                    </div>
-
-                </div>
-                {% if not forloop.last %}
-                <hr/>
-                {% endif %}
-                {% endfor %}
-            </div>
-        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+  <div class="container edit">
+    <div class="header text-center">
+      <h2>Edit Your Profile</h2>
+      <p class="text-secondary fs-5">Here you can find out all of the information about your account status and set your preferences</p>
     </div>
+    <div class="row justify-content-between my-5">
+
+      <div class="col-lg-3 col-12 mb-lg-0 mb-4 information text-center p-5">
+        <div class="image mx-auto ">
+          {% if request.user.booster.image %}
+          <img src="{{ request.user.booster.image.url }}" class="image"  alt="Profile Photo"/>
+          {% else %}
+          <img src="{% static 'base/images/no_profile_image.png' %}" class="image" alt="No Profile Photo">
+          {% endif %}
+        </div>
+
+        <div class="name">
+          <p class="my-3">{{request.user.first_name}} {{request.user.last_name}}</p>
+        </div>
+
+        <div class="links">
+          <a href="{% url 'booster.profile' request.user.id %}" class="text-decoration-none my-3 d-block" style="color: var(--secondary-color);">View Profile</a>
+        </div>
+
+        <div class="can-choose-me d-flex justify-content-center align-items-center flex-wrap gap-2">
+          <form id="edit-profile-form" method="post" action="{% url 'edit.booster.profile' %}">
+            {% csrf_token %}
+            <span>Customer Can Choose Me</span>
+            <input type="checkbox" id="id_can_choose_me" class="can-choose-me-input" {% if request.user.booster.can_choose_me %}checked{% endif %} /><label for="id_can_choose_me" class="can-choose-me-label">Toggle</label>
+          </form>
+        </div>
+
+        <hr>
+
+        <div class="info">
+          <p>{{request.user.username}}</p>
+          
+          <p>{{request.user.email}}</p>
+          <p>{{request.user.about_you}}</p>
+          {% if request.user.booster.achived_rank_wr %}
+          <p class="text-capitalize fs-4">
+            <img class="rounded-circle shadow-4-strong" alt="avatar" src="{{ request.user.booster.achived_rank_wr.rank_image.url }}" style="width: 50px; height: 50px;"  />
+              {{request.user.booster.achived_rank_wr}}
+          </p>
+          {% endif %}
+        </div>
+
+        <div class="design-image d-lg-block d-none">
+          <img src="{% static 'booster/images/char.png' %}" alt="">
+        </div>
+      </div>
+
+      <div class="col-lg-8 col-12 fields p-5">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ profile_form.as_p }}
+          <button type="submit" name="profile_submit" class="btn fs-5 text-white rounded-5 px-4 py-2 mt-3" style="background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774)">Save Profile Changes</button>
+        </form>
+      </div>
+
+    </div>
+    
+    <div class="change-password p-5 mx-auto">
+      <div class="content">
+        <h2>Change Password</h2>
+          <form method="post">
+            {% csrf_token %}
+            {{ password_form.as_p }}
+            <button type="submit" name="password_submit" class="btn fs-5 text-white rounded-5 px-4 py-2 mt-3" style="background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774)">Change Password</button>
+          </form>
+        </div>
+      </div>
+    </div>  
+
+  </div>
+</div>
 {% endblock %}
 {% block script %}
+<script src="{% static 'booster/js/can-choose-me.js' %}"></script>
+<script>
+  var oldPasswordInput = document.getElementById('id_old_password');
+  oldPasswordInput.blur();
 
+  $('#id_can_choose_me').change(function () {
+    $.ajax({
+      type: 'POST',
+      url: '{% url "can_choose_me" %}', 
+      data: $('#edit-profile-form').serialize(),
+      success: function (data) {
+        console.log(data);
+      },
+      error: function (error) {
+        console.log(error);
+      }
+    });
+  });
+</script>
 {% endblock %}

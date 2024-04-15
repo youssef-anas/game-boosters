@@ -74,6 +74,12 @@ select {
     border-top-right-radius: 0;
   }
 }
+form .form-group {
+  margin-bottom: 2rem;
+}
+.form-group label {
+  margin-bottom: 1rem;
+}
 .links-dropdown {
   display: none;
 }
