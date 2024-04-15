@@ -5,7 +5,7 @@ from django.urls import path, include
 from gameBoosterss.views import index, last_orders, privacy_policy, download_media_zip
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
-
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', index, name="homepage.index"),
@@ -36,6 +36,7 @@ urlpatterns = [
     # path('token/', oauth2_views.TokenView.as_view(), name="token"),
     path('accounts/', include('allauth.urls')),
     path('download/media/zip/', download_media_zip, name='download_media_zip'),
+    path('auth/', include('social_django.urls', namespace='social')),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
