@@ -1,0 +1,30 @@
+.silver {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #7F999E 0%, #43373300 100%);
+}
+.grey {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #98b4cb 0%, #43373300 100%);
+}
+.blue {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #89aced 0%, #43373300 100%);
+}
+.purple {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #c183d9 0%, #43373300 100%);
+}
+.pink {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #f26ef3 0%, #43373300 100%);
+}
+.red {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #f56868 0%, #43373300 100%);
+}

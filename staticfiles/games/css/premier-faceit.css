@@ -1,0 +1,38 @@
+.current-faceit, .desired-faceit,
+.current-premier, .desired-premier {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: var(--main-color); /* Fallback solid background color */
+  margin-bottom: 3rem;
+  min-height: 353px;
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #917a65 0%, #43373300 100%);
+}
+@media (max-width: 1199px) {
+  .current-faceit, .desired-faceit,
+  .current-premier, .desired-premier {
+    min-height: 438px;
+  }
+}
+@media (max-width: 767px) {
+  .current-faceit, .desired-faceit,
+  .current-premier, .desired-premier {
+    min-height: 346px;
+  }
+}
+.current-faceit .current-faceit-number, .desired-faceit .desired-faceit-number,
+.current-premier .current-premier-number, .desired-premier .desired-premier-number { /* Come Here */
+  font-size: 48px;
+  font-weight: 800;
+}
+@media (max-width: 1199px) {
+  .current-faceit .text h5, .desired-faceit .text h5,
+  .current-premier .text h5, .desired-premier .text h5 {
+    font-size: 16px;
+  }
+  .current-faceit .text p, .desired-faceit .text p,
+  .current-premier .text p, .desired-premier .text p {
+    font-size: 8px;
+  }
+}

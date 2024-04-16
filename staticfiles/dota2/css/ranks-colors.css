@@ -1,0 +1,41 @@
+
+.herald { 
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #98D866 0%, #43373300 100%) !important;
+}
+.guardian {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #3C2A13 0%, #43373300 100%) !important;
+}
+.crusader {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #148F8E 0%, #43373300 100%) !important;
+}
+.archon {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #182D2B 0%, #43373300 100%) !important;
+}
+.legend {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #9C0E21 0%, #43373300 100%) !important;
+}
+.ancient {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #562A62 0%, #43373300 100%) !important;
+}
+.divine {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #BC974A 0%, #43373300 100%) !important;
+}
+.immortal {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #81471A 0%, #43373300 100%) !important;
+}
