@@ -213,7 +213,14 @@ EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'cb7f-197-32-62-79.ngrok-free.app', 'gameboost-test-f25426e2eac4.herokuapp.com','www.madboost.gg', 'madboost.gg']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'www.madboost.gg',
+    'madboost.gg',
+    'gameboost-test-f25426e2eac4.herokuapp.com',
+    'www.gameboost-test-f25426e2eac4.herokuapp.com'
+    ]
 
 
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
@@ -350,3 +357,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
 SOCIAL_AUTH_FACEBOOK_SCOPE = [
     'email',
 ]
+
+
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
