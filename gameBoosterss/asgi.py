@@ -1,33 +1,33 @@
 import os
-from django.core.asgi import get_asgi_application
-import importlib
+import django
 
+# Manually configure Django settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gameBoosterss.settings')
- 
+django.setup()
+
+from django.core.asgi import get_asgi_application
+from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter , URLRouter
-# from chat import routing as chatRouting
-# from accounts import routing as orderRouting
+from channels.security.websocket import AllowedHostsOriginValidator
+from django.urls import path, re_path
+from chat.consumers import ChatConsumer
+from accounts.consumers import OrderConsumer, PriceConsumer
 
-def get_websocket_urlpatterns():
-    # Import the routing modules as strings
-    chatRouting_module = importlib.import_module('chat.routing')
-    orderRouting_module = importlib.import_module('accounts.routing')
+websocket_urlpatterns = [
     
-    # Get the websocket_urlpatterns from both modules
-    chat_websocket_urlpatterns = getattr(chatRouting_module, 'websocket_urlpatterns', [])
-    order_websocket_urlpatterns = getattr(orderRouting_module, 'websocket_urlpatterns', [])
-    
-    # Combine the websocket_urlpatterns from both modules
-    return chat_websocket_urlpatterns + order_websocket_urlpatterns
+    re_path(r'^ws/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
+    re_path(r'ws/order/',OrderConsumer.as_asgi()),
+    re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
 
-application = ProtocolTypeRouter(
-    {
-        "http" : get_asgi_application() ,
-        "websocket" : AuthMiddlewareStack(
-            URLRouter(
-                get_websocket_urlpatterns()
-            )   
-        )
-    }
-)
+    ] 
+
+application = ProtocolTypeRouter({
+    "http": get_asgi_application(),
+    "websocket": AllowedHostsOriginValidator(
+        AuthMiddlewareStack(
+            URLRouter([
+
+            ])
+        ),
+    ),
+})

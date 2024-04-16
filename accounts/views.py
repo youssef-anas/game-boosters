@@ -12,9 +12,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from accounts.serializers import PromoCodeSerializer
 from datetime import timedelta
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 from gameBoosterss.utils import send_activation_code, reset_password
 from accounts.forms import EmailForm, ResetCodeForm, PasswordChangeCustomForm
+from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from django.views.generic import View
+from django.utils.translation import gettext_lazy as _
 
 
 class CustomLoginView(LoginView):
@@ -22,9 +27,13 @@ class CustomLoginView(LoginView):
     success_url = reverse_lazy('homepage.index')
     redirect_authenticated_user = True
 
-class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('homepage.index')
+class CustomLogoutView(View):
+    redirect_url = reverse_lazy('homepage.index')
 
+    def get(self, request, *args, **kwargs):
+        """Logout via GET request."""
+        logout(request)
+        return redirect(self.redirect_url)
 
 def create_account(request):
     email = request.session.get('email')

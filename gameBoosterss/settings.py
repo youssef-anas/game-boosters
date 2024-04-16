@@ -340,10 +340,10 @@ SOCIALACCOUNT_PROVIDERS = {
 #     'django.contrib.auth.backends.ModelBackend',
 # ]
 
-LOGIN_URL = 'account.login'
-LOGIN_REDIRECT_URL = "homepage.index"
-LOGOUT_URL = 'account.logout'
-LOGOUT_REDIRECT_URL = 'account.login'
+# LOGIN_URL = 'account.login'
+# LOGIN_REDIRECT_URL = "homepage.index"
+# LOGOUT_URL = 'account.logout'
+# LOGOUT_REDIRECT_URL = '/accounts/login/'
 SOCIAL_AUTH_FACEBOOK_KEY = "395531559777062"
 SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
 #for extra info
