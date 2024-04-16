@@ -6,8 +6,8 @@ from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transac
 from customer.controllers.order_creator import create_order
 from chat.models import Room, Message
 from gameBoosterss.utils import refresh_order_page, send_change_data_msg
-from accounts.tasks import update_database_task
-from django_q.tasks import async_task
+# from accounts.tasks import update_database_task
+# from django_q.tasks import async_task
 from django.utils import timezone
 from customer.forms import EmailEditForm, ProfileEditForm, PasswordEditForm
 from django.contrib import messages
@@ -70,7 +70,7 @@ def payment_sucess_view(request, token):
     Room.create_room_with_admins(request.user, order.order.name)
     Room.create_room_with_booster(request.user, booster, order.order.name)
     refresh_order_page()
-    async_task(update_database_task, order.order.id)
+    # async_task(update_database_task, order.order.id)
     return redirect(reverse('customer.orders.details', kwargs={'order_name': order.order.name}))
     
 
