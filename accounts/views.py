@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-from customer.forms import Registeration
+from customer.forms import Registration
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import timezone
@@ -42,7 +42,7 @@ def create_account(request):
         send_activation_code(user)
         return redirect('accounts.activate.sent')
     if request.method == 'POST':
-        form = Registeration(request.POST,request.FILES)
+        form = Registration(request.POST,request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -57,7 +57,7 @@ def create_account(request):
             return redirect('accounts.activate.sent')
         else:
             return render(request, 'accounts/register.html', {'form': form})
-    form =  Registeration()
+    form =  Registration()
     return render(request, 'accounts/register.html', {'form': form})
 
 

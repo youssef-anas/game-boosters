@@ -8,25 +8,69 @@ from datetime import date
 from django.contrib.auth import get_user_model
 from datetime import date, timedelta
 BaseUser = get_user_model()
+from django_countries.fields import CountryField
+from django_countries.widgets import CountrySelectWidget
 
-
-class Registeration(UserCreationForm):
+class Registration(UserCreationForm):
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2",'country')
-        # fields = '__all__'
+        fields = ("full_name", "email", "username", "password1", "password2", "country")
+        widgets = {'country': CountrySelectWidget()}
+
+    # Define the form fields with custom attributes (placeholders)
+    full_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Full Name'
+        })
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Enter email'
+        })
+    )
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Username'
+        })
+    )
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Enter password'
+        })
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control custom-input',
+            'placeholder': 'Conform password'
+        })
+    )
+
+    def clean_full_name(self):
+        full_name = self.cleaned_data['full_name']
+        name_parts = full_name.split()
+        
+        if len(name_parts) < 1:
+            raise forms.ValidationError("Please enter your full name.")
+        
+        # Assign the first part of the full name to first_name
+        self.cleaned_data['first_name'] = name_parts[0]
+        
+        # Assign the remainder of the full name to last_name
+        self.cleaned_data['last_name'] = ' '.join(name_parts[1:])
+        
+        return full_name
+    
 
     def clean_email(self):
-            email = self.cleaned_data['email']
-            if self.instance.email == email:
-                return email  
-            if BaseUser.objects.filter(email=email).exists():
-                raise forms.ValidationError("Email Already Exists.")
-            return email
+        email = self.cleaned_data['email']
+        if BaseUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email already exists.")
+        return email
 
-    password1 = forms.CharField(label="Password",widget=forms.PasswordInput(),help_text="")
-    password2 = forms.CharField(label="Password Confirmation",widget=forms.PasswordInput(),help_text="")
-    username = forms.CharField(help_text="")
 
 class EmailEditForm(forms.Form):
     old_email = forms.EmailField(label="Current Email")
