@@ -1,1 +1,1 @@
-web: gunicorn gameBoosterss.wsgi --log-file -
+web: daphne gameBoosterss.asgi:application --port $PORT --bind 0.0.0.0
