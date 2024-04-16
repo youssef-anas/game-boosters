@@ -14,11 +14,6 @@ from chat.consumers import ChatConsumer
 from accounts.consumers import OrderConsumer, PriceConsumer
 
 websocket_urlpatterns = [
-    
-    re_path(r'^ws/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
-    re_path(r'ws/order/',OrderConsumer.as_asgi()),
-    re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
-
     ] 
 
 application = ProtocolTypeRouter({
@@ -26,7 +21,10 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter([
-
+                    re_path(r'^ws/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
+                    re_path(r'ws/order/',OrderConsumer.as_asgi()),
+                    re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
+                    # add web socket end point
             ])
         ),
     ),
