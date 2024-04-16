@@ -1,1 +1,1 @@
-web: daphne -b 0.0.0.0 -p $PORT gameBoosterss.asgi:application
+daphne -b 0.0.0.0 -p 8000 gameBoosterss.asgi:application
