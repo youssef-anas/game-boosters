@@ -11,11 +11,9 @@ BaseUser = get_user_model()
 
 
 class Registeration(UserCreationForm):
-    image = forms.ImageField(label='Profile Picture',  required=False)
-
     class Meta:
         model = BaseUser
-        fields = ("first_name","last_name","email","username","password1","password2",'country',)
+        fields = ("first_name","last_name","email","username","password1","password2",'country')
         # fields = '__all__'
 
     def clean_email(self):
@@ -26,19 +24,9 @@ class Registeration(UserCreationForm):
                 raise forms.ValidationError("Email Already Exists.")
             return email
 
-    password1 = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(),
-        help_text=""
-    )
-    password2 = forms.CharField(
-        label="Password Confirmation",
-        widget=forms.PasswordInput(),
-        help_text=""
-    )
-    username = forms.CharField(
-        help_text=""
-    )
+    password1 = forms.CharField(label="Password",widget=forms.PasswordInput(),help_text="")
+    password2 = forms.CharField(label="Password Confirmation",widget=forms.PasswordInput(),help_text="")
+    username = forms.CharField(help_text="")
 
 class EmailEditForm(forms.Form):
     old_email = forms.EmailField(label="Current Email")

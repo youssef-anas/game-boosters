@@ -24,6 +24,8 @@
                 <a href="{% provider_login_url 'google' %}">Login with Google</a><hr/>
                 <a href="{% provider_login_url 'facebook' %}">Login with Facebook</a><hr/>
 
+                <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook New</a><hr/>
+                
                 <div class="mb-3">
                     <label for="username" class="form-label custom-label">Username</label>
                     <input type="text" name="username" class="form-control custom-input" id="username">

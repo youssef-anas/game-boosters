@@ -4,14 +4,14 @@ from wildRift.models import WildRiftRank, WildRiftTier, WildRiftMark
 # Create your tests here.
 class SetUp(TestCase):
   ranks = [
-    WildRiftRank(rank_name = 'iron', rank_image = 'wildrift/images/iron.webp'),
-    WildRiftRank(rank_name = 'bronze', rank_image = 'wildrift/images/bronze.webp'),
-    WildRiftRank(rank_name = 'silver', rank_image = 'wildrift/images/silver.webp'),
-    WildRiftRank(rank_name = 'gold', rank_image = 'wildrift/images/gold.webp'),
-    WildRiftRank(rank_name = 'platinum', rank_image = 'wildrift/images/platinum.webp'),
-    WildRiftRank(rank_name = 'emerald', rank_image = 'wildrift/images/emerald.webp'),
-    WildRiftRank(rank_name = 'diamond', rank_image = 'wildrift/images/diamond.webp'),
-    WildRiftRank(rank_name = 'master', rank_image = 'wildrift/images/master.webp'),
+    WildRiftRank(rank_name = 'iron', rank_image = 'wildRift/images/iron.webp'),
+    WildRiftRank(rank_name = 'bronze', rank_image = 'wildRift/images/bronze.webp'),
+    WildRiftRank(rank_name = 'silver', rank_image = 'wildRift/images/silver.webp'),
+    WildRiftRank(rank_name = 'gold', rank_image = 'wildRift/images/gold.webp'),
+    WildRiftRank(rank_name = 'platinum', rank_image = 'wildRift/images/platinum.webp'),
+    WildRiftRank(rank_name = 'emerald', rank_image = 'wildRift/images/emerald.webp'),
+    WildRiftRank(rank_name = 'diamond', rank_image = 'wildRift/images/diamond.webp'),
+    WildRiftRank(rank_name = 'master', rank_image = 'wildRift/images/master.webp'),
   ]
 
   tiers = [
@@ -34,19 +34,19 @@ class SetUp(TestCase):
   ]
 
   marks = [
-    WildRiftMark(rank_id = 1, tier_id = 1, mark_number = 2, mark_1 = 0.1, mark_2 = 0.11, mark_3 = 0.0, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
+    WildRiftMark(rank_id = 1, mark_number = 2, mark_1 = 0.1, mark_2 = 0.11, mark_3 = 0.0, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 2, tier_id = 2, mark_number = 3, mark_1 = 0.2, mark_2 = 0.21, mark_3 = 0.22, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
+    WildRiftMark(rank_id = 2, mark_number = 3, mark_1 = 0.2, mark_2 = 0.21, mark_3 = 0.22, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 3, tier_id = 3, mark_number = 3, mark_1 = 0.3, mark_2 = 0.31, mark_3 = 0.32, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
+    WildRiftMark(rank_id = 3, mark_number = 3, mark_1 = 0.3, mark_2 = 0.31, mark_3 = 0.32, mark_4 = 0.0, mark_5 = 0.0, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 4, tier_id = 4, mark_number = 4, mark_1 = 0.4, mark_2 = 0.41, mark_3 = 0.42, mark_4 = 0.43, mark_5 = 0.0, mark_6 = 0.0),
+    WildRiftMark(rank_id = 4, mark_number = 4, mark_1 = 0.4, mark_2 = 0.41, mark_3 = 0.42, mark_4 = 0.43, mark_5 = 0.0, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 5, tier_id = 5, mark_number = 4, mark_1 = 0.5, mark_2 = 0.51, mark_3 = 0.52, mark_4 = 0.53, mark_5 = 0.0, mark_6 = 0.0),
+    WildRiftMark(rank_id = 5, mark_number = 4, mark_1 = 0.5, mark_2 = 0.51, mark_3 = 0.52, mark_4 = 0.53, mark_5 = 0.0, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 6, tier_id = 6, mark_number = 5, mark_1 = 0.6, mark_2 = 0.61, mark_3 = 0.62, mark_4 = 0.63, mark_5 = 0.64, mark_6 = 0.0),
+    WildRiftMark(rank_id = 6, mark_number = 5, mark_1 = 0.6, mark_2 = 0.61, mark_3 = 0.62, mark_4 = 0.63, mark_5 = 0.64, mark_6 = 0.0),
 
-    WildRiftMark(rank_id = 7, tier_id = 7, mark_number = 6, mark_1 = 0.7, mark_2 = 0.71, mark_3 = 0.72, mark_4 = 0.73, mark_5 = 0.74, mark_6 = 0.75),
+    WildRiftMark(rank_id = 7, mark_number = 6, mark_1 = 0.7, mark_2 = 0.71, mark_3 = 0.72, mark_4 = 0.73, mark_5 = 0.74, mark_6 = 0.75),
   ]
 
   ranks_queryset = WildRiftRank.objects.bulk_create(ranks)

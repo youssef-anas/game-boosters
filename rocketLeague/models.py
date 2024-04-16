@@ -16,7 +16,7 @@ class RocketLeagueRank(models.Model):
     return f"/media/{self.rank_image}"
   
 class RocketLeagueDivision(models.Model):
-  rank = models.OneToOneField('RocketLeagueRank', related_name='tier', on_delete=models.CASCADE)
+  rank = models.OneToOneField(RocketLeagueRank, related_name='tier', on_delete=models.CASCADE)
   from_I_to_II = models.FloatField(default=0)
   from_II_to_III = models.FloatField(default=0)
   from_III_to_I_next = models.FloatField(default=0)
@@ -202,11 +202,11 @@ class RocketLeagueDivisionOrder(models.Model):
     booster_price = custom_price * (percent/100)
 
     percent_for_view = round((booster_price/actual_price)* 100)
-    # if percent_for_view > 100:
-    #   percent_for_view = 100
+    if percent_for_view > 100:
+      percent_for_view = 100
 
-    # if booster_price > actual_price:
-    #   booster_price = actual_price
+    if booster_price > actual_price:
+      booster_price = actual_price
 
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

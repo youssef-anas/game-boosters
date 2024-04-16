@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'social_django', 
     # 'django.contrib.sites',
 
 ]
@@ -106,6 +107,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'gameBoosterss.middleware.ImageSizeLimitMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'gameBoosterss.urls'
@@ -121,6 +124,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -145,7 +149,7 @@ DATABASES = {
         "NAME": config('NAME'),
         "USER": config('USER'),
         "PASSWORD": config('PASSWORD'),
-        "HOST": "localhost",
+        "HOST": config('HOST'),
         "PORT": "5432",
     }
 }
@@ -274,6 +278,7 @@ OAUTH2_PROVIDER = {
 
 
 AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
@@ -324,3 +329,34 @@ SOCIALACCOUNT_PROVIDERS = {
     #     }
     # }
 }
+
+# import firebase_admin
+# from firebase_admin import credentials
+
+# Initialize Firebase Admin SDK
+# cred = credentials.Certificate(os.path.join(BASE_DIR, 'fire-base.json'))
+# FIREBASE_STORAGE_BUCKET = "mad-boost.appspot.com"
+# firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
+
+# # Media files settings
+# MEDIA_URL = 'media/'
+
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# DEFAULT_FILE_STORAGE = 'path.to.firebase.FirebaseStorage'
+# DEFAULT_FILE_STORAGE = 'gameBoosterss.storage_backends.FirebaseStorage' 
+
+# AUTHENTICATION_BACKENDS = [
+#     'social_core.backends.facebook.FacebookOAuth2',
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
+
+LOGIN_URL = 'account.login'
+LOGIN_REDIRECT_URL = "homepage.index"
+LOGOUT_URL = 'account.logout'
+LOGOUT_REDIRECT_URL = 'account.login'
+SOCIAL_AUTH_FACEBOOK_KEY = "395531559777062"
+SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
+#for extra info
+SOCIAL_AUTH_FACEBOOK_SCOPE = [
+    'email',
+]

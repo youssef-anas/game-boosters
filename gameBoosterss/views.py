@@ -59,3 +59,26 @@ def custom_handler404(request, exception):
 
 def custom_handler500(request):
   return render(request, 'erorr_handler/500.html', status=500)
+
+import os
+import zipfile
+from django.http import HttpResponse
+from django.conf import settings
+
+def download_media_zip(request):
+    # Path to the media directory
+    media_path = os.path.join(settings.MEDIA_ROOT)
+
+    # Create a temporary zip file
+    zip_filename = os.path.join(settings.MEDIA_ROOT, 'media.zip')
+    with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        for root, dirs, files in os.walk(media_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, os.path.relpath(file_path, media_path))
+
+    # Read the zip file
+    with open(zip_filename, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/zip')
+        response['Content-Disposition'] = 'attachment; filename=media.zip'
+        return response

@@ -4,14 +4,14 @@ from rocketLeague.models import RocketLeagueRank, RocketLeagueDivision, RocketLe
 # Create your tests here.
 class SetUp(TestCase):
   ranks = [
-    RocketLeagueRank(rank_name = 'bronze', rank_image = 'rocketleague/images/bronze.webp'),
-    RocketLeagueRank(rank_name = 'silver', rank_image = 'rocketleague/images/silver.webp'),
-    RocketLeagueRank(rank_name = 'gold', rank_image = 'rocketleague/images/gold.webp'),
-    RocketLeagueRank(rank_name = 'platinum', rank_image = 'rocketleague/images/platinum.webp'),
-    RocketLeagueRank(rank_name = 'diamond', rank_image = 'rocketleague/images/diamond.webp'),
-    RocketLeagueRank(rank_name = 'champion', rank_image = 'rocketleague/images/champion.webp'),
-    RocketLeagueRank(rank_name = 'grand champion', rank_image = 'rocketleague/images/grand_champion.webp'),
-    RocketLeagueRank(rank_name = 'supersonic legend', rank_image = 'rocketleague/images/supersonic_legend.webp'),
+    RocketLeagueRank(rank_name = 'bronze', rank_image = 'rocketLeague/images/bronze.webp'),
+    RocketLeagueRank(rank_name = 'silver', rank_image = 'rocketLeague/images/silver.webp'),
+    RocketLeagueRank(rank_name = 'gold', rank_image = 'rocketLeague/images/gold.webp'),
+    RocketLeagueRank(rank_name = 'platinum', rank_image = 'rocketLeague/images/platinum.webp'),
+    RocketLeagueRank(rank_name = 'diamond', rank_image = 'rocketLeague/images/diamond.webp'),
+    RocketLeagueRank(rank_name = 'champion', rank_image = 'rocketLeague/images/champion.webp'),
+    RocketLeagueRank(rank_name = 'grand champion', rank_image = 'rocketLeague/images/grand_champion.webp'),
+    RocketLeagueRank(rank_name = 'supersonic legend', rank_image = 'rocketLeague/images/supersonic_legend.webp'),
   ]
 
   divisions = [
@@ -31,36 +31,36 @@ class SetUp(TestCase):
   ]
 
   placements = [
-    RocketLeaguePlacement(rank_name = 'bronze', rank_image = 'rocketleague/images/bronze.webp', price = 3.03),
-    RocketLeaguePlacement(rank_name = 'silver', rank_image = 'rocketleague/images/silver.webp', price = 4.03),
-    RocketLeaguePlacement(rank_name = 'gold', rank_image = 'rocketleague/images/gold.webp', price = 4.03),
-    RocketLeaguePlacement(rank_name = 'platinum', rank_image = 'rocketleague/images/platinum.webp', price = 5.37),
-    RocketLeaguePlacement(rank_name = 'diamond', rank_image = 'rocketleague/images/diamond.webp', price = 6.73),
-    RocketLeaguePlacement(rank_name = 'champion', rank_image = 'rocketleague/images/champion.webp', price = 9.4),
-    RocketLeaguePlacement(rank_name = 'grand champion', rank_image = 'rocketleague/images/grand_champion.webp', price = 16.11),
-    RocketLeaguePlacement(rank_name = 'supersonic legend', rank_image = 'rocketleague/images/supersonic_legend.webp', price = 26.87),
+    RocketLeaguePlacement(rank_name = 'bronze', rank_image = 'rocketLeague/images/bronze.webp', price = 3.03),
+    RocketLeaguePlacement(rank_name = 'silver', rank_image = 'rocketLeague/images/silver.webp', price = 4.03),
+    RocketLeaguePlacement(rank_name = 'gold', rank_image = 'rocketLeague/images/gold.webp', price = 4.03),
+    RocketLeaguePlacement(rank_name = 'platinum', rank_image = 'rocketLeague/images/platinum.webp', price = 5.37),
+    RocketLeaguePlacement(rank_name = 'diamond', rank_image = 'rocketLeague/images/diamond.webp', price = 6.73),
+    RocketLeaguePlacement(rank_name = 'champion', rank_image = 'rocketLeague/images/champion.webp', price = 9.4),
+    RocketLeaguePlacement(rank_name = 'grand champion', rank_image = 'rocketLeague/images/grand_champion.webp', price = 16.11),
+    RocketLeaguePlacement(rank_name = 'supersonic legend', rank_image = 'rocketLeague/images/supersonic_legend.webp', price = 26.87),
   ]
 
   seasonals = [
-    RocketLeagueSeasonal(rank_name = 'bronze', rank_image = 'rocketleague/images/bronze.webp', price = 2.03),
-    RocketLeagueSeasonal(rank_name = 'silver', rank_image = 'rocketleague/images/silver.webp', price = 3.35),
-    RocketLeagueSeasonal(rank_name = 'gold', rank_image = 'rocketleague/images/gold.webp', price = 3.35),
-    RocketLeagueSeasonal(rank_name = 'platinum', rank_image = 'rocketleague/images/platinum.webp', price = 5.37),
-    RocketLeagueSeasonal(rank_name = 'diamond', rank_image = 'rocketleague/images/diamond.webp', price = 6.73),
-    RocketLeagueSeasonal(rank_name = 'champion', rank_image = 'rocketleague/images/champion.webp', price = 8.74),
-    RocketLeagueSeasonal(rank_name = 'grand champion', rank_image = 'rocketleague/images/grand_champion.webp', price = 10.74),
-    RocketLeagueSeasonal(rank_name = 'supersonic legend', rank_image = 'rocketleague/images/supersonic_legend.webp', price = 20.15),
+    RocketLeagueSeasonal(rank_name = 'bronze', rank_image = 'rocketLeague/images/bronze.webp', price = 2.03),
+    RocketLeagueSeasonal(rank_name = 'silver', rank_image = 'rocketLeague/images/silver.webp', price = 3.35),
+    RocketLeagueSeasonal(rank_name = 'gold', rank_image = 'rocketLeague/images/gold.webp', price = 3.35),
+    RocketLeagueSeasonal(rank_name = 'platinum', rank_image = 'rocketLeague/images/platinum.webp', price = 5.37),
+    RocketLeagueSeasonal(rank_name = 'diamond', rank_image = 'rocketLeague/images/diamond.webp', price = 6.73),
+    RocketLeagueSeasonal(rank_name = 'champion', rank_image = 'rocketLeague/images/champion.webp', price = 8.74),
+    RocketLeagueSeasonal(rank_name = 'grand champion', rank_image = 'rocketLeague/images/grand_champion.webp', price = 10.74),
+    RocketLeagueSeasonal(rank_name = 'supersonic legend', rank_image = 'rocketLeague/images/supersonic_legend.webp', price = 20.15),
   ]
 
   tournaments = [
-    RocketLeagueTournament(rank_name = 'bronze', rank_image = 'rocketleague/images/bronze.webp', price = 20.15),
-    RocketLeagueTournament(rank_name = 'silver', rank_image = 'rocketleague/images/silver.webp', price = 24.18),
-    RocketLeagueTournament(rank_name = 'gold', rank_image = 'rocketleague/images/gold.webp', price = 33.58),
-    RocketLeagueTournament(rank_name = 'platinum', rank_image = 'rocketleague/images/platinum.webp', price = 47.0),
-    RocketLeagueTournament(rank_name = 'diamond', rank_image = 'rocketleague/images/diamond.webp', price = 53.73),
-    RocketLeagueTournament(rank_name = 'champion', rank_image = 'rocketleague/images/champion.webp', price = 67.15),
-    RocketLeagueTournament(rank_name = 'grand champion', rank_image = 'rocketleague/images/grand_champion.webp', price = 80.58),
-    RocketLeagueTournament(rank_name = 'supersonic legend', rank_image = 'rocketleague/images/supersonic_legend.webp', price = 93.78),
+    RocketLeagueTournament(rank_name = 'bronze', rank_image = 'rocketLeague/images/bronze.webp', price = 20.15),
+    RocketLeagueTournament(rank_name = 'silver', rank_image = 'rocketLeague/images/silver.webp', price = 24.18),
+    RocketLeagueTournament(rank_name = 'gold', rank_image = 'rocketLeague/images/gold.webp', price = 33.58),
+    RocketLeagueTournament(rank_name = 'platinum', rank_image = 'rocketLeague/images/platinum.webp', price = 47.0),
+    RocketLeagueTournament(rank_name = 'diamond', rank_image = 'rocketLeague/images/diamond.webp', price = 53.73),
+    RocketLeagueTournament(rank_name = 'champion', rank_image = 'rocketLeague/images/champion.webp', price = 67.15),
+    RocketLeagueTournament(rank_name = 'grand champion', rank_image = 'rocketLeague/images/grand_champion.webp', price = 80.58),
+    RocketLeagueTournament(rank_name = 'supersonic legend', rank_image = 'rocketLeague/images/supersonic_legend.webp', price = 93.78),
   ]
 
   ranks_queryset = RocketLeagueRank.objects.bulk_create(ranks)
