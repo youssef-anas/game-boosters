@@ -1,1 +1,1 @@
-web: daphne gameBoosterss.asgi:application --port $PORT --bind 0.0.0.0
+web: daphne -b 0.0.0.0 -p $PORT gameBoosterss.asgi:application
