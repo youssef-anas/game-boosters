@@ -33,6 +33,8 @@ CHANNEL_LAYERS = {
 
 # Application definition
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
