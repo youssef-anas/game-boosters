@@ -95,8 +95,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'gameBoosterss.middleware.ImageSizeLimitMiddleware',
@@ -215,7 +213,7 @@ EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*', 'cb7f-197-32-62-79.ngrok-free.app', 'gameboost-test-f25426e2eac4.herokuapp.com','www.madboost.gg', 'madboost.gg']
 
 
 PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
