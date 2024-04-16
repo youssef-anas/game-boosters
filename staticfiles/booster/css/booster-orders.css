@@ -290,13 +290,13 @@ input[type="radio"]:checked + label {
   box-shadow: 0px 0px 10px 0px #00000040 inset;
 }
 .message-send-container .message-input {
- font-size: 16px;
- color: var(--secondary-color);
- margin-left: 14px;
- outline: none;
- border: none;
- background: transparent;
- width: calc(100% - 120px);
+ font-size: 16px !important;
+ color: var(--secondary-color) !important;
+ margin-left: 14px !important;
+ outline: none !important;
+ border: none !important;
+ background: transparent !important;
+ width: calc(100% - 120px) !important;
 }
 .message-send-container .message-input::placeholder {
   color: #FFFFFF80;
