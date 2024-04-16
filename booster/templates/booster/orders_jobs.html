@@ -215,7 +215,9 @@
     updateTimerDisplay();
   }
   let host = window.location.host
-  const orderSocket = new WebSocket('ws://' + window.location.host + '/ws/order/');
+  const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+
+  const orderSocket = new WebSocket(wsProtocol + window.location.host + '/ws/order/');
   orderSocket.onmessage = function(e){
     let data = JSON.parse(e.data)
     console.log('data',data)
@@ -223,7 +225,7 @@
       let orderContainer = document.getElementById('order_list')
       orderContainer.innerHTML = '';
       data.order.forEach(order => {
-        const timeSocket = new WebSocket('ws://' + window.location.host + '/ws/price/' + order.id + '/');
+        const timeSocket = new WebSocket(wsProtocol + window.location.host + '/ws/price/' + order.id + '/');
         timeSocket.onmessage = function (e) {
           let time_price = JSON.parse(e.data);
           console.log(time_price)

@@ -89,8 +89,8 @@ function chat(booster_room_name, roomName, orderId) {
   }
   scrollToBottom();
 
-
-  const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
+  const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+  const chatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/" + roomName + "/");
   currentSocket = chatSocket;
 
   chatSocket.onopen = function (e) {

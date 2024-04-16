@@ -15,12 +15,13 @@ const admins_roomName = JSON.parse(document.getElementById('admins_chat_slug').t
 let adminsChatSocket = null;
 let reconnectInterval = null;
 let refreshPage = false
+const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 
 function connectAdminsChatSocket() {
     if (reconnectInterval != null){
         console.warn("retry connection")
     }
-    adminsChatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + admins_roomName + "/");
+    adminsChatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/" + admins_roomName + "/");
     adminsChatSocket.onopen = function (e) {
         console.log("The connection was set up successfully for adminsChatSocket!");
         clearInterval(reconnectInterval);
@@ -106,7 +107,7 @@ scrollToBottom();
 
 
 const roomName = JSON.parse(document.getElementById('room_slug').textContent);
-const chatSocket = new WebSocket("ws://" + window.location.host + "/ws/" + roomName + "/");
+const chatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/" + roomName + "/");
 // const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/"+ roomName +"/");
 // alert(chatSocket);
 chatSocket.onopen = function (e) {
