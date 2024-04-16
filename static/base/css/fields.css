@@ -71,16 +71,19 @@
 select {
   /* Reset Select */
   appearance: none;
-  outline: 10px var(--alternative-color);
+  /* outline: 10px var(--alternative-color); */
   border: 0;
   box-shadow: none;
   /* Personalize */
   flex: 1;
   padding: 0 1em;
   color: #fff;
-  background-color: var(--alternative-color);
+  /* background-color: var(--alternative-color); */
   background-image: none;
   cursor: pointer;
+
+  outline: 10px #332A27 !important;
+  background-color: #332A27 !important;
 }
 /* Remove IE arrow */
 select::-ms-expand {
@@ -102,9 +105,10 @@ select::-ms-expand {
   top: 0;
   right: 0;
   padding: 1em;
-  background-color: var(--alternative-color);
+  /* background-color: var(--alternative-color); */
   transition: .25s all ease;
   pointer-events: none;
+  background-color: #332A27 !important;
 }
 /* Transition */
 .select-container:hover::after {
@@ -137,17 +141,19 @@ select::-ms-expand {
 }
 
 /* ----------------------------- Custom Inputs ----------------------------- */
-.custom-input {
-  background-color: var(--alternative-color) !important;
-  color: var(--secondary-color) !important;
+.custom-input, textarea {
   caret-color: var(--secondary-color) !important;
   border: none !important;
-  box-shadow: 0px 0px 10px 0px #00000040 inset !important;
+  /* box-shadow: 0px 0px 10px 0px #00000040 inset !important; */
+  background-color: #332A27 !important;
+  color: white !important;
+  padding-top: 0.7rem !important;
+  padding-bottom: 0.7rem !important;
 }
-input::placeholder {
+.custom-input::placeholder, textarea::placeholder {
   color:  #FFFFFF80 !important;
 }
-input:focus {
+.custom-input:focus, textarea:focus {
   box-shadow: none !important;
   border: 1px solid var(--secondary-color);
 }

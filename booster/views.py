@@ -1,12 +1,10 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm
+from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm, PayPalEmailEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from booster.models import OrderRating, Photo
+from booster.models import OrderRating, Photo, BoosterPortfolio
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from rest_framework.views import APIView
 from booster.controller.serializers import RatingSerializer, CanChooseMeSerializer, TransactionSerializer
@@ -24,8 +22,7 @@ from booster.controller.permissions import IsBooster
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
-from django.db.models import Avg, Sum, Case, When, Value, IntegerField, Max, F, Count
-from django.db.models.functions import Coalesce
+from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsForm
 
 def register_booster_view(request):
@@ -46,6 +43,7 @@ def register_booster_view(request):
 @login_required
 def booster_setting(request):
     profile_form = ProfileEditForm(instance=request.user)
+    paypal_form = PayPalEmailEditForm(user=request.user)
     password_form = PasswordEditForm(user=request.user)
 
     if request.method == 'POST':
@@ -55,7 +53,35 @@ def booster_setting(request):
                 profile_form.save()
                 messages.success(request, 'Profile updated successfully.')
                 return redirect('booster.setting')
+            
+        elif 'portfolio_submit' in request.POST:
+            images = request.FILES.getlist('images')  # Get the list of uploaded images
 
+            # Create a BoosterPortfolio instance for each uploaded image
+            portfolios = []
+            for image in images:
+                portfolio = BoosterPortfolio(booster=request.user.booster, image=image)
+                portfolios.append(portfolio)
+
+            # Bulk create the BoosterPortfolio instances
+            BoosterPortfolio.objects.bulk_create(portfolios)
+
+            return redirect('booster.setting')
+        
+        elif 'portfolio_id' in request.POST:
+            portfolio_id = request.POST['portfolio_id']
+            portfolio = get_object_or_404(BoosterPortfolio, id=portfolio_id)
+            if request.method == 'POST':
+                portfolio.delete()
+                return redirect('booster.setting')
+            
+        elif 'paypal_submit' in request.POST:
+            paypal_form = PayPalEmailEditForm(user=request.user, data=request.POST)
+            if paypal_form.is_valid():
+                paypal_form.save()
+                messages.success(request, 'PayPal email updated successfully.')
+                return redirect('booster.setting')
+        
         elif 'password_submit' in request.POST:
             password_form = PasswordEditForm(request.user, request.POST)
             if password_form.is_valid():
@@ -63,7 +89,7 @@ def booster_setting(request):
                 messages.success(request, 'Password changed successfully.')
                 return redirect('booster.setting')
 
-    return render(request, 'booster/setting.html', {'profile_form': profile_form, 'password_form': password_form})
+    return render(request, 'booster/setting.html', {'profile_form': profile_form, 'password_form': password_form, 'paypal_form': paypal_form})
 
 # Orders Page
 def orders_jobs(request):

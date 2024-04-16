@@ -16,6 +16,8 @@ from overwatch2.models import Overwatch2Rank
 from dota2.models import Dota2Rank
 from csgo2.models import Csgo2Rank
 from honorOfKings.models import HonorOfKingsRank
+from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 BaseUser = get_user_model()
 
 class Registeration_Booster(UserCreationForm):
@@ -57,12 +59,12 @@ class Registeration_Booster(UserCreationForm):
     
 class ProfileEditForm(UserChangeForm, forms.ModelForm):
     full_name = forms.CharField(max_length=300, 
-    widget=forms.TextInput(attrs={'placeholder': 'Enter full name', 'class': 'form-control'}),
+    widget=forms.TextInput(attrs={'placeholder': 'Enter full name', 'class': 'form-control custom-input'}),
     label='Name')
 
     profile_image = forms.ImageField(required=False, widget=forms.ClearableFileInput())
     about_you = forms.CharField(
-        widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'About you', 'class': 'form-control'}), 
+        widget=forms.Textarea(attrs={'rows': 8, 'placeholder': 'About you', 'class': 'form-control custom-input'}), 
         label='Bio',
         required=False)
 
@@ -93,6 +95,13 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
     achived_rank_overwatch2 = forms.ModelChoiceField(queryset=Overwatch2Rank.objects.all(), required=False, label='Overwatch 2')
 
     achived_rank_csgo2 = forms.ModelChoiceField(queryset=Csgo2Rank.objects.all(), required=False, label='CS GO 2')
+
+    languages = forms.CharField(
+        max_length=300, 
+        widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
+        label='Languages',
+        required=False
+    )
 
     class Meta:
         model = BaseUser
@@ -135,6 +144,25 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         # Set the initial value for about_you field from the Booster instance
         if booster and hasattr(booster, 'about_you'):
             self.initial['about_you'] = booster.about_you
+
+        should_include_languages = True  # Set your condition here
+
+        if should_include_languages:
+            if 'languages' not in self.fields:
+                self.fields['languages'] = forms.CharField(
+                    max_length=300, 
+                    widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
+                    label='Languages',
+                    required=False
+                )
+            # If you have a Booster instance, populate the initial data for languages
+            if hasattr(self.instance, 'booster') and self.instance.booster:
+                booster = self.instance.booster
+                if booster.languages:
+                    self.initial['languages'] = ', '.join(booster.languages)
+        else:
+            # Remove the languages field if it exists
+            self.fields.pop('languages', None)
         
         # Define mapping from boolean flags to rank fields
         mapping = {
@@ -176,6 +204,7 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
             full_name = self.cleaned_data['full_name']
             user.set_full_name(full_name)
 
+
         # Create a dictionary with the fields related to the Booster model
         booster_data = {
             'profile_image': self.cleaned_data.get('profile_image'),
@@ -207,12 +236,44 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         else:
             Booster.objects.create(booster=user, **booster_data)
 
+        if 'languages' in self.cleaned_data:
+            languages_data = self.cleaned_data['languages']
+            booster_instance.languages = languages_data.split(', ')
+        
+        booster_instance.save()
+
         # Save the user if commit is True
         if commit:
             user.save()
         
         return user
 
+class PayPalEmailEditForm(forms.Form):
+    paypal_account = forms.EmailField(
+        widget=forms.EmailInput(attrs={'placeholder': 'Enter Paypal email','class': 'form-control custom-input'}),
+        help_text='To confirm ur changes write your current password and press save:',
+    )
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control custom-input'}))
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = user
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+
+        # Authenticate the user with the provided password
+        user = authenticate(username=self.user.username, password=password)
+        if not user:
+            raise ValidationError('Incorrect password. Please try again.')
+
+        return cleaned_data
+
+    def save(self):
+        # Save the new PayPal email
+        self.user.booster.paypal_account = self.cleaned_data['paypal_account']
+        self.user.booster.save()
 
 class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
     class Meta:
@@ -220,4 +281,22 @@ class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['new_password1'].help_text = '' 
+        for field_name, field in self.fields.items():
+            if field_name == 'new_password1':
+                field.widget.attrs.update({
+                    'placeholder': 'New Password',
+                    'class': 'form-control custom-input'
+                })
+            elif field_name == 'new_password2':
+                field.widget.attrs.update({
+                    'placeholder': 'Confirm New Password',
+                    'class': 'form-control custom-input'
+                })
+            else:
+                field.widget.attrs.update({
+                    'placeholder': field.label,
+                    'class': 'form-control custom-input' 
+                })
+            field.label = ''
+
+        self.fields['new_password1'].help_text = ''

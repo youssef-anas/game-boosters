@@ -1,17 +1,68 @@
-.rating-page {
-  background-image: url('./../images/magicpattern.png');
-  background-size: cover;
-  background-attachment: fixed;
-  color: white !important;
+.rate-container {
+  position: relative;
+  background-color: var(--background-color);
 }
-.booster-data .profile-image img {
-  width: 150px;
-  height: 150px;
+/* Start Landing */
+.rate-container .rate-landing {
+  width: 100%;
+  height: 690px;
+  background-image: url('./../../games/images/games_bg.jpg');
+  background-size: cover;
+  background-position-y: -700px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.rate-container .rate-landing::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url('./../../games/images/bg_cover.png');
+}
+.rate-landing .heading {
+  position: absolute;
+  top: 30%;
+  text-align: center;
+  color: white;
+}
+.rate-landing .heading h1 {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: var(--heading-font);
+  letter-spacing: 3px;
+}
+.rate-landing .heading p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+@media (max-width: 767px) {
+  .rate-landing .heading h1 {
+    font-size: 50px;
+  }
+  .rate-landing .heading p {
+    font-size: 1.2rem;
+  }
+}
+/* Start Orders */
+.rate {
+  position: relative;
+  margin-top: -310px;
+  margin-bottom: 50px;
 }
 .rate-part {
-  background-image: linear-gradient(to right, #37175e75 0%, #582984b8 50%, #4a0774c2) !important;
+  background-color: var(--main-color);
+  border-radius: calc(var(--main-radius) * 2);
+}
+.rate-stars {
+  height: 80px; 
+  width: 400px;
 }
 .rating-container {
+  height: 75px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -77,16 +128,7 @@
   transform: scale(1.25) rotate(10deg);
 }
 .comment {
-  background-color: transparent;
-  border-color: var(--secondary-color);
-  color: white;
   margin-top: -1rem !important;
-}
-.comment:focus {
-  background-color: transparent;
-  border-color: var(--secondary-color);
-  box-shadow: none !important;
-  color: white;
 }
 input:checked ~ label svg {
   opacity: 1;
@@ -120,17 +162,14 @@ label[for=rate1]:hover ~ .rating-value:before {
   content: "1" !important;
   font-size: 2.5em !important;
 }
-
 #rate2:checked ~ .rating-value:before {
   content: "2";
   font-size: 2.75em;
 }
-
 label[for=rate2]:hover ~ .rating-value:before {
   content: "2" !important;
   font-size: 2.75em !important;
 }
-
 #rate3:checked ~ .rating-value:before {
   content: "3";
   font-size: 3em;
@@ -140,22 +179,33 @@ label[for=rate3]:hover ~ .rating-value:before {
   content: "3" !important;
   font-size: 3em !important;
 }
-
 #rate4:checked ~ .rating-value:before {
   content: "4";
   font-size: 3.25em;
 }
-
 label[for=rate4]:hover ~ .rating-value:before {
   content: "4" !important;
   font-size: 3.25em !important;
 }
-
 #rate5:checked ~ .rating-value:before {
   content: "5";
   font-size: 3.5em;
 }
-
+@media (max-width: 767px) {
+  .rate-stars {
+    width: 100%;
+  }
+  .rating-container label {
+    height: 34px;
+    width: 34px;
+  }
+  .rating-container .rating-value {
+    display: none;
+  }
+  .rating-container {
+    border-radius: 75px;
+  }
+}
 @keyframes pulse {
   0% {
     height: 90px;
@@ -175,19 +225,57 @@ label[for=rate4]:hover ~ .rating-value:before {
 #rate5:checked ~ .rating-value:after {
   animation: pulse 0.4s ease-out 1;
 }
-
 label[for=rate5]:hover ~ .rating-value:before {
   content: "5" !important;
   font-size: 3.75em !important;
 }
-textarea {
-  width: 100%;
-  height: 170px;
-  padding: 12px 20px;
-  box-sizing: border-box;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  background-color: #f8f8f8;
-  font-size: 16px;
-  resize: none;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #1E1814;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4.5px;
+  bottom: 3.7px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked + .slider {
+  background-color: var(--secondary-color);
+}
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--secondary-color);
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(32px);
+  -ms-transform: translateX(32px);
+  transform: translateX(32px);
+}
+.slider.round {
+  border-radius: 34px;
+}
+.slider.round:before {
+  border-radius: 50%;
 }
