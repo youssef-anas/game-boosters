@@ -9,13 +9,13 @@
 <div class="setting-container container py-5">
   <div class="row py-5 mt-5">
     {% if messages %}
-    <div class="w-100 d-flex justify-content-center align-content-center ">
       {% for message in messages %}
-        <div class="message success-message my-3 w-50">
-        {{ message }}
+      <div class="py-3 mx-auto message-container">
+        <div class="alert {{ message.tags }} mb-0 alert-success" role="alert" >
+          {{ message }}
         </div>
+      </div>
       {% endfor %}
-    </div>
     {% endif %}
     <div class="col-md-4 col-12 position-relative">
       <div class="dropdown links-dropdown mb-5">

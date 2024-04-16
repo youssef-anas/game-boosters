@@ -52,15 +52,15 @@ class EmailEditForm(forms.Form):
         # Set placeholders and classes for each field
         self.fields['old_email'].widget.attrs.update({
             'placeholder': 'Old email',
-            'class': 'form-control'
+            'class': 'form-control custom-input'
         })
         self.fields['new_email'].widget.attrs.update({
             'placeholder': 'New email',
-            'class': 'form-control'
+            'class': 'form-control custom-input'
         })
         self.fields['confirm_new_email'].widget.attrs.update({
             'placeholder': 'Confirm new email',
-            'class': 'form-control'
+            'class': 'form-control custom-input'
         })
 
     def clean_old_email(self):
@@ -103,17 +103,17 @@ class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
             if field_name == 'new_password1':
                 field.widget.attrs.update({
                     'placeholder': 'New Password',
-                    'class': 'form-control'
+                    'class': 'form-control custom-input'
                 })
             elif field_name == 'new_password2':
                 field.widget.attrs.update({
                     'placeholder': 'Confirm New Password',
-                    'class': 'form-control'
+                    'class': 'form-control custom-input'
                 })
             else:
                 field.widget.attrs.update({
                     'placeholder': field.label,
-                    'class': 'form-control' 
+                    'class': 'form-control custom-input' 
                 })
             field.label = ''
 
@@ -195,21 +195,21 @@ class ProfileEditForm(UserChangeForm):
 
         self.fields['username'].widget.attrs.update({
             'placeholder': 'Chat name',
-            'class': 'form-control'  # Add your class here
+            'class': 'form-control custom-input'  # Add your class here
         })
         self.fields['country'].widget.attrs.update({
             'placeholder': 'Chat country',
         })
         self.fields['birth_day'].widget.attrs.update({
             'placeholder': 'DD',
-            'class': 'form-control datepicker-day'  # Add your class here
+            'class': 'form-control datepicker-day custom-input'  # Add your class here
         })
         self.fields['birth_month'].widget.attrs.update({
             'placeholder': 'MM',
-            'class': 'form-control datepicker-month'  # Add your class here
+            'class': 'form-control datepicker-month custom-input'  # Add your class here
         })
         self.fields['birth_year'].widget.attrs.update({
             'placeholder': 'YYYY',
-            'class': 'form-control datepicker-year'  # Add your class here
+            'class': 'form-control datepicker-year custom-input'  # Add your class here
         })
     

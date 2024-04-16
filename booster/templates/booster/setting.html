@@ -9,14 +9,15 @@
 <div class="setting-container container py-5">
   <div class="row py-5 mt-5">
     {% if messages %}
-    <div class="w-100 d-flex justify-content-center align-content-center ">
       {% for message in messages %}
-        <div class="message success-message my-3 w-50">
-        {{ message }}
+      <div class="py-3 mx-auto message-container">
+        <div class="alert {{ message.tags }} mb-0 alert-success" role="alert" >
+          {{ message }}
         </div>
+      </div>
       {% endfor %}
-    </div>
     {% endif %}
+
     <div class="col-md-4 col-12 position-relative">
       <div class="dropdown links-dropdown mb-5">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -40,40 +41,316 @@
 
     <div class="col-md-8 col-12 ps-md-5 ps-0">
       
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <!-- Render each field separately -->
-        <div class="form-group">
-          {{ profile_form.full_name.label_tag }}  <!-- Optional: Render the label for full_name field -->
-          {{ profile_form.full_name }}  <!-- Render the full_name field -->
-        </div>
-    
-        <div class="form-group">
-          {{ profile_form.profile_image.label_tag }}  <!-- Optional: Render the label for profile_image field -->
-          {{ profile_form.profile_image }}  <!-- Render the profile_image field -->
-        </div>
-    
-        <div class="form-group">
-          {{ profile_form.about_you.label_tag }}  <!-- Optional: Render the label for about_you field -->
-          {{ profile_form.about_you }}  <!-- Render the about_you field -->
-        </div>
-    
-        <!-- Render other fields similarly -->
-        {% for field in profile_form %}
-          {% if field.name not in 'full_name profile_image about_you' %}
-            <div class="form-group mb-4">
-              {{ field.label_tag }}  <!-- Optional: Render the label for each field -->
-              <div class="select-container w-100">
-                {{ field }}  <!-- Render each field -->
+      <div id="profile" class="profile oneside">
+        <p class="fs-3">Profile</p>
+        <form method="post" class="row" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <div class="col-xl-4 col-12 pe-5 mb-xl-0 mb-5">
+            <div class="profile-image mb-4">
+              {% if request.user.booster.get_image_url %}
+                <img id="profile-image" src="{{request.user.booster.get_image_url}}" class="rounded-circle" alt="Profile Image" width="210" height="210">
+              {% else %}
+                <img id="profile-image" src="{% static 'base/images/no_profile_image.png' %}" class="rounded-circle" width="210"  height="210">
+              {% endif %}
+            </div>
+
+            <div>
+              {{ profile_form.profile_image }}  <!-- Render the profile_image field -->
+
+              <a href="{% url 'booster.details' booster_id=request.user.pk %}" class="view-profile-link d-inline-block mt-3">View Profile</a>
+            </div>
+  
+          </div>
+
+          <div class="col-xl-8 col-12">
+            <!-- Render each field separately -->
+            <div class="form-group">
+              {{ profile_form.full_name.label_tag }}  <!-- Optional: Render the label for full_name field -->
+              {{ profile_form.full_name }}  <!-- Render the full_name field -->
+            </div>
+
+            <div class="form-group">
+              <div class="data d-flex flex-wrap">
+                {% if request.user.booster.is_wr_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_wr.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_wr.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_wr.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_valo_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_valo.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_valo.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_valo.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_pubg_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_pubg.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_pubg.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_pubg.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_lol_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_lol.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_lol.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_lol.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_tft_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_tft.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_tft.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_tft.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_wow_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_wow.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_wow.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_wow.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_hearthstone_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_hearthstone.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_hearthstone.get_image_url}}" alt="Rank Name" class="img-fluid"
+                    width="32" height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_hearthstone.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_mobleg_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_mobleg.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_mobleg.get_image_url}}" alt="Rank Name" class="img-fluid"
+                    width="32" height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_mobleg.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_rl_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_rl.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_rl.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_rl.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_dota2_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_dota2.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_dota2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_dota2.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_hok_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_hok.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_hok.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_hok.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_overwatch2_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_overwatch2.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_overwatch2.get_image_url}}" alt="Rank Name" class="img-fluid"
+                    width="32" height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_overwatch2.rank_name}}
+                </p>
+                {% endif %}
+      
+                {% if request.user.booster.is_csgo2_player %}
+                <p class="mb-0 me-3">
+                  {% if request.user.booster.achived_rank_csgo2.get_image_url %}
+                  <img src="{{request.user.booster.achived_rank_csgo2.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+                    height="32" />
+                  {% endif %}
+                  {{request.user.booster.achived_rank_csgo2.rank_name}}
+                </p>
+                {% endif %}
+      
               </div>
             </div>
-          {% endif %}
-        {% endfor %}
         
-        <button type="submit" name="profile_submit">Submit</button>
-      </form>    
-   
+            <!-- Render other fields similarly -->
+            {% for field in profile_form %}
+              {% if field.name not in 'full_name profile_image about_you' %}
+                <div class="form-group mb-4">
+                  {{ field.label_tag }}  <!-- Optional: Render the label for each field -->
+                  <div class="select-container w-100">
+                    {{ field }}  <!-- Render each field -->
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            {% if form.languages %}
+              <div class="form-group">
+                <label for="id_languages">{{ form.languages.label }}</label>
+                {{ form.languages }}
+              </div>
+            {% endif %}
+
+
+            
+            <div class="form-group">
+              {{ profile_form.about_you.label_tag }}  <!-- Optional: Render the label for about_you field -->
+              {{ profile_form.about_you }}  <!-- Render the about_you field -->
+            </div>
+            
+            <button type="submit" name="profile_submit" class="btn update-btn">Save Changes</button>
+          </div>
+          
+      
+        </form>    
+      </div>
+
+      <div id="portfolio" class="portfolio oneside mt-5">
+        <p class="fs-3">Portfolio</p>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group">
+            <input type="file" name="images" id="portfolio-images" multiple>
+          </div>
+
+          <div class="form-group images row row-cols-xl-3 row-cols-md-2 row-cols-1">
+            {% for image in request.user.booster.booster_portfolio.all %}
+              <div class="image pe-3 pb-3 position-relative">
+                <img src="{{image.get_image_url}}" class="me-3 rounded-3 img-fluid ">
+                <button type="submit" name="portfolio_id" value="{{image.pk}}" class="btn portfolio_delete">
+                  <i class="fa-solid fa-trash text-white"></i>
+                </button>
+              </div>
+            {% endfor %}
+          </div>
+
+          <button type="submit" name="portfolio_submit" class="btn update-btn">Save Changes</button>
+        </form>
+      </div>
+      
+      <div id="withdrawal-info" class="personal-container row row-cols-xl-2 row-cols-1 mt-5">
+        <div class="left-side p-4">
+          <p class="fs-4">Withdrawal Info</p>
+          <p style="color: #FFFFFF80;">We recommend that you double check the
+            withdrawal info so no transactions would
+            be lost.</p>
+        </div>
+
+        <div class="right-side py-4 px-5">
+          <p class="fs-5">Paypal email</p>
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              {{ paypal_form.paypal_account }}
+              <p class="help-text">
+                {{ paypal_form.paypal_account.help_text }}
+              </p>
+            </div>
+
+            <div class="form-group">
+              {{ paypal_form.password }}
+
+              {% for field in paypal_form %}
+                {% for error in field.errors %}
+                <div class="message error-message mt-2 w-100">{{ field.label }}: {{ error }}</div>
+                {% endfor %}
+              {% endfor %}
+              {% for error in paypal_form.non_field_errors %}
+              <div class="message error-message mt-2 w-100">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <button type="submit" name="paypal_submit" class="btn update-btn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="password" class="password-container row row-cols-xl-2 row-cols-1 mt-5">
+
+        <div class="left-side p-4">
+          <p class="fs-4">Password</p>
+          <p style="color: #FFFFFF80;">We recommend that you change your
+            regularly to prevent unauthorized access
+            to your account.</p>
+        </div>
+        <div class="right-side py-4 px-5">
+          <p class="fs-5">Change Password</p>
+
+          <form method="POST">
+            {% csrf_token %}
+            
+            <!-- Render old password field -->
+            <div class="form-group">
+              {{ password_form.old_password  }}
+              {% if password_form.old_password.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.old_password.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render new password field -->
+            <div class="form-group">
+              {{ password_form.new_password1 }}
+              {% if password_form.new_password1.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.new_password1.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Render confirm new password field -->
+            <div class="form-group">
+              {{ password_form.new_password2 }}
+              {% if password_form.new_password2.errors %}
+                <div class="message error-message mt-2 w-100">
+                  {{ password_form.new_password2.errors }}
+                </div>
+              {% endif %}
+            </div>
+            
+            <!-- Submit button for password form -->
+            <button type="submit" name="password_submit" class="btn update-btn">Save Changes</button>
+          </form>
+
+        
+        </div>
+
+      </div>
+
     </div>
 
   </div>
@@ -94,6 +371,52 @@
     // Add the active class to the clicked link
     link.classList.add('active');
   }
+
+  const imageInput = document.getElementById('id_profile_image')
+  imageInput.addEventListener('change', function(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const output = document.getElementById('profile-image');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  })
+
+  document.getElementById('portfolio-images').addEventListener('change', function (event) {
+    let files = event.target.files;
+    let imagesContainer = document.querySelector('.images');
+
+    // Remove only the images that were uploaded through the input
+    let previousImages = imagesContainer.querySelectorAll('.uploaded-image');
+    previousImages.forEach(function(imageDiv) {
+        imagesContainer.removeChild(imageDiv);
+    });
+
+    // Iterate through each file and display them
+    for (let i = 0; i < files.length; i++) {
+      let file = files[i];
+      let reader = new FileReader();
+
+      reader.onload = function (e) {
+        // Create an image element
+        let imgElement = document.createElement('img');
+        imgElement.src = e.target.result;
+        imgElement.classList.add('me-3', 'rounded-3', 'img-fluid');
+
+        // Create a div to hold the image
+        let imageDiv = document.createElement('div');
+        imageDiv.classList.add('image', 'pe-3', 'pb-3', 'uploaded-image'); // Add a class for identification
+        imageDiv.appendChild(imgElement);
+
+        // Append the image to the images container
+        imagesContainer.appendChild(imageDiv);
+      };
+
+      // Read the file as a data URL
+      reader.readAsDataURL(file);
+    }
+  });
+
 
 </script>
 {% endblock %}

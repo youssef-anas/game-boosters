@@ -102,7 +102,7 @@
                       <p class="reached-info text-capitalize mb-0">{{ order.reached_rank }}</p>
 
                     {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A'  %}
-                      <p class="reached-info text-capitalize mb-0 mt-3" reached-info>{{ order.reached_division }} Premier Rank</p>
+                      <p class="reached-info text-capitalize mb-0 mt-3" reached-info>{{ order.reached_division }} Premier</p>
 
                     {% endif %}
                     
@@ -187,7 +187,7 @@
                     <p class="current-info text-capitalize mb-0">{{ order.current_rank }}</p>
 
                   {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
-                    <p class="current-info text-capitalize mb-0">{{ order.current_division }} Premier Rank</p>
+                    <p class="current-info text-capitalize mb-0">{{ order.current_division }} Premier</p>
                   {% endif %}
                 </div>
 
@@ -219,7 +219,7 @@
                     <p class="current-info text-capitalize mb-0">{{ order.desired_rank }}</p>
                     
                   {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A' %}
-                    <p class="current-info text-capitalize mb-0">{{ order.desired_division }} Premier Rank</p>
+                    <p class="current-info text-capitalize mb-0">{{ order.desired_division }} Premier</p>
 
                   {% endif %}
                 </div>
