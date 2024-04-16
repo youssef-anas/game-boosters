@@ -2,6 +2,7 @@
 const user = JSON.parse(document.getElementById('user').textContent);
 const admin_room = JSON.parse(document.getElementById('admin_room').textContent);
 const booster_room_name = JSON.parse(document.getElementById('booster_room_name').textContent)
+const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 
 // -------------------------- Admins Chat --------------------------
 const admins_chatbox = document.getElementById("admin-messages-container");
@@ -103,7 +104,6 @@ scrollToBottom();
 
 
 const roomName = JSON.parse(document.getElementById('room_slug').textContent);
-const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 
 // Construct the WebSocket URL using the determined protocol
 const chatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/" + roomName + "/");
