@@ -16,7 +16,7 @@ class RocketLeagueRank(models.Model):
     return f"/media/{self.rank_image}"
   
 class RocketLeagueDivision(models.Model):
-  rank = models.OneToOneField('RocketLeagueRank', related_name='tier', on_delete=models.CASCADE)
+  rank = models.OneToOneField(RocketLeagueRank, related_name='tier', on_delete=models.CASCADE)
   from_I_to_II = models.FloatField(default=0)
   from_II_to_III = models.FloatField(default=0)
   from_III_to_I_next = models.FloatField(default=0)

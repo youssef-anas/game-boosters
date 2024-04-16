@@ -20,10 +20,10 @@ class WildRiftRank(models.Model):
         return self.rank_name
     
     def get_image_url(self):
-        return f"/media/{self.rank_image}"
+        return self.rank_image.url
 
 class WildRiftTier(models.Model):
-    rank = models.OneToOneField('WildRiftRank', related_name='tier', on_delete=models.CASCADE)
+    rank = models.OneToOneField(WildRiftRank, related_name='tier', on_delete=models.CASCADE)
     from_IV_to_III = models.FloatField(default=0)
     from_III_to_II = models.FloatField(default=0)
     from_II_to_I = models.FloatField(default=0)
@@ -40,8 +40,8 @@ class WildRiftMark(models.Model):
         MARK_5 = 5, '5 Marks'
         MARK_6 = 6, '6 Marks'
 
-    rank = models.OneToOneField('WildRiftRank', related_name='mark', on_delete=models.CASCADE)
-    tier = models.OneToOneField(WildRiftTier, related_name='tier_mark', on_delete=models.CASCADE)
+    rank = models.OneToOneField(WildRiftRank, related_name='mark', on_delete=models.CASCADE)
+    # tier = models.OneToOneField(WildRiftTier, related_name='tier_mark', on_delete=models.CASCADE)
     mark_number = models.IntegerField(choices=MarkChoices.choices)
     mark_1 = models.FloatField(default=0)
     mark_2 = models.FloatField(default=0)
