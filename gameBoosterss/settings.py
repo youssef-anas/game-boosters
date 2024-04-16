@@ -358,6 +358,6 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = [
     'email',
 ]
 
-
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# TODO remove comment after add ssl to site
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
