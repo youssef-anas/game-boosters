@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div class="signup-container">
+        <div class="login-content content signup-container">
             <div class="overlay">
                 <div class="container py-xl-5 py-0">
                     <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
@@ -86,7 +86,7 @@
                                     <div class="form-group mb-4">
                                         <p class="continue-with">or continue with</p>
                                         <div class="social text-center">
-                                            <a href="{% url 'social:begin' 'google-oauth2' %}" class="me-4">
+                                            <a href="{% url 'social:begin' 'google-oauth2' %}" class="me-md-4 me-2">
                                                 <img src="{% static 'accounts/images/google.png' %}" class="me-2" alt="Google" width="24" height="24">
                                                 Google
                                             </a>
@@ -97,7 +97,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group mb-4">
-                                        <p class="text-center">Do not have an account? <a href="{% url 'accounts.signup' %}" style="color: var(--secondary-color);">Sign up!</a></p>
+                                        <p class="text-center sign-or-login">Do not have an account? <a href="{% url 'accounts.signup' %}" style="color: var(--secondary-color);">Sign up!</a></p>
                                     </div>
                                     <button type="submit" class="btn update-btn">Log IN</button>
                                 </form>

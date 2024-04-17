@@ -1,6 +1,38 @@
 body {
   background-color: #1E1814;
 }
+/* @media (max-width: 1199px) {
+  .content {
+    width: 100%;
+    min-height: 690px;
+    background-position: center;
+    position: relative;
+    background-repeat: no-repeat;
+    background-size: 150% 700px;
+    background-position: center -10px;
+  }
+  .content .overlay {
+    width: 100%;
+    min-height: 690px;
+    background-image: url('./../images/bg_cover.png');
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+    background-size: 100% 800px;
+    background-repeat: no-repeat;
+  }
+
+  .signup-content {
+    background-image: url('./../images/signup.png');
+  }
+  .login-content {
+    background-image: url('./../images/login.png');
+  }
+}
+@media (max-width: 767px) {
+  .content {
+    background-size: 250% 700px;
+  }
+} */
 @media (max-width: 1199px) {
   .signup-container {
     width: 100%;
@@ -99,11 +131,12 @@ body {
     width: 22%;
   }
   .social a  {
-    display: block;
-    width: fit-content;
-    margin: 0 auto 1rem !important;
+    padding: 0.8rem 0.5rem;
   }
   .update-btn {
     font-size: 1.2rem;
+  }
+  .sign-or-login {
+    font-size: 0.9rem;
   }
 }
