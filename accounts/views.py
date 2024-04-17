@@ -239,3 +239,18 @@ class PromoCodeAPIView(APIView):
 # @database_sync_to_async
 # def get_order(id):
 #     return BaseOrder.objects.get(id=id)
+
+
+from firebase_admin import storage
+from gameBoosterss.utils import upload_image_to_firebase
+from rest_framework.decorators import api_view
+
+@api_view(['POST'])
+def list_blobs(request):
+    imgs = request.FILES.getlist('imgs')
+    path = request.data.get('path')
+    for img in imgs:
+        # Assuming upload_image_to_firebase is a function that uploads the image to Firebase Storage
+        blob_url = upload_image_to_firebase(img, path+'/'+img.name)
+        print("done", img.name)
+    return HttpResponse("all done")

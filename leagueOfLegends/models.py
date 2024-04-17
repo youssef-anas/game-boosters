@@ -14,7 +14,7 @@ class LeagueOfLegendsRank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class LeagueOfLegendsTier(models.Model):
   rank = models.OneToOneField('LeagueOfLegendsRank', related_name='tier', on_delete=models.CASCADE)

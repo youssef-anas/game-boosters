@@ -8,12 +8,13 @@ import math
 class Csgo2Rank(models.Model):
     rank_name = models.CharField(max_length=25)
     rank_image = models.ImageField(upload_to='csgo2/images/', blank=True, null=True)
+    rank_image_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.rank_name
     
     def get_image_url(self):
-        return f"/media/{self.rank_image}"
+        return self.rank_image.url
     
 
 class Csgo2Tier(models.Model):

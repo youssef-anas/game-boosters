@@ -161,13 +161,13 @@ if(extend_order) {
     
       // Current
       $('#current-2vs2 .current-2vs2-rp').html(current2vs2ArenaValue);
-      $('.current-2vs2-selected-img').attr('src', `/media/wow/images/${getRank(current2vs2ArenaValue)[0]}.png`);
+      $('.current-2vs2-selected-img').attr('src', `https://storage.googleapis.com/mad-boost.appspot.com/wow/images/${getRank(current2vs2ArenaValue)[0]}.png`);
       $('.current.current-2vs2').removeClass().addClass(`current current-2vs2 rank-${getRank(valuesToSet[4])[0]}`);
       $('.current-2vs2-selected-info').html(`${valuesToSet[4]} MMR`)
     
       // Desired
       $('#desired-2vs2 .desired-2vs2-rp').html(desired2vs2ArenaValue);
-      $('.desired-2vs2-selected-img').attr('src', `/media/wow/images/${desired2vs2Rank}.png`);
+      $('.desired-2vs2-selected-img').attr('src', `https://storage.googleapis.com/mad-boost.appspot.com/wow/images/${desired2vs2Rank}.png`);
       $('.desired.desired-2vs2').removeClass().addClass(`desired desired-2vs2 rank-${desired2vs2Rank}`);
       $('.desired-2vs2-selected-info').html(`${desired2vs2ArenaValue} MMR`)
     

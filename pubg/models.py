@@ -12,7 +12,7 @@ class PubgRank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class PubgTier(models.Model):
   rank = models.OneToOneField('PubgRank', related_name='tier', on_delete=models.CASCADE, null=True)

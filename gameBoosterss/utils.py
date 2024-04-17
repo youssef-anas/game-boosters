@@ -307,11 +307,38 @@ def send_change_data_msg(message):
 
 
 
-# from firebase_admin import storage
+from firebase_admin import storage
+import uuid
+from django.core.files.uploadedfile import InMemoryUploadedFile
+import io
 
-# def upload_image_to_firebase(image_data, filename):
-#     bucket = storage.bucket()
-#     blob = bucket.blob(filename)
-#     blob.upload_from_string(image_data)
-#     blob.make_public()
-#     return blob.public_url
+def get_half_img_url(full_url):
+    url_parts = full_url.split(".appspot.com/")
+    img_url_part = url_parts[1]
+    return img_url_part
+
+def upload_image_to_firebase(image_data, image_name):
+    if image_data is None:
+        return None
+
+    if not isinstance(image_data, InMemoryUploadedFile):
+        raise TypeError("Expected an InMemoryUploadedFile object")
+
+    # Read the contents of the image file as bytes
+    image_file = image_data.file.read()
+
+    # Generate a unique ID for the image filename
+    unique_id = str(uuid.uuid4())
+
+    # Upload image to Firebase Storage
+    bucket = storage.bucket()
+    blob = bucket.blob(image_name)
+    blob.upload_from_string(image_file)
+
+    # Make the uploaded image publicly accessible
+    blob.make_public()
+
+    # Return the URL of the uploaded image
+    print(blob.public_url)
+    url = get_half_img_url(blob.public_url)
+    return url

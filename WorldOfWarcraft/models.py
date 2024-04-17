@@ -13,8 +13,9 @@ class WorldOfWarcraftRank(models.Model):
   def __str__(self):
     return self.rank_name
     
-  def get_image_url(self):
-    return f"/media/{self.rank_image}"
+  # def get_image_url(self):
+  #   # return self.rank_image.url
+  #   pass
   
 class SingletonModel(models.Model):
   class Meta:

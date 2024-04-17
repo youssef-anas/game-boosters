@@ -38,6 +38,7 @@
       <div class="container boosters-container my-4 py-4">
         <div class="boosters">
           {% for booster in boosters %}
+          <h1>{{booster}}</h1>
           <div id="{{booster.booster.booster.pk}}" class="booster-card m-1 mb-3 mx-auto rounded" onclick="SetBooster(this)">
             <div class="p-1 row row-cols-lg-5 row-cols-md-3 row-cols-1 justify-content-lg-start justify-content-center align-items-center">
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">

@@ -11,6 +11,7 @@ from games.models import Game
 from django.db.models import Avg
 from datetime import date, timedelta
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 class BaseUser(AbstractUser):
     # profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
@@ -79,7 +80,15 @@ class BaseUser(AbstractUser):
                 raise ValidationError("Date of birth cannot be in the future.")
             elif self.date_of_birth > eighteen_years_ago:
                 raise ValidationError("You must be at least 18 years old.")
-    
+            
+    def get_image_url(self):
+        if hasattr(self, 'booster') and self.is_booster:
+            if settings.DEBUG:
+                return self.booster.profile_image_url
+            else:
+                return self.booster.profile_image.url
+        return None   
+        
 # @receiver(post_save, sender=BaseUser)
 # def create_wallet(sender, instance, created, **kwargs):
 #     if created and instance.is_booster:

@@ -207,7 +207,8 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = 'media/'
+# MEDIA_URL = "media/"
+MEDIA_URL = "https://storage.googleapis.com/mad-boost.appspot.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
@@ -342,13 +343,13 @@ SOCIALACCOUNT_PROVIDERS = {
     # }
 }
 
-# import firebase_admin
-# from firebase_admin import credentials
+import firebase_admin
+from firebase_admin import credentials
 
 # Initialize Firebase Admin SDK
-# cred = credentials.Certificate(os.path.join(BASE_DIR, 'fire-base.json'))
-# FIREBASE_STORAGE_BUCKET = "mad-boost.appspot.com"
-# firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
+cred = credentials.Certificate(os.path.join(BASE_DIR, 'fire-base.json'))
+FIREBASE_STORAGE_BUCKET = "mad-boost.appspot.com"
+firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
 
 # # Media files settings
 # MEDIA_URL = 'media/'

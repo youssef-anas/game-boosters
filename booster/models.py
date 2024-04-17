@@ -15,6 +15,7 @@ from csgo2.models import Csgo2Rank
 from honorOfKings.models import HonorOfKingsRank
 from games.models import Game
 from django.contrib.postgres.fields import ArrayField
+from django.conf import settings
 
 class OrderRating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -38,8 +39,8 @@ class OrderRating(models.Model):
     
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
-
-    profile_image = models.ImageField(null=True,upload_to='media/booster/', blank= True)
+    profile_image_url = models.CharField(null=True, blank=True)
+    profile_image = models.ImageField(blank= True,null=True,)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)
 
@@ -103,6 +104,7 @@ class Booster(models.Model):
     def save(self, *args, **kwargs):
         # When saving a Booster instance, set is_booster to True for the associated BaseUser
         self.booster.is_booster = True
+        self.profile_image = self.profile_image_url
         self.booster.save()
         super().save(*args, **kwargs)
 

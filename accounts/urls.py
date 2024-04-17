@@ -13,4 +13,5 @@ urlpatterns = [
     path('password/reset/', reset_password_request, name='password.reset'),
     path('password/check-code/<int:id>/', check_reset_code, name='password.check.code'),
     path('password/change/<int:id>/', change_password_page, name='password.change'),
+    path('add/images/', list_blobs, name='.change'),
 ]
