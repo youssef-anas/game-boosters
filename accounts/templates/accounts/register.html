@@ -131,7 +131,7 @@
                                     <div class="form-group mb-4">
                                         <p class="continue-with">or continue with</p>
                                         <div class="social text-center">
-                                            <a href="{% provider_login_url 'google' %}" class="me-md-4 me-2">
+                                            <a href="{% url 'social:begin' 'google-oauth2' %}" class="me-md-4 me-2">
                                                 <img src="{% static 'accounts/images/google.png' %}" class="me-2" alt="Google" width="24" height="24">
                                                 Google
                                             </a>
