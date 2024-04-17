@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 # CSRF_COOKIE_SECURE = False
@@ -84,6 +84,7 @@ INSTALLED_APPS = [
 
     'social_django', 
     # 'django.contrib.sites',
+    'whitenoise.runserver_nostatic'
 
 ]
 
@@ -92,6 +93,7 @@ SITE_ID = 1
 MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -188,9 +190,17 @@ STATICFILES_DIRS = [
 ]
 
 # Directory where static files will be collected during deployment
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# STORAGES = {
+#     'default': {
+#         'BACKEND': "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#         # 'OPTIONS': {
+#         #     'location': '/path/to/your/static/files',
+#         # },
+#     },
+# }
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -283,8 +293,6 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     # 'allauth.account.auth_backends.AuthenticationBackend',
     'accounts.backends.EmailOrUsernameModelBackend',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 LOGIN_REDIRECT_URL = '/'
