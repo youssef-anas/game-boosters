@@ -1,0 +1,405 @@
+/* Start Base Design For Form Element */
+input[type="radio"] {
+  display: none;
+}
+label {
+  display: inline-block;
+  cursor: pointer;
+}
+/* Start Container */
+.booster-container {
+  position: relative;
+  background-color: var(--background-color);
+}
+/* Start Landing */
+.booster-container .booster-contant {
+  width: 100%;
+  min-height: 690px;
+  background-image: url("./../../accounts/images/customer_side_bg.ae1dc09dc0a7.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  background-position-y: -10px;
+  background-size: 100% 800px;
+  background-repeat: no-repeat;
+}
+.booster-container .booster-contant .overlay {
+  width: 100%;
+  min-height: 690px;
+  background-image: url("./../../accounts/images/bg_cover.c7cd6db4cba1.png");
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+  background-size: 100% 800px;
+  background-repeat: no-repeat;
+}
+/* End Container */
+
+/* Strat Heading */
+.booster-contant .heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+}
+.booster-contant .heading h1 {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: var(--heading-font);
+  letter-spacing: 3px;
+}
+@media (max-width: 1199px) {
+  .booster-contant .heading h1 {
+    font-size: 32px !important;
+  }
+}
+.booster-contant .heading p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+@media (max-width: 1199px) {
+  .booster-contant .heading p {
+    font-size: 16px;
+  }
+}
+/* End Heading */
+
+/* Start Roles */
+.roles-container .role-heading button {
+ width: 280px !important;
+ font-size: 1.5rem !important;
+ padding-top: 0 !important;
+ padding-bottom: 0 !important;
+}
+.roles-container .roles {
+  border-radius: calc(var(--main-radius) * 2);
+  background-color: var(--main-color);
+  display: none;
+}
+.roles .image img {
+  width: 312px;
+  height: 312px;
+  border-radius: 50%;
+}
+.roles .section h3 {
+  position: relative;
+  width: fit-content;
+  margin-bottom: 3rem;
+}
+.roles .section h3::after {
+  content: "";
+  width: 100%;
+  height: 3px;
+  position: absolute;
+  bottom: -63%;
+  left: 0;
+  background-color: var(--secondary-color);
+}
+.roles .instruction {
+  counter-reset: section;
+}
+.roles .instruction p {
+  counter-increment: section;
+}
+.roles .instruction p::before {
+  content: counter(section) ". ";
+}
+.roles .understand-btn {
+  margin-top: 4.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.roles .understand-btn button {
+  width: 448px;
+  font-size: 2rem;
+}
+@media (max-width: 768px) {
+  .roles .understand-btn button {
+    font-size: 1.5rem;
+  }
+}
+/* End Roles */
+
+/* Start Orders Switch And Add More */
+.swiper.switch-orders-container {
+  background-color: var(--main-color);
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 1.5rem 0.8rem;
+}
+input[type="radio"] + label {
+  width: inherit;
+  padding: 0.5rem 1rem;
+  background-color: var(--background-color);
+  border-radius: var(--main-radius);
+  font-family: var(--sharp-font);
+  font-size: 0.9rem;
+}
+input[type="radio"] + label p {
+  font-family: var(--sharp-thin-font);
+}
+input[type="radio"] + label:hover {
+  background-color: var(--alt-secondary-color);
+}
+input[type="radio"]:checked + label {
+  background-color: var(--secondary-color) !important;
+}
+/* End Orders Switch And Add More */
+.update-rating-btn {
+  width: 100%;
+  padding: 7px;
+  border-radius: 48px;
+  margin-top: 1rem;
+  color: #FFFFFF80;
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  background-color: #F26E3E80;
+}
+.update-rating-btn:hover {
+  color: #FFFFFF80;
+  background-color: #F26E3E80;
+}
+
+.complete-order-btn {
+  width: 100%;
+  padding: 7px;
+  border-radius: 48px;
+  margin-top: 1rem;
+  color: #FFFFFF80;
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  border: 1px solid #F26E3E80;
+}
+.complete-order-btn:hover {
+  color: #FFFFFF80;
+  border: 1px solid #F26E3E80;
+}
+
+/* Drag Drop */
+.drop-container {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px dashed var(--secondary-color);
+  color: var(--secondary-color);
+  cursor: pointer;
+  transition: background .2s ease-in-out, border .2s ease-in-out;
+  background-color: transparent;
+}
+
+.drop-container:hover .drop-title {
+  color: white;
+}
+.drop-title {
+  color: var(--background-color);
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: color .2s ease-in-out;
+}
+.drop-container.drag-active {
+  background: #eee;
+  border-color: #111;
+}
+
+.drop-container.drag-active .drop-title {
+  color: #222;
+}
+
+/* Start Progress Drop Container */
+.progress-drop-container {
+  border-radius: calc(var(--main-radius) * 2);
+  background-color: var(--main-color);
+  padding: 1rem 2.5rem;
+}
+.progress-drop-container form button {
+  width: 100%;
+  font-size: 1.5rem;
+}
+.process p, .payout-progress p {
+  font-size: 1.5rem;
+  color: #FFFFFF80;
+  font-family: 300;
+}
+.process p > span, .payout-progress p > span {
+  color: #FFFFFF;
+  font-family: 700;
+}
+.progress {
+  height: 8px;
+  background-color: #1E1814;
+}
+.progress-bar {
+  background-color: var(--secondary-color);
+}
+.steps-conatiner {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.steps-conatiner .step {
+  font-weight: 700;
+  color: #FFFFFF80;
+}
+/* End Progress Drop Container */
+
+/* Start Chat Container */
+/* Header */
+.title {
+  background-color: var(--background-color);
+  border-radius: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.title p {
+  width: 100%;
+  border-radius: 40px;
+  font-weight: 300;
+  padding: 8px;
+  color: white;
+  background-color: var(--alternative-color);
+  text-align: center;
+}
+
+/* Chat */
+.chat-customer-container {
+  background-color: #433733;
+  border-bottom-left-radius: calc(var(--main-radius) * 2);
+  border-bottom-right-radius: calc(var(--main-radius) * 2);
+}
+.customer-messages-container {
+  height: 500px;
+  overflow: auto;
+  padding: 0 0.5rem;
+}
+.message-send-container {
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 40px;
+  background-color: #201914;
+  box-shadow: 0px 0px 10px 0px #00000040 inset;
+}
+.message-send-container .message-input {
+ font-size: 16px !important;
+ color: var(--secondary-color) !important;
+ margin-left: 14px !important;
+ outline: none !important;
+ border: none !important;
+ background: transparent !important;
+ width: calc(100% - 120px) !important;
+}
+.message-send-container .message-input::placeholder {
+  color: #FFFFFF80;
+  font-weight: 300;
+}
+.message-send-container .message-input:focus {
+  box-shadow: none;
+} 
+.message-send-container .sent-btn {
+  width: 120px;
+  background: #F26E3E80;
+  border-radius: 64px;
+  color: #FFFFFF80;
+}
+/* Customer Message */
+.champion {
+  border: 3px solid var(--background-color);
+}
+.avalible-to-play button {
+  padding: 8px 24px;
+  border-radius: 48px;
+  background-color: #FFC439;
+  color: #1E1814;
+  font-weight: 700;
+}
+.avalible-to-play button:hover {
+  background-color: #FFC439;
+  color: #1E1814;
+}
+.chat-message {
+  display: flex;
+  align-items: flex-end;
+  margin: 0.75rem 0;
+}
+.chat-message .message {
+  max-width: 60%;
+}
+.chat-message .expanded {
+  max-height: none; /* Show all content when expanded */
+}
+.chat-message .read-more-link {
+  color: #892929;
+  cursor: pointer;
+}
+.chat-message .read-more-link .dots {
+  color: white;
+}
+.chat-message .image {
+  width: 40px;
+  height: 40px;
+  background-color: var(--main-color);
+  align-self: flex-start;
+}
+.chat-message .image img {
+  border-radius: var(--main-radius);
+}
+.message-time {
+  color: #FFFFFF80;
+  font-weight: 300;
+  font-size: 0.5rem;
+}
+.user-message, .from-admin-message {
+  justify-content: flex-end;
+}
+/* .tip-message, .user-message, .changes-message {
+  justify-content: flex-end;
+} */
+.user-message .message, .from-admin-message .message {
+  background-color: var(--secondary-color);
+  border-radius: var(--main-radius) 0 var(--main-radius) var(--main-radius);
+}
+.customer-message .message {
+  border-radius: 0 var(--main-radius) var(--main-radius) var(--main-radius);
+  background-color: var(--alternative-color);
+}
+/* .no-messages {} */
+/* Day Date Design */
+
+.chat-messages .day-date {
+  color: #685447;
+  height: 24px;
+  margin: 0 1rem 2.5rem !important;
+  text-align: center;
+  position: relative;
+}
+.chat-messages .day-date::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 43%;
+  height: 0.2px;
+  background-color: var(--alternative-color);;
+  transform: translateY(-50%);
+}
+.chat-messages .day-date::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 43%;
+  height: 0.2px;
+  background-color: var(--alternative-color);;
+  transform: translateY(-50%);
+}
+/* End Chat Container */

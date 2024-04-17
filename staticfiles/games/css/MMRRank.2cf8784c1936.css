@@ -1,0 +1,33 @@
+.current, .desired {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: var(--main-color); /* Fallback solid background color */
+  margin-bottom: 3rem;
+  min-height: 346px;
+}
+@media (max-width: 1199px) {
+  .current, .desired{
+    min-height: 438px;
+  }
+}
+@media (max-width: 767px) {
+  .current, .desired {
+    min-height: 346px;
+  }
+}
+.current .current-rp, .desired .desired-rp {
+  font-size: 48px;
+  font-weight: 800;
+}
+@media (max-width: 1199px) {
+  .current .image img, .desired .image img  {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .current .text h5, .desired .text h5 {
+    font-size: 16px;
+  }
+  .current .text p, .desired .text p {
+    font-size: 8px;
+  }
+}

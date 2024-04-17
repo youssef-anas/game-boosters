@@ -1,0 +1,111 @@
+.boosters-container {
+  position: relative;
+  background-color: var(--background-color);
+}
+/* Start Landing */
+.boosters-container .boosters-landing {
+  width: 100%;
+  height: 690px;
+  background-image: url("./../../games/images/games_bg.716695b18108.jpg");
+  background-size: cover;
+  background-position-y: -700px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.boosters-container .boosters-landing::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: url("./../../games/images/bg_cover.c7cd6db4cba1.png");
+}
+.boosters-landing .heading {
+  position: absolute;
+  top: 30%;
+  text-align: center;
+  color: white;
+}
+.boosters-landing .heading h1 {
+  font-weight: bolder;
+  font-size: 64px;
+  font-family: var(--heading-font);
+  letter-spacing: 3px;
+}
+.boosters-landing .heading p {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+@media (max-width: 767px) {
+  .boosters-landing .heading h1 {
+    font-size: 50px;
+  }
+  .boosters-landing .heading p {
+    font-size: 1.2rem;
+  }
+}
+/* Start Boosters */
+.boosters {
+  position: relative;
+  margin-top: -250px; /* Adjust this value as needed */
+}
+
+.boosters .booster {
+  width: 384px;
+  height: 705px;
+  border-radius: calc(var(--main-radius) * 2);
+  border: 1px solid #332A27;
+  position: relative;
+  background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
+  transition: 1s linear;
+}
+.boosters .booster::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: calc(var(--main-radius) * 2);
+  background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
+  transition: 1s linear;
+}
+.boosters .booster .banner {
+  width: 100%;
+  height: 384px;
+  position: relative;
+}
+.boosters .booster .banner img {
+  height: 100% !important;
+  border-top-left-radius: calc(var(--main-radius)* 2);
+  border-top-right-radius: calc(var(--main-radius)* 2);
+}
+.boosters .booster .banner::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-top-left-radius: calc(var(--main-radius) * 2);;
+  border-top-right-radius: calc(var(--main-radius) * 2);;
+  background-position-x: -100px;
+  background-image: url("./../../games/images/bg_cover.c7cd6db4cba1.png");
+}
+.boosters .booster .booster-data {
+  width: 100%;
+  color: white;
+  position: relative;
+  z-index: 10;
+  /* display: flex; */
+  /* justify-content: center; */
+  /* align-items: center; */
+}
+.language {
+  border: 1px solid #FFFFFF;
+  border-radius: var(--main-radius);
+  padding: 0 0.5rem;
+}

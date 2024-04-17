@@ -1,0 +1,206 @@
+/* ----------------------------- Buttons ----------------------------- */
+.btn:first-child:active, .btn.active, .btn.show  {
+  border-color: transparent !important;
+}
+.custom-btn, .custom-btn:active {
+  padding: 7px 20px;
+  border-radius: 32px;
+  text-align: center;
+  font-family: var(--heading-font) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  border: 5px solid var(--secondary-color);
+}
+.custom-btn:hover {
+  border: 5px solid var(--alt-secondary-color);
+}
+/* Medium */
+@media (max-width: 1199px) {
+  .custom-btn.header-btn {
+    width: 125px !important;
+    font-size: 14px !important;
+  }
+}
+@media (max-width: 992px) {
+  .custom-btn.header-btn  {
+    width: 100px !important;
+  }
+}
+
+.custom-btn.filled, .custom-btn.filled:active {
+  color: white;
+  background-color: var(--secondary-color);
+}
+.custom-btn.filled:hover {
+  background-color: var(--alt-secondary-color);
+}
+.custom-btn.outline, .custom-btn.outline:active {
+  color: white;
+}
+.update-btn {
+  width: 100%;
+  padding: 7px;
+  border-radius: 48px;
+  margin-top: 1rem;
+  color: #FFFFFF80;
+  font-family: var(--heading-font);
+  font-size: 1.5rem;
+  background-color: #F26E3E80;
+}
+.update-btn:hover {
+  background-color: #de49499e;
+}
+
+/* ----------------------------- Drop Down ----------------------------- */
+.custom-dropdown .dropdown-toggle::after {
+  margin-left: 0.5rem !important;
+}
+.custom-dropdown .dropdown-menu {
+  background-color: var(--secondary-color) !important;
+}
+.custom-dropdown .dropdown-menu li a {
+  color: white !important;
+}
+.custom-dropdown .dropdown-menu li a:hover {
+  background-color: var(--alt-secondary-color) !important;
+}
+/* ----------------------------- Select ----------------------------- */
+/* Custom Select */
+select {
+  /* Reset Select */
+  appearance: none;
+  /* outline: 10px var(--alternative-color); */
+  border: 0;
+  box-shadow: none;
+  /* Personalize */
+  flex: 1;
+  padding: 0 1em;
+  color: #fff;
+  /* background-color: var(--alternative-color); */
+  background-image: none;
+  cursor: pointer;
+
+  outline: 10px #332A27 !important;
+  background-color: #332A27 !important;
+}
+/* Remove IE arrow */
+select::-ms-expand {
+  display: none;
+}
+/* Custom Select wrapper */
+.select-container {
+  position: relative;
+  display: flex;
+  width: 176px;
+  height: 3em;
+  border-radius: var(--main-radius);
+  overflow: hidden;
+}
+/* Arrow */
+.select-container::after {
+  content: '\25BC';
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1em;
+  /* background-color: var(--alternative-color); */
+  transition: .25s all ease;
+  pointer-events: none;
+  background-color: #332A27 !important;
+}
+/* Transition */
+.select-container:hover::after {
+  color: var(--secondary-color);
+}
+
+/* ----------------------------- Input Search ----------------------------- */
+.search {
+  width: 100%;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  border-radius: var(--main-radius);
+  background-color: var(--alternative-color);
+  box-shadow: 0px 0px 10px 0px #00000040 inset;
+}
+.search-input {
+ font-size: 16px;
+ color: var(--secondary-color);
+ margin-left: 14px;
+ outline: none;
+ border: none;
+ background: transparent;
+ width: 300px;
+}
+.search-input::placeholder,
+.search-icon {
+  color: #FFFFFF80;
+}
+
+/* ----------------------------- Custom Inputs ----------------------------- */
+.custom-input, textarea {
+  caret-color: var(--secondary-color) !important;
+  border: none !important;
+  /* box-shadow: 0px 0px 10px 0px #00000040 inset !important; */
+  background-color: #332A27 !important;
+  color: white !important;
+  padding-top: 0.7rem !important;
+  padding-bottom: 0.7rem !important;
+}
+.custom-input::placeholder, textarea::placeholder {
+  color:  #FFFFFF80 !important;
+}
+.custom-input:focus, textarea:focus {
+  box-shadow: none !important;
+  border: 1px solid var(--secondary-color);
+}
+
+/* ----------------------------- Input File ----------------------------- */
+input[type=file] {
+  max-width: 100%;
+  color: var(--secondary-color) !important;
+  padding: 5px;
+  background-color: var(--alternative-color) !important;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #00000040 inset !important;
+}
+
+input[type=file]::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: var(--secondary-color);
+  padding: 10px 20px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+input[type=file]::file-selector-button:hover {
+  background: var(--secondary-color);
+}
+
+/* ----------------------------- PayPal & Crypto ----------------------------- */
+.paypal-btn, .cryptomus-btn {
+  width: 256px;
+  padding: 10px;
+  border-radius: 48px;
+  text-align: center;
+  background-color: var(--secondary-color);
+  border: none;
+  outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.paypal-btn {
+  color: black;
+  background: #FFC439;
+}
+.cryptomus-btn {
+  color: white;
+  background: #DE4949;
+}

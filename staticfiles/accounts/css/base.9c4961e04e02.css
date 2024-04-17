@@ -1,0 +1,86 @@
+.status span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.status span.offline {
+  background-color: #EE3E3E;
+}
+.status span.online {
+  background-color: #3FBA6E;
+}
+
+/* Account Details */
+.account-details {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: #433733;
+  margin-bottom: 2rem;
+  min-height: 424px;
+  background: linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
+  linear-gradient(180deg, rgba(40, 32, 27, 0.7) 0%, rgba(67, 55, 51, 0) 100%);
+}
+.account-details #details > div {
+  height: 60px;
+  padding: 1.7rem 0;
+}
+.account-details #details > div:not(:last-of-type) {
+  border-bottom: 0.2px solid #1E1814;
+}
+.account-details #details > div > label {
+  color: #FFFFFF80;
+  font-weight: 300;
+}
+.account-details #details button {
+  width: 100%;
+  padding: 1rem;
+  color: white;
+  text-align: center;
+  border-radius: 48px;
+  border: 1px solid var(--secondary-color);
+}
+.account-details #details button:hover {
+  border: 1px solid var(--alt-secondary-color);
+}
+.account-details #duo-or-solo,
+.account-details #ranked-type,
+.account-details #role {
+  margin-left: 18px;
+  padding: 4px 8px 6px;
+  border-radius: var(--main-radius);
+  background-color: var(--secondary-color);
+  font-weight: 300;
+  font-size: 1rem;
+}
+.account-details #duo-or-solo.duo {
+  background-color: #06A5B0 !important;
+}
+.account-details #duo-or-solo.solo {
+  background-color: var(--secondary-color) !important;
+}
+/* Order Info */
+.order-info {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: #433733;
+  margin-bottom: 2rem;
+  min-height: 424px;
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #917a65 0%, #43373300 100%);
+}
+.order-info .from-to {
+  border-radius: var(--main-radius);
+  background-color: var(--background-color);
+  min-height: 56px;
+}
+
+/* Chat */
+.chat-header {
+  min-height: 180px;
+  background-color: #332A27;
+  border-top-left-radius: calc(var(--main-radius) * 2);
+  border-top-right-radius: calc(var(--main-radius) * 2);
+}
