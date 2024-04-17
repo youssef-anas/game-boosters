@@ -14,18 +14,30 @@ from accounts.serializers import PromoCodeSerializer
 from datetime import timedelta
 from django.contrib.auth.views import LoginView
 from gameBoosterss.utils import send_activation_code, reset_password
-from accounts.forms import EmailForm, ResetCodeForm, PasswordChangeCustomForm
+from accounts.forms import EmailForm, ResetCodeForm, PasswordChangeCustomForm, LoginForm
 from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import View
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.forms import AuthenticationForm
 
+
+
+class CustomLoginForm(AuthenticationForm):
+    # Customize your login form as needed
+    pass
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
-    success_url = reverse_lazy('homepage.index')
+    success_url = reverse_lazy('homepage:index')
     redirect_authenticated_user = True
+    authentication_form = LoginForm 
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(**self.get_form_kwargs())
 
 class CustomLogoutView(View):
     redirect_url = reverse_lazy('homepage.index')
@@ -74,7 +86,7 @@ def activate_account(request, code):
         return redirect(reverse('accounts.activate.sent'))
 
     time_difference = timezone.now() - user.activation_time
-    if time_difference > timedelta(minutes=1):
+    if time_difference > timedelta(minutes=20):
         return HttpResponseBadRequest("Activation time hasn't elapsed yet")
 
     user.is_active = True

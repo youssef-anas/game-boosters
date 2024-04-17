@@ -34,9 +34,9 @@ urlpatterns = [
     path('paypal/', include("paypal.standard.ipn.urls")),
     # path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
     # path('token/', oauth2_views.TokenView.as_view(), name="token"),
-    path('accounts/', include('allauth.urls')),
+    # path('accounts/', include('allauth.urls')),
     path('download/media/zip/', download_media_zip, name='download_media_zip'),
-    path('auth/', include('social_django.urls', namespace='social')),
+    path('social/', include('social_django.urls', namespace='social')),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

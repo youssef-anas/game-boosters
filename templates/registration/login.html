@@ -1,47 +1,120 @@
-{% extends 'layouts/base.html' %}
-{% load socialaccount %}
 {% load static %}
-{% block title %}Login{% endblock %}
-{% block style %}
-<link href="{% static 'accounts/css/forms.css'%}" rel="stylesheet" />
-<link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
-{% endblock %}
-{% block container %}
-<div class="login-container p-5 " style="padding-top: 6rem !important;">
-    <div class="container login">
-        <div class="d-lg-block d-none login-image">
-            <img src="{% static 'accounts/images/register-image.png' %}" alt="" width="500" />
-        </div>
-        <div class="row align-items-center justify-content-center " style="height: 500px;">
-            <form method="post" enctype="multipart/form-data" class="offset-lg-5 offset-lg-0 col-lg-7 col-12 login-form px-lg-5 px-0">
-                {% if error_message %}
-                <p style="color: red;">{{ error_message }}</p>
-                {% endif %}
-                {% csrf_token %}
-                <!-- {{ form.username.label_tag }} {{ form.username }}
-                {{ form.password.label_tag }} {{ form.password }}
-                {{ form.as_p }} -->
-                <a href="{% provider_login_url 'google' %}">Login with Google</a><hr/>
-                <a href="{% provider_login_url 'facebook' %}">Login with Facebook</a><hr/>
+<!DOCTYPE html>
+<html lang="en">
 
-                <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook New</a><hr/>
-                
-                <div class="mb-3">
-                    <label for="username" class="form-label custom-label">Username</label>
-                    <input type="text" name="username" class="form-control custom-input" id="username">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+    <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+    <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+    <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
+    <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <!-- Our Style -->
+    <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
+    <title>Login</title>
+
+    </head>
+
+    <body>
+        <div class="nav" id="nav">
+            <div class="container">
+              <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+      
+                <div class="p-0">
+                  <a href="{% url 'homepage.index' %}" class="logo">
+                    <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                  </a>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label custom-label">Password</label>
-                    <input type="password" name="password" class="form-control custom-input" id="password">
-                </div>
-                <div class="text-end">
-                    <button type="submit" class="btn fs-5 text-white rounded-5 px-4 py-2 mt-3" style="background-image: linear-gradient(to right, #15053C 0%, #9303B6 50%, #4A0774)">Submit</button>
-                </div>
-            </form>
+      
+              </div>
+            </div>
         </div>
-    </div>
-</div>
-{% endblock %}
-{% block script %}
-<script src="{% static  'accounts/js/accounts.js' %}"></script>
-{% endblock %}
+
+        <div class="signup-container">
+            <div class="overlay">
+                <div class="container py-xl-5 py-0">
+                    <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
+        
+                        <div class="col left-side d-xl-block d-none">
+                            <div class="image">
+                                <img src="{% static 'accounts/images/login.png' %}" class="img-fluid" alt="Landing">
+                            </div>
+                            <div class="text mt-5">
+                                <h1>REACH YOUR RANK <span>GOALS</span></h1>
+                                <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+                            </div>
+                        </div>
+                        <div class="col right-side">
+                            <div class="ps-xl-5 ps-0 mx-xl-4 mx-0">
+                                <div class="head">
+                                    <h1>Welcome Back</h1>
+                                    <p class="mb-4 text-center">Login into your account!</p>
+        
+                                    <div class="progress d-none mb-5">
+                                        <div class="progress-bar" style="width: 100%;"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <form method="POST"  enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="form-group mb-4">
+                                        <!-- Render the full_name field with placeholder -->
+                                        {{ form.username }}
+                                        {% if form.full_name.errors %}
+                                            <div class="message error-message mt-2 w-100">
+                                                {% for error in form.full_name.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <!-- Render the full_name field with placeholder -->
+                                        {{ form.password }}
+                                        {% if form.password.errors %}
+                                            <div class="message error-message mt-2 w-100">
+                                                {% for error in form.password.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <p class="continue-with">or continue with</p>
+                                        <div class="social text-center">
+                                            <a href="{% url 'social:begin' 'google-oauth2' %}" class="me-4">
+                                                <img src="{% static 'accounts/images/google.png' %}" class="me-2" alt="Google" width="24" height="24">
+                                                Google
+                                            </a>
+                                            <a href="{% url 'social:begin' 'facebook' %}">
+                                                <img src="{% static 'accounts/images/facebook.png' %}" class="me-2" alt="Facebook" width="24" height="24">
+                                                Facebook
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <p class="text-center">Do not have an account? <a href="{% url 'accounts.signup' %}" style="color: var(--secondary-color);">Sign up!</a></p>
+                                    </div>
+                                    <button type="submit" class="btn update-btn">Log IN</button>
+                                </form>
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <script>
+            AOS.init();
+        </script>
+    </body>
+
+</html>
