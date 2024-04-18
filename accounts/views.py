@@ -38,6 +38,11 @@ class CustomLoginView(LoginView):
         if form_class is None:
             form_class = self.get_form_class()
         return form_class(**self.get_form_kwargs())
+    
+    def form_invalid(self, form):
+        
+        # Re-render the form with errors
+        return self.render_to_response(self.get_context_data(form=form))
 
 class CustomLogoutView(View):
     redirect_url = reverse_lazy('homepage.index')
@@ -79,27 +84,30 @@ def activate_account_sent(request):
 
 
 def activate_account(request, code):
-    user = BaseUser.objects.get(activation_code=code)
+    try :
+        user = BaseUser.objects.get(activation_code=code)
 
-    if not user:
-        messages.error(request, 'Error in code')
+        time_difference = timezone.now() - user.activation_time
+        if time_difference > timedelta(minutes=20):
+            messages.error(request, "Activation time hasn't elapsed yet")
+            return redirect(reverse('accounts.activate.sent'))
+
+        user.is_active = True
+        user.activation_code = None
+        user.save()
+
+        # Set the backend attribute on the user
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
+        login(request, user)
+        request.session.pop('email', None)
+
+        messages.success(request, 'Your account has been activated successfully')
+        return redirect(reverse_lazy('homepage.index'))
+    
+    except BaseUser.DoesNotExist:
+        # Handle invalid code
+        messages.error(request, 'Invalid code')
         return redirect(reverse('accounts.activate.sent'))
-
-    time_difference = timezone.now() - user.activation_time
-    if time_difference > timedelta(minutes=20):
-        return HttpResponseBadRequest("Activation time hasn't elapsed yet")
-
-    user.is_active = True
-    user.activation_code = None
-    user.save()
-
-    # Set the backend attribute on the user
-    user.backend = 'django.contrib.auth.backends.ModelBackend'
-    login(request, user)
-    request.session.pop('email', None)
-
-    messages.success(request, 'Your account has been activated successfully')
-    return redirect(reverse_lazy('homepage.index'))
 
 
 def reset_password_request(request):
@@ -117,14 +125,20 @@ def reset_password_request(request):
 
 def check_reset_code(request, id):
     user = get_object_or_404(BaseUser, id=id)
+    print(user, request.method)
     if request.method == 'POST':
         form = ResetCodeForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             if user.rest_password_code == form.cleaned_data['reset_code']:
                 user.rest_password_code = None
                 user.save()
                 return redirect(reverse_lazy('password.change', kwargs={'id': user.id}))
+            else:
+                messages.error(request, 'Invalid code')
+                return redirect(reverse_lazy('password.check.code', kwargs={'id': user.id}))
+        else:
+            messages.error(request, 'Invalid code')
+            return redirect(reverse_lazy('password.check.code', kwargs={'id': user.id}))
     form = ResetCodeForm()        
     return render(request, 'accounts/password_reset/reset_code.html', context={'user':user, 'form':form})
 
@@ -143,7 +157,7 @@ def change_password_page(request, id):
             # user.backend = 'django.contrib.auth.backends.ModelBackend'
             # login(request, user)
             messages.success(request, 'Password reset successfully.')
-            return redirect(reverse_lazy('account_login'))
+            return redirect(reverse_lazy('account.login'))
     else:
         form = PasswordChangeCustomForm(user=user)
     

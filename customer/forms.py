@@ -17,7 +17,6 @@ class Registration(UserCreationForm):
         fields = ("full_name", "email", "username", "password1", "password2", "country")
         widgets = {'country': CountrySelectWidget()}
 
-    # Define the form fields with custom attributes (placeholders)
     full_name = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control custom-input',
@@ -45,7 +44,7 @@ class Registration(UserCreationForm):
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control custom-input',
-            'placeholder': 'Conform password'
+            'placeholder': 'Confirm password'
         })
     )
 
@@ -63,13 +62,25 @@ class Registration(UserCreationForm):
         self.cleaned_data['last_name'] = ' '.join(name_parts[1:])
         
         return full_name
-    
 
     def clean_email(self):
         email = self.cleaned_data['email']
         if BaseUser.objects.filter(email=email).exists():
             raise forms.ValidationError("Email already exists.")
         return email
+
+    def save(self, commit=True):
+        # Call the parent save method to handle the password and other fields
+        user = super().save(commit=False)
+        
+        # Set the first_name and last_name from the cleaned_data
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        
+        if commit:
+            user.save()
+        
+        return user
 
 
 class EmailEditForm(forms.Form):
