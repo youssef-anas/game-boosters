@@ -17,7 +17,20 @@ class ResetCodeForm(forms.Form):
 
 
 class PasswordChangeCustomForm(SetPasswordForm):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Customizing the new_password1 field
+        self.fields['new_password1'].widget.attrs.update({
+            'class': 'form-control custom-input',  # Add your custom class here
+            'placeholder': 'Enter new password'  # Add your placeholder here
+        })
+        
+        # Customizing the new_password2 field
+        self.fields['new_password2'].widget.attrs.update({
+            'class': 'form-control custom-input',  # Add your custom class here
+            'placeholder': 'Confirm new password'  # Add your placeholder here
+        })
 
 from django.contrib.auth.forms import AuthenticationForm
 

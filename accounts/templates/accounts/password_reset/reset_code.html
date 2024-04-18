@@ -1,18 +1,243 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+  <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+  <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
+  <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+  <!-- Our Style -->
+  <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
+  <title>Reset Password</title>
+  <style>
+    /* Style the input fields */
+    .digit-box {
+      width: 71px;
+      height: 71px;
+      text-align: center;
+      font-size: 1.5rem;
+      border-radius: calc(var(--main-radius) * 2);
+      color: white;
+    }
+    .digit-box:not(:last-child) {
+      margin-right: 1rem;
+    }
+    @media (max-width: 767px) {
+        .digit-box {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--main-radius);
+        }    
+        .digit-box:not(:last-child) {
+            margin-right: 0.3rem;
+        }
+    }
+    /* Add background colors based on the state of each input field */
+    .valid-digit {
+      background-color: var(--secondary-color) !important;
+      /* Light green for valid digits */
+    }
+  </style>
 </head>
+
 <body>
-    <h2>Enter Reset Code</h2>
-    <form action="{% url 'password.check.code' user.id %}" method="post">
-        {% csrf_token %}
-        <label for="reset_code">Reset Code:</label>
-        <input maxlength="5" type="number" id="reset_code" name="reset_code" required>
-        <br><br>
-        <button type="submit">Submit</button>
-    </form>
+  <div class="nav" id="nav">
+    <div class="container">
+      <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+
+        <div class="p-0">
+          <a href="{% url 'homepage.index' %}" class="logo">
+            <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="reset-password-content content">
+    <div class="overlay">
+      
+      <div class="container py-xl-5 py-0">
+        <!-- Errors -->
+        {% if messages %}
+          {% for message in messages %}
+          <div class="py-5 mt-5 mx-auto message-container px-3" style="top: -39px !important;">
+            <div class="alert {{ message.tags }} mb-0 alert-error" role="alert" >
+            {{ message }}
+            </div>
+          </div>
+          {% endfor %}
+        {% endif %}
+        <div class="py-5 mt-5 mx-auto message-container px-3" id="error" style="top: -39px !important;"></div>
+        <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
+
+          <div class="col left-side d-xl-block d-none">
+            <div class="image d-flex justify-content-center align-items-center">
+              <img src="{% static 'accounts/images/password-reset.png' %}" class="img-fluid" alt="Landing" style="height: 500px !important">
+            </div>
+            <div class="text mt-5">
+              <h1>REACH YOUR RANK <span>GOALS</span></h1>
+              <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+            </div>
+          </div>
+          <div class="col right-side">
+            <div class="ps-xl-5 ps-0 mx-xl-4 mx-0">
+              <div class="head">
+                <h1>Password Reset</h1>
+
+                <p class="text-center mb-5">
+                  We have sent a verification code to this email:
+                  <br />
+                  <span style="color: var(--secondary-color); font-weight: 700;">{{user.email}}</span>
+                  <br />
+                  Please enter the code to verify your email
+                </p>
+              </div>
+
+              <form id="activationForm" method="POST" action="{% url 'password.check.code' user.id %}">
+                {% csrf_token %}
+                <div id="codeInput" class="mb-5 text-center">
+                    <!-- Five input fields for five-digit code -->
+                    <input type="text" class="digit-box custom-input" maxlength="1" id="digit1" oninput="handleInput(event, 'digit2')"
+                      onkeydown="handleKeyDown(event, 'digit1', 'digit2')" onpaste="handlePaste(event)">
+                    <input type="text" class="digit-box custom-input" maxlength="1" id="digit2" oninput="handleInput(event, 'digit3')"
+                      onkeydown="handleKeyDown(event, 'digit1', 'digit3')" onpaste="handlePaste(event)">
+                    <input type="text" class="digit-box custom-input" maxlength="1" id="digit3" oninput="handleInput(event, 'digit4')"
+                      onkeydown="handleKeyDown(event, 'digit2', 'digit4')" onpaste="handlePaste(event)">
+                    <input type="text" class="digit-box custom-input" maxlength="1" id="digit4" oninput="handleInput(event, 'digit5')"
+                      onkeydown="handleKeyDown(event, 'digit3', 'digit5')" onpaste="handlePaste(event)">
+                    <input type="text" class="digit-box custom-input" maxlength="1" id="digit5"
+                      onkeydown="handleKeyDown(event, 'digit4', null)" onpaste="handlePaste(event)">
+                  </div>
+                  <!-- Hidden input field for storing the combined five-digit code -->
+                  <input type="hidden" id="activationCodeInput" name="reset_code">
+
+                <div class="form-group mb-4">
+                    <p class="text-center footer-link">Did not get a code? <a href="password.reset" style="color: var(--secondary-color);">Resend</a></p>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn update-btn">Confirm</button>
+              </form>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+    // Function to handle input in each box
+    function handleInput(event, nextInputId) {
+      const input = event.target;
+      const value = input.value;
+
+      // Validate the input
+      if (value >= '0' && value <= '9') {
+        // If the input is a digit, apply the 'valid-digit' class
+        input.classList.add('valid-digit');
+        input.classList.remove('invalid-digit');
+        if (nextInputId) {
+          // Move focus to next input
+          document.getElementById(nextInputId).focus();
+        }
+      } else {
+        // If the input is not a digit, apply the 'invalid-digit' class
+        input.classList.add('invalid-digit');
+        input.classList.remove('valid-digit');
+        // Clear the input if invalid
+        input.value = '';
+      }
+    }
+
+    // Function to handle keyboard navigation and backspace
+    function handleKeyDown(event, prevInputId, nextInputId) {
+      const input = event.target;
+
+      // Check for backspace key
+      if (event.key === 'Backspace') {
+        // If the input is empty and previous input ID exists, focus on the previous input
+        if (!input.value && prevInputId) {
+          document.getElementById(prevInputId).focus();
+        }
+      }
+
+      // Check for left arrow key and move focus to the previous input if it exists
+      if (event.key === 'ArrowLeft' && prevInputId) {
+        document.getElementById(prevInputId).focus();
+      }
+
+      // Check for right arrow key and move focus to the next input if it exists
+      if (event.key === 'ArrowRight' && nextInputId) {
+        document.getElementById(nextInputId).focus();
+      }
+    }
+
+    // Function to handle paste events on input fields
+    function handlePaste(event) {
+      const input = event.target;
+      const pastedText = event.clipboardData.getData('text'); // Get the pasted text
+
+      // If the pasted text is exactly 5 characters long and consists of only digits
+      if (pastedText.length === 5 && /^[0-9]{5}$/.test(pastedText)) {
+        event.preventDefault(); // Prevent the default paste behavior
+
+        // Distribute the pasted digits across the input fields
+        for (let i = 0; i < 5; i++) {
+          const digitInput = document.getElementById(`digit${i + 1}`);
+          digitInput.value = pastedText[i];
+          digitInput.classList.add('valid-digit');
+          digitInput.classList.remove('invalid-digit');
+        }
+
+        // Focus on the last input field (digit5)
+        document.getElementById('digit5').focus();
+      }
+    }
+
+    // Event listener for form submission
+    document.getElementById("activationForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Combine the values of the five input fields into one code
+        const activationCode = [];
+        for (let i = 1; i <= 5; i++) {
+            const digit = document.getElementById(`digit${i}`).value;
+            activationCode.push(digit);
+        }
+        const code = activationCode.join(""); // Combine the five digits
+
+        // Update the hidden input field with the combined code
+        document.getElementById("activationCodeInput").value = code;
+
+        // Check if the code is valid (5 digits)
+        if (code.length !== 5 || isNaN(parseInt(code))) {
+            errorEl = document.getElementById('error')
+            errorEl.innerHTML = `
+            <div class="alert mb-0 alert-error" role="alert" id="error">
+                Please enter a valid 5-digit code. 
+            </div>
+            `;
+            return;
+        }
+
+        // Submit the form using POST method
+        document.getElementById("activationForm").submit();
+    });
+  </script>
 </body>
+
 </html>

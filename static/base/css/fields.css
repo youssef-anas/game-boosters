@@ -157,7 +157,9 @@ select::-ms-expand {
   box-shadow: none !important;
   border: 1px solid var(--secondary-color);
 }
-
+.custom-input:focus-visible {
+  outline: 1px solid var(--secondary-color) !important;
+}
 /* ----------------------------- Input File ----------------------------- */
 input[type=file] {
   max-width: 100%;
