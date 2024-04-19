@@ -105,6 +105,14 @@ MIDDLEWARE = [
     'gameBoosterss.middleware.ImageSizeLimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+CORS_ORIGIN_WHITELIST = [
+    'https://www.madboost.gg',
+    # 'http://www.madboost.gg',
+    # 'http://madboost.gg',
+    'https://madboost.gg',
+]
+
+CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'gameBoosterss.urls'
 
@@ -229,6 +237,8 @@ EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = [
+    '*'
+    'https://www.madboost.gg',
     'localhost',
     '127.0.0.1',
     'www.madboost.gg',

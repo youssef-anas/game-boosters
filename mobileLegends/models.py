@@ -15,7 +15,7 @@ class MobileLegendsRank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class MobileLegendsTier(models.Model):
   rank = models.OneToOneField(MobileLegendsRank, related_name='tier', on_delete=models.CASCADE)
@@ -48,7 +48,7 @@ class MobileLegendsPlacement(models.Model):
     return self.rank_name
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class MobileLegendsDivisionOrder(models.Model):
   @staticmethod

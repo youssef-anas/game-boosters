@@ -19,7 +19,7 @@ class Overwatch2Rank(models.Model):
         return self.rank_name
     
     def get_image_url(self):
-        return f"/media/{self.rank_image}"
+        return self.rank_image.url
 
 class Overwatch2Tier(models.Model):
     rank = models.OneToOneField(Overwatch2Rank, related_name='tier', on_delete=models.CASCADE)
@@ -224,7 +224,7 @@ class Overwatch2Placement(models.Model):
     return self.rank_name
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
 
 class Overwatch2PlacementOrder(models.Model):
   ROLE_CHOISES = [
