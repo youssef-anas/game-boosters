@@ -11,7 +11,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
-DEBUG = False
+DEBUG = True
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 # CSRF_COOKIE_SECURE = False
@@ -237,8 +237,8 @@ EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = [
-    '*'
     'https://www.madboost.gg',
+    'https://madboost.gg',
     'localhost',
     '127.0.0.1',
     'www.madboost.gg',
@@ -290,13 +290,13 @@ Q_CLUSTER = {
 #     },
 # }
 
-OAUTH2_PROVIDER = {
-    'SCOPES': {'read', 'write'},
-    'CLIENT_ID': 'your-client-id',
-    'CLIENT_SECRET': 'your-client-secret',
-    'OAUTH2_SERVER_CLASS': 'oauth2_provider.oauth2.Server',
-    'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
-}
+# OAUTH2_PROVIDER = {
+#     'SCOPES': {'read', 'write'},
+#     'CLIENT_ID': 'your-client-id',
+#     'CLIENT_SECRET': 'your-client-secret',
+#     'OAUTH2_SERVER_CLASS': 'oauth2_provider.oauth2.Server',
+#     'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
+# }
 
 
 AUTHENTICATION_BACKENDS = [
@@ -386,8 +386,8 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = [
 ]
 
 # TODO remove comment after add ssl to site
-# SECURE_SSL_REDIRECT = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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',
