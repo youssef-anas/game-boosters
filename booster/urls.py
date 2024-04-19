@@ -25,7 +25,7 @@ urlpatterns = [
     path('update-rating/<int:order_id>',update_rating,name='order.update.rating'),
     path('transactions/',TransactionListView.as_view(),name='booster.transaction'),
 
-    path('work-with-us/', RedirectView.as_view(url='/booster/work-with-us/one-of-three/')),
+    path('work-with-us/', RedirectView.as_view(url='/booster/work-with-us/one-of-three/'), name='workwithus'),
     path('work-with-us/one-of-three/',work_with_us_level1_view,name='workwithus.level1'),
     path('work-with-us/two-of-three/',work_with_us_level2_view,name='workwithus.level2'),
     path('work-with-us/three-of-three/',work_with_us_level3_view,name='workwithus.level3'),

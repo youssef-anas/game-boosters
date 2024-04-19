@@ -1,54 +1,69 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accepted Data</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f7f7;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-        }
-        .data-table th, .data-table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-        .data-table th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+    <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+    <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+    <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <!-- Our Style -->
+    <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
+    <title>Work With Us</title>
+    
 </head>
+
 <body>
-    <div class="container">
-        <h1>Thank You</h1>
-        <p>Your data has been submitted successfully. Here's the Id about request:</p>
-        <p>Your request ID is: {{ id }}</p>
+    <div class="nav" id="nav">
+        <div class="container">
+            <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+
+                <div class="p-0">
+                    <a href="{% url 'homepage.index' %}" class="logo">
+                        <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
+
+    <div class="workwithus-content content">
+        <div class="overlay">
+            <div class="container py-xl-5 py-0">
+                <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
+
+                    <div class="col left-side d-xl-block d-none">
+                        <div class="image">
+                            <img src="{% static 'accounts/images/workwithus.png' %}" class="img-fluid" alt="Landing">
+                        </div>
+                        <div class="text mt-5">
+                            <h1>REACH YOUR RANK <span>GOALS</span></h1>
+                            <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+                        </div>
+                    </div>
+                    <div class="col right-side">
+                        <div class="ps-xl-5 ps-0 mx-xl-4 mx-0">
+                            <div class="head">
+                                <h1>Work with us</h1>
+                                <p class="my-5 text-center">Thank you for your interest in working with us! <br />We have received your application. We will <br />contact you later if we decided to procced.
+                                <br>Your request ID is: {{ id }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
 </body>
+
 </html>

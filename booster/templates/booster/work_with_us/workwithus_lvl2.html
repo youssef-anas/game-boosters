@@ -1,16 +1,148 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work With Us - Level 2</title>
-</head>
-<body>
-    <h1>Work With Us - Level 2</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Next</button>
-    </form>
-</body>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+        <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+        <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+        <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+        <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
+        <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
+        <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+        <!-- Our Style -->
+        <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
+        <title>Work With Us</title>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <style>
+            .select2.select2-container.select2-container--default.select2-container--below.select2-container--focus {
+                width: 100% !important;
+            }
+            .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                border: 1px solid var(--secondary-color);
+            }
+            .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                background-color: var(--secondary-color);
+            }.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                border-right: none;
+                color: white; 
+            }
+            .select2-container--default .select2-selection--multiple {
+                caret-color: var(--secondary-color) !important;
+                border: none !important;
+                /* box-shadow: 0px 0px 10px 0px #00000040 inset !important; */
+                background-color: #332A27 !important;
+                color: white !important;
+                padding-top: 0.7rem !important;
+                padding-bottom: 0.7rem !important;
+                border-radius: 0.375rem;
+            }
+            .select2-container--default .select2-results>.select2-results__options {
+                background-color: #332A27 !important;
+            }
+            .select2-container--default .select2-results__option--selected {
+                background-color: var(--secondary-color);
+            }
+            .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+                background-color: var(--alt-secondary-color);
+                color: white;
+            }
+            .select2-dropdown {
+                border: none !important;
+                border-bottom-left-radius:  0.375rem;
+                border-bottom-right-radius:  0.375rem;
+            }
+            .select2-container .select2-search--inline .select2-search__field {
+                margin-top: 0 !important;
+                margin-bottom: 0 !important;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+                height: 22px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="nav" id="nav">
+            <div class="container">
+              <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+      
+                <div class="p-0">
+                  <a href="{% url 'homepage.index' %}" class="logo">
+                    <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                  </a>
+                </div>
+      
+              </div>
+            </div>
+        </div>
+
+        <div class="workwithus-content content">
+            <div class="overlay">
+                <div class="container py-xl-5 py-0">
+                    <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
+        
+                        <div class="col left-side d-xl-block d-none">
+                            <div class="image">
+                                <img src="{% static 'accounts/images/workwithus.png' %}" class="img-fluid" alt="Landing">
+                            </div>
+                            <div class="text mt-5">
+                                <h1>REACH YOUR RANK <span>GOALS</span></h1>
+                                <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+                            </div>
+                        </div>
+                        <div class="col right-side">
+                            <div class="ps-xl-5 ps-0 mx-xl-4 mx-0">
+                                <div class="head">
+                                    <h1>Work with us</h1>
+                                    <p class="mb-4 text-center">Fill in your data & information</p>
+        
+                                    <div class="progress mb-5">
+                                        <div class="progress-bar" style="width: 50%;"  role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="form-group mb-4">
+                                        <!-- <div class="select-container"> -->
+                                            {{ form.game }}
+                                        <!-- </div> -->
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        {{ form.rank }}
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        {{ form.server }}
+                                    </div>
+                                    <button type="submit" class="btn custom-btn filled w-100">Next</button>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+        <!-- Include Select2 CSS and JS -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.js-example-basic-multiple').select2({
+                    placeholder: "Choose your game",
+                    allowClear: true, // Allow clearing the selection
+                });
+            });
+        </script>
+
+    </body>
+
 </html>

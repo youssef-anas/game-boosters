@@ -30,6 +30,9 @@ body {
   .reset-password-content {
     background-image: url('./../images/password-reset.png');
   }
+  .workwithus-content {
+    background-image: url('./../images/workwithus.png');
+  }
 }
 @media (max-width: 767px) {
   .content {

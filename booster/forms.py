@@ -3,7 +3,7 @@ from django import forms
 # from booster.models import Booster
 from django import forms
 from booster.models import WorkWithUs, Photo
-
+from django.core.exceptions import ValidationError
 
 """
 
@@ -25,17 +25,51 @@ upload pic
 
 
 class WorkWithUsLevel1Form(forms.ModelForm):
+
     class Meta:
         model = WorkWithUs
         fields = ['nickname', 'email', 'discord_id', 'languages']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Add classes and placeholders to each field
+        self.fields['nickname'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'Nickname'
+        })
+        self.fields['email'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'Email'
+        })
+        self.fields['discord_id'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'Discord ID'
+        })
+        self.fields['languages'].widget.attrs.update({
+            'class': 'form-control custom-input',
+            'placeholder': 'e.g., English, Spanish, French'
+        })
+        # Add help text for the 'languages' field
+        self.fields['languages'].help_text = 'Enter the languages you are proficient in, separated by commas (e.g., English, Spanish, French).'
+        
+
+class WorkWithUsLevel2Form(forms.ModelForm):
+    class Meta:
+        model = WorkWithUs
+        fields = ['game', 'rank', 'server']
+        from django import forms
+from .models import WorkWithUs
 
 class WorkWithUsLevel2Form(forms.ModelForm):
     class Meta:
         model = WorkWithUs
         fields = ['game', 'rank', 'server']
         widgets = {
-            'game': forms.SelectMultiple,
+            'game': forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple custom-input', 'placeholder': 'Choose your game)'}),
+            'rank': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Rank'}),
+            'server': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Server'}),
         }
+
 
 class WorkWithUsLevel3Form(forms.ModelForm):
     image2 = forms.ImageField(required=False)
@@ -47,14 +81,16 @@ class WorkWithUsLevel3Form(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        print("cleaned_data: ",cleaned_data)
         image = cleaned_data.get('image')
         image2 = cleaned_data.get('image2')
         image3 = cleaned_data.get('image3')
 
         if not (image or image2 or image3):
+            print("At least one image is required.")
             raise forms.ValidationError("At least one image is required.")        
         return cleaned_data
-    
+
     
 class WorkWithUsForm(forms.ModelForm):
     class Meta:

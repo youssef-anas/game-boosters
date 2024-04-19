@@ -1,16 +1,125 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work With Us - Level 3</title>
+    <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+    <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+    <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+    <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
+    <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <!-- Our Style -->
+    <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
+    <title>Work With Us</title>
+    <style>
+        input[type=file] {
+            width: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Work With Us - Level 3</h1>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+    <div class="nav" id="nav">
+        <div class="container">
+            <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+
+                <div class="p-0">
+                    <a href="{% url 'homepage.index' %}" class="logo">
+                        <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="workwithus-content content">
+        <div class="overlay">
+            <div class="container py-xl-5 py-0">
+                <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
+
+                    <div class="col left-side d-xl-block d-none">
+                        <div class="image">
+                            <img src="{% static 'accounts/images/workwithus.png' %}" class="img-fluid" alt="Landing">
+                        </div>
+                        <div class="text mt-5">
+                            <h1>REACH YOUR RANK <span>GOALS</span></h1>
+                            <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
+                        </div>
+                    </div>
+                    <div class="col right-side">
+                        <div class="ps-xl-5 ps-0 mx-xl-4 mx-0">
+                            <div class="head">
+                                <h1>Work with us</h1>
+                                <p class="mb-4 text-center">Fill in your data & information</p>
+
+                                <div class="progress mb-5">
+                                    <div class="progress-bar" style="width: 75%;" role="progressbar" aria-valuenow="75"
+                                        aria-valuemin="0" aria-valuemax="100">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form method="POST"  enctype="multipart/form-data">
+                                {% csrf_token %}
+                                
+                                <!-- Display form validation errors -->
+                                {% if form.non_field_errors %}
+                                <div class="message error-message">
+                                    {{ form.non_field_errors }}
+                                </div>
+                                {% endif %}
+
+                                <!-- Render each field in the form -->
+                                <div class="mb-4">
+                                    <label for="{{ form.image.id_for_label }}" class="d-block mb-2">Image 1:</label>
+                                    {{ form.image }}
+                                    {% if form.image.errors %}
+                                    <div class="message error-message">
+                                        {{ form.image.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="{{ form.image2.id_for_label }}" class="d-block mb-2">Image 2:</label>
+                                    {{ form.image2 }}
+                                    {% if form.image2.errors %}
+                                    <div class="error">
+                                        {{ form.image2.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="mb-5">
+                                    <label for="{{ form.image3.id_for_label }}" class="d-block mb-2">Image 3:</label>
+                                    {{ form.image3 }}
+                                    {% if form.image3.errors %}
+                                    <div class="error">
+                                        {{ form.image3.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <button type="submit" class="btn custom-btn filled w-100">Next</button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
 </body>
+
 </html>
