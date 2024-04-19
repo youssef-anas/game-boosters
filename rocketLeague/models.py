@@ -13,7 +13,7 @@ class RocketLeagueRank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class RocketLeagueDivision(models.Model):
   rank = models.OneToOneField(RocketLeagueRank, related_name='tier', on_delete=models.CASCADE)
@@ -33,7 +33,7 @@ class RocketLeaguePlacement(models.Model):
     return f'{self.rank_name} - {self.price}$'
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class RocketLeagueSeasonal(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -44,7 +44,7 @@ class RocketLeagueSeasonal(models.Model):
     return f'{self.rank_name} - {self.price}$'
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class RocketLeagueTournament(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -55,7 +55,7 @@ class RocketLeagueTournament(models.Model):
     return f'{self.rank_name} - {self.price}$'
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class RocketLeagueDivisionOrder(models.Model):
   DIVISION_CHOICES = [

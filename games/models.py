@@ -13,10 +13,10 @@ class Game(models.Model):
     return self.name
   
   def get_logo_image_url(self):
-    return f"/media/{self.logo_image}"
+    return self.logo_image.url
   
   def get_banner_image_url(self):
-    return f"/media/{self.banner_image}"
+    return self.banner_image.url
   
   def get_name_image_url(self):
-    return f"/media/{self.name_image}"
+    return self.name_image.url

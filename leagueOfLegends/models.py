@@ -47,7 +47,7 @@ class LeagueOfLegendsPlacement(models.Model):
     return self.rank_name
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class LeagueOfLegendsDivisionOrder(models.Model):
   DIVISION_CHOICES = [

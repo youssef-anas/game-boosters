@@ -15,7 +15,7 @@ class Dota2Rank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class SingletonModel(models.Model):
   class Meta:
@@ -60,7 +60,7 @@ class Dota2Placement(models.Model):
     return self.rank_name
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
   
 class Dota2RankBoostOrder(models.Model):

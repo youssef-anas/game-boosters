@@ -321,8 +321,8 @@ def upload_image_to_firebase(image_data, image_name):
     if image_data is None:
         return None
 
-    if not isinstance(image_data, InMemoryUploadedFile):
-        raise TypeError("Expected an InMemoryUploadedFile object")
+    # if not isinstance(image_data, InMemoryUploadedFile):
+    #     raise TypeError("Expected an InMemoryUploadedFile object")
 
     # Read the contents of the image file as bytes
     image_file = image_data.file.read()

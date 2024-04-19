@@ -119,7 +119,7 @@ class BoosterPortfolio(models.Model):
     image           = models.ImageField(upload_to='booster/images')
 
     def get_image_url(self):
-        return f"/media/{self.image}"
+        return self.image.url
     
     def __str__(self):
         return f'Portfolio of {self.booster.booster.username}'

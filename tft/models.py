@@ -45,7 +45,7 @@ class TFTPlacement(models.Model):
     return f'{self.rank_name} - {self.price}'
   
   def get_image_url(self):
-    return f"/media/{self.rank_image}"
+    return self.rank_image.url
   
 class TFTDivisionOrder(models.Model):
   DIVISION_CHOICES = [
