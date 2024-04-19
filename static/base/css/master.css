@@ -12,6 +12,7 @@
   --background-color: #201914;
   --heading-font: heading-font;
   --sharp-font: sharp-medium-font;
+  --normal-sharp-font: normal-sharp-font;
   --sharp-thin-font: sharp-thin-font;
   --main-radius: 8px;
   --text-color: #fafafa;
@@ -53,6 +54,10 @@
 @font-face {
   font-family: sharp-thin-font;
   src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Thin20.otf');
+}
+@font-face {
+  font-family: normal-sharp-font;
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Light25.otf');
 }
 html {
   scroll-behavior: smooth;

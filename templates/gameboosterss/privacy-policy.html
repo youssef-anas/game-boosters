@@ -4,9 +4,151 @@
 {% load static %}
 {% block title %}Last Orders{% endblock %}
 {% block style %}
-<!-- OUR STYLE -->
-<link rel="stylesheet" href="{% static 'gameboosterss/css/last-orders.css' %}">
+<style>
+.privacy-container {
+  background-color: var(--main-color);
+  border-radius: calc(var(--main-radius) * 2);
+  margin-top: 5rem;
+  padding: 6rem 4.5rem;
+}
+h1 {
+  font-family: var(--heading-font);
+  font-size: 64px;
+  margin-bottom: 2.5rem;
+}
+h2 {
+  font-family: var(--heading-font);
+  font-size: 32px;
+  margin-bottom: 2.5rem;
+}
+h3 {
+  font-family: var(--heading-font);
+  font-size: 32px;
+  margin-bottom: 1.5rem;
+}
+p {
+  font-family: var(--normal-sharp-font);
+  font-size: 32px;
+}
+p:not(:last-of-type) {
+  margin-bottom: 2.5rem;
+}
+@media (max-width: 767px) {
+  .privacy-container {
+    padding: 26px 7px;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  h2, h3, p {
+    font-size: 16px;
+  }
+}
+</style>
 {% endblock %}
 {% block container %}
-<div>Privacy And Policy</div>
+<div class="container py-5">
+  <div class="privacy-container">
+    <h1>PRIVACY POLICY</h1>
+    <h2>
+      Welcome to MadBoost.gg. By accessing or using our website and any related services, you
+      agree to comply with and be bound by the following terms and conditions. Please read
+      these Terms of Service carefully before accessing or using our Services.
+    </h2>
+
+    <div class="box">
+      <h3>1. Acceptance of Terms</h3>
+      <p>
+        By accessing or using our Services, you agree to be bound by these Terms of Service. If
+        you do not agree to these Terms of Service, you may not access or use our Services.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>2. Use of Services</h3>
+      <p>
+        a. You must be at least 18 years old to use our Services. If you are under 18 years old,
+        you may only use our Services with the involvement of a parent or guardian.
+      </p>
+      <p>
+        b. You are responsible for all activities that occur under your account. You agree to keep your account information confidential and to notify us immediately of any unauthorized use of your account.
+      </p>
+      <p>
+        c. You may use our Services only for lawful purposes and in accordance with these Terms
+        of Service. You agree not to engage in any activity that interferes with or disrupts our
+        Services or networks connected to our Services.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>3. Account Suspension or Termination</h3>
+      <p>
+        We reserve the right to suspend or terminate your account and access to our Services at
+        any time, without notice or liability, for any reason, including if you violate these Terms of Service.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>4. Payment and Refunds</h3>
+      <p>
+        a. Payment for our Services is required in advance.
+      </p>
+      <p>
+        b. We reserve the right to change our fees and billing methods at any time. Changes to
+        fees or billing methods will be effective immediately upon posting on our website.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>5. Intellectual Property</h3>
+      <p>
+        a. All content included on our website and in our Services, such as text, graphics, logos, images, audio clips, video clips, data compilations, and software, is the property of MadBoost.gg or its content suppliers and is protected by copyright and
+        other laws.
+      </p>
+      <p>
+        b. All the games here belong to their respective owner & are not affiliated with us. This is a game hosting services website for gamers.
+      </p>
+      <p>
+        b. All the games here belong to their respective owner & are not affiliated with us. This is a game hosting services website for gamers.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>6. Limitation of Liability</h3>
+      <p>
+        a. In no event shall MadBoost.gg, its affiliates, or their respective directors,
+        officers, employees, or agents be liable for any indirect, consequential, incidental,
+        special, punitive, or exemplary damages, including without limitation, loss of profits,
+        whether in contract, tort, strict liability, or otherwise, arising out of or in connection with your use of our Services.
+      </p>
+      <p>
+        b. Our total liability to you for all claims arising out of or in connection with these Terms of Service or your use of our Services shall not exceed the amount paid by you to us for the use of our Services during the three-month period preceding the event giving rise to the claim.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>7. Governing Law</h3>
+      <p>
+        These Terms of Service shall be governed by and construed in accordance with the laws
+        of your country of residence, without regard to its conflict of law provisions.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>8. Changes to Terms of Service</h3>
+      <p>
+        We reserve the right to modify these Terms of Service at any time, effective upon posting
+        the updated Terms of Service on our website. Your continued use of our Services after
+        any such changes constitutes your acceptance of the updated Terms of Service.
+      </p>
+    </div>
+
+    <div class="box">
+      <h3>9. Contact Us</h3>
+      <p>
+        If you have any questions about these Terms of Service, please contact us.
+      </p>
+    </div>
+  </div>
+</div>
 {% endblock %}
