@@ -105,6 +105,14 @@ MIDDLEWARE = [
     'gameBoosterss.middleware.ImageSizeLimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
+CORS_ORIGIN_WHITELIST = [
+    'https://www.madboost.gg',
+    # 'http://www.madboost.gg',
+    # 'http://madboost.gg',
+    'https://madboost.gg',
+]
+
+CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'gameBoosterss.urls'
 
