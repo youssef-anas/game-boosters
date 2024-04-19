@@ -229,6 +229,8 @@ EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = [
+    '*'
+    'https://www.madboost.gg',
     'localhost',
     '127.0.0.1',
     'www.madboost.gg',
