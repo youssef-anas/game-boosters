@@ -118,7 +118,7 @@
                       {% if order.order.game_type == 'D' %}
                         <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
                       {% elif order.order.game_type == 'A' and order.order.game_id != 13 %}
-                        <img src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
+                        <img id="test" src="{{order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid me-2" width="29" height="29">
                       {% endif %}
 
                       {% if order.order.game.link == 'wildRift' or order.order.game.link == 'lol' or order.order.game.link == 'tft' %}
