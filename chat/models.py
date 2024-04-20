@@ -50,6 +50,10 @@ class Room(models.Model):
                     order_name=order_name,
                     is_for_admins = False,
                 )
+            if booster :
+                Message.create_booster_message(room=room, message=booster.booster.choosen_chat_message, sender=booster)
+            else:
+                Message.create_booster_message(room=room, message='One of our booster will join chat soon...', sender=BaseUser.objects.get(id=1))
         return room  
     
     @classmethod
@@ -129,3 +133,12 @@ class Message(models.Model):
         )
         return new_message
     
+    @classmethod
+    def create_booster_message(cls, room, message, sender):
+        new_message = cls.objects.create(
+            user= sender,
+            content=message,
+            room=room,
+            msg_type= 1
+        )
+        return new_message

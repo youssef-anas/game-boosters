@@ -46,8 +46,8 @@ Promise.all([
 ]).then(function () {
   // Array For Names 
   const divisionRanks = [
-    "Silver I", "Silver II", "Silver III", "Silver IV", "Silver Elite", "SE Master", "Gold NV I", "Gold NV II", "Gold NV III", "Gold NV Master",
-    "Master Grd I", "Master Grd II", "Master Grd Elite", "D Master Grd", "Leg Eagle", "Leg Eagle Master", "Supre Master FC", "Global Elite"
+    "","SilverI", "SilverII", "SilverIII", "SilverIV", "SilverElite", "SEMstr", "GoldNVI", "GoldNVII", "GoldNVIII", "GoldNVMstr",
+    "MstrGrdI", "MstrGrdII", "MstrGrdElite", "DMasterGrd", "LegEagle", "LegEagleMstr", "SupreMstrFC", "GlobalElite"
     ]
 
   // ----------------------------- Premier Funtion ---------------------------------

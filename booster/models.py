@@ -43,6 +43,8 @@ class Booster(models.Model):
     profile_image = models.ImageField(blank= True,null=True,)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=True ,blank=True)
+    choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False)
+    start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False)
 
     languages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
     games = models.ManyToManyField(Game, related_name='games')

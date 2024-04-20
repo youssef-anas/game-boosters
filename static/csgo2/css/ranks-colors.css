@@ -28,3 +28,23 @@
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
   linear-gradient(180deg, #f56868 0%, #43373300 100%);
 }
+
+
+.SilverI, .SilverII, .SilverIII, .SilverIV, .SilverElite, .SEMstr {
+  background: 
+  linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
+  linear-gradient(180deg, #585d5e 0%, rgba(67, 55, 51, 0) 100%);
+}
+
+.GoldNVI, .GoldNVII, .GoldNVIII, .GoldNVMstr,
+.MstrGrdI, .MstrGrdII, .MstrGrdElite {
+  background:
+   linear-gradient(180deg, rgba(67, 55, 51, 0) 0%, #433733 45.27%),
+   linear-gradient(180deg, #040670dc 0%, rgba(67, 55, 51, 0) 100%);
+}
+
+.DMasterGrd, .LegEagle, .LegEagleMstr, .SupreMstrFC, .GlobalElite {
+  background:
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #000000 0%, #43373300 100%);
+}
