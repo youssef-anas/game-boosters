@@ -165,9 +165,9 @@
                         <label for="order-{{order.order.order.id}}" class="text-start">
                           ID: {{order.order.order.name}}
                           {% if order.order.customer.is_online %}
-                            <p class="status status-online mb-0 mt-2" id="head-state{{order.order.order.customer.id}}-id"><span class="online"></span>Online</p>
+                            <p class="status status-online mb-0 mt-2 head-state{{order.order.order.customer.id}}-id" id="head-state{{order.order.order.id}}-id"><span class="online"></span>Online</p>
                           {% else %}
-                            <p class="status status-offline mb-0 mt-2" id="head-state{{order.order.order.customer.id}}-id"><span class="offline"></span>Offline</p>
+                            <p class="status status-offline mb-0 mt-2 head-state{{order.order.order.customer.id}}-id" id="head-state{{order.order.order.id}}-id"><span class="offline"></span>Offline</p>
                           {% endif %}
                         </label>
 
@@ -604,9 +604,9 @@
                     <div class="text ms-md-4 ms-0">
                       <h3>{{order.order.order.customer.username}}</h3>
                       {% if order.order.customer.is_online %}
-                        <p class="status status-online mb-0 mt-2" id="state{{order.order.order.customer.id}}-id"><span class="online"></span>Online</p>
+                        <p class="status status-online mb-0 mt-2 state{{order.order.order.customer.id}}-id" id="state{{order.order.order.id}}-id"><span class="online"></span>Online</p>
                       {% else %}
-                        <p class="status status-offline mb-0 mt-2" id="state{{order.order.order.customer.id}}-id"><span class="offline"></span>Last seen {{ order.order.order.customer.last_online|custom_timesince }}</p>
+                        <p class="status status-offline mb-0 mt-2 state{{order.order.order.customer.id}}-id" id="state{{order.order.order.id}}-id"><span class="offline"></span>Last seen {{ order.order.order.customer.last_online|custom_timesince }}</p>
                       {% endif %}
                     </div>
 

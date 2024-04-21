@@ -91,7 +91,7 @@ function chat(booster_room_name, roomName, orderId) {
   scrollToBottom();
 
   const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-  const chatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/" + roomName + "/");
+  const chatSocket = new WebSocket(wsProtocol + window.location.host + "/ws/chat/" + roomName + "/");
   currentSocket = chatSocket;
 
   chatSocket.onopen = function (e) {
@@ -104,12 +104,30 @@ function chat(booster_room_name, roomName, orderId) {
   document.querySelector(`#chat-form-${orderId}`).addEventListener("submit", function (e) {
     e.preventDefault();
   });
-  $(`#message-input-${orderId}`).on('keyup', function (e) {
-    if (e.keyCode == 13) {
+
+  $(`#message-input-${orderId}`).on('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { // Check if Enter key is pressed and Shift key is not held down
       e.preventDefault();
-      $(`#message-submit-${orderId}`).click();
+      let input = e.target;
+      let start = input.selectionStart;
+      let end = input.selectionEnd;
+      input.value = input.value.slice(0, start) + '\n' + input.value.slice(end);
+      input.selectionStart = input.selectionEnd = start + 1;
     }
   });
+  
+  $(`#message-submit-order-${orderId}`).on('click', function (e) {
+    e.preventDefault(); // Prevent default form submission behavior
+    var messageInput = $(`#message-input-order-${orderId}`).val();
+  
+    if (messageInput.length == 0) {
+      alert("Add some Input First Or Press Send Button!")
+    } else {
+      chatSocket.send(JSON.stringify({ message: messageInput, username: user, room_name: booster_room_name }));
+      $(`#message-input-order-${orderId}`).val(""); // Clear the input field after sending the message
+    }
+  });
+
   $(`#message-submit-${orderId}`).on('click', function (e) {
     var messageInput = $(`#message-input-${orderId}`).val();
 
@@ -117,6 +135,7 @@ function chat(booster_room_name, roomName, orderId) {
       alert("Add some Input First Or Press Send Button!")
     }
     else {
+      console.log("preesed")
       chatSocket.send(JSON.stringify({ message: messageInput, username: user, room_name: booster_room_name }));
     }
 
@@ -265,8 +284,8 @@ dropContainers.forEach(dropContainer => {
 const customer_ids = document.querySelectorAll('.customer-ids');
 customer_ids.forEach(function(element) {
   const customerId = element.dataset.customerId;
-  const headStatusElement = document.getElementById(`head-state${customerId}-id`)
-  const statusElement = document.getElementById(`state${customerId}-id`)
+  const headStatusElements = document.querySelectorAll(`.head-state${customerId}-id`)
+  const statusElements = document.querySelectorAll(`.state${customerId}-id`)
   function fetchData() {
     fetch(`/chat/status/${customerId}/`)
       .then(response => {
@@ -279,19 +298,27 @@ customer_ids.forEach(function(element) {
         const message = data.status
 
         if (data.status == 'Online') {
-          headStatusElement.innerHTML = `
-          <span class="online"></span> ${message}
-          `;
-          statusElement.innerHTML = `
-            <span class="online"></span> ${message}
-          `;
+          headStatusElements.forEach(function(headStatusElement) {
+            headStatusElement.innerHTML = `
+              <span class="online"></span> ${message}
+            `;
+          });
+          statusElements.forEach(function(statusElement) {
+            statusElement.innerHTML = `
+              <span class="online"></span> ${message}
+            `;
+          });
         } else {
-          headStatusElement.innerHTML = `
-          <span class="offline"></span> Offline
-          `;
-          statusElement.innerHTML = `
-            <span class="offline"></span> Last seen ${message}
-          `;
+          headStatusElements.forEach(function(headStatusElement) {
+            headStatusElement.innerHTML = `
+              <span class="offline"></span> Offline
+            `;
+          });
+          statusElements.forEach(function(statusElement) {
+            statusElement.innerHTML = `
+              <span class="offline"></span> Last seen ${message}
+            `;
+          });
         }
       })
       .catch(error => {

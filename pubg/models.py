@@ -68,33 +68,36 @@ class PubgDivisionOrder(models.Model):
   select_champion = models.BooleanField(default=True, blank=True, null=True)
 
   def send_discord_notification(self):
-    if self.order.status == 'Extend':
-      return print('Extend Order')
-    discord_webhook_url = 'https://discord.com/api/webhooks/1193142919620743258/fMYJS3jtU3Z2g8gON6UuHj9GKc1NEVRzor-8P9iWIMgNkiZTELCVfJysmXspeVHaSQxt'
-    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-    embed = {
-      "title": "Pubg",
-      "description": (
-        f"**Order ID:** {self.order.name}\n"
-        f" From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} "
-        f" To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)} server {self.current_marks}"
-      ),
-      "color": 0x800080,  # Hex color code for a Discord color
-      "footer": {"text": f"{current_time}"}, 
-    }
-    data = {
-      "content": "New order has arrived \n",
-      "embeds": [embed],
-    }
+    try:  
+      if self.order.status == 'Extend':
+        return print('Extend Order')
+      discord_webhook_url = 'https://discord.com/api/webhooks/1193142919620743258/fMYJS3jtU3Z2g8gON6UuHj9GKc1NEVRzor-8P9iWIMgNkiZTELCVfJysmXspeVHaSQxt'
+      current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+      embed = {
+        "title": "Pubg",
+        "description": (
+          f"**Order ID:** {self.order.name}\n"
+          f" From {str(self.current_rank).upper()} {five_romanize_division(self.current_division)} "
+          f" To {str(self.desired_rank).upper()} {five_romanize_division(self.desired_division)} server {self.current_marks}"
+        ),
+        "color": 0x800080,  # Hex color code for a Discord color
+        "footer": {"text": f"{current_time}"}, 
+      }
+      data = {
+        "content": "New order has arrived \n",
+        "embeds": [embed],
+      }
 
-    headers = {
-      "Content-Type": "application/json"
-    }
+      headers = {
+        "Content-Type": "application/json"
+      }
 
-    response = requests.post(discord_webhook_url, json=data, headers=headers)
+      response = requests.post(discord_webhook_url, json=data, headers=headers)
 
-    if response.status_code != 204:
-      print(f"Failed to send Discord notification. Status code: {response.status_code}")
+      if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+    except:
+       pass
 
 
   def save_with_processing(self, *args, **kwargs):

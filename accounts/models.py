@@ -58,13 +58,13 @@ class BaseUser(AbstractUser):
         else:
             # If the user is not a booster, return None or any other appropriate value
             return None
-    
+
     def save(self, *args, **kwargs):
-        if self.is_booster:
-            super().save(*args, **kwargs)
-        else:
-            self.can_choose_me = False
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+        if not hasattr(self, 'wallet'):
+            Wallet.objects.create(user=self)            
+
+
 
     def clean(self):
         super().clean()
@@ -94,12 +94,6 @@ class BaseUser(AbstractUser):
 #     if created and instance.is_booster:
 #         Wallet.objects.create(user=instance)
 
-@receiver(post_save, sender=BaseUser)
-def create_wallet(sender, instance, created, **kwargs):
-    print(f"Creating wallet for user {instance.email} - Created: {created}")
-    if created:
-        wallet, created = Wallet.objects.get_or_create(user=instance)
-        print(f"Wallet created: {created}")
     
 class Wallet(models.Model):
     user = models.OneToOneField(BaseUser, on_delete=models.CASCADE,related_name='wallet')
@@ -205,10 +199,10 @@ class BaseOrder(models.Model):
     is_drop = models.BooleanField(default=False, blank=True)
     is_extended = models.BooleanField(default=False, blank=True)
 
-    customer_gamename = models.CharField(max_length=300, blank=True, null=True)
-    customer_password = models.CharField(max_length=300, blank=True, null=True)
-    customer_username = models.CharField(max_length=300, blank=True, null=True)
-    customer_server = models.CharField(max_length=300, blank=True, null=True)   # TODO make it interger filed and relational choise
+    customer_gamename = models.CharField(max_length=300, blank=True, default='')
+    customer_password = models.CharField(max_length=300, blank=True, default='')
+    customer_username = models.CharField(max_length=300, blank=True, default='')
+    customer_server = models.CharField(max_length=300, blank=True, null=True)
 
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
@@ -295,51 +289,23 @@ class BaseOrder(models.Model):
         self.update_booster_wallet()
 
     def update_booster_wallet(self):
-        if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed > 0:
-            try:
-                booster_wallet = self.booster.wallet
-                booster_wallet.money += self.money_owed
-                booster_wallet.save()
-            except:
-                Wallet.objects.create (
-                    user=self.booster,
-                    money=round(self.money_owed, 3)
-                )
- 
+        if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed != 0:
+            booster_wallet = self.booster.wallet
+            booster_wallet.money += self.money_owed
+            booster_wallet.save()
             if self.is_drop :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=round(self.money_owed, 3),
+                    amount=round(self.money_owed, 2),
                     order=self,
                     status='Drop',  
                     type='DEPOSIT',
                     notice=f'{self.details} - {self.game.name}'
                 )
-
             else :
                 Transaction.objects.create (
                     user=self.booster,
-                    amount=round(self.money_owed, 3),
-                    order=self,
-                    status='Done',  
-                    type='DEPOSIT',
-                    notice=f'{self.details} - {self.game.name}'
-                )
-        
-        elif (self.is_done or self.is_drop) and not self.is_extended and self.booster and (self.game_type != 'D' or self.game_type != 'A'):
-            try:
-                booster_wallet = self.booster.wallet
-                booster_wallet.money += self.actual_price
-                booster_wallet.save()
-            except:
-                Wallet.objects.create (
-                    user=self.booster,
-                    money=round(self.actual_price, 3)
-                )
-            
-            Transaction.objects.create (
-                    user=self.booster,
-                    amount=round(self.actual_price, 3),
+                    amount=round(self.money_owed, 2),
                     order=self,
                     status='Done',  
                     type='DEPOSIT',
@@ -347,25 +313,18 @@ class BaseOrder(models.Model):
                 )
 
     def customer_wallet(self):        
-        if self.status == 'Drop' or self.status == 'Extend':
+        if self.status == 'Droped' or self.status == 'Extend' or self.status == 'Continue':
             print("Order status is 'Drop' or 'Extend', exiting customer_wallet function")
-            return
+            return None
         
         if self.customer and self.price > 0:
-            try: 
-                customer_wallet = self.customer.wallet
-                customer_wallet.money += self.price
-                customer_wallet.save()
-                print(f"Customer wallet updated. New balance: {customer_wallet.money}")
-            except: 
-                Wallet.objects.create (
-                    user=self.customer,
-                    money=round(self.price, 3)
-                )
-            
+            customer_wallet = self.customer.wallet
+            customer_wallet.money += self.price
+            customer_wallet.save()
+            print(f"Customer wallet updated. New balance: {customer_wallet.money}")
             Transaction.objects.create (
                 user=self.customer,
-                amount=round(self.price, 3),
+                amount=round(self.price, 2),
                 order=self,
                 status='New',  
                 type='WITHDRAWAL',

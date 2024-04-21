@@ -93,6 +93,10 @@ def view_that_asks_for_money(request):
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
+      if request.user.is_superuser:
+        # return request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+        return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
+
       paypal_dict = {
           "business": settings.PAYPAL_EMAIL,
           "amount": order_info['price'],

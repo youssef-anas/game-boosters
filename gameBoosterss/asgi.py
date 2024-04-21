@@ -21,10 +21,9 @@ application = ProtocolTypeRouter({
     "websocket": AllowedHostsOriginValidator(
         AuthMiddlewareStack(
             URLRouter([
-                    re_path(r'^ws/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
-                    re_path(r'ws/order/',OrderConsumer.as_asgi()),
-                    re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
-                    # add web socket end point
+                re_path(r'ws/chat/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
+                re_path(r'ws/order/$', OrderConsumer.as_asgi()),
+                re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
             ])
         ),
     ),

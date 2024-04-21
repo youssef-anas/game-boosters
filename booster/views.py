@@ -418,6 +418,7 @@ def drop_order(request, order_id):
             new_order.order.customer_gamename = order.order.customer_gamename
             new_order.order.customer_password = order.order.customer_password
             new_order.order.customer_server = order.order.customer_server
+            new_order.order.booster = None
             new_order.order.save()
             order.order.save()
             order.save()
