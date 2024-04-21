@@ -28,6 +28,11 @@
     font-size: 20px;
   }
 }
+@media (max-width: 767px) {
+  .landing {
+    padding-top: 10rem;
+  }
+}
 /* End Landing */
 
 /* Start Swiper & Heading Style */
@@ -55,6 +60,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+@media (max-width: 767px) {
+  .games .head h1,
+  .last-orders .head h1 {
+    font-size: 24px;
+  }
+  .games .head .navigation-buttons,
+  .last-orders .head .navigation-buttons {
+    width: 75px;
+  }
+  .games .head .navigation-buttons .games-swiper-button-prev,
+  .games .head .navigation-buttons .games-swiper-button-next,
+  .last-orders .head .navigation-buttons .last-orders-swiper-button-prev,
+  .last-orders .head .navigation-buttons .last-orders-swiper-button-next {
+    width: 35px;
+    height: 35px;
+  }
 }
 /* End Swiper & Heading Style */
 
@@ -110,9 +132,15 @@
   font-family: var(--sharp-font);
 }
 .order .information .booster .name p:last-child,
-.order .information .reached-info-container p:last-child{
+.order .information .reached-info-container p:last-child {
   color: #ffffff;
   font-family: var(--sharp-font);
+}
+@media (max-width: 991px) {
+  .order .information .booster .name p,
+  .order .information .reached-info-container p {
+    font-size: 10px;
+  }
 }
 #duo-or-solo {
   margin-left: 18px;

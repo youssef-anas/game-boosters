@@ -84,18 +84,37 @@
 .order .information .to-container p:last-child {
   color: #ffffff;
 }
+@media (max-width: 767px) {
+  .order .information .booster .name p,
+.order .information .reached-info-container p,
+.order .information .from-container p,
+.order .information .to-container p,
+.from-to p {
+  font-size: 12px;
+}
+}
 #duo-or-solo {
-  margin-left: 18px;
   padding: 4px 8px 6px;
   border-radius: var(--main-radius);
   background-color: var(--secondary-color);
   font-weight: 300;
   font-size: 1rem;
 }
+@media (max-width: 767px) {
+  #duo-or-solo {
+    display: block;
+  }
+}
 #duo-or-solo.duo {
   background-color: #06A5B0 !important;
 }
 #duo-or-solo.solo {
   background-color: var(--secondary-color) !important;
+}
+
+.from-to {
+  border-radius: var(--main-radius);
+  background-color: var(--background-color);
+  min-height: 56px;
 }
 /* End Orders */

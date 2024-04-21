@@ -50,6 +50,11 @@ ul.links > li > a.active {
   border-radius: var(--main-radius);
   padding: 2.3rem 3rem;
 }
+@media (max-width: 767px) {
+  .oneside {
+    padding: 1.3rem 1rem;
+  }
+}
 @media (max-width: 1199px) {
   .left-side {
     border-top-left-radius: var(--main-radius);

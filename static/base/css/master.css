@@ -75,27 +75,29 @@ ul {
   margin: 0 !important;
   padding: 0;
 }
-.container {
-  --bs-gutter-x: 3.5rem !important; 
-}
+
 @media (min-width: 576px) {
   .container {
     max-width: 540px !important;
+    --bs-gutter-x: 0.5rem !important; 
   }
 }
 @media (min-width: 768px) {
   .container {
     max-width: 870px !important;
+    --bs-gutter-x: 3.5rem !important; 
   }
 }
 @media (min-width: 992px) {
   .container {
     max-width: 970px !important;
+    --bs-gutter-x: 3.5rem !important; 
   }
 }
 @media (min-width: 1200px) {
   .container {
     max-width: 1440px !important;
+    --bs-gutter-x: 3.5rem !important; 
   }
 }
 .row {

@@ -36,14 +36,14 @@
       </ul>
     </div>
 
-    <div class="col-md-8 col-12 ps-md-5 ps-0">
+    <div class="col-md-8 col-12 ps-md-5 p-0">
       <div id="email" class="email-container row row-cols-xl-2 row-cols-1">
 
         <div class="left-side p-4">
           <p class="fs-4">Email</p>
           <p style="color: #FFFFFF80;">We recommend that you change your email if you got hacked immediately.</p>
         </div>
-        <div class="right-side py-4 px-5">
+        <div class="right-side py-4 px-md-5 px-4">
           <p class="fs-5">Change Email</p>
 
           <form method="POST">
@@ -96,7 +96,7 @@
             regularly to prevent unauthorized access
             to your account.</p>
         </div>
-        <div class="right-side py-4 px-5">
+        <div class="right-side py-4 px-md-5 px-4">
           <p class="fs-5">Change Password</p>
 
           <form method="POST">
@@ -150,7 +150,7 @@
             more info read our <a href="{% url 'privacy.policy' %}" style="color: var(--secondary-color); text-decoration: underline !important;">Privacy Policy.</a></p>
         </div>
 
-        <div class="right-side py-4 px-5">
+        <div class="right-side py-4 px-md-5 px-4">
           <p class="fs-5">Age</p>
           <form method="POST">
             {% csrf_token %}
