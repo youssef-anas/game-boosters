@@ -33,6 +33,12 @@
   width: 4px;
   height: 4px; 
 }
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0; 
+  }
+}
 ::-webkit-scrollbar-track {
   background: #281F1B;
 }

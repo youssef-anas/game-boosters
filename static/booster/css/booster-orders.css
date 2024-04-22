@@ -28,7 +28,6 @@ label {
   min-height: 690px;
   background-image: url('./../../accounts/images/bg_cover.png');
   padding-top: 8rem;
-  padding-bottom: 8rem;
   background-size: 100% 800px;
   background-repeat: no-repeat;
 }
@@ -60,6 +59,11 @@ label {
 @media (max-width: 1199px) {
   .booster-contant .heading p {
     font-size: 16px;
+  }
+}
+@media (max-width: 767px) {
+  .booster-contant .heading p {
+    font-size: 0.8rem !important;
   }
 }
 /* End Heading */
@@ -159,7 +163,14 @@ input[type="radio"]:checked + label {
   color: #FFFFFF80;
   background-color: #F26E3E80;
 }
-
+@media (max-width: 767px) {
+  .update-rating-btn   {
+    font-size: 1.1rem !important;
+  }
+  .select-container {
+    width: 100%;
+  }
+}
 .complete-order-btn {
   width: 100%;
   padding: 7px;
@@ -225,11 +236,19 @@ input[type="radio"]:checked + label {
 .process p, .payout-progress p {
   font-size: 1.5rem;
   color: #FFFFFF80;
-  font-family: 300;
+  font-weight: 300;
 }
 .process p > span, .payout-progress p > span {
   color: #FFFFFF;
-  font-family: 700;
+  font-weight: 700;
+}
+@media (max-width: 767px) {
+  .progress-drop-container {
+    padding: 1rem !important;
+  }
+  .process p, .payout-progress p {
+    font-size: 1rem !important;
+  }
 }
 .progress {
   height: 8px;
@@ -401,5 +420,22 @@ input[type="radio"]:checked + label {
   height: 0.2px;
   background-color: var(--alternative-color);;
   transform: translateY(-50%);
+}
+@media (max-width: 767px) {
+  .chat-message .message {
+    max-width: 100%;
+  }
+  .chat-messages .day-date::before, .chat-messages .day-date::after {
+    width: 25%;
+  }
+  .message-send-container .message-input {
+    width: calc(100% - 80px) !important;
+  }
+  .message-send-container .sent-btn {
+    width: 80px !important;
+  }
+  .custom-btn {
+    font-size: 1.1rem !important;
+  }
 }
 /* End Chat Container */

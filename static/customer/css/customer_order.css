@@ -101,16 +101,30 @@ input[type="radio"]:disabled+label {
   font-size: 1.5rem;
 }
 /* Chat */
-.chat-header  .switch-chat {
+.chat-header .switch-chat {
   background-color: var(--background-color);
   border-radius: 40px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 }
-.chat-header  .switch-chat .booster,
-.chat-header  .switch-chat .admin {
+.chat-header .switch-chat .booster,
+.chat-header .switch-chat .admin {
   width: 49%;
+}
+@media (max-width: 767px) {
+  .chat-header .switch-chat {
+    background-color: transparent;
+  }
+  .chat-header .switch-chat .booster,
+  .chat-header .switch-chat .admin {
+    width: 100% !important;
+    padding: 5px;
+    background-color: var(--background-color);
+    border-radius: 40px;
+    margin-bottom: 3px;
+  }
 }
 .chat-header  .switch-chat .chat-booster-option-label,
 .chat-header  .switch-chat .chat-admin-option-label {
@@ -165,6 +179,14 @@ input[type="radio"]:disabled+label {
   background: #F26E3E80;
   border-radius: 64px;
   color: #FFFFFF80;
+}
+@media (max-width: 767px) {
+  .message-send-container .sent-btn {
+    width: 80px;
+  }
+  .message-send-container .message-input {
+    width: calc(100% - 80px) !important;
+  }
 }
 /* Customer Message */
 .booster-chat-message, .admin-chat-message {
@@ -243,5 +265,16 @@ input[type="radio"]:disabled+label {
   height: 0.2px;
   background-color: var(--alternative-color);;
   transform: translateY(-50%);
+}
+@media (max-width: 767px) {
+  .booster-chat-message .message, .admin-chat-message .message {
+    max-width: 100%;
+  }
+  .chat-messages .day-date::before, .chat-messages .day-date::after {
+   width: 25% !important;
+  }
+  .custom-btn {
+    font-size: 1.1rem !important;
+  }
 }
 /* End Order Info And Chat */
