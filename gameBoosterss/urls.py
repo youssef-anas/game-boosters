@@ -6,6 +6,7 @@ from gameBoosterss.views import index, last_orders, privacy_policy, download_med
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', index, name="homepage.index"),
@@ -13,6 +14,7 @@ urlpatterns = [
     path('privacy-policy/', privacy_policy, name='privacy.policy'),
     path('social-auth-exception/', social_auth_exception_handler, name='social_auth_exception_handler'),
     path('facebook-data-deletion/', facebook_data_deletion_handler, name='facebook_data_deletion'),
+    path('rmtp9o0h7ntmxakmat8fpe2zhuj9by.html', TemplateView.as_view(template_name='rmtp9o0h7ntmxakmat8fpe2zhuj9by.html'), name='html_verification'),
     path('admin/', admin.site.urls),
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),
