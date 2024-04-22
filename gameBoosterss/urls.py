@@ -10,7 +10,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('', index, name="homepage.index"),
     path('last_orders/', last_orders, name="last.orders"),
-    path('privacy&policy/', privacy_policy, name="privacy.policy"),
+    path('privacy-policy/', privacy_policy, name='privacy.policy'),
     path('social-auth-exception/', social_auth_exception_handler, name='social_auth_exception_handler'),
     path('facebook-data-deletion/', facebook_data_deletion_handler, name='facebook_data_deletion'),
     path('admin/', admin.site.urls),
