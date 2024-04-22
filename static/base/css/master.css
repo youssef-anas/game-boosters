@@ -303,6 +303,8 @@ ul {
 }
 .footer .contact .links, .footer .contact .social  {
   display: flex;
+  flex-wrap: wrap;
+
 }
 .footer .contact .links > li > a, .footer .contact .social > li > a  {
   display: flex;
@@ -323,7 +325,9 @@ ul {
   padding: 10px;
   border-radius: 8px;
   background-color: var(--secondary-color);
+  margin-bottom: 0.5rem;
 }
+
 .footer .contact .copyright {
   font-size: 12px;
   font-weight: 300;
@@ -345,7 +349,7 @@ ul {
     padding: 2rem 0;
   }
   .footer .contact .social > li > a {
-    margin-right: 16px !important;
+    margin-right: 4px !important;
   }
 }
 /* End Footer */
