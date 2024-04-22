@@ -103,6 +103,7 @@ def update_user_email(sender, **kwargs):
         extra_data = sociallogin.account.extra_data
         if 'email' in extra_data:
             user = sociallogin.user
+            user.is_customer = True
             if not user.email:
                 user.email = extra_data['email']
                 user.save()
