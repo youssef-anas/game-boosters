@@ -368,6 +368,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.a
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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',
 SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://www.madboost.gg/social/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'profile',
     'email',
 ]
