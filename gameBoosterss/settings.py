@@ -381,8 +381,17 @@ firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
 # LOGIN_REDIRECT_URL = "homepage.index"
 # LOGOUT_URL = 'account.logout'
 # LOGOUT_REDIRECT_URL = '/accounts/login/'
-SOCIAL_AUTH_FACEBOOK_KEY = "395531559777062"
-SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
+
+
+# SOCIAL_AUTH_FACEBOOK_KEY = "395531559777062"
+# SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
+
+SOCIAL_AUTH_FACEBOOK_KEY = "1103754014333574"
+SOCIAL_AUTH_FACEBOOK_SECRET = "73973ab1ae8c0410c167500a0d897e4b"
+SOCIAL_AUTH_LOGIN_ERROR_URL = 'https://www.madboost.gg/social-auth-exception/'
+SOCIAL_AUTH_FACEBOOK_DEAUTHORIZATION_CALLBACK_URL = "https://www.madboost.gg/facebook-data-deletion/"
+
+
 #for extra info
 SOCIAL_AUTH_FACEBOOK_SCOPE = [
     'email',
