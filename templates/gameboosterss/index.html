@@ -50,7 +50,7 @@
 
         <div class="swiper-wrapper mt-4">
           {% for game in games %}
-            <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')">
+            <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')" style=" width: 235px !important;">
               <div class="game-logo">
                 <img src="{{game.get_logo_image_url}}" class="img-fluid" alt="{{game.name}}">
               </div>

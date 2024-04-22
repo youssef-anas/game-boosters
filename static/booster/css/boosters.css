@@ -39,12 +39,24 @@
   font-size: 1.5rem;
   font-weight: 300;
 }
+.select-container {
+  width: 380px !important;
+}
+.search {
+  width: 380px !important;
+}
 @media (max-width: 767px) {
   .boosters-landing .heading h1 {
-    font-size: 50px;
+    font-size: 32px;
   }
   .boosters-landing .heading p {
-    font-size: 1.2rem;
+    font-size: 1rem;
+  }
+  .select-container {
+    width: 100% !important;
+  }
+  .search {
+    width: 100% !important;
   }
 }
 /* Start Boosters */
@@ -52,10 +64,9 @@
   position: relative;
   margin-top: -250px; /* Adjust this value as needed */
 }
-
 .boosters .booster {
   width: 384px;
-  height: 705px;
+  min-height: 705px;
   border-radius: calc(var(--main-radius) * 2);
   border: 1px solid #332A27;
   position: relative;

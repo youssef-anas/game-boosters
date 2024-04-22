@@ -156,4 +156,7 @@
 #duo-or-solo.solo {
   background-color: var(--secondary-color) !important;
 }
+.swiper-slide.game {
+  flex-shrink: 1 !important;
+}
 /* End Last Orders */
