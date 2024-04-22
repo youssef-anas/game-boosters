@@ -12,6 +12,9 @@ from django.db.models import Avg
 from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 from django.conf import settings
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.signals import social_account_added
+from allauth.socialaccount.models import SocialLogin
 
 class BaseUser(AbstractUser):
     # profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
@@ -93,6 +96,20 @@ class BaseUser(AbstractUser):
 # def create_wallet(sender, instance, created, **kwargs):
 #     if created and instance.is_booster:
 #         Wallet.objects.create(user=instance)
+
+
+@receiver(social_account_added)
+def update_user_email(sender, **kwargs):
+    # Check if the provider is Facebook and the user has an email
+    sociallogin = kwargs['sociallogin']
+    if sociallogin.account.provider == 'facebook' and sociallogin.account.extra_data.get('email'):
+        # Get the corresponding user
+        user = sociallogin.user
+        # Update the email field if it's not already set
+        if not user.email:
+            user.email = sociallogin.account.extra_data['email']
+            user.save()
+
 
     
 class Wallet(models.Model):
