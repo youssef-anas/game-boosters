@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+import firebase_admin
+from firebase_admin import credentials
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -293,14 +295,6 @@ Q_CLUSTER = {
 #     },
 # }
 
-# OAUTH2_PROVIDER = {
-#     'SCOPES': {'read', 'write'},
-#     'CLIENT_ID': 'your-client-id',
-#     'CLIENT_SECRET': 'your-client-secret',
-#     'OAUTH2_SERVER_CLASS': 'oauth2_provider.oauth2.Server',
-#     'ALLOWED_REDIRECT_URI_SCHEMES': ['http', 'https'],
-# }
-
 
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.facebook.FacebookOAuth2',
@@ -312,21 +306,21 @@ AUTHENTICATION_BACKENDS = [
 
 LOGIN_REDIRECT_URL = '/'
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'access_type': 'online'},
-        'APP': {
-            'client_id': '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.apps.googleusercontent.com',
-            'secret': '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',
-        }
-    },
-    'facebook': {
-        'APP': {
-            'client_id': '395531559777062',
-            'secret': 'c20a1e8d9e7ecc668111c23da1528dee',
-        }
-    }
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': ['profile', 'email'],
+#         'AUTH_PARAMS': {'access_type': 'online'},
+#         'APP': {
+#             'client_id': '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.apps.googleusercontent.com',
+#             'secret': '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',
+#         }
+#     },
+#     'facebook': {
+#         'APP': {
+#             'client_id': '395531559777062',
+#             'secret': 'c20a1e8d9e7ecc668111c23da1528dee',
+#         }
+#     }
     
     #  'facebook': {
     #     'METHOD': 'oauth2',
@@ -355,51 +349,24 @@ SOCIALACCOUNT_PROVIDERS = {
     #         'secret': 'c20a1e8d9e7ecc668111c23da1528dee',
     #     }
     # }
-}
-
-import firebase_admin
-from firebase_admin import credentials
+# }
 
 # Initialize Firebase Admin SDK
 cred = credentials.Certificate(os.path.join(BASE_DIR, 'fire-base.json'))
 FIREBASE_STORAGE_BUCKET = "mad-boost.appspot.com"
 firebase_admin.initialize_app(cred, {'storageBucket': FIREBASE_STORAGE_BUCKET})
 
-# # Media files settings
-# MEDIA_URL = 'media/'
-
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# DEFAULT_FILE_STORAGE = 'path.to.firebase.FirebaseStorage'
-# DEFAULT_FILE_STORAGE = 'gameBoosterss.storage_backends.FirebaseStorage' 
-
-# AUTHENTICATION_BACKENDS = [
-#     'social_core.backends.facebook.FacebookOAuth2',
-#     'django.contrib.auth.backends.ModelBackend',
-# ]
-
-# LOGIN_URL = 'account.login'
-# LOGIN_REDIRECT_URL = "homepage.index"
-# LOGOUT_URL = 'account.logout'
-# LOGOUT_REDIRECT_URL = '/accounts/login/'
-
-
-# SOCIAL_AUTH_FACEBOOK_KEY = "395531559777062"
-# SOCIAL_AUTH_FACEBOOK_SECRET = "c20a1e8d9e7ecc668111c23da1528dee"
-
 SOCIAL_AUTH_FACEBOOK_KEY = "1103754014333574"
 SOCIAL_AUTH_FACEBOOK_SECRET = "73973ab1ae8c0410c167500a0d897e4b"
 SOCIAL_AUTH_LOGIN_ERROR_URL = 'https://www.madboost.gg/social-auth-exception/'
 SOCIAL_AUTH_FACEBOOK_DEAUTHORIZATION_CALLBACK_URL = "https://www.madboost.gg/facebook-data-deletion/"
-
-
-#for extra info
 SOCIAL_AUTH_FACEBOOK_SCOPE = [
     'email',
 ]
 
-
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '563095491808-r4dh48ijatksm45ndj2fphphesi2ppik.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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',
+SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://www.madboost.gg/social/complete/google-oauth2/'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'profile',
     'email',
