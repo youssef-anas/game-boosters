@@ -82,7 +82,6 @@ class Registration(UserCreationForm):
         
         return user
 
-
 class EmailEditForm(forms.Form):
     old_email = forms.EmailField(label="Current Email")
     new_email = forms.EmailField(label="New Email")
@@ -255,4 +254,7 @@ class ProfileEditForm(UserChangeForm):
             'placeholder': 'YYYY',
             'class': 'form-control datepicker-year custom-input'  # Add your class here
         })
-    
+
+class CustomOrderForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Enter email'}))
+    order = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'placeholder': 'For example: I want my account to be boosted from Iron IV to Challenger in League in Euw server.'}))

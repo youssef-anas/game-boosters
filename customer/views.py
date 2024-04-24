@@ -9,7 +9,7 @@ from gameBoosterss.utils import refresh_order_page, send_change_data_msg
 # from accounts.tasks import update_database_task
 # from django_q.tasks import async_task
 from django.utils import timezone
-from customer.forms import EmailEditForm, ProfileEditForm, PasswordEditForm
+from customer.forms import EmailEditForm, ProfileEditForm, PasswordEditForm, CustomOrderForm
 from django.contrib import messages
 from gameBoosterss.utils import get_boosters
 import secrets
@@ -17,6 +17,9 @@ from django.conf import settings
 from paypal.standard.forms import PayPalPaymentsForm
 from customer.controllers.serializers import *
 from django.db.models import Q
+from booster.models import OrderRating
+from games.models import Game
+from customer.models import CustomOrder
 
 @login_required
 def customer_setting(request):
@@ -284,3 +287,34 @@ def cancel_tip(request, token, order_id):
 
 def payment_canceled(request, token):
     return redirect(reverse("homepage.index"))
+
+def custom_order(request, game_id):
+    # game = Game.objects.get(pk=game_id)
+    feedbacks = OrderRating.objects.filter(order__game_id=game_id)
+
+    if request.method == 'POST':
+        form = CustomOrderForm(request.POST)
+        if form.is_valid():
+            # Process form data and save order
+            order_text = form.cleaned_data['order']
+            email = form.cleaned_data['email']
+            # Assuming you have access to the current user
+            customer = request.user
+            # Create the order
+            new_order = CustomOrder.objects.create(customer=customer, game_id=game_id, order=order_text, email=email)
+            messages.success(request, f'Your Order Send Successfully')
+            return redirect(reverse('custom.order', kwargs={'game_id': game_id}))
+        else:
+            # Form has errors, display error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'Error in {field}: {error}')
+    else:
+        form = CustomOrderForm()
+
+    context = {
+        'game_id': game_id,
+        'feedbacks': feedbacks,
+        'form': form,
+    }
+    return render(request, 'customer/custom-order.html', context)
