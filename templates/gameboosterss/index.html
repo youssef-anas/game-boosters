@@ -30,35 +30,39 @@
 
 
     <!-- ------------------------- Gaming ------------------------- -->
-    <div class="games swiper py-5">
-      <div class="games-swiper" id="games">
+    <div style="overflow-x: hidden;">
+      <main>
+        <div class="games swiper py-5">
+          <div class="games-swiper" id="games">
 
-        <div class="head d-flex justify-content-between align-items-center">
-          <h1>Games</h1>
+            <div class="head d-flex justify-content-between align-items-center">
+              <h1>Games</h1>
 
-          <div class="navigation-buttons">
-            <!-- Navigation Buttons -->
-            <div class="games-swiper-button-prev">
-              <i class="fa-solid fa-chevron-left fs-3"></i>
+              <div class="navigation-buttons">
+                <!-- Navigation Buttons -->
+                <div class="games-swiper-button-prev">
+                  <i class="fa-solid fa-chevron-left fs-3"></i>
+                </div>
+      
+                <div class="games-swiper-button-next">
+                  <i class="fa-solid fa-chevron-right fs-3"></i>
+                </div>
+              </div>
             </div>
-  
-            <div class="games-swiper-button-next">
-              <i class="fa-solid fa-chevron-right fs-3"></i>
+
+            <div class="swiper-wrapper mt-4">
+              {% for game in games %}
+                <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')" style=" width: 235px !important;">
+                  <div class="game-logo">
+                    <img src="{{game.get_logo_image_url}}" class="img-fluid" alt="{{game.name}}">
+                  </div>
+                  <p class="mt-2 text-center">{{game.name}}</p>
+                </div>
+              {% endfor %}
             </div>
           </div>
         </div>
-
-        <div class="swiper-wrapper mt-4">
-          {% for game in games %}
-            <div class="swiper-slide game" onclick="redirectToGame('{{game.link}}')" style=" width: 235px !important;">
-              <div class="game-logo">
-                <img src="{{game.get_logo_image_url}}" class="img-fluid" alt="{{game.name}}">
-              </div>
-              <p class="mt-2 text-center">{{game.name}}</p>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
+      </main>
     </div>
 
     <!-- ------------------------- Last Orders ------------------------- -->

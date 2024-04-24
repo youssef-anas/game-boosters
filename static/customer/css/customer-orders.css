@@ -76,7 +76,7 @@
   position: relative;
   border: 1px solid #332A27;
   border-radius: calc(var(--main-radius) * 2);
-  height: 335.5px;
+  height: 360px;
 }
 @media (max-width: 767px) {
   .orders .order {
@@ -84,7 +84,10 @@
     height: auto !important;
   }
   .orders .order p {
-    font-size: 0.8rem;
+    font-size: 0.8rem !important;
+  }
+  .custom-btn {
+    font-size: 1rem !important;
   }
 }
 /* Game Banner */
@@ -145,6 +148,7 @@
 .order-info .reached-info-container p:last-child {
   color: #ffffff;
   font-family: var(--sharp-font);
+  font-size: 0.8rem;
 }
 .order-info .from-to {
   border-radius: var(--main-radius);

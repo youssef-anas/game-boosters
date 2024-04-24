@@ -43,7 +43,7 @@
 }
 @media (max-width: 340px) { 
   .choices-ranks label {
-    margin-right: 20px !important;
+    margin-right: 13px !important;
   }
 }
 .choices-ranks input[type="radio"]:checked+label {

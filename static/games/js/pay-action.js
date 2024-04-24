@@ -1,3 +1,8 @@
+// Refresh If Return From Pay
+if(performance.navigation.type == 2){
+  location.reload(true);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   const game_id = parseInt(document.querySelector('form.purchaseForm input[name="game_id"]').value);
 

@@ -282,5 +282,5 @@ def cancel_tip(request, token, order_id):
     return redirect(reverse('customer.orders.details', kwargs={'order_name': order.name}))
 
 
-def payment_canceled(request):
-    return HttpResponse('payment canceled')
+def payment_canceled(request, token):
+    return redirect(reverse("homepage.index"))

@@ -11,6 +11,11 @@
   font-size: 12px;
   position: relative;
 }
+@media (max-width: 350px) {
+  .step {
+    font-size: 9px;
+  }
+}
 .step::before {
   content: "";
   position: absolute;

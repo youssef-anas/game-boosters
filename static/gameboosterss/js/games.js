@@ -3,7 +3,7 @@ let gamesSwiperCards = new Swiper('.games-swiper', {
   // loop: true,
   spaceBetween: 32,
   grabCursor: true,
-  slidesPerView: 1, // Start with 1 slide per view
+  slidesPerView: 1,
 
   navigation: {
     nextEl: '.games-swiper-button-next',
@@ -11,8 +11,11 @@ let gamesSwiperCards = new Swiper('.games-swiper', {
   },
 
   breakpoints: {
-    700: {
-      slidesPerView: 2,
+    200: {
+      slidesPerView: 1.3,
+    },
+    450: {
+      slidesPerView: 2.3,
     },
     810: {
       slidesPerView: 4,
