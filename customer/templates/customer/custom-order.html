@@ -1,0 +1,111 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Game Boosters{% endblock %}
+{% block style %}
+<!-- SWIPER CSS -->
+<link href="{% static 'swiper/css/swiper-bundle.min.css'%}" rel="stylesheet">
+<!-- OUR STYLE -->
+<link href="{% static 'customer/css/custom_order.css'%}" rel="stylesheet" />
+<!-- STYLE FEEDBACK -->
+<link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
+<!-- STYLE INFORMATION -->
+<link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
+{% endblock %}
+{% block container %}
+<div class="game-container">
+
+  <div class="game-landing game-{{game_id}}">
+    <div class="heading">
+      <h1>
+        {% if game_id == 1 %}
+          Lol: Wild Rift
+        {% elif game_id == 2 %}
+          VALORANT
+        {% elif game_id == 3 %}
+          Pubg Mobile
+        {% elif game_id == 4 %}
+          League of Legends
+        {% elif game_id == 5 %}
+          Team Fight Tactics
+        {% elif game_id == 6 %}
+          World of Warcraft
+        {% elif game_id == 7 %}
+          Hearthstone
+        {% elif game_id == 8 %}
+          Mobile Legends
+        {% elif game_id == 9 %}
+          Rocket League
+        {% elif game_id == 10 %}
+          Dota 2
+        {% elif game_id == 11 %}
+          Honer Of King
+        {% elif game_id == 12 %}
+          Overwatch 2
+        {% elif game_id == 13 %}
+          CS GO 2
+        {% endif %}
+      </h1>
+      <p>Challenger player will boost you to your desired rank.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="create-order">
+      <!-- Success -->
+      {% if messages %}
+        {% for message in messages %}
+          <div class="py-3 mx-auto message-container">
+            <div class="alert {% if message.tags == 'success' %}alert-successful{% elif message.tags == 'error' %}alert-error{% endif %}  alert-dismissible mb-0" role="alert" >
+              {{ message }}
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
+    
+
+      <div class="form-container">
+        <h3 class="mb-3">Payment Contact</h3>
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="form-group mb-4">
+            <label for="id_email" class="mb-2">Email</label>
+            {{ form.email }}
+            {% for error in form.email.errors %}
+              <div class="message error-message mt-2 w-100">
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="form-group mb-5">
+            <label for="id_order" class="mb-2">Description</label>
+            {{ form.order }}
+            {% for error in form.order.errors %}
+              <div class="message error-message mt-2 w-100">
+                {{ error }}
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="submit-container d-flex justify-content-center align-items-center ">
+            <button type="submit" class="btn update-btn">Send</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- Import Feedback Component -->
+    {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
+
+    <!-- Import Information Component -->
+    {% include 'components/information.html' %}
+  </div>
+</div>
+{% endblock %}
+{% block script %}
+<!-- SWIPER JS -->
+<script src="{% static 'swiper/js/swiper-bundle.min.js' %}"></script>
+<!-- OUR SCRIPTS -->
+<script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
+{% endblock %}

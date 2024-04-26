@@ -24,4 +24,5 @@ urlpatterns = [
 
     path('profile_setting/', user_passes_test(is_customer)(customer_setting), name='customer.setting'),
 
+    path('custome_order/<int:game_id>', user_passes_test(is_customer)(custom_order), name='custom.order'),
 ]

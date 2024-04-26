@@ -161,7 +161,7 @@ select::-ms-expand {
   box-shadow: none !important;
   border: 1px solid var(--secondary-color);
 }
-.custom-input:focus-visible {
+.custom-input:focus-visible, textarea:focus-visible {
   outline: 1px solid var(--secondary-color) !important;
 }
 /* ----------------------------- Input File ----------------------------- */

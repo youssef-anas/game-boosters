@@ -49,7 +49,7 @@
   padding: 1.9rem 1rem;
   text-align: start !important;
 }
-.alert-success {
+.alert-successful {
   background: linear-gradient(180deg, #43373300 0%, #433733 80.27%), 
   linear-gradient(180deg, #44d07a7d 0%, #433733 100%);
 }
@@ -63,7 +63,7 @@
   font-size: 1.5rem;
   margin-right: 1rem; 
 }
-.alert-success::before {
+.alert-successful::before {
   content: '\f058';
   color: #44D07A;
 }
