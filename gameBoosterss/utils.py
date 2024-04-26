@@ -293,6 +293,17 @@ def reset_password(user) -> int:
     user.save()
     return secret_key
 
+def booster_added_message(email, password,username):
+    subject = 'Your application for madboost.gg has been approved'
+    users_list = [email]
+    html_content = render_to_string('booster/approved_form.html', {'password': password,'username':username})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    return True
+
 
 def send_change_data_msg(message):
 

@@ -42,7 +42,7 @@ class Booster(models.Model):
     profile_image_url = models.CharField(null=True, blank=True)
     profile_image = models.ImageField(blank= True,null=True,)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
-    can_choose_me = models.BooleanField(default=True ,blank=True)
+    can_choose_me = models.BooleanField(default=False ,blank=True)
     choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False)
     start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False)
 
@@ -142,3 +142,21 @@ class WorkWithUs(models.Model):
 class Photo(models.Model):
     booster         = models.ForeignKey(WorkWithUs, related_name='photos', on_delete=models.CASCADE)
     image           = models.ImageField(upload_to='booster/images')
+
+
+class CreateBooster(models.Model):
+    username =models.CharField(max_length=150)
+    email = models.EmailField(max_length=150)
+    is_wr_player = models.BooleanField(default=False)
+    is_valo_player = models.BooleanField(default=False)
+    is_pubg_player = models.BooleanField(default=False)
+    is_lol_player = models.BooleanField(default=False)
+    is_tft_player = models.BooleanField(default=False)
+    is_wow_player = models.BooleanField(default=False)
+    is_hearthstone_player = models.BooleanField(default=False)
+    is_mobleg_player = models.BooleanField(default=False)
+    is_rl_player = models.BooleanField(default=False)
+    is_dota2_player = models.BooleanField(default=False)
+    is_hok_player = models.BooleanField(default=False)
+    is_overwatch2_player = models.BooleanField(default=False)
+    is_csgo2_player = models.BooleanField(default=False)

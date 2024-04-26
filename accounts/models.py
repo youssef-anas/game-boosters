@@ -235,6 +235,7 @@ class BaseOrder(models.Model):
 
     # Pause
     pause = models.BooleanField(default=False, blank=True)
+    approved = models.BooleanField(default=False, blank=True)
 
     def update_actual_price(self):
         """

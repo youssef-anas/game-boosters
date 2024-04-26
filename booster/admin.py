@@ -1,8 +1,16 @@
 from django.contrib import admin
-from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio
+from django.urls import reverse
+from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster
 from django.utils.safestring import mark_safe
 from django.forms import ModelForm
 from gameBoosterss.utils import upload_image_to_firebase
+from django import forms
+from accounts.models import BaseUser
+from gameBoosterss.utils import booster_added_message
+from faker import Faker
+from django.shortcuts import redirect
+
+faker = Faker()
 
 
 admin.site.register(OrderRating)
@@ -43,4 +51,53 @@ class BoosterAdminForm(ModelForm):
     
 @admin.register(Booster)
 class YourModelAdmin(admin.ModelAdmin):
-    form = BoosterAdminForm    
+    form = BoosterAdminForm
+
+class CreateBoosterForm(ModelForm):
+    class Meta:
+        model = CreateBooster
+        fields = '__all__'
+
+    def save(self, commit=True):
+        user = None
+        booster = None
+        try:
+            fake_password = faker.password(length=12) 
+            email = self.cleaned_data.pop('email')
+            username = self.cleaned_data.pop('username') 
+            instance = super().save(commit=False)
+            user = BaseUser.objects.create_user(username=username, email=email, password=fake_password, is_booster=True)
+            user.set_password(fake_password)
+            booster = Booster.objects.create(booster=user, **self.cleaned_data)
+            if commit:
+                instance.delete()  
+            booster_added_message(email, fake_password, username)        
+            return user  
+        except Exception as e:
+            if user:
+                user.delete()
+            if booster:
+                booster.delete()
+            raise forms.ValidationError("An error occurred while processing the form. Please try again later.")
+
+@admin.register(CreateBooster)
+class CreateBoosterAdmin(admin.ModelAdmin):
+    form = CreateBoosterForm
+
+    def changelist_view(self, request, extra_context=None):
+        if request.path == reverse('admin:booster_createbooster_changelist'):
+            return redirect('admin:booster_createbooster_add')
+        return super().changelist_view(request, extra_context)
+    
+    fieldsets = (
+        ('New Booster Info', {'fields': ('username', 'email')}),
+        ('Booster Games', {
+            'fields': (
+                'is_wr_player', 'is_valo_player', 'is_pubg_player',
+                'is_lol_player', 'is_tft_player', 'is_wow_player',
+                'is_hearthstone_player', 'is_mobleg_player', 'is_rl_player',
+                'is_dota2_player', 'is_hok_player', 'is_overwatch2_player',
+                'is_csgo2_player',
+            ),
+        }),
+        )
