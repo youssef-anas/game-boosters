@@ -96,12 +96,12 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
 
     achived_rank_csgo2 = forms.ModelChoiceField(queryset=Csgo2Rank.objects.all(), required=False, label='CS GO 2')
 
-    languages = forms.CharField(
-        max_length=300, 
-        widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
-        label='Languages',
-        required=False
-    )
+    # languages = forms.CharField(
+    #     max_length=300, 
+    #     widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
+    #     label='Languages',
+    #     required=False
+    # )
 
     class Meta:
         model = BaseUser
@@ -145,24 +145,24 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         if booster and hasattr(booster, 'about_you'):
             self.initial['about_you'] = booster.about_you
 
-        should_include_languages = True  # Set your condition here
+        # should_include_languages = True  # Set your condition here
 
-        if should_include_languages:
-            if 'languages' not in self.fields:
-                self.fields['languages'] = forms.CharField(
-                    max_length=300, 
-                    widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
-                    label='Languages',
-                    required=False
-                )
-            # If you have a Booster instance, populate the initial data for languages
-            if hasattr(self.instance, 'booster') and self.instance.booster:
-                booster = self.instance.booster
-                if booster.languages:
-                    self.initial['languages'] = ', '.join(booster.languages)
-        else:
-            # Remove the languages field if it exists
-            self.fields.pop('languages', None)
+        # if should_include_languages:
+        #     if 'languages' not in self.fields:
+        #         self.fields['languages'] = forms.CharField(
+        #             max_length=300, 
+        #             widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
+        #             label='Languages',
+        #             required=False
+        #         )
+        #     # If you have a Booster instance, populate the initial data for languages
+        #     if hasattr(self.instance, 'booster') and self.instance.booster:
+        #         booster = self.instance.booster
+        #         if booster.languages:
+        #             self.initial['languages'] = ', '.join(booster.languages)
+        # else:
+        #     # Remove the languages field if it exists
+        #     self.fields.pop('languages', None)
         
         # Define mapping from boolean flags to rank fields
         mapping = {
@@ -236,9 +236,9 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         else:
             Booster.objects.create(booster=user, **booster_data)
 
-        if 'languages' in self.cleaned_data:
-            languages_data = self.cleaned_data['languages']
-            booster_instance.languages = languages_data.split(', ')
+        # if 'languages' in self.cleaned_data:
+        #     languages_data = self.cleaned_data['languages']
+        #     booster_instance.languages = languages_data.split(', ')
         
         booster_instance.save()
 
