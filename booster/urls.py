@@ -8,7 +8,7 @@ def is_booster(user):
     return user.is_authenticated and user.is_booster
 
 urlpatterns = [
-    path('register/',register_booster_view,name='booster.register'),
+    # path('register/',register_booster_view,name='booster.register'),
     path('profile_setting/', user_passes_test(is_booster)(booster_setting), name='booster.setting'),
     path('boosters/', boosters, name='booster.boosters'),
     path('boosters/<booster_id>/',booster_details,name='booster.details'),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('work-with-us/', RedirectView.as_view(url='/booster/work-with-us/one-of-three/'), name='workwithus'),
     path('work-with-us/one-of-three/',work_with_us_level1_view,name='workwithus.level1'),
     path('work-with-us/two-of-three/',work_with_us_level2_view,name='workwithus.level2'),
-    path('work-with-us/three-of-three/',work_with_us_level3_view,name='workwithus.level3'),
+    # path('work-with-us/three-of-three/',work_with_us_level3_view,name='workwithus.level3'),
+    path('work-with-us/last/',WorkWithUsLevel4View.as_view(),name='workwithus.level4'),
     path('work-with-us/accepted-data/',work_with_us_accepted_data,name='workwithus.accepted-data'),
 ]

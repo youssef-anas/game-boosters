@@ -16,6 +16,8 @@ from honorOfKings.models import HonorOfKingsRank
 from games.models import Game
 from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
+from django_countries.fields import CountryField
+
 
 class OrderRating(models.Model):
     customer = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='ratings_given')
@@ -125,19 +127,26 @@ class BoosterPortfolio(models.Model):
     
     def __str__(self):
         return f'Portfolio of {self.booster.booster.username}'
+    
+class Language(models.Model):
+    language = models.CharField(max_length=30, unique=True)
+    def __str__(self):
+        return self.language
 
 class WorkWithUs(models.Model):
     nickname        = models.CharField(max_length=30)
-    email           = models.EmailField()
+    email           = models.EmailField(max_length=100)
     discord_id      = models.CharField(max_length=100)
-    languages       = models.CharField(max_length=300)
+    languages       = models.ManyToManyField(Language)
     game            = models.ManyToManyField(Game)
     rank            = models.CharField(max_length=300)
     server          = models.CharField(max_length=100)
+    about_you       = models.TextField(max_length=1000)
+    country         = CountryField(max_length=1000)
+    agree_privacy   = models.BooleanField()
 
     def __str__(self):
         return self.nickname
-
 
 class Photo(models.Model):
     booster         = models.ForeignKey(WorkWithUs, related_name='photos', on_delete=models.CASCADE)

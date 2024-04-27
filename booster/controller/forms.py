@@ -20,42 +20,42 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 BaseUser = get_user_model()
 
-class Registeration_Booster(UserCreationForm):
-    image = forms.ImageField(label='Profile Picture', required=False)
-    class Meta:
-        model = BaseUser
-        fields = ("email", "username", 'image', 'country')
-        # fields = '__all__'
+# class Registeration_Booster(UserCreationForm):
+#     image = forms.ImageField(label='Profile Picture', required=False)
+#     class Meta:
+#         model = BaseUser
+#         fields = ("email", "username", 'image', 'country')
+#         # fields = '__all__'
 
-    def clean_email(self):
-            email = self.cleaned_data['email']
-            if self.instance.email == email:
-                return email  
-            if BaseUser.objects.filter(email=email).exists():
-                raise forms.ValidationError("Email Already Exists.")
-            return email
+#     def clean_email(self):
+#             email = self.cleaned_data['email']
+#             if self.instance.email == email:
+#                 return email  
+#             if BaseUser.objects.filter(email=email).exists():
+#                 raise forms.ValidationError("Email Already Exists.")
+#             return email
     
-    password1 = forms.CharField(
-        label="Password",
-        widget=forms.PasswordInput(),
-        help_text=""
-    )
-    password2 = forms.CharField(
-        label="Password Confirmation",
-        widget=forms.PasswordInput(),
-        help_text=""
-    )
-    username = forms.CharField(
-        help_text=""
-    )
+#     password1 = forms.CharField(
+#         label="Password",
+#         widget=forms.PasswordInput(),
+#         help_text=""
+#     )
+#     password2 = forms.CharField(
+#         label="Password Confirmation",
+#         widget=forms.PasswordInput(),
+#         help_text=""
+#     )
+#     username = forms.CharField(
+#         help_text=""
+#     )
     
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.is_active = False
-        # user.is_booster = True
-        if commit:
-            user.save()
-        return user
+#     def save(self, commit=True):
+#         user = super().save(commit=False)
+#         user.is_active = False
+#         # user.is_booster = True
+#         if commit:
+#             user.save()
+#         return user
     
 class ProfileEditForm(UserChangeForm, forms.ModelForm):
     full_name = forms.CharField(max_length=300, 

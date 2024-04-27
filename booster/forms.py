@@ -2,7 +2,7 @@ from django import forms
 # from accounts.models import BaseUser
 # from booster.models import Booster
 from django import forms
-from booster.models import WorkWithUs, Photo
+from booster.models import WorkWithUs, Photo, Language
 from django.core.exceptions import ValidationError
 
 """
@@ -29,6 +29,9 @@ class WorkWithUsLevel1Form(forms.ModelForm):
     class Meta:
         model = WorkWithUs
         fields = ['nickname', 'email', 'discord_id', 'languages']
+        widgets = {
+            'languages': forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple custom-input', 'placeholder': 'Choose your language)'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,10 +48,11 @@ class WorkWithUsLevel1Form(forms.ModelForm):
             'class': 'form-control custom-input',
             'placeholder': 'Discord ID'
         })
-        self.fields['languages'].widget.attrs.update({
-            'class': 'form-control custom-input',
-            'placeholder': 'e.g., English, Spanish, French'
-        })
+        # self.fields['languages'].widget.attrs.update({
+        #     'class': 'form-control custom-input',
+        #     'placeholder': 'e.g., English, Spanish, French'
+        # })
+
         # Add help text for the 'languages' field
         self.fields['languages'].help_text = 'Enter the languages you are proficient in, separated by commas (e.g., English, Spanish, French).'
         
@@ -57,8 +61,7 @@ class WorkWithUsLevel2Form(forms.ModelForm):
     class Meta:
         model = WorkWithUs
         fields = ['game', 'rank', 'server']
-        from django import forms
-from .models import WorkWithUs
+
 
 class WorkWithUsLevel2Form(forms.ModelForm):
     class Meta:
@@ -81,7 +84,6 @@ class WorkWithUsLevel3Form(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        print("cleaned_data: ",cleaned_data)
         image = cleaned_data.get('image')
         image2 = cleaned_data.get('image2')
         image3 = cleaned_data.get('image3')
@@ -93,17 +95,36 @@ class WorkWithUsLevel3Form(forms.ModelForm):
 
     
 class WorkWithUsForm(forms.ModelForm):
+    agree_privacy = forms.BooleanField(required=True)
+
     class Meta:
         model = WorkWithUs
         fields = '__all__'
 
     def create(self, commit=True, **kwargs):
         # Exclude many-to-many fields from cleaned_data
-        m2m_fields = ['game']
+        m2m_fields = ['game', 'languages']  # Include 'languages' here
         m2m_data = {field: self.cleaned_data.pop(field) for field in m2m_fields if field in self.cleaned_data}
 
         obj = WorkWithUs.objects.create(**self.cleaned_data, **kwargs)
 
         for field, values in m2m_data.items():
-            getattr(obj, field).set(values)
+            if field == 'languages':
+                # Retrieve Language objects based on their primary keys
+                languages = Language.objects.filter(pk__in=values)
+                getattr(obj, field).set(languages)
+            else:
+                getattr(obj, field).set(values)
+
         return obj
+
+
+class WorkWithUsLevel4Form(forms.ModelForm):
+    agree_privacy = forms.BooleanField(required=True)
+
+    class Meta:
+        model = WorkWithUs
+        fields = ['about_you', 'country', 'agree_privacy']
+        widgets = {
+
+        }

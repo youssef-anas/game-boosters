@@ -65,7 +65,7 @@
                 </div>
               </div>
 
-              <form method="POST" enctype="multipart/form-data">
+              <form method="POST" >
                 {% csrf_token %}
 
                 <!-- Display form validation errors -->
@@ -77,38 +77,28 @@
 
                 <!-- Render each field in the form -->
                 <div class="mb-4">
-                  <label for="{{ form.image.id_for_label }}" class="d-block mb-2">Image 1:</label>
-                  {{ form.image }}
-                  {% if form.image.errors %}
+                  <label for="{{ form.about_you.id_for_label }}" class="d-block mb-2">about you:</label>
+                  {{ form.about_you }}
+                  {% if form.about_you.errors %}
                   <div class="message error-message">
-                    {{ form.image.errors }}
+                    {{ form.about_you.errors }}
                   </div>
                   {% endif %}
                 </div>
 
                 <div class="mb-4">
-                  <label for="{{ form.image2.id_for_label }}" class="d-block mb-2">Image 2:</label>
-                  {{ form.image2 }}
-                  {% if form.image2.errors %}
+                  <label for="{{ form.country.id_for_label }}" class="d-block mb-2">country:</label>
+                  {{ form.country }}
+                  {% if form.country.errors %}
                   <div class="error">
-                    {{ form.image2.errors }}
-                  </div>
-                  {% endif %}
-                </div>
-
-                <div class="mb-4">
-                  <label for="{{ form.image3.id_for_label }}" class="d-block mb-2">Image 3:</label>
-                  {{ form.image3 }}
-                  {% if form.image3.errors %}
-                  <div class="error">
-                    {{ form.image3.errors }}
+                    {{ form.country.errors }}
                   </div>
                   {% endif %}
                 </div>
 
                 <div class="mb-5 d-flex align-items-center">
-                  <input type="checkbox" name="agreeToTerms" id="agreeOrNot" class="me-3">
-                  <label for="agreeOrNot">By pressing submit you agree to our <a href="{% url 'privacy.policy' %}" class="linkToPage">Terms of Service</a>
+                  <input type="checkbox" name="agree_privacy" id="agree_privacy" class="me-3" required>
+                  <label for="agree_privacy">By pressing submit you agree to our <a href="{% url 'privacy.policy' %}" class="linkToPage">Terms of Service</a>
                     & our <a href="{% url 'privacy.policy' %}" class="linkToPage">Privacy Policy</a>.</label>
                 </div>
 

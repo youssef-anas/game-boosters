@@ -1,8 +1,8 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
-from .controller.forms import Registeration_Booster, ProfileEditForm, ProfileEditForm, PasswordEditForm, PayPalEmailEditForm
+from .controller.forms import ProfileEditForm, ProfileEditForm, PasswordEditForm, PayPalEmailEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from booster.models import OrderRating, Photo, BoosterPortfolio
+from booster.models import OrderRating, Photo, BoosterPortfolio, WorkWithUs
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,22 +23,23 @@ from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
 from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
-from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsForm
+from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsLevel4Form, WorkWithUsForm
+from gameBoosterss.utils import upload_image_to_firebase
 
-def register_booster_view(request):
-    form = Registeration_Booster()
-    if request.method == 'POST':
-        form = Registeration_Booster(request.POST,request.FILES)
-        if form.is_valid():
-            user = form.save(commit=False)
-            print(user.email_verified_at)
-            user.is_active = False  # Mark the user as inactive until they activate their account
-            user.is_booster = True
-            user.save()
-            # Send activation email
-            return HttpResponse(f'account created with username {user.username}')
-        return render(request, 'booster/registeration_booster.html', {'form': form}) # return error 
-    return render(request, 'booster/registeration_booster.html', {'form': form})
+# def register_booster_view(request):
+#     form = Registeration_Booster()
+#     if request.method == 'POST':
+#         form = Registeration_Booster(request.POST,request.FILES)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             print(user.email_verified_at)
+#             user.is_active = False  # Mark the user as inactive until they activate their account
+#             user.is_booster = True
+#             user.save()
+#             # Send activation email
+#             return HttpResponse(f'account created with username {user.username}')
+#         return render(request, 'booster/registeration_booster.html', {'form': form}) # return error 
+#     return render(request, 'booster/registeration_booster.html', {'form': form})
 
 @login_required
 def booster_setting(request):
@@ -92,6 +93,7 @@ def booster_setting(request):
     return render(request, 'booster/setting.html', {'profile_form': profile_form, 'password_form': password_form, 'paypal_form': paypal_form})
 
 # Orders Page
+@login_required
 def orders_jobs(request):
     # TODO check this data pls
     orders = BaseOrder.objects.filter(booster__isnull=True)
@@ -103,6 +105,7 @@ def orders_jobs(request):
     }
     return render(request,'booster/orders_jobs.html', context)
 
+@login_required
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
     # TODO make this better
@@ -275,6 +278,7 @@ def rate_page(request, order_id):
     order = BaseOrder.objects.get(id=order_id)
     return render(request,'booster/rating_page.html', context={'order':order})
 
+@login_required
 def booster_orders(request):
     refresh_orders = BaseOrder.objects.filter(booster=None, is_done=False, is_drop =False)
     for refresh_order in refresh_orders:
@@ -337,12 +341,9 @@ def booster_orders(request):
 class CanChooseMe(APIView):
     def post(self, request, *args, **kwargs):
         user = request.user 
-
         instance = user
-
         instance.booster.can_choose_me = not instance.booster.can_choose_me
         instance.booster.save()
-
         serializer = CanChooseMeSerializer(instance)
         return JsonResponse(serializer.data)
     
@@ -361,7 +362,7 @@ def booster_history(request):
 #             order.save()
 #             return redirect(reverse_lazy('booster.orders'))
 #     return JsonResponse({'success': False})
-
+# @login_required
 def alert_customer(request, order_id):
     if request.method == 'POST':
         order_id = order_id
@@ -373,24 +374,34 @@ def alert_customer(request, order_id):
             return JsonResponse({'success': True})
     return JsonResponse({'success': False})
 
-    
+@login_required
 def upload_finish_image(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id')
-        if order_id:
-            order = get_object_or_404(BaseOrder, id=order_id)
-            finish_image = request.FILES.get('finish_image')
-            if finish_image:
-                order.finish_image = finish_image
-                order.is_done = True
-                order.save()
-                return redirect(reverse_lazy('booster.orders'))
-    return JsonResponse({'success': False})
+        booster = request.user
+        if not order_id.isdigit():
+            return JsonResponse({'success': False, 'message': 'Invalid order ID'})
+        order = get_object_or_404(BaseOrder, id=order_id, booster=booster)
+        finish_image = request.FILES.get('finish_image')
+        if not finish_image:
+            return JsonResponse({'success': False, 'message': 'No finish image provided'})
+        try:
+            ext = finish_image.name.split('.')[-1]
+            name = f"orders/images/{order.name}.{ext}"
+            url = upload_image_to_firebase(finish_image, name)
+        except Exception as e:
+            return JsonResponse({'success': False, 'message': str(e)})
+        order.finish_image = url
+        order.is_done = True
+        order.save()
+        return redirect(reverse_lazy('booster.orders'))
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 # Drop
+@login_required
 def drop_order(request, order_id):
     if request.method == 'POST':
-        base_order = get_object_or_404(BaseOrder ,id =order_id)
+        base_order = get_object_or_404(BaseOrder ,id =order_id, booster= request.user)
         content_type = base_order.content_type
         if content_type:
 
@@ -429,9 +440,10 @@ def drop_order(request, order_id):
         #     return JsonResponse({'Drop Success': False})
     return JsonResponse({'success': False})
 
+@login_required
 def update_rating(request, order_id):
     if request.method == 'POST':
-        base_order = BaseOrder.objects.get(id = order_id)
+        base_order = get_object_or_404(BaseOrder,id=order_id, booster=request.user)
         contect_type = base_order.content_type
         if contect_type :
             game = contect_type.model_class().objects.get(order_id = base_order.object_id)
@@ -481,7 +493,11 @@ def work_with_us_level1_view(request):
             request.session.pop('level', None)
             fields = ['nickname', 'email', 'discord_id', 'languages']
             for field in fields:
-                request.session[field] = form.cleaned_data[field]
+                if field == 'languages':
+                    # Convert the QuerySet to a list before storing it in the session
+                    request.session[field] = list(form.cleaned_data[field].values_list('pk', flat=True))
+                else:
+                    request.session[field] = form.cleaned_data[field]
             return redirect(reverse_lazy('workwithus.level2'))  
     else:
         form = WorkWithUsLevel1Form()
@@ -504,63 +520,100 @@ def work_with_us_level2_view(request):
             games_pk = list(form.cleaned_data['game'].values_list('pk', flat=True))
             request.session['games_pk'] = games_pk
             
-            return redirect(reverse_lazy('workwithus.level3'))  
+            return redirect(reverse_lazy('workwithus.level4'))  
     else:
         form = WorkWithUsLevel2Form()
     return render(request, 'booster/work_with_us/workwithus_lvl2.html', {'form': form})
 
-def work_with_us_level3_view(request):
-    id = request.session.get('accepted_data_id')
-    if id:
-        return redirect(reverse('workwithus.accepted-data')) 
-    level = request.session.get('level')
-    if request.method == 'POST':
-        form = WorkWithUsLevel3Form(request.POST, request.FILES)
-        nickname = request.session.pop('nickname', None)
-        email = request.session.pop('email', None)
-        discord_id = request.session.pop('discord_id', None)
-        languages = request.session.pop('languages', None)
-        rank = request.session.pop('rank', None)
-        server = request.session.pop('server', None)
-        games_pk = request.session.pop('games_pk', None)
-        request.session.pop('level', None)
+# def work_with_us_level3_view(request):
+#     id = request.session.get('accepted_data_id')
+#     if id:
+#         return redirect(reverse('workwithus.accepted-data')) 
+#     level = request.session.get('level')
+#     if request.method == 'POST':
+#         form = WorkWithUsLevel3Form(request.POST, request.FILES)
+#         if form.is_valid():
+#             image = form.cleaned_data["image"]
+#             image2 = form.cleaned_data["image2"]
+#             image3 =  form.cleaned_data["image3"]
+#             if image:
+#                 Photo.objects.create(booster=data, image=image)
+#             if image2:
+#                 Photo.objects.create(booster=data, image=image2)
+#             if image3:
+#                 Photo.objects.create(booster=data, image=image3)
+#             return redirect(reverse('workwithus.accepted-data'))  
+        
+#         # for field, errors in obj.errors.items():
+#         #     for error in errors:
+#         #         print(f"{field}: {error}")  
+#         return HttpResponse("form not valied")    
+#     else:
+#         form = WorkWithUsLevel3Form()
+#         return render(request, 'booster/work_with_us/workwithus_lvl3.html', {'form': form})
+
+class WorkWithUsLevel4View(APIView):
+    def get(self, request):
+        id = request.session.get('accepted_data_id')
+        if id:
+            return redirect(reverse('workwithus.accepted-data')) 
+        form = WorkWithUsLevel4Form()
+        return render(request, 'booster/work_with_us/workwithus_lvl4.html', {'form': form})
+
+    def post(self, request):
+        form = WorkWithUsLevel4Form(request.POST)
         if form.is_valid():
-            form_data = {
-                'nickname': nickname,
-                'email': email,
-                'discord_id': discord_id,
-                'languages': languages,
-                'rank': rank,
-                'server': server,
-                'game': games_pk,
-            }
-            obj = WorkWithUsForm(form_data)
-            if obj.is_valid():
-                data = obj.create()
-                image = form.cleaned_data["image"]
-                image2 = form.cleaned_data["image2"]
-                image3 =  form.cleaned_data["image3"]
-                if image:
-                    Photo.objects.create(booster=data, image=image)
-                if image2:
-                    Photo.objects.create(booster=data, image=image2)
-                if image3:
-                    Photo.objects.create(booster=data, image=image3)
-                request.session.pop('level', None)
-                request.session['accepted_data_id'] = f'{data.id}'
-                return redirect(reverse('workwithus.accepted-data'))  
-            
-        for field, errors in obj.errors.items():
-            for error in errors:
-                print(f"{field}: {error}")  
-        return HttpResponse("form not valied")    
-    else:
-        form = WorkWithUsLevel3Form()
-        return render(request, 'booster/work_with_us/workwithus_lvl3.html', {'form': form})
-    
+            # Extract cleaned data from the form
+            cleaned_data = form.cleaned_data
+
+            # Extract session variables
+            nickname = request.session.pop('nickname', None)
+            email = request.session.pop('email', None)
+            discord_id = request.session.pop('discord_id', None)
+            languages_pk = request.session.pop('languages', None)
+            rank = request.session.pop('rank', None)
+            server = request.session.pop('server', None)
+            games_pk = request.session.pop('games_pk', None)
+
+            # Create WorkWithUs instance
+            data = WorkWithUs.objects.create(
+                nickname=nickname,
+                email=email,
+                discord_id=discord_id,
+                rank=rank,
+                server=server,
+                about_you=cleaned_data['about_you'],
+                country=cleaned_data['country'],
+                agree_privacy= cleaned_data['agree_privacy'],
+            )
+
+            # Add languages and games if they exist
+            if languages_pk:
+                data.languages.add(*languages_pk)
+            if games_pk:
+                data.game.add(*games_pk)
+
+            # Store accepted data ID in session
+            request.session['accepted_data_id'] = str(data.id)
+
+            # Redirect to accepted data page
+            return redirect(reverse('workwithus.accepted-data'))  
+
+        # If form is not valid, return the form with errors
+        return render(request, 'booster/work_with_us/workwithus_lvl4.html', {'form': form})
+
 
 def work_with_us_accepted_data(request):
     id = request.session.get('accepted_data_id')
-    if not id :
+    found = WorkWithUs.objects.filter(id=id).exists()
+
+    # Clear session if accepted data does not exist
+    if not found:
+        request.session.pop('accepted_data_id', None)
+        return redirect(reverse('workwithus'))
+
+    # Redirect if accepted data ID is missing or invalid
+    if not id:
         return redirect(reverse('homepage.index'))
-    return render(request, 'booster/work_with_us/accepted_data.html', context={'id':id})  
+
+    return render(request, 'booster/work_with_us/accepted_data.html', context={'id': id})
