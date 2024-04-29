@@ -48,6 +48,16 @@ class DivisionSerializer(serializers.Serializer):
             data['choose_booster'] = 0
         return data
 
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Europe East", "Brazil",
+            "Latin Amer Nor", "Latin Amer Sou", "Oceania", "Japan",
+            "Russia", "Turkey", "Vietnam", "Garena SEA"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value
+
 
 class PlacementSerializer(serializers.Serializer):
     last_rank               = serializers.IntegerField(min_value=0, max_value=8)
@@ -81,3 +91,13 @@ class PlacementSerializer(serializers.Serializer):
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
         return data
+    
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Europe East", "Brazil",
+            "Latin Amer Nor", "Latin Amer Sou", "Oceania", "Japan",
+            "Russia", "Turkey", "Vietnam", "Garena SEA"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value

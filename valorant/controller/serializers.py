@@ -73,6 +73,12 @@ class DivisionSerializer(serializers.Serializer):
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Valorent.")
                     
+    def validate_server(self, value):
+        valid_servers = ["North America", "Europe", "Asia Pacific"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value                    
+                    
 
 class PlacementSerializer(serializers.Serializer):
     last_rank = serializers.IntegerField(min_value=0, max_value=8)
@@ -140,3 +146,9 @@ class PlacementSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 2)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Valorent.")
+
+    def validate_server(self, value):
+        valid_servers = ["North America", "Europe", "Asia Pacific"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value                    

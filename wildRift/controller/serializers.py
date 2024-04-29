@@ -93,6 +93,16 @@ class RankSerializer(serializers.Serializer):
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Wild Rift.")
 
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Brazil", "Oceania",
+            "Japan", "Russia", "Middle East", "Asia Pacific"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value
+                
+
 
 class PlacementSerializer(serializers.Serializer):
     Previous_Season_Rank = serializers.IntegerField()
@@ -150,3 +160,12 @@ class PlacementSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 1)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Wild Rift.")
+
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Brazil", "Oceania",
+            "Japan", "Russia", "Middle East", "Asia Pacific"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import reverse
-from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster
+from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster, Language
 from django.utils.safestring import mark_safe
 from django.forms import ModelForm
 from gameBoosterss.utils import upload_image_to_firebase
@@ -101,3 +101,5 @@ class CreateBoosterAdmin(admin.ModelAdmin):
             ),
         }),
         )
+    
+admin.site.register(Language)    

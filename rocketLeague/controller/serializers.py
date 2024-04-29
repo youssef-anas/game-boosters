@@ -49,6 +49,14 @@ class DivisionSerializer(serializers.Serializer):
           data['choose_booster'] = 0
       return data
 
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value
 
 class PlacementSerializer(serializers.Serializer):
   last_rank           = serializers.IntegerField(min_value=1, max_value=8)
@@ -84,6 +92,15 @@ class PlacementSerializer(serializers.Serializer):
           data['choose_booster'] = 0
       return data
 
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value
+
 class SeasonalSerializer(serializers.Serializer):
   current_rank        = serializers.IntegerField(min_value=1, max_value=8)
   number_of_wins      = serializers.IntegerField(min_value=1, max_value=5)
@@ -118,6 +135,15 @@ class SeasonalSerializer(serializers.Serializer):
           data['choose_booster'] = 0
       return data
 
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value
+
 class TournamentSerializer(serializers.Serializer):
   current_league      = serializers.IntegerField(min_value=1, max_value=8)
 
@@ -150,3 +176,12 @@ class TournamentSerializer(serializers.Serializer):
       if data['select_booster'] == False  :
           data['choose_booster'] = 0
       return data
+  
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value

@@ -1,5 +1,3 @@
-# create_languages.py
-
 import os
 import django
 
@@ -9,58 +7,65 @@ django.setup()
 
 from booster.models import Language
 
-# Create instances of Language with default language names
+# List of language names
 languages_data = [
-    {'language': 'English'},
-    {'language': 'العربية'},        # Arabic
-    {'language': '中文'},            # Chinese (Simplified)
-    {'language': 'Español'},        # Spanish
-    {'language': 'Français'},       # French
-    {'language': 'Deutsch'},        # German
-    {'language': 'हिन्दी'},         # Hindi
-    {'language': 'Italiano'},       # Italian
-    {'language': '日本語'},           # Japanese
-    {'language': '한국어'},           # Korean
-    {'language': 'Português'},      # Portuguese
-    {'language': 'Русский'},        # Russian
-    {'language': 'اردو'},            # Urdu
-    {'language': 'Türkçe'},         # Turkish
-    {'language': 'Polski'},         # Polish
-    {'language': 'ไทย'},              # Thai
-    {'language': 'Nederlands'},     # Dutch
-    {'language': 'Svenska'},        # Swedish
-    {'language': 'Dansk'},          # Danish
-    {'language': 'Suomi'},          # Finnish
-    {'language': 'Norsk'},          # Norwegian
-    {'language': 'Ελληνικά'},        # Greek
-    {'language': 'Magyar'},         # Hungarian
-    {'language': 'Čeština'},        # Czech
-    {'language': 'हिन्दी'},         # Hindi (again, for a broader audience)
-    {'language': 'Bahasa Indonesia'},  # Indonesian
-    {'language': 'עברית'},            # Hebrew
-    {'language': 'فارسی'},            # Persian
-    {'language': 'Українська'},        # Ukrainian
-    {'language': 'Slovenčina'},      # Slovak
-    {'language': 'Română'},           # Romanian
-    {'language': 'Български'},        # Bulgarian
-    {'language': 'Lietuvių'},        # Lithuanian
-    {'language': 'Latviešu'},        # Latvian
-    {'language': 'Eesti'},           # Estonian
-    {'language': 'ქართული'},         # Georgian
-    {'language': 'മലയാളം'},            # Malayalam
-    {'language': 'తెలుగు'},             # Telugu
-    {'language': 'தமிழ்'},              # Tamil
-    {'language': 'ਪੰਜਾਬੀ'},               # Punjabi
-    {'language': 'اردو'},                   # Urdu (again, for a broader audience)
-    {'language': 'ລາວ'},                   # Lao
-    {'language': 'ភាសាខ្មែរ'},            # Khmer
-    {'language': 'မြန်မာဘာသာ'},           # Burmese
-    {'language': 'བོད་སྐད་'},               # Tibetan
-    {'language': 'فارسی'},                   # Persian (again, for a broader audience)
+    'English',
+    'العربية',           # Arabic
+    '中文',               # Chinese (Simplified)
+    'Español',           # Spanish
+    'Français',          # French
+    'Deutsch',           # German
+    'हिन्दी',            # Hindi
+    'Italiano',          # Italian
+    '日本語',              # Japanese
+    '한국어',              # Korean
+    'Português',         # Portuguese
+    'Русский',           # Russian
+    'اردو',               # Urdu
+    'Türkçe',            # Turkish
+    'Polski',            # Polish
+    'ไทย',                 # Thai
+    'Nederlands',        # Dutch
+    'Svenska',           # Swedish
+    'Dansk',             # Danish
+    'Suomi',             # Finnish
+    'Norsk',             # Norwegian
+    'Ελληνικά',          # Greek
+    'Magyar',            # Hungarian
+    'Čeština',           # Czech
+    'Bahasa Indonesia',  # Indonesian
+    'עברית',              # Hebrew
+    'فارسی',              # Persian
+    'Українська',          # Ukrainian
+    'Slovenčina',        # Slovak
+    'Română',            # Romanian
+    'Български',         # Bulgarian
+    'Lietuvių',          # Lithuanian
+    'Latviešu',          # Latvian
+    'Eesti',             # Estonian
+    'ქართული',           # Georgian
+    'മലയാളം',            # Malayalam
+    'తెలుగు',             # Telugu
+    'தமிழ்',              # Tamil
+    'ਪੰਜਾਬੀ',               # Punjabi
+    'اردو',                   # Urdu (again, for a broader audience)
+    'ລາວ',                   # Lao
+    'ភាសាខ្មែរ',            # Khmer
+    'မြန်မာဘာသာ',           # Burmese
+    'བོད་སྐད་',               # Tibetan
+    'Azərbaycanca',          # Azerbaijani
+    'ಕನ್ನಡ',                     # Kannada
+    'සිංහල',                  # Sinhala
+    'ગુજરાતી',                # Gujarati
+    'ଓଡ଼ିଆ',                    # Odia
+    'മലയാളം',                      # Malayalam (again, for a broader audience)
+    # Add more languages here
 ]
 
-# Loop through the data and create Language instances
-for language_data in languages_data:
-    Language.objects.create(**language_data)
+# Loop through the data and create Language instances if they don't already exist
+for language_name in languages_data:
+    # Check if the language already exists
+    if not Language.objects.filter(language=language_name).exists():
+        Language.objects.create(language=language_name)
 
 print("Languages created successfully!")

@@ -129,7 +129,7 @@ class BoosterPortfolio(models.Model):
         return f'Portfolio of {self.booster.booster.username}'
     
 class Language(models.Model):
-    language = models.CharField(max_length=30, unique=True)
+    language = models.CharField(max_length=120, unique=True)
     def __str__(self):
         return self.language
 

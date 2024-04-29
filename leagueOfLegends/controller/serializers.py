@@ -74,6 +74,15 @@ class DivisionSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 4)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champions is not belong to LOL.")
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Brazil", "Latin Amer Nor",
+            "Latin Amer Sou", "Oceania", "Japan", "Russia", "Turkey",
+            "Vietnam", "Garena SEA"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value                
     
 
 class PlacementSerializer(serializers.Serializer):
@@ -137,3 +146,12 @@ class PlacementSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 4)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champions is not belong to LOL.")
+    def validate_server(self, value):
+        valid_servers = [
+            "North America", "Europe West", "Brazil", "Latin Amer Nor",
+            "Latin Amer Sou", "Oceania", "Japan", "Russia", "Turkey",
+            "Vietnam", "Garena SEA"
+        ]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value                            
