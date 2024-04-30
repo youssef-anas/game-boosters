@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // const placementsForm = document.getElementById('placements-boost');
 
   // Initial setup
+  if (divisionBoostRadio){  
   if (divisionBoostRadio.checked) {
     divisionBoostDiv.forEach(div => div.classList.remove('d-none'));
     placementsBoostDiv.forEach(div => div.classList.add('d-none'));
@@ -24,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // divisionForm.classList.remove("active");
     // placementsForm.classList.add("active");
   }
+}
 
   // Event listener for division-boost radio button
   if (divisionBoostRadio){
@@ -161,4 +163,17 @@ function SetBooster(clickedCard) {
   chooseBoosterInput.forEach(input => {
     input.value = clickedCard.id; 
   });
+}
+function disable_alert(message){
+  setTimeout(() => {
+    message.classList.add('d-none')
+  }, 5000);
+}
+
+
+const messages = document.querySelectorAll('.message-container')
+if (messages){
+  messages.forEach(message =>{
+    disable_alert(message)
+  })
 }

@@ -268,3 +268,28 @@ def list_blobs(request):
         blob_url = upload_image_to_firebase(img, path+'/'+img.name)
         print("done", img.name)
     return HttpResponse("all done")
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def delete_public_images(request):
+    if request.method == 'POST':
+        path = request.POST.get('path')
+
+        # Reference the Firebase Storage bucket
+        bucket = storage.bucket()
+
+        # List all files in the specified path
+        blobs = bucket.list_blobs(prefix=path)
+
+        # Iterate through the blobs and delete public images
+        deleted_images = []
+        for blob in blobs:
+            if blob.public_url:
+                blob.delete()
+                deleted_images.append(blob.public_url)
+
+        return JsonResponse({'message': 'Public images deleted successfully', 'deleted_images': deleted_images})
+
+    else:
+        return JsonResponse({'error': 'POST method required'}, status=400)

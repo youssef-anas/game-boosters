@@ -112,6 +112,6 @@ def view_that_asks_for_money(request):
       return render(request, "accounts/paypal.html", context,status=200)
     for field, errors in serializer.errors.items():
       for error in errors:
-        messages.error(request, f"{field}: {error}")
+        messages.error(request, f"{error}")
     return redirect(reverse_lazy('pubg'))
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

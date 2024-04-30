@@ -113,7 +113,7 @@ def pay_with_paypal(request):
     
     for field, errors in serializer.errors.items():
       for error in errors:
-          messages.error(request, f"{field}: {error}")
+          messages.error(request, f"{error}")
     return redirect(reverse_lazy('dota2'))
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

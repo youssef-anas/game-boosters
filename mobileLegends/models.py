@@ -41,7 +41,7 @@ class MobileLegendsMark(models.Model):
   
 class MobileLegendsPlacement(models.Model):
   rank_name = models.CharField(max_length=25)
-  rank_image = models.ImageField(upload_to='Mobile_Legends/images/', blank=True, null=True)
+  rank_image = models.ImageField(upload_to='mobile_legends/images/', blank=True, null=True)
   price = models.FloatField()
 
   def __str__(self):

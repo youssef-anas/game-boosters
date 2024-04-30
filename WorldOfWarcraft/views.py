@@ -95,7 +95,7 @@ def pay_with_paypal(request):
       return render(request, "accounts/paypal.html", context,status=200)
     for field, errors in serializer.errors.items():
       for error in errors:
-          messages.error(request, f"{field}: {error}")
+          messages.error(request, f"{error}")
     return redirect(reverse_lazy('wow'))
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
@@ -107,4 +107,4 @@ def pay_with_cryptomus(request):
       "data": request.POST
     }
     return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)
+  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=400)

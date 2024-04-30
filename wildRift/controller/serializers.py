@@ -61,11 +61,11 @@ class RankSerializer(serializers.Serializer):
     def booster_validate(self, attrs):
         choose_booster = attrs.get('choose_booster', None)
         select_booster = attrs.get('select_booster', None)
-        if choose_booster > 0 and select_booster:
+        if select_booster:
             try :
                 Booster.objects.get(booster_id = choose_booster, is_wr_player= True, can_choose_me= True)
             except Booster.DoesNotExist:
-                raise serializers.ValidationError("This Booster is not belong to Wild Rift.")
+                raise serializers.ValidationError("Please select valid booster")
             
     def to_internal_value(self, data):
         data = super().to_internal_value(data)
@@ -129,11 +129,11 @@ class PlacementSerializer(serializers.Serializer):
     def booster_validate(self, attrs):
         choose_booster = attrs.get('choose_booster', None)
         select_booster = attrs.get('select_booster', None)
-        if choose_booster > 0 and select_booster:
+        if select_booster:
             try :
                 Booster.objects.get(booster_id = choose_booster, is_wr_player= True, can_choose_me= True)
             except Booster.DoesNotExist:
-                raise serializers.ValidationError("This Booster is not belong to Wild Rift.")
+                raise serializers.ValidationError("Please select valid booster")    
             
     def to_internal_value(self, data):
         data = super().to_internal_value(data)
