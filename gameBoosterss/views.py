@@ -6,9 +6,9 @@ import json
 
 def index(request):
 
-  games = Game.objects.all()
+  games = Game.objects.all().order_by('id')
 
-  last_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False)
+  last_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False).order_by('id')
 
   last_orders = []
   for order in last_orders_query:
@@ -18,7 +18,7 @@ def index(request):
 
       last_orders.append(last_order)
 
-  feedbacks = OrderRating.objects.all()
+  feedbacks = OrderRating.objects.all().order_by('id')
 
   context= {
     "games": games,
@@ -29,7 +29,7 @@ def index(request):
   return render(request, 'gameboosterss/index.html', context=context)
 
 def last_orders(request):
-  last_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False)
+  last_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False).order_by('id')
 
   last_orders = []
   for order in last_orders_query:
