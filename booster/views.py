@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from .controller.forms import ProfileEditForm, ProfileEditForm, PasswordEditForm, PayPalEmailEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from booster.models import OrderRating, Photo, BoosterPortfolio, WorkWithUs
+from booster.models import OrderRating, Photo, BoosterPortfolio, WorkWithUs, Booster
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
@@ -24,7 +24,8 @@ from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
 from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsLevel4Form, WorkWithUsForm
-from gameBoosterss.utils import upload_image_to_firebase
+from gameBoosterss.utils import upload_image_to_firebase, generate_random_5_digit_number
+import uuid
 
 # def register_booster_view(request):
 #     form = Registeration_Booster()
@@ -51,7 +52,21 @@ def booster_setting(request):
         if 'profile_submit' in request.POST:
             profile_form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
             if profile_form.is_valid():
-                profile_form.save()
+                profile_form.save(commit=True)
+                if request.FILES:
+                    img= request.FILES['profile_image']
+                    try:
+                        ext = img.name.split('.')[-1]
+                        name = f"booster/images/{request.user.id}/{str(uuid.uuid4())}.{ext}"
+                        url = upload_image_to_firebase(img, name)
+                    except Exception as e:
+                        return HttpResponseBadRequest({'success': False, 'message': str(e)})
+                    booster = Booster.objects.get(booster = request.user)
+                    booster.profile_image_url = url
+                    print(booster.profile_image_url)
+                    booster.save()
+                    booster.booster.save()
+                    profile_form.save()
                 messages.success(request, 'Profile updated successfully.')
                 return redirect('booster.setting')
             
@@ -61,7 +76,10 @@ def booster_setting(request):
             # Create a BoosterPortfolio instance for each uploaded image
             portfolios = []
             for image in images:
-                portfolio = BoosterPortfolio(booster=request.user.booster, image=image)
+                ext = image.name.split('.')[-1]
+                name = f"booster/images/{request.user.id}/portfolio/{str(uuid.uuid4())}.{ext}"
+                url = upload_image_to_firebase(image, name)
+                portfolio = BoosterPortfolio(booster=request.user.booster, image=url)
                 portfolios.append(portfolio)
 
             # Bulk create the BoosterPortfolio instances
