@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import reverse
 from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster, Language
 from django.utils.safestring import mark_safe
-from django.forms import ModelForm
+from django.forms import ModelForm, ValidationError
 from gameBoosterss.utils import upload_image_to_firebase
 from django import forms
 from accounts.models import BaseUser
@@ -39,12 +39,19 @@ class BoosterAdminForm(ModelForm):
     def save(self, commit=True):
         instance = super().save(commit=False)
         profile_image_file = self.cleaned_data.get('profile_image')
-
-        # Check if a profile image file is provided
         if profile_image_file:
-            # Only upload image to Firebase if a file is provided
-            profile_image_url = upload_image_to_firebase(profile_image_file,'booster/'+profile_image_file.name)
-            instance.profile_image_url = profile_image_url
+            print(profile_image_file)
+            try:
+                profile_image_url = upload_image_to_firebase(profile_image_file, 'booster/' + profile_image_file.name)
+                instance.profile_image_url = profile_image_url
+            except Exception as e:
+                error_message = f"Error uploading image to Firebase: {e}"
+                print(error_message)
+                # raise ValidationError({'profile_image': [error_message]})
+        else:
+            # If no image data is provided, handle the case accordingly
+            error_message = "No image data provided"
+            raise ValidationError({'profile_image': [error_message]})
         if commit:
             instance.save()
         return instance

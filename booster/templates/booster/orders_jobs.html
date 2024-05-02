@@ -9,7 +9,6 @@
 {% endblock %}
 {% block container %}
 <div class="orders-jobs-container">
-
   <div class="orders-jobs-contant">
     <div class="overlay">
 
@@ -214,148 +213,132 @@
     // Initial call to start the timer
     updateTimerDisplay();
   }
-  let host = window.location.host
-  const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+let host = window.location.host;
+const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+const allowedGameIDs = {{ids}};
+const orderSocket = new WebSocket(wsProtocol + host + '/ws/order/');
+orderSocket.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    if (data.type === 'order' && Array.isArray(data.order)) {
+        // Filter orders based on the allowed game IDs
+        const filteredOrders = data.order.filter(order => allowedGameIDs.includes(order.game_id));
+        // Update data with filtered orders
+        data.order = filteredOrders;
+        console.log('Filtered data:', data);
 
-  const orderSocket = new WebSocket(wsProtocol + window.location.host + '/ws/order/');
-  orderSocket.onmessage = function(e){
-    let data = JSON.parse(e.data)
-    console.log('data',data)
-    if(data.type === 'order') {
-      let orderContainer = document.getElementById('order_list')
-      orderContainer.innerHTML = '';
-      data.order.forEach(order => {
-        const timeSocket = new WebSocket(wsProtocol + window.location.host + '/ws/price/' + order.id + '/');
-        timeSocket.onmessage = function (e) {
-          let time_price = JSON.parse(e.data);
-          console.log(time_price)
-          if (time_price.type === 'time_with_price'){
-      
-            orderContainer.insertAdjacentHTML('beforeend',
-            `
-              <div class="order-container mb-4">
-                
-                ${
-                  order.champions !== null ?
-                    order.select_champion && order.champions.length > 0 ?
-                      `
-                        <div class='champions d-flex align-item-center justify-content-center'> 
-                          ${order.champions.map(champion => `
-                            <div class='champion'>
-                              <img src='${champion.image}' alt="${champion.name}" width='48' height='48'>
-                            </div>
-                          `).join('')}
+        // Proceed with handling filtered data
+        let orderContainer = document.getElementById('order_list');
+        orderContainer.innerHTML = '';
+        data.order.forEach(order => {
+            const timeSocket = new WebSocket(wsProtocol + host + '/ws/price/' + order.id + '/');
+            timeSocket.onmessage = function (e) {
+                let time_price = JSON.parse(e.data);
+                console.log(time_price);
+                if (time_price.type === 'time_with_price') {
+                    orderContainer.insertAdjacentHTML('beforeend',
+                        `
+                        <div class="order-container mb-4">
+                            ${
+                                order.champions !== null ?
+                                    order.select_champion && order.champions.length > 0 ?
+                                        `
+                                        <div class='champions d-flex align-item-center justify-content-center'> 
+                                            ${order.champions.map(champion => `
+                                                <div class='champion'>
+                                                    <img src='${champion.image}' alt="${champion.name}" width='48' height='48'>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                        `
+                                        : ''
+                                    : ''
+                            }
+                            <ul class="order">
+                                <li class="table-header ${order.turbo_boost && "turbo-boost-header"}">
+                                    <div class="col col-1">Order ID</div>
+                                    <div class="col col-2">From</div>
+                                    <div class="col col-3">To</div>
+                                    <div class="col col-4">Server</div>
+                                    <div class="col col-5">Queue</div>
+                                    <div class="col col-6">Payout</div>
+                                    <div class="col col-7"></div>
+                                </li>
+                                <li class="table-row ${order.turbo_boost && "turbo-boost-row"}">
+                                    <div class="col col-1 fw-bold" data-label="Order ID">ID: ${order.name}</div>
+                                    <div class="col col-2 fw-bold" data-label="From">
+                                        ${extractOrderFrom(order.details)}
+                                        <div class="extra select-champion mt-4">
+                                            ${
+                                                order.select_champion ?
+                                                    '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                                                    : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                                            }
+                                            Select Champion
+                                        </div>
+                                    </div>
+                                    <div class="col col-3 fw-bold" data-label="To">
+                                        ${extractOrderTo(order.details)}
+                                        <div class="extra stream-games mt-4 ms-4">
+                                            ${
+                                                order.streaming ?
+                                                    '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                                                    : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                                            }
+                                            Stream Games
+                                        </div>
+                                    </div>
+                                    <div class="col col-4 fw-bold" data-label="Server">${order.server}</div>
+                                    <div class="col col-5 fw-bold" data-label="Queue">
+                                        <span id="duo-or-solo" class="${order.duo_boosting ? "duo" : "solo"}">
+                                            ${order.duo_boosting ? " Duo " : " Solo "}
+                                        </span>
+                                    </div>
+                                    <div class="col col-6 fw-bold" data-label="Payout">
+                                        <div id='not-final-price-${order.id}'>
+                                            <p class="mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
+                                            <p class="mb-0 increase-amount">
+                                                <span>Increase in </span>
+                                                <span id="timer_${order.id}"></span>
+                                                <span id="amount_of_increase_${order.id}">+$${time_price.extra}</span>
+                                            </p>
+                                        </div>
+                                        <div id='final-price-${order.id}' class='d-none d-flex align-items-center'>
+                                            <p class="mb-0 division-price me-2" id='actual_price_${order.id}'>$${time_price.price}</p> 
+                                            <p id="final_price_${order.id}" class="mb-0 ms-2 d-flex align-items-center  final-price">
+                                                <i class="fa-solid fa-star me-2 fs-4"></i> <span>Final <br /> Price<span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="col col-7" data-label="claim">
+                                        <a href='${order.url}' class="btn custom-btn filled">Claim</a>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
-                      `
-                    : ''
-                  : ''
+                        `
+                    );
                 }
-
-                <ul class="order">
-                  <li class="table-header ${order.turbo_boost&&"turbo-boost-header"}">
-                    <div class="col col-1">Order ID</div>
-                    <div class="col col-2">From</div>
-                    <div class="col col-3">To</div>
-                    <div class="col col-4">Server</div>
-                    <div class="col col-5">Queue</div>
-                    <div class="col col-6">Payout</div>
-                    <div class="col col-7"></div>
-                  </li>
-                  <li class="table-row ${order.turbo_boost&&"turbo-boost-row"}">
-                    <div class="col col-1 fw-bold" data-label="Order ID">ID: ${order.name}</div>
-
-                    <div class="col col-2 fw-bold" data-label="From">
-                      ${extractOrderFrom(order.details)}
-                      <div class="extra select-champion mt-4">
-                        ${
-                          order.select_champion 
-                          ?
-                            '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                          :
-                            '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Select Champion
-                      </div>
-                    </div>
-
-                    <div class="col col-3 fw-bold" data-label="To">
-                      ${extractOrderTo(order.details)}
-                      <div class="extra stream-games mt-4 ms-4">
-                        ${
-                          order.streaming
-                          ?
-                            '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                          :
-                            '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Stream Games
-                      </div>
-                    </div>
-
-                    <div class="col col-4 fw-bold" data-label="Server">${order.server}</div>
-
-                    <div class="col col-5 fw-bold" data-label="Queue">
-                      <span id="duo-or-solo" class="${ order.duo_boosting ?"duo":"solo"}">
-                        ${ order.duo_boosting ?" Duo ":" Solo "}
-                      </span>
-                    </div>
-
-                    <div class="col col-6 fw-bold" data-label="Payout">
-                      <div id='not-final-price-${order.id}'>
-                        <p class="mb-0 division-price" id='actual_price_${order.id}'>${time_price.price}$</p> 
-
-                        <p class="mb-0 increase-amount">
-                          <span>Increase in </span>
-                          <span id="timer_${order.id}"></span>
-                          
-                          <span id="amount_of_increase_${order.id}">+$${time_price.extra}</span>
-                        </p>
-                      </div>
-
-                      <div id='final-price-${order.id}' class='d-none d-flex align-items-center'>
-                        <p class="mb-0 division-price me-2" id='actual_price_${order.id}'>$${time_price.price}</p> 
-
-                        <p id="final_price_${order.id}" class="mb-0 ms-2 d-flex align-items-center  final-price">
-                          <i class="fa-solid fa-star me-2 fs-4"></i> <span>Final <br /> Price<span>
-                        </p>
-                      </div>
-                      
-                    </div>
-
-                    <div class="col col-7" data-label="claim">
-                      <a href='${order.url}' class="btn custom-btn filled">Claim</a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            `
-            );
-          }
-          if (time_price.type === 'update_price'){
-            document.querySelector(`#actual_price_${order.id}`).innerText=
-            `${time_price.price}$`
-            
-            document.getElementById(`amount_of_increase_${order.id}`).innerText=
-            `${time_price.extra}$`
-
-            console.log('price updated')
-          }
-          if (time_price.time > 0){
-            changeTimer(time_price.time+2, onTimeOutFunction,order.id);
-          } else {
-            const finalPriceElement = document.getElementById(`final-price-${order.id}`);
-            finalPriceElement.classList.remove("d-none");
-            const noFinalPrice = document.getElementById(`not-final-price-${order.id}`);
-            noFinalPrice.classList.add("d-none")
-          }
-          function onTimeOutFunction() {
-            console.log("Executing onTimeOutFunction.");
-            timeSocket.send(JSON.stringify({ order_id: order.id }));
-          }
-        };
-      });
+                if (time_price.type === 'update_price') {
+                    document.querySelector(`#actual_price_${order.id}`).innerText = `${time_price.price}$`;
+                    document.getElementById(`amount_of_increase_${order.id}`).innerText = `${time_price.extra}$`;
+                    console.log('price updated');
+                }
+                if (time_price.time > 0) {
+                    changeTimer(time_price.time + 2, onTimeOutFunction, order.id);
+                } else {
+                    const finalPriceElement = document.getElementById(`final-price-${order.id}`);
+                    finalPriceElement.classList.remove("d-none");
+                    const noFinalPrice = document.getElementById(`not-final-price-${order.id}`);
+                    noFinalPrice.classList.add("d-none");
+                }
+                function onTimeOutFunction() {
+                    console.log("Executing onTimeOutFunction.");
+                    timeSocket.send(JSON.stringify({ order_id: order.id }));
+                }
+            };
+        });
     }
-  }
+};
 
 
 </script>

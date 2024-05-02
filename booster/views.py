@@ -14,7 +14,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Sum
-from accounts.models import BaseOrder, Transaction, BoosterPercent
+from accounts.models import BaseOrder, Transaction, BoosterPercent, BaseUser
 from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from rest_framework.pagination import PageNumberPagination
@@ -24,7 +24,7 @@ from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
 from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsLevel4Form, WorkWithUsForm
-from gameBoosterss.utils import upload_image_to_firebase, generate_random_5_digit_number
+from gameBoosterss.utils import upload_image_to_firebase, get_booster_game_ids
 import uuid
 
 # def register_booster_view(request):
@@ -113,38 +113,28 @@ def booster_setting(request):
 # Orders Page
 @login_required
 def orders_jobs(request):
-    # TODO check this data pls
-    orders = BaseOrder.objects.filter(booster__isnull=True)
-    booster_percents = BoosterPercent.objects.get(pk=1)
-
+    # orders = BaseOrder.objects.filter(booster__isnull=True)
+    ids = get_booster_game_ids(request.user)
     context = {
-        "orders": orders,
-        'booster_percents':booster_percents
+        "ids":ids,
     }
     return render(request,'booster/orders_jobs.html', context)
 
 @login_required
 def calm_order(request, game_name, id):
     order = get_object_or_404(BaseOrder, id=id)
-    # TODO make this better
-    if True:
-    # if (game_name == 'wildRift' and request.user.booster.is_wr_player) or \
-    #     (game_name == 'valorant' and request.user.booster.is_valo_player) or \
-    #     (game_name == 'pubg' and request.user.booster.is_pubg_player) or \
-    #     (game_name == 'lol' and request.user.booster.is_lol_player) or \
-    #     (game_name == 'tft' and request.user.booster.is_tft_player) or \
-    #     (game_name == 'hearthstone' and request.user.booster.is_hearthstone_player) or \
-    #     (game_name == 'rocketLeague' and request.user.booster.is_rl_player) or \
-    #     (game_name == 'hok' and request.user.booster.is_hok_player) :
+    print(request.user)
+    ids = get_booster_game_ids(request.user)
+    if order.game.id in ids :
         try:
             order.booster = request.user
             order.save()
         except Exception as e:
             print(f"Error updating order: {e}")
             return HttpResponseBadRequest(f"Error updating order{e}")
-    # else:
-    #     messages.error(request, "You aren't play this game, Calm order for your game!")
-    #     return redirect(reverse_lazy('orders.jobs'))
+    else:
+        messages.error(request, "You aren't play this game!")
+        return redirect(reverse_lazy('orders.jobs'))
     refresh_order_page()
     return redirect(reverse_lazy('booster.orders'))
 

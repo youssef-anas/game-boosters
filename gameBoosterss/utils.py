@@ -227,6 +227,7 @@ def live_orders():
 
         print("ORDER: ",order)
         order_dict = {
+            'game_id': order.game.id,
             "id": order.pk,
             'name': order.name,
             'server': order.customer_server,
@@ -353,3 +354,35 @@ def upload_image_to_firebase(image_data, image_name):
     print(blob.public_url)
     url = get_half_img_url(blob.public_url)
     return url
+
+
+def get_booster_game_ids(user):
+    booster = Booster.objects.get(booster = user)   
+    ids = []
+    if booster.is_wr_player:
+        ids.append(1)
+    if booster.is_valo_player:
+        ids.append(2)
+    if booster.is_pubg_player:
+        ids.append(3)
+    if booster.is_lol_player:
+        ids.append(4)
+    if booster.is_tft_player:
+        ids.append(5)
+    if booster.is_wow_player:
+        ids.append(6)
+    if booster.is_hearthstone_player:
+        ids.append(7)
+    if booster.is_mobleg_player:
+        ids.append(8)
+    if booster.is_rl_player:
+        ids.append(9)
+    if booster.is_dota2_player:
+        ids.append(10)
+    if booster.is_hok_player:
+        ids.append(11)
+    if booster.is_overwatch2_player:
+        ids.append(12)
+    if booster.is_csgo2_player:
+        ids.append(13)
+    return ids       
