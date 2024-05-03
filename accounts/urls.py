@@ -15,4 +15,5 @@ urlpatterns = [
     path('password/change/<int:id>/', change_password_page, name='password.change'),
     path('add/images/', list_blobs, name='.change'),
     path('delete/images/', delete_public_images, name='.change'),
+    path('message/', test_email_view, name='.change'),
 ]

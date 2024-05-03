@@ -293,3 +293,22 @@ def delete_public_images(request):
 
     else:
         return JsonResponse({'error': 'POST method required'}, status=400)
+    
+
+
+from django.conf import settings
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.shortcuts import render
+
+def test_email_view(request):
+    subject = 'Test Email'
+    message = 'This is a test email sent from Django.'
+    from_email = 'customerservice@madboost.gg'  # Sender's email address
+    to_email = ['shethr999@gmail.com']  # Recipient's email address (can be a list for multiple recipients)
+
+    try:
+        send_mail(subject, message, from_email, to_email)
+        return HttpResponse('Email sent successfully!')
+    except Exception as e:
+        return HttpResponse('An error occurred: {}'.format(str(e)))

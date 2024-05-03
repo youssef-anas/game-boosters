@@ -226,22 +226,37 @@ MEDIA_URL = "https://storage.googleapis.com/mad-boost.appspot.com/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
-# to send email via gmail
+# # to send email via gmail
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587  # For TLS
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'madboost.customer@gmail.com'  # Your Gmail address
+# EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 465  
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'www.ahmedhatb2@gmail.com'
+# EMAIL_HOST_PASSWORD = 'A01005049040a'
+# DEFAULT_FROM_EMAIL = 'customerservice@madboost.gg' 
+
+
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587  # For TLS
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'madboost.customer@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
+EMAIL_HOST = 'smtpout.secureserver.net'
+EMAIL_PORT = 465  # Port for SSL
+EMAIL_USE_SSL = True  # Use SSL encryption
+EMAIL_HOST_USER = 'customerservice@madboost.gg'  # your email address
+EMAIL_HOST_PASSWORD = 'A01005049040a'  # your email password
+# EMAIL_SSL_CERTFILE = os.path.join(BASE_DIR, 'ed73ff5621ea336e.pem')
 
-
-# EMAIL_USE_SSL = False
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = [
+    '8881-197-32-66-233.ngrok-free.app'
     'https://www.madboost.gg',
     'https://madboost.gg',
     'localhost',
@@ -249,7 +264,8 @@ ALLOWED_HOSTS = [
     'www.madboost.gg',
     'madboost.gg',
     'gameboost-test-f25426e2eac4.herokuapp.com',
-    'www.gameboost-test-f25426e2eac4.herokuapp.com'
+    'www.gameboost-test-f25426e2eac4.herokuapp.com',
+    '*'
     ]
 
 
