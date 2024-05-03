@@ -304,8 +304,8 @@ from django.shortcuts import render
 def test_email_view(request):
     subject = 'Test Email'
     message = 'This is a test email sent from Django.'
-    from_email = 'customerservice@madboost.gg'  # Sender's email address
-    to_email = ['shethr999@gmail.com']  # Recipient's email address (can be a list for multiple recipients)
+    from_email = 'customerservice@madboost.gg'
+    to_email = ['shethr999@gmail.com']
 
     try:
         send_mail(subject, message, from_email, to_email)

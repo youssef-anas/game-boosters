@@ -245,9 +245,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtpout.secureserver.net'
-EMAIL_PORT = 465  # Port for SSL
-EMAIL_USE_SSL = True  # Use SSL encryption
+EMAIL_HOST = 'smtp.office365.com'  # Outlook SMTP server hostname
+EMAIL_PORT = 587  # Port for TLS
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL= True  # Use TLS encryption
 EMAIL_HOST_USER = 'customerservice@madboost.gg'  # your email address
 EMAIL_HOST_PASSWORD = 'A01005049040a'  # your email password
 # EMAIL_SSL_CERTFILE = os.path.join(BASE_DIR, 'ed73ff5621ea336e.pem')
