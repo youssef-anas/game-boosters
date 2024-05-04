@@ -99,12 +99,12 @@
       {% if messages %}
         {% for message in messages %}
         <div class="py-3 mx-auto message-container">
-          <div class="alert {{ message.tags }} mb-0 alert-error" role="alert" >
+          <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
           {{ message }}
           </div>
         </div>
         {% endfor %}
-      {% endif %}
+    {% endif %}
 
       <div class="choise mb-3">
         <input type="radio" id="arena-2vs2" name="radio-group-type" checked>
