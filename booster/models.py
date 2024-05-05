@@ -39,6 +39,11 @@ class OrderRating(models.Model):
     def __str__(self):
         return f'{self.customer.username} rated {self.booster.username} with {self.rate}'
     
+class Language(models.Model):
+    language = models.CharField(max_length=120, unique=True)
+    def __str__(self):
+        return self.language
+
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
     profile_image_url = models.CharField(null=True, blank=True)
@@ -48,7 +53,7 @@ class Booster(models.Model):
     choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False)
     start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False)
 
-    languages = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    languages = models.ManyToManyField(Language)
     games = models.ManyToManyField(Game, related_name='games')
 
     paypal_account = models.EmailField(max_length=254, null=True, unique=True, blank=False)
@@ -127,11 +132,6 @@ class BoosterPortfolio(models.Model):
     
     def __str__(self):
         return f'Portfolio of {self.booster.booster.username}'
-    
-class Language(models.Model):
-    language = models.CharField(max_length=120, unique=True)
-    def __str__(self):
-        return self.language
 
 class WorkWithUs(models.Model):
     nickname        = models.CharField(max_length=30)

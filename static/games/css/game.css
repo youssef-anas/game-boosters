@@ -434,6 +434,14 @@ input[type="checkbox"]:hover + .icon-as-checkbox img {
 input[type="checkbox"]:checked + .icon-as-checkbox img {
   border: 3px solid var(--secondary-color);
 }
+#selectChampionButton {
+  width: 500px !important;
+}
+@media (max-width: 768px) {
+  #selectChampionButton {
+    width: 100% !important;
+  }
+}
 /* End Select Champion */
 
 /* Start Select Booster */
@@ -470,5 +478,13 @@ input[type="checkbox"]:checked + .icon-as-checkbox img {
 .boosters .selected-booster .view-profile,
 .boosters .booster-card:hover .view-profile  {
   color: #18120F;
+}
+#selectBoosterButton {
+  width: 500px !important;
+}
+@media (max-width: 768px) {
+  #selectBoosterButton {
+    width: 100% !important;
+  }
 }
 /* End Select Booster */

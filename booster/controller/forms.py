@@ -16,6 +16,7 @@ from overwatch2.models import Overwatch2Rank
 from dota2.models import Dota2Rank
 from csgo2.models import Csgo2Rank
 from honorOfKings.models import HonorOfKingsRank
+from booster.models import Language
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 BaseUser = get_user_model()
@@ -68,6 +69,8 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         label='Bio',
         required=False)
 
+    languages = forms.ModelMultipleChoiceField(queryset=Language.objects.all(), widget=forms.SelectMultiple(attrs={'class': 'form-control js-example-basic-multiple custom-input'}), label='Languages you know')
+
     
     # Define form fields for achived ranks
     achived_rank_wr = forms.ModelChoiceField(queryset=WildRiftRank.objects.all(), required=False, label='Lol: Wild Rift')
@@ -96,13 +99,6 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
 
     achived_rank_csgo2 = forms.ModelChoiceField(queryset=Csgo2Rank.objects.all(), required=False, label='CS GO 2')
 
-    # languages = forms.CharField(
-    #     max_length=300, 
-    #     widget=forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Languages'}),
-    #     label='Languages',
-    #     required=False
-    # )
-
     class Meta:
         model = BaseUser
         fields = []
@@ -125,11 +121,19 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
             'achived_rank_hok',
             'achived_rank_overwatch2',
             'achived_rank_csgo2',
+            'languages'
         ]
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label_suffix = ''
+
+        if 'languages' in self.fields:
+            # Get the languages associated with the user
+            user_languages = self.instance.booster.languages.all()
+            self.initial['languages'] = user_languages
+
         
         # Get the Booster instance associated with the user
         booster = None
@@ -239,6 +243,10 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
         # if 'languages' in self.cleaned_data:
         #     languages_data = self.cleaned_data['languages']
         #     booster_instance.languages = languages_data.split(', ')
+
+        if 'languages' in self.cleaned_data:
+            languages_data = self.cleaned_data['languages']
+            booster_instance.languages.set(languages_data)
         
         booster_instance.save()
 
@@ -254,6 +262,7 @@ class PayPalEmailEditForm(forms.Form):
         help_text='To confirm ur changes write your current password and press save:',
     )
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password', 'class': 'form-control custom-input'}))
+    
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)

@@ -24,6 +24,7 @@
 </head>
 
 <body>
+  <!-- Start Header -->
   <div class="nav" id="nav">
     <div class="container">
       <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
@@ -34,9 +35,159 @@
           </a>
         </div>
 
+        <div class="main-nav p-0 text-md-center text-end">
+          <i class="fa-solid fa-bars toggle-menu"></i>
+          <ul class="links">
+
+            {% if not request.user.id %}
+            <li class="mx-auto">
+              <ul class="main-links">
+                <li>
+                  <a href="{% url 'games.games' %}" {% if request.path=='/games/' %}class="active" {% endif %}>Games</a>
+                </li>
+
+                <li>
+                  <a href="" {% if request.path=='/store/' %}class="active" {% endif %}>Store</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'last.orders' %}" {% if request.path=='/last_orders/' %}class="active" {% endif
+                    %}>Last orders</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'booster.boosters' %}" {% if request.path=='/booster/boosters/' %}class="active" {%
+                    endif %}>Boosters</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'workwithus' %}" {% if request.path=='/work-with-us/' %}class="active" {% endif
+                    %}>Work With Us</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <ul class="user-links">
+                <li>
+                  <a href="{% url 'accounts.signup' %}" class="custom-btn header-btn outline me-3" {% if
+                    request.path=='/accounts/signup/' %}class="active" {% endif %}>Sign Up</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'account.login' %}" class="custom-btn header-btn filled" {% if
+                    request.path=='/accounts/login/' %}class="active" {% endif %}>Log In</a>
+                </li>
+              </ul>
+            </li>
+
+            {% else %}
+            {% if request.user.is_booster %}
+            <li class="mx-auto">
+              <ul class="main-links">
+                <li class="links-hidden">
+                  <a href="{% url 'booster.setting' %}">Profile</a>
+                </li>
+
+                <li class="links-hidden">
+                  <a href="{% url 'booster.orders' %}">Orders</a>
+                </li>
+
+                <li class="links-hidden">
+                  <a href="{% url 'orders.jobs' %}">Jobs</a>
+                </li>
+
+                <li class="links-hidden">
+                  <a href="{% url 'account.logout' %}">Logout</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'booster.history' %}" {% if request.path=='/booster/history/' %}class="active" {%
+                    endif %}>
+                    <img src="{% static 'base/images/wallet.png' %}" alt="" width="19" height="19" class="me-2"> <span
+                      class="me-2 fw-bold"> wallet </span><span style="color: #FFFFFF80"
+                      class="fw-bold">{{request.user.wallet.money|floatformat:2}}$</span>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+
+            <div class="dropdown custom-dropdown">
+              <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {{request.user.first_name}} {{request.user.last_name}}
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'booster.setting' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'booster.orders' %}">Orders</a></li>
+                <li><a class="dropdown-item" href="{% url 'orders.jobs' %}">Jobs</a></li>
+                <li><a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a></li>
+              </ul>
+            </div>
+            {% else %}
+            <li class="mx-auto">
+              <ul class="main-links">
+                <li class="links-hidden">
+                  <a href="{% url 'customer.setting' %}">Profile</a>
+                </li>
+
+                <li class="links-hidden">
+                  <a href="{% url 'account.logout' %}">Logout</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'games.games' %}" {% if request.path=='/games/' %}class="active" {% endif %}>Games</a>
+                </li>
+
+                <li>
+                  <a href="" {% if request.path=='/store/' %}class="active" {% endif %}>Store</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'booster.boosters' %}" {% if request.path=='/booster/boosters/' %}class="active" {%
+                    endif %}>Boosters</a>
+                </li>
+
+                <li class="links-hidden">
+                  <a href="{% url 'customer.orders' %}" {% if request.path=='/customer/customer_orders/'
+                    %}class="active" {% endif %}>Orders</a>
+                </li>
+
+                <li>
+                  <a href="{% url 'workwithus' %}" {% if request.path=='/work-with-us/' %}class="active" {% endif
+                    %}>Work With Us</a>
+                </li>
+              </ul>
+            </li>
+
+            <div class="order-link me-3">
+              <a href="{% url 'customer.orders' %}" {% if request.path=='/customer/customer_orders/' %}class="active" {%
+                endif %}>
+                <img src="{% static 'base/images/orders.png' %}" class="me-2" width="16" height="16">
+                Orders
+              </a>
+            </div>
+
+            <div class="dropdown custom-dropdown">
+              <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {{request.user.first_name}} {{request.user.last_name}}
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{% url 'customer.setting' %}">Profile</a></li>
+                <li><a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a></li>
+              </ul>
+            </div>
+            {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+
       </div>
     </div>
   </div>
+  <!-- End Header -->
 
   <div class="workwithus-content content">
     <div class="overlay">
@@ -59,13 +210,13 @@
                 <p class="mb-4 text-center">Fill in your data & information</p>
 
                 <div class="progress mb-5">
-                  <div class="progress-bar" style="width: 100%;" role="progressbar" aria-valuenow="100" aria-valuemin="0"
-                    aria-valuemax="100">
+                  <div class="progress-bar" style="width: 100%;" role="progressbar" aria-valuenow="100"
+                    aria-valuemin="0" aria-valuemax="100">
                   </div>
                 </div>
               </div>
 
-              <form method="POST" >
+              <form method="POST">
                 {% csrf_token %}
 
                 <!-- Display form validation errors -->
@@ -98,7 +249,8 @@
 
                 <div class="mb-5 d-flex align-items-center">
                   <input type="checkbox" name="agree_privacy" id="agree_privacy" class="me-3" required>
-                  <label for="agree_privacy">By pressing submit you agree to our <a href="{% url 'privacy.policy' %}" class="linkToPage">Terms of Service</a>
+                  <label for="agree_privacy">By pressing submit you agree to our <a href="{% url 'privacy.policy' %}"
+                      class="linkToPage">Terms of Service</a>
                     & our <a href="{% url 'privacy.policy' %}" class="linkToPage">Privacy Policy</a>.</label>
                 </div>
 
@@ -115,6 +267,7 @@
   <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
   <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
+  <script src="{% static  'base/js/base.js' %}"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
 </body>

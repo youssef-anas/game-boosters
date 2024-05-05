@@ -69,7 +69,22 @@ document.addEventListener("DOMContentLoaded", function () {
 //popup champion
 const championDataInputs= document.querySelectorAll('.champion-data')
 const checkboxes = document.querySelectorAll('.hidden-checkbox');
+const selectBoosterButton = document.getElementById('selectBoosterButton')
+const selectChampionButton = document.getElementById('selectChampionButton')
 let selectedIds = [];
+
+function disableButton(disable, type='both') {
+  if(type == 'champion') {
+    selectChampionButton.disabled = disable;
+  } else if(type == 'booster') {
+    selectBoosterButton.disabled = disable;
+  } else {
+    selectBoosterButton.disabled = disable;
+    selectChampionButton.disabled = disable;
+  }
+}
+
+disableButton(true)
 
 function togglePopupChampion() {
   const checkbox = document.getElementById("select_champion");
@@ -109,6 +124,7 @@ checkboxes.forEach(checkbox => {
         const lastCheckedId = selectedIds.shift();
         document.getElementById(lastCheckedId).checked = false;
       }
+
     } else {
       const index = selectedIds.indexOf(checkbox.id);
       if (index !== -1) {
@@ -121,6 +137,13 @@ checkboxes.forEach(checkbox => {
     championDataInputs.forEach(input => {
       input.value = result;
     });
+
+    console.log(selectedIds.length)
+    if (selectedIds.length != 0) {
+      disableButton(false, 'champion')
+    } else {
+      disableButton(true, 'champion')
+    }
   });
 });
 
@@ -163,6 +186,8 @@ function SetBooster(clickedCard) {
   chooseBoosterInput.forEach(input => {
     input.value = clickedCard.id; 
   });
+
+  disableButton(false, 'booster')
 }
 function disable_alert(message){
   setTimeout(() => {
