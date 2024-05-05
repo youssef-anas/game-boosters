@@ -13,6 +13,8 @@ from datetime import date, timedelta
 from django.core.exceptions import ValidationError
 from django.conf import settings
 from allauth.socialaccount.signals import social_account_added
+# from simple_history.models import HistoricalRecords
+
 
 class BaseUser(AbstractUser):
     # profile_image = models.ImageField(upload_to='accounts/images/', null=True, blank=True)
@@ -34,6 +36,9 @@ class BaseUser(AbstractUser):
 
     rest_password_code = models.IntegerField(null=True,blank=True)
     rest_password_time = models.DateTimeField(null=True, blank=True)
+
+        
+    # history = HistoricalRecords()
 
     def set_full_name(self, full_name):
         names = full_name.split()

@@ -25,6 +25,7 @@ from django.utils.html import strip_tags
 from django.core.serializers.json import DjangoJSONEncoder
 import random
 import json
+from django.conf import settings
 
 
 def check_rl_type(type) -> Model:
@@ -269,7 +270,7 @@ def send_activation_code(user) -> int:
     html_content = render_to_string('accounts/activate_email_form.html', {'secret_key': secret_key, 'user':user})
     text_content = strip_tags(html_content)
 
-    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email = EmailMultiAlternatives(subject, text_content,  settings.EMAIL_HOST_USER, users_list)
     email.attach_alternative(html_content, "text/html")
     email.send(fail_silently=False)
 
@@ -286,7 +287,7 @@ def reset_password(user) -> int:
     html_content = render_to_string('accounts/password_reset/reset_password_form.html', {'secret_key': secret_key, 'user': user})
     text_content = strip_tags(html_content)
 
-    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email = EmailMultiAlternatives(subject, text_content,  settings.EMAIL_HOST_USER, users_list)
     email.attach_alternative(html_content, "text/html")
     email.send(fail_silently=False)
     user.rest_password_code = secret_key
@@ -300,7 +301,7 @@ def booster_added_message(email, password,username):
     html_content = render_to_string('booster/approved_form.html', {'password': password,'username':username})
     text_content = strip_tags(html_content)
 
-    email = EmailMultiAlternatives(subject, text_content, 'madboost.customer@gmail.com', users_list)
+    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
     email.attach_alternative(html_content, "text/html")
     email.send(fail_silently=False)
     return True
