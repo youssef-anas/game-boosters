@@ -11,7 +11,6 @@ from games.models import Game
 from django.db.models import Avg
 from datetime import date, timedelta
 from django.core.exceptions import ValidationError
-from django.conf import settings
 from allauth.socialaccount.signals import social_account_added
 # from simple_history.models import HistoricalRecords
 
@@ -88,12 +87,10 @@ class BaseUser(AbstractUser):
                 raise ValidationError("You must be at least 18 years old.")
             
     def get_image_url(self):
-        if hasattr(self, 'booster') and self.is_booster:
-            if settings.DEBUG:
-                return self.booster.profile_image_url
-            else:
+        if hasattr(self, 'booster') and self.booster is not None and self.is_booster:
+            if self.booster.profile_image:
                 return self.booster.profile_image.url
-        return None   
+        return None
         
 # @receiver(post_save, sender=BaseUser)
 # def create_wallet(sender, instance, created, **kwargs):

@@ -62,8 +62,8 @@ def booster_setting(request):
                     except Exception as e:
                         return HttpResponseBadRequest({'success': False, 'message': str(e)})
                     booster = Booster.objects.get(booster = request.user)
-                    booster.profile_image_url = url
-                    print(booster.profile_image_url)
+                    booster.profile_image = url
+                    print(booster.profile_image)
                     booster.save()
                     booster.booster.save()
                     profile_form.save()
@@ -200,7 +200,7 @@ def boosters(request):
                 "order_count": booster.order_count,
                 "average_rating": booster.get_average_rating(),
 
-                'languages': booster.booster.languages, # TODO , I Want Get Language From DataBase
+                'languages': booster.booster.languages,
                 'last_boost': custom_timesince(booster.last_boost),
                 'on_madboost': format_date(booster.created_at),
             }
