@@ -625,3 +625,33 @@ def work_with_us_accepted_data(request):
         return redirect(reverse('homepage.index'))
 
     return render(request, 'booster/work_with_us/accepted_data.html', context={'id': id})
+
+
+from django.views import View
+
+
+
+class WiningNumber(View):
+    def update_wins(self ,order, wins_number, number_of_match):
+        if wins_number <= number_of_match and wins_number >= 0 :
+            order.wins_number = wins_number
+            booster_prise = order.actual_price / number_of_match * wins_number
+            order.money_owed = round(booster_prise, 2)
+            order.save()
+            return order.money_owed
+    def post(self, request, order_id):
+        order = get_object_or_404(BaseOrder, id=order_id, booster=request.user)
+        wins_number = int(request.POST.get('wins_number', 0))
+        number_of_match = 1
+        if hasattr(order.related_order, 'number_of_match'):
+            number_of_match = order.related_order.number_of_match
+
+        if hasattr(order.related_order, 'number_of_wins'):
+            number_of_match = order.related_order.number_of_wins    
+            
+        if order.game.pk in [2, 4, 5, 8, 9, 10, 12]:
+            money = self.update_wins(order, wins_number, number_of_match)
+
+        return redirect(reverse('booster.orders')) 
+        # return HttpResponse(f'money :{money}')
+        

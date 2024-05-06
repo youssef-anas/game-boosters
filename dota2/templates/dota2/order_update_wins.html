@@ -1,0 +1,14 @@
+<div class="updata-now">
+    <form action="{% url 'update.wins' order_id=order.order.order.id %}" method="POST">
+      {% csrf_token %}
+      {% if error %} <p class="error-message message">{{error}}</p> {% endif %}
+      <div class="mb-3">
+        <input class="custom-input form-control" type="number" name="wins_number" value={{order.order.order.wins_number}} placeholder="Wins Number" aria-label="Wins Number" min="0" step="1" max="10">
+      </div>
+  
+      <div class="text-end">
+        <button type="submit" class="btn update-rating-btn">Update Winning</button>
+      </div>
+    </form>
+  </div>
+  

@@ -238,6 +238,7 @@ class BaseOrder(models.Model):
     # Pause
     pause = models.BooleanField(default=False, blank=True)
     approved = models.BooleanField(default=False, blank=True)
+    wins_number = models.PositiveSmallIntegerField(blank=True, default=0)
 
     def update_actual_price(self):
         """
