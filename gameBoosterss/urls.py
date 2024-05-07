@@ -42,6 +42,8 @@ urlpatterns = [
     path('download/media/zip/', download_media_zip, name='download_media_zip'),
     path('social/', include('social_django.urls', namespace='social')),
 
+    path('store/',index, name='store'),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

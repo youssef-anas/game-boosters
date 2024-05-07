@@ -46,19 +46,19 @@ class Language(models.Model):
 
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
-    profile_image_url = models.CharField(null=True, blank=True)
-    profile_image = models.ImageField(blank= True,null=True,)
+    # profile_image_url = models.URLField(null=True, blank=True, max_length=1000)
+    profile_image = models.ImageField(upload_to='booster/',blank= True,null=True,)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=False ,blank=True)
-    choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False)
-    start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False)
+    choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False, max_length=200)
+    start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False, max_length=200)
 
     languages = models.ManyToManyField(Language)
     games = models.ManyToManyField(Game, related_name='games')
 
     paypal_account = models.EmailField(max_length=254, null=True, unique=True, blank=False)
 
-    discord_id = models.CharField(max_length=300, default="", blank=True, null=True)
+    discord_id = models.CharField(max_length=100, default="", blank=True, null=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
 
     is_wr_player = models.BooleanField(default=False)
@@ -113,7 +113,7 @@ class Booster(models.Model):
     def save(self, *args, **kwargs):
         # When saving a Booster instance, set is_booster to True for the associated BaseUser
         self.booster.is_booster = True
-        self.profile_image = self.profile_image_url
+        # self.profile_image = self.profile_image_url
         self.booster.save()
         super().save(*args, **kwargs)
 

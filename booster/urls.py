@@ -25,10 +25,14 @@ urlpatterns = [
     path('update-rating/<int:order_id>',update_rating,name='order.update.rating'),
     path('transactions/',TransactionListView.as_view(),name='booster.transaction'),
 
+    path('wining/<int:order_id>/',WiningNumber.as_view(), name='update.wins'),
+
     path('work-with-us/', RedirectView.as_view(url='/booster/work-with-us/one-of-three/'), name='workwithus'),
     path('work-with-us/one-of-three/',work_with_us_level1_view,name='workwithus.level1'),
     path('work-with-us/two-of-three/',work_with_us_level2_view,name='workwithus.level2'),
     # path('work-with-us/three-of-three/',work_with_us_level3_view,name='workwithus.level3'),
     path('work-with-us/last/',WorkWithUsLevel4View.as_view(),name='workwithus.level4'),
     path('work-with-us/accepted-data/',work_with_us_accepted_data,name='workwithus.accepted-data'),
+
+
 ]

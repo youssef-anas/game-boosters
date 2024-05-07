@@ -43,7 +43,7 @@ class BoosterAdminForm(ModelForm):
             print(profile_image_file)
             try:
                 profile_image_url = upload_image_to_firebase(profile_image_file, 'booster/' + profile_image_file.name)
-                instance.profile_image_url = profile_image_url
+                instance.profile_image = profile_image_url
             except Exception as e:
                 error_message = f"Error uploading image to Firebase: {e}"
                 print(error_message)

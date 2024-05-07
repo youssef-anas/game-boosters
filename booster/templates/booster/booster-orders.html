@@ -380,13 +380,14 @@
                       {% if order.order.order.game.link == 'wildRift' %}
                         {% include 'wildRift/order_update.html' %}
 
-                      {% elif order.order.order.game.link == 'valorant' %}
+                      {% elif order.order.order.game.pk == 'valorant' %}
+                      
                         {% include 'valorant/order_update.html' with valorant_ranks=valorant_ranks %}
 
                       {% elif order.order.order.game.link == 'lol' %}
                         {% include 'leagueOfLegends/order_update.html' with lol_ranks=lol_ranks %}
 
-                      {% elif order.order.order.game.link == 'pubg' %}
+                      {% elif order.order.order.game.pk == 3 %}
                         {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
 
                       {% elif order.order.order.game.link == 'tft' %}
@@ -464,8 +465,34 @@
                         <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.last_rank.rank_name}}</p>
                       {% endif %}
                     </div>
+                    <!-- [2, 4, 5, 8, 9, 10, 12] -->
+
+                    {% if order.order.order.game_id == 2 %}
+                      {% include 'valorant/order_update_wins.html'%}
+
+                    {% elif order.order.order.game_id == 4 %}  
+                      {% include 'leagueOfLegends/order_update_wins.html'%}
+
+                    {% elif order.order.order.game_id == 5 %}  
+                    {% include 'tft/order_update_wins.html' %}
+
+                    {% elif order.order.order.game_id == 8 %}  
+                    {% include 'mobileLegends/order_update_wins.html' %}
+
+                    {% elif order.order.order.game_id == 9 %}  
+                    {% include 'rocketLeague/order_update_wins.html' %}
+
+                    {% elif order.order.order.game_id == 10 %}  
+                    {% include 'dota2/order_update_wins.html' %}
+
+                    {% elif order.order.order.game_id == 12 %}  
+                    {% include 'overwatch2/order_update_wins.html' %}
+
+                    {% endif %}
 
                     <!-- Button trigger modal -->
+                    
+                    <p class="mt-2 text-warning">Current Wins is: {{order.order.order.wins_number}} win</p>
                     <button type="button" class="btn complete-order-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ order.order.order.id }}">
                       <i class="fa-regular fa-circle-check"></i> Complete Order
                     </button>
@@ -490,12 +517,14 @@
     
                     <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
                       <h4 style="font-weight: 7000;">Current Rank</h>
-                      
-                      <img src="{{order.order.current_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid d-block my-3" width="150" height="150">
-    
-                      <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.current_rank.rank_name}}</p>
+                        <div class="d-flex justify-content-center align-items-center">
+                          <img src="{{order.order.current_rank.get_image_url}}" alt="Last Rank Image" class="reached-rank-selected-img img-fluid d-block my-3" width="150" height="150">
+                        </div>
+                        <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.current_rank.rank_name}}</p>
                     </div>
-
+                    {% if order.order.order.game_id == 9 %}  
+                    {% include 'rocketLeague/order_update_wins.html' %}
+                    {% endif %}
                     <!-- Button trigger modal -->
                     <button type="button" class="btn complete-order-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ order.order.order.id }}">
                       <i class="fa-regular fa-circle-check"></i> Complete Order

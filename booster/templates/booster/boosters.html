@@ -61,7 +61,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
               <h3 class="mb-0">{{booster.username}}</h3>
               <p class="fw-bold mb-0">
-                <img src="/media/{{booster.achived_rank_image}}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
+                <img src="https://storage.googleapis.com/mad-boost.appspot.com/{{booster.achived_rank_image}}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
                 {{booster.achived_rank_name}}
               </p>
             </div>
@@ -69,8 +69,8 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <p class="mb-0">Languages:</p>
               <div class="d-flex justify-content-between align-items-center">
-                {% for language in booster.booster.languages %}
-                  <p class="language mb-0 ms-2">{{ language | first_two_chars }}</p>
+                {% for language in booster.booster.languages.all %}
+                  <p class="language mb-0 ms-2">{{ language }}</p>
                 {% endfor %}
               </div>
             </div>
@@ -167,7 +167,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                   <h3 class="mb-0">${booster.username}</h3>
                   <p class="fw-bold mb-0">
-                    <img src="/media/${booster.achived_rank_image}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
+                    <img src="https://storage.googleapis.com/mad-boost.appspot.com/${booster.achived_rank_image}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
                     ${booster.achived_rank_name}
                   </p>
                 </div>

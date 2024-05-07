@@ -4,24 +4,21 @@ from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials
 load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
-DEBUG = False
-# TODO remove comment after add ssl to site
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+DEBUG = os.getenv('DEBUG') == 'True'
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 AUTH_USER_MODEL = 'accounts.BaseUser'
-# CSRF_COOKIE_SECURE = False
+
 
 ASGI_APPLICATION = 'gameBoosterss.asgi.application'
+
 
 CHANNEL_LAYERS = {
     "default": {
@@ -39,9 +36,14 @@ CHANNEL_LAYERS = {
 
 # Application definition
 INSTALLED_APPS = [
+    # web_socket and server
     'daphne',
     'channels',
+
+    # admin
     'jazzmin',
+
+    # django package
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,6 +51,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+
+    # Others
+    'paypal.standard.ipn',
+    'corsheaders',
+    'rest_framework',
+    'social_django', 
+
+    # serve static file inside server
+    'whitenoise.runserver_nostatic',
     
     # My Apps
     'booster.apps.BoosterConfig',
@@ -70,28 +81,17 @@ INSTALLED_APPS = [
     'overwatch2.apps.Overwatch2Config',
     'csgo2.apps.Csgo2Config',
     'chat.apps.ChatConfig',
-    
-    # Games
     'games.apps.GamesConfig',
 
-    # Others
-    'paypal.standard.ipn',
-    'corsheaders',
-    'rest_framework',
     # 'django_q',
     # 'modeltranslation',
     # 'oauth2_provider',
-
     # 'allauth',
     # 'allauth.account',
     # 'allauth.socialaccount',
     # 'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
-
-    'social_django', 
     # 'django.contrib.sites',
-    'whitenoise.runserver_nostatic'
-
 ]
 
 SITE_ID = 1
@@ -109,6 +109,7 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'gameBoosterss.middleware.ImageSizeLimitMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
+    # 'dashboard.middleware.AdminLogMiddleware',
 ]
 CORS_ORIGIN_WHITELIST = [
     'https://www.madboost.gg',
@@ -117,7 +118,7 @@ CORS_ORIGIN_WHITELIST = [
     'https://madboost.gg',
 ]
 
-CORS_ALLOW_CREDENTIALS = True 
+# CORS_ALLOW_CREDENTIALS = True 
 
 ROOT_URLCONF = 'gameBoosterss.urls'
 
@@ -140,16 +141,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gameBoosterss.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 
 DATABASES = {
     "default": {
@@ -234,24 +225,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # EMAIL_HOST_USER = 'madboost.customer@gmail.com'  # Your Gmail address
 # EMAIL_HOST_PASSWORD = 'wpmj llfn toax sfil'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 465  
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'www.ahmedhatb2@gmail.com'
-# EMAIL_HOST_PASSWORD = 'A01005049040a'
-# DEFAULT_FROM_EMAIL = 'customerservice@madboost.gg' 
-
-
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.office365.com'  # Outlook SMTP server hostname
 EMAIL_PORT = 587  # Port for TLS
 EMAIL_USE_TLS = True
-# EMAIL_USE_SSL= True  # Use TLS encryption
-EMAIL_HOST_USER = 'customerservice@madboost.gg'  # your email address
-EMAIL_HOST_PASSWORD = 'A01005049040a'  # your email password
-# EMAIL_SSL_CERTFILE = os.path.join(BASE_DIR, 'ed73ff5621ea336e.pem')
+EMAIL_HOST_USER =os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 AUTH_USER_MODEL = 'accounts.BaseUser'

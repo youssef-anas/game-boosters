@@ -17,7 +17,14 @@ class CustomUserAdmin(UserAdmin):
         ('Personal info', {'fields': ('first_name', 'last_name', 'country', 'date_of_birth')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser','is_booster','is_customer','is_admin')}),
         ('Important dates', {'fields': ('last_login', 'date_joined', 'rest_password_code', 'activation_code')}),
+        # ('History', {'fields': ('show_history',)}),
     )
+    # readonly_fields = ('show_history',)  # Make the history field read-only
+
+    # def show_history(self, obj):
+    #     return self.get_history(obj)
+    
+    # show_history.short_description = 'History'
 
 admin.site.register(BaseUser ,CustomUserAdmin)
 # admin.site.register(BaseOrder)

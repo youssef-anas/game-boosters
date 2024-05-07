@@ -1,20 +1,21 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
-  <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
-  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
-  <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
-  <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
-  <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-  <!-- Our Style -->
-  <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
   <title>Work With Us</title>
+  <!-- CSS -->
+  <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+  <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet">
+  <link href="{% static 'base/css/master.css' %}" rel="stylesheet">
+  <link href="{% static 'base/css/fields.css' %}" rel="stylesheet">
+  <link href="{% static 'base/css/framework.css' %}" rel="stylesheet">
+  <!-- Favicon -->
+  <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+  <!-- Custom CSS -->
+  <link href="{% static 'accounts/css/account-actions.css' %}" rel="stylesheet">
   <style>
     .linkToPage {
       color: var(--secondary-color) !important;
@@ -44,23 +45,19 @@
 
   </style>
 </head>
-
 <body>
   <!-- Start Header -->
   <div class="nav" id="nav">
     <div class="container">
       <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
-
         <div class="p-0">
           <a href="{% url 'homepage.index' %}" class="logo">
             <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
           </a>
         </div>
-
         <div class="main-nav p-0 text-md-center text-end">
           <i class="fa-solid fa-bars toggle-menu"></i>
           <ul class="links">
-
             {% if not request.user.id %}
               <li class="mx-auto">
                 <ul class="main-links">
@@ -195,17 +192,16 @@
             {% endif %}
           </ul>
         </div>
-
       </div>
     </div>
   </div>
   <!-- End Header -->
-
+  
+  <!-- Work With Us Content -->
   <div class="workwithus-content content">
     <div class="overlay">
       <div class="container py-xl-5 py-0">
         <div class="row row-cols-xl-2 row-cols-1 py-xl-5 py-0 mt-5">
-
           <div class="col left-side d-xl-block d-none">
             <div class="image">
               <img src="{% static 'accounts/images/workwithus.png' %}" class="img-fluid" alt="Landing">
@@ -221,24 +217,18 @@
               <div class="head">
                 <h1>Work with us</h1>
                 <p class="mb-4 text-center">Fill in your data & information</p>
-
                 <div class="progress mb-5">
-                  <div class="progress-bar" style="width: 100%;" role="progressbar" aria-valuenow="100"
-                    aria-valuemin="0" aria-valuemax="100">
-                  </div>
+                  <div class="progress-bar" style="width: 100%;" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-
               <form method="POST">
                 {% csrf_token %}
-
                 <!-- Display form validation errors -->
                 {% if form.non_field_errors %}
                   <div class="message error-message">
                     {{ form.non_field_errors }}
                   </div>
                 {% endif %}
-
                 <!-- Render each field in the form -->
                 <div class="mb-4">
                   <label for="{{ form.about_you.id_for_label }}" class="d-block mb-2">About you </label>
@@ -249,7 +239,6 @@
                     </div>
                   {% endif %}
                 </div>
-
                 <div class="mb-4">
                   <label for="{{ form.country.id_for_label }}" class="d-block mb-2">Country </label>
                   <div class="select-container">
@@ -261,30 +250,27 @@
                     </div>
                   {% endif %}
                 </div>
-
                 <div class="mb-5 d-flex align-items-center">
                   <input type="checkbox" name="agree_privacy" id="agree_privacy" class="me-3" required>
                   <label for="agree_privacy" class="me-4 labelForCheckbox"></label>
                   <label for="agree_privacy">By pressing submit you agree to our <a href="{% url 'privacy.policy' %}" class="linkToPage">Terms of Service</a>
                     & our <a href="{% url 'privacy.policy' %}" class="linkToPage">Privacy Policy</a>.</label>
                 </div>
-
                 <button type="submit" class="btn custom-btn filled w-100">Next</button>
               </form>
-
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-  <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
-  <script src="{% static  'base/js/base.js' %}"></script>
+  <!-- End Work With Us Content -->
+
+  <!-- JavaScript -->
+  <script src="{% static 'jQuery/jquery-3.7.0.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.bundle.js' %}"></script>
+  <script src="{% static 'base/js/base.js' %}"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-
 </body>
-
 </html>
