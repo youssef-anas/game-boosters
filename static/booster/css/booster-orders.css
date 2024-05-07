@@ -152,16 +152,21 @@ input[type="radio"]:checked + label {
 .update-rating-btn {
   width: 100%;
   padding: 7px;
-  border-radius: 48px;
+  border-radius: 32px;
   margin-top: 1rem;
-  color: #FFFFFF80;
+  color: #FFFFFF;
   font-family: var(--heading-font);
   font-size: 1.5rem;
-  background-color: #F26E3E80;
+  background-color: var(--secondary-color);
 }
 .update-rating-btn:hover {
-  color: #FFFFFF80;
-  background-color: #F26E3E80;
+  background-color: var(--alt-secondary-color);
+}
+.update-rating-btn:disabled {
+  color: #FFFFFF80 !important;
+  background-color: #F26E3E80 !important;
+  border-color: #f26e3e00  !important;
+  opacity: 1 !important;
 }
 @media (max-width: 767px) {
   .update-rating-btn   {

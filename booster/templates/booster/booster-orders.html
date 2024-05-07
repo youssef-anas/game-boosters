@@ -249,7 +249,7 @@
                       <span id="userIdText">{{ order.order.order.name }}</span>
                     </div>
   
-                    <form action="{% url 'alert.customer' order_id=order.order.order.id %}" method="POST" class="alert-customer-form">
+                    <form action="{% url 'alert.customer' order_id=order.order.order.id %}" method="POST" class="alert-customer-form no-disabled-form">
                       {% csrf_token %}
                       <button type="submit" class="btn alert-customer-btn">Alert Customer</button>
                     </form>
@@ -756,7 +756,7 @@
                       </div>
 
                       {% if order.percentage < 80 %}
-                        <form action="{% url 'drop.order' order_id=order.order.order.id %}" method="POST" class="drop-order-form" data-id="{{order.order.order.id }}">
+                        <form action="{% url 'drop.order' order_id=order.order.order.id %}" method="POST" class="drop-order-form no-disabled-form" data-id="{{order.order.order.id }}">
                           {% csrf_token %}
                           <button type="submit" class="btn custom-btn filled">Drop Order</button>
                         </form>

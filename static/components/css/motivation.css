@@ -44,7 +44,7 @@
 }
 .motivation .text {
   position: relative;
-  z-index: 100;
+  z-index: 3;
 }
 .motivation .text h1 {
   font-family: var(--heading-font);

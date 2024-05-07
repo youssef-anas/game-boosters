@@ -18,12 +18,12 @@
 <div class="homepage">
   <div class="container">
     <!-- ------------------------- Landing ------------------------- -->
-    <div class="landing row justify-content-xl-between justify-content-center align-items-center">
-      <div class="text text-xl-start text-center col-xl-6 col-12 d-xl-block d-flex justify-content-center align-items-center flex-wrap ">
+    <div class="landing row justify-content-md-between justify-content-center align-items-center">
+      <div class="text text-md-start text-center col-md-6 col-12 d-md-block d-flex justify-content-center align-items-center flex-wrap order-md-0 order-1">
         <h1>REACH YOUR RANK <span>GOALS</span></h1>
         <p>with <span>MadBoost.gg</span> your ally in the eSports arena.</p>
       </div>
-      <div class="image col-xl-6 d-xl-block d-none">
+      <div class="image col-md-6 col-12 order-md-1 order-0">
         <img src="{% static 'gameboosterss/images/Logo.png' %}" class="img-fluid" alt="Landing">
       </div>
     </div>
@@ -200,11 +200,12 @@
       </div>
     </div>
 
-    <!-- ------------------------- Import Feedback Component ------------------------- -->
-    {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
-
+    
     <!-- ------------------------- Import Information Component ------------------------- -->
     {% include 'components/information.html' %}
+
+    <!-- ------------------------- Import Feedback Component ------------------------- -->
+    {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks %}
 
     <!-- ------------------------- Import Motivation ------------------------- -->
     {% include 'components/motivation.html' %}

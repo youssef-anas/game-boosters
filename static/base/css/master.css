@@ -11,9 +11,13 @@
   --alternative-color: #2F271F;
   --background-color: #201914;
   --heading-font: heading-font;
+  --sharp-bold-15: sharp-bold-15;
+  --sharp-semibold-15: sharp-semibold-15;
+
   --sharp-font: sharp-medium-font;
   --normal-sharp-font: normal-sharp-font;
   --sharp-thin-font: sharp-thin-font;
+
   --main-radius: 8px;
   --text-color: #fafafa;
   --section-padding: 100px;
@@ -51,7 +55,15 @@
 }
 @font-face {
   font-family: heading-font;
-  src: url('./../fonts/SharpGrotesk-SemiBold25.otf');
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-SemiBold25.otf');
+}
+@font-face {
+  font-family: sharp-semibold-15;
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-SemiBold15.otf');
+}
+@font-face {
+  font-family: sharp-bold-15;
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Bold15.otf');
 }
 @font-face {
   font-family: sharp-medium-font;
@@ -81,11 +93,13 @@ ul {
   margin: 0 !important;
   padding: 0;
 }
-
+.container {
+  --bs-gutter-x: 3.5rem !important; 
+}
 @media (min-width: 576px) {
   .container {
     max-width: 540px !important;
-    --bs-gutter-x: 0.5rem !important; 
+    --bs-gutter-x: 3rem !important; 
   }
 }
 @media (min-width: 768px) {
@@ -118,7 +132,15 @@ ul {
   position: absolute;
   width: 100%;
   color: white;
-  z-index: 100;
+  z-index: 5;
+  padding: 10px 0;
+  transition: background-color 0.3s ease;
+}
+.nav.fixed {
+  background-color: var(--background-color);
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 .nav .container {
   display: flex;
@@ -288,9 +310,12 @@ ul {
 .footer .info {
   background-color: #201B15;
 }
+.footer .info .footer-text {
+  color: #ffffff4f;
+}
 @media (max-width: 992px) {
   .footer .info .footer-text {
-    color: #FFFFFF4D;
+    color: #ffffff4f;
     text-align: justify;
   }
 }
@@ -306,6 +331,7 @@ ul {
 .footer .contact .links > li > a {
   height: 72px;
   padding-right: 30px;
+  color: #ffffff80 !important;
 }
 .footer .contact .links, .footer .contact .social  {
   display: flex;
@@ -335,10 +361,14 @@ ul {
 }
 
 .footer .contact .copyright {
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 300;
+  color: #ffffff80 !important;
 }
 @media (max-width: 767px) {
+  .footer .contact .copyright {
+    font-size: 12px;
+  }
   .footer .contact .links {
     flex-direction: column;
     width: 100%;
@@ -355,7 +385,7 @@ ul {
     padding: 2rem 0;
   }
   .footer .contact .social > li > a {
-    margin-right: 4px !important;
+    margin-right: 10px !important;
   }
 }
 /* End Footer */

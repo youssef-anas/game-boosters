@@ -126,5 +126,5 @@ class WorkWithUsLevel4Form(forms.ModelForm):
         model = WorkWithUs
         fields = ['about_you', 'country', 'agree_privacy']
         widgets = {
-
+            'about_you': forms.Textarea(attrs={'rows': 8, 'placeholder': 'About you', 'class': 'form-control custom-input'}),
         }

@@ -1,7 +1,6 @@
 /*=============== SWIPER JS ===============*/
 let gamesSwiperCards = new Swiper('.games-swiper', {
-  // loop: true,
-  spaceBetween: 32,
+  loop: true,
   grabCursor: true,
   slidesPerView: 1,
 
@@ -12,16 +11,16 @@ let gamesSwiperCards = new Swiper('.games-swiper', {
 
   breakpoints: {
     200: {
-      slidesPerView: 1.3,
+      slidesPerView: 3,
+      spaceBetween: 12,
     },
-    450: {
-      slidesPerView: 2.3,
-    },
-    810: {
-      slidesPerView: 4,
+    800: {
+      slidesPerView: 6,
+      spaceBetween: 24,
     },
     1200: {
       slidesPerView: 6,
+      spaceBetween: 32,
     },
   },
 
