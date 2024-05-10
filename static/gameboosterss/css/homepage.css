@@ -150,12 +150,12 @@
   color: #ffffff;
   font-family: var(--sharp-semibold-15);
 }
-@media (max-width: 991px) {
+/* @media (max-width: 991px) {
   .order .information .booster .name p,
   .order .information .reached-info-container p {
     font-size: 10px;
   }
-}
+} */
 #duo-or-solo {
   margin-left: 18px;
   padding: 4px 8px 6px;

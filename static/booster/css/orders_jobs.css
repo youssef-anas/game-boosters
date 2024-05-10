@@ -105,7 +105,7 @@ label {
   content: counter(section) ". ";
 }
 .roles .understand-btn {
-  margin-top: 4.5rem;
+  margin-top: 1.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -135,6 +135,19 @@ label {
   padding: 0 8px;
   border-radius: var(--main-radius);
   margin-right: 0.5rem;
+}
+@media (max-width: 992px) {
+  .checkout-info > p {
+    font-size: 12px;
+  }
+  .checkout-info > p > span {
+    border-radius: 4px;
+  }
+}
+@media (max-width: 767px) {
+  .checkout-info {
+    padding: 1rem;
+  }
 }
 #turbo-boost {
   background: #FFC43980;
@@ -182,8 +195,8 @@ label {
   position: relative;
 }
 .order {
-  width: 100%;
-  overflow-x: auto;
+  /* width: 100%;
+  overflow-x: auto; */
 }
 .order-container .champions {
   width: fit-content;
@@ -220,7 +233,7 @@ label {
     justify-content: space-between;
   }
   .table-header {
-    width: 1384px;
+    /* width: 1384px; */
     background-color: var(--main-color);
     border-bottom: 0.2px solid #aca1a140;
     box-shadow: 0px 0px 7px 0px #00000040;
@@ -235,9 +248,9 @@ label {
     background: #cc9d2e !important;
   }
   .table-row {
-    height: 224px;
-    width: 1384px;
-    overflow-x: auto;
+    /* height: 224px;
+    width: 1384px; */
+    /* overflow-x: auto; */
     background: #362c29;
     border-bottom-left-radius: calc(var(--main-radius) * 2);
     border-bottom-right-radius: calc(var(--main-radius) * 2);
@@ -256,34 +269,71 @@ label {
     display: flex;
     align-items: center;
   }
+  .table-row .col-7 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .col-hidden {
+    display: none;
+  }
+
+  @media all and (max-width: 992px) {
+    .table-row .col, .table-row .col p, .table-row div, .table-row a {
+      font-size: 12px;
+    }
+  }
   
-  /* @media all and (max-width: 767px) {
+  @media all and (max-width: 767px) {
+    .table-row .col, .table-row .col p, .table-row div, .table-row a {
+      font-size: 0.9rem !important;
+    }
     .table-header {
       display: none;
     }
-    .table-row{
-      
+    .table-row {
+      display: flex !important;
+      flex-wrap: wrap;
+      border-radius: 8px;
+      padding: 23px 21px;
     }
     li {
       display: block;
-    }
-    .col {
-      flex-basis: 100%;
     }
     .col-6, .col-7 {
       display: inline-block;
     }
     .col {
-      display: flex;
-      padding: 10px 0;
+      display: flex !important;
+      flex-basis: 100% !important;
+      justify-content: space-between;
+    }
+    .col-2 .select-champion, .col-3 .stream-games {
+      display: none;
+    }
+    .col:not(.col-7):not(.col-hidden) {
+      padding: 0 0 1rem !important;
       &:before {
-        color: #6C7A89;
-        padding-right: 10px;
+        color: #ffffff80;
         content: attr(data-label);
         flex-basis: 50%;
-        text-align: right;
+        font-size: 0.9rem !important;
       }
     }
-  } */
+    .col-hidden {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 0 1rem !important;
+    }
+    .col-hidden .extra {
+      font-size: 11px !important;
+    }
+    .col-7 {
+      padding: 0 !important;
+    }
+    .col-7 > div, .col-7 > div > a {
+      width: 100%;
+    }
+  }
 }
 /* End Incoming Orders */

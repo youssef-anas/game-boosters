@@ -55,21 +55,59 @@
 .booster-info {
   border-radius: 24px;
   background: linear-gradient(to bottom, #332a25 30%, var(--main-color));
+  padding-left: 38px;
+  padding-right: 38px;
 }
 .image .profile-image {
   width: 312px;
   height: 312px;
 }
-@media (max-width: 767px) {
+.booster-username {
+  font-size: 40px;
+}
+@media (max-width: 991px) {
+  .booster-info {
+    padding-left: 26px;
+    padding-right: 26px;
+  }
   .profile-image {
-    width: 200px;
-    height: 200px;
+    width: 128px;
+    height: 128px;
+  }
+  .booster-username {
+    font-size: 32px;
+  }
+  .booster-info p {
+    font-size: 12px;
+  }
+}
+@media (max-width: 767px) {
+  .booster-info {
+    padding-left: 17px;
+    padding-right: 17px;
+  }
+  .profile-image {
+    width: 80px;
+    height: 80px;
+  }
+  .booster-username {
+    font-size: 24px;
   }
 }
 .banner-container {
   width: 450px;
   height: 110px;
   position: relative;
+}
+@media (max-width: 991px) {
+  .banner-container {
+    width: 265px;
+  }
+}
+@media (max-width: 767px) {
+  .banner-container {
+    width: 100%;
+  }
 }
 .game-link {
   display: inline-block;

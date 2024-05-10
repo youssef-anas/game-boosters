@@ -91,11 +91,11 @@
       <h3>Account Management</h3>
       <ul class="links">
         <li><a href="#profile" onclick="highlightLink(this)" class="active"><i class="fa-solid fa-circle-user me-3"></i>
-            Profile</a></li>
+          Profile</a></li>
         <li><a href="#portfolio" onclick="highlightLink(this)"><i class="fa-solid fa-address-card me-3"></i>
-            Portfolio</a></li>
+          Portfolio</a></li>
         <li><a href="#withdrawal-info" onclick="highlightLink(this)"><img src="{% static 'base/images/wallet.png' %}"
-              alt="" width="19" height="19" class="me-3"> Withdrawal Info</a></li>
+          alt="" width="19" height="19" class="me-3"> Withdrawal Info</a></li>
         <li><a href="#password" onclick="highlightLink(this)"><i class="fa-solid fa-key me-3"></i> Password</a></li>
       </ul>
     </div>
@@ -304,7 +304,7 @@
 
       <div id="portfolio" class="portfolio oneside mt-5">
         <p class="fs-3">Portfolio</p>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" class="no-disabled-form">
           {% csrf_token %}
           <div class="form-group">
             <input type="file" name="images" id="portfolio-images" multiple>
