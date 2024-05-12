@@ -46,8 +46,10 @@ from django.views.generic import View
 
 @login_required
 def booster_setting(request):
+    booster_instance = get_object_or_404(Booster, booster=request.user )
+    paypal_email = booster_instance.paypal_account
     profile_form = ProfileEditForm(instance=request.user)
-    paypal_form = PayPalEmailEditForm(user=request.user)
+    paypal_form = PayPalEmailEditForm(user=request.user, initial={'paypal_account': paypal_email})
     password_form = PasswordEditForm(user=request.user)
 
     if request.method == 'POST':
