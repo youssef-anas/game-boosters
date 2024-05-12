@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
 from customer.models import Champion
+import random
 
 def create_order(invoice, payer_id, customer, status='New', name = None, extra = 1):
     # try :
@@ -299,6 +300,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         content_type = ContentType.objects.get_for_model(order)
         baseOrder.content_type = content_type
         baseOrder.object_id = order.pk
+        baseOrder.captcha_id =  random.randint(1, 2000)
 
         if champions_list :
             order.champions.add(*champions_list)

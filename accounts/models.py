@@ -161,6 +161,14 @@ class BoosterPercent(models.Model):
     booster_percent3 = models.IntegerField(default=27)
     booster_percent4 = models.IntegerField(default=30)
     booster_percent5 = models.IntegerField(default=35)
+
+
+class Captcha(models.Model):
+    image = models.ImageField()
+    value = models.CharField()
+
+    def __str__(self) -> str:
+        return self.value    
         
 # Base Order
 class BaseOrder(models.Model):
@@ -215,9 +223,9 @@ class BaseOrder(models.Model):
     is_drop = models.BooleanField(default=False, blank=True)
     is_extended = models.BooleanField(default=False, blank=True)
 
-    customer_gamename = models.CharField(max_length=300, blank=True, default='')
+    customer_gamename = models.CharField(max_length=300, default='')
     customer_password = models.CharField(max_length=300, blank=True, default='')
-    customer_username = models.CharField(max_length=300, blank=True, default='')
+    customer_username = models.CharField(max_length=300, default='')
     customer_server = models.CharField(max_length=300, blank=True, null=True)
 
     data_correct = models.BooleanField(default=False, blank=True)
@@ -234,6 +242,8 @@ class BaseOrder(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING, null= True)
     object_id = models.PositiveIntegerField(null =True)
     related_order = GenericForeignKey('content_type', 'object_id')
+
+    captcha = models.ForeignKey(Captcha, on_delete=models.SET_NULL, null=True, related_name='order')
 
     # Pause
     pause = models.BooleanField(default=False, blank=True)

@@ -43,11 +43,15 @@ class Language(models.Model):
     language = models.CharField(max_length=120, unique=True)
     def __str__(self):
         return self.language
+    
+def profile_image_upload_path(instance, filename):
+    # Construct the upload path dynamically based on the Booster's primary key
+    return f'booster/images/{instance.booster.pk}/{filename}'
 
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
     # profile_image_url = models.URLField(null=True, blank=True, max_length=1000)
-    profile_image = models.ImageField(upload_to='booster/',blank= True,null=True,)
+    profile_image = models.ImageField(upload_to=profile_image_upload_path, blank=True, null=True)
     about_you = models.TextField(max_length=1000,null=True, blank=True)
     can_choose_me = models.BooleanField(default=False ,blank=True)
     choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False, max_length=200)
@@ -100,7 +104,10 @@ class Booster(models.Model):
     is_csgo2_player = models.BooleanField(default=False)
     achived_rank_csgo2 = models.ForeignKey(Csgo2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
        
-    
+    def profile_image_upload_path(instance, filename):
+        # Construct the upload path dynamically based on the Booster's primary key
+        return f'booster/images/{instance.booster.pk}/{filename}'
+
     def __str__(self):
         return f'{self.booster.username}'
     
@@ -126,6 +133,7 @@ class Booster(models.Model):
 class BoosterPortfolio(models.Model):
     booster         = models.ForeignKey(Booster, related_name='booster_portfolio', on_delete=models.CASCADE)
     image           = models.ImageField(upload_to='booster/images')
+    approved        = models.BooleanField(default=False)
 
     def get_image_url(self):
         return self.image.url

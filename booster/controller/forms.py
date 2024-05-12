@@ -211,7 +211,6 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
 
         # Create a dictionary with the fields related to the Booster model
         booster_data = {
-            'profile_image': self.cleaned_data.get('profile_image'),
             'about_you': self.cleaned_data.get('about_you'),
             'achived_rank_wr': self.cleaned_data.get('achived_rank_wr'),
             'achived_rank_valo': self.cleaned_data.get('achived_rank_valo'),
