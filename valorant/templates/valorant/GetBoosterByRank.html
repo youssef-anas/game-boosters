@@ -28,7 +28,7 @@
     <span class="close" onclick="closeFormChampion()"><i class="fa-solid fa-xmark"></i></span>
     <h3 class="p-2 text-center my-4">Select Your Roles & Agents</h3>
 
-    <div class="container d-flex justify-content-between">
+    <div class="container d-flex flex-md-row flex-column justify-content-between">
       <p class="fw-bolder">Select Your Agents</p>
       <div>
         <div class="search">
@@ -71,27 +71,33 @@
         <div class="boosters">
           {% for booster in boosters %}
           <div id="{{booster.booster.booster.pk}}" class="booster-card m-1 mb-3 mx-auto rounded" onclick="SetBooster(this)">
-            <div class="p-1 row row-cols-5 align-items-center">
-              <div class="col d-flex align-items-center">
+            <div class="p-1 row row-cols-lg-5 row-cols-md-3 row-cols-1 justify-content-lg-start justify-content-center align-items-center">
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                 <img src="{{booster.get_image_url}}" alt="{{booster.username}}" width="48" height="48" class="rounded">
                 <p class="ms-4 mb-0 booster-username">{{booster.username}}</p>
               </div>
-              <div class="col d-flex align-items-center">
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                 <img src="{{booster.booster.achived_rank_valo.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
                 <p class="ms-4 mb-0">{{booster.booster.achived_rank_valo.rank_name}}</p>
               </div>
-              <p class="col mb-0">
-                {% for star in "*****" %}
-                  {% if forloop.counter <= booster.get_average_rating %}
-                    <i class="fa-solid fa-star" style="color: #FFD700;"></i>
-                  {% else %}
-                    <i class="fa-regular fa-star" style="color: #808080;"></i>
-                  {% endif %}
-                {% endfor %}
-                <span class="ms-1"></span>{{booster.get_average_rating}}/5
-              </p>
-              <p class="col mb-0">{{booster.order_count}} Orders</p>
-              <a class="col mb-0 view-profile" href="{% url 'booster.details' booster_id=booster.booster.booster.pk %}">View Profile</a>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                <p class="mb-0">
+                  {% for star in "*****" %}
+                    {% if forloop.counter <= booster.get_average_rating %}
+                      <i class="fa-solid fa-star" style="color: #FFD700;"></i>
+                    {% else %}
+                      <i class="fa-regular fa-star" style="color: #808080;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="ms-1"></span>{{booster.get_average_rating}}/5
+                </p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                <p class="mb-0">{{booster.order_count}} Orders</p>
+              </div>
+              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
+                <a class="mb-0 view-profile" href="{% url 'booster.details' booster_id=booster.booster.booster.pk %}">View Profile</a>
+              </div>
             </div>
           </div>  
           {% endfor %} 

@@ -18,6 +18,10 @@ $(document).ready(function () {
   $toggleMenu.click(function () {
     $links.toggleClass('shown')
   })
+  $closeIcon = $('.links .close-icon')
+  $closeIcon.click(function () {
+    $links.removeClass('shown')
+  })
 
   // Function to enable/disable the submit button for a specific form
   function toggleSubmitButton(form, disable) {

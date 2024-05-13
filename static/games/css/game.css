@@ -410,7 +410,7 @@ select::-ms-expand {
   justify-content: start;
   align-items: flex-start; /* Change align-items to flex-start */
   flex-wrap: wrap;
-  gap: 50px;
+  gap: 15px;
   max-height: 290px;
   overflow-y: auto;
   position: relative; /* Add relative positioning */
@@ -441,6 +441,9 @@ input[type="checkbox"]:checked + .icon-as-checkbox img {
   #selectChampionButton {
     width: 100% !important;
   }
+  .popup-content .container {
+    --bs-gutter-x: 1.5rem !important;
+  }
 }
 /* End Select Champion */
 
@@ -455,7 +458,7 @@ input[type="checkbox"]:checked + .icon-as-checkbox img {
 .boosters-container .boosters {
   overflow: auto;
   height: 100%;
-  padding-right: 30px;
+  /* padding-right: 30px; */
 }
 .boosters .booster-card {
   transition: background-color 0.3s ease; 

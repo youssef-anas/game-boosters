@@ -261,47 +261,82 @@ ul {
     padding: 0 12px;
   }
 }
+.nav .links .small-header {
+  display: none;
+}
 @media (max-width: 767px) {
-  .nav .links {
-    display: none
+  .nav {
+    padding: 0 !important;
   }
-  .links.shown {
+  .nav .links .logo {
+    width: 114px;
+  }
+  .nav .links.shown .small-header {
+    display: block;
+    padding-bottom: 40px !important;
+  }
+  .nav .links .close-icon {
+    border-radius: var(--main-radius);
+    background-color: var(--main-color);
+    padding: 8px;
+    width: 56px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .nav .links .close-icon i {
+    font-size: 32px;
+  }
+  .nav .links {
     display: flex !important;
     flex-direction: column;
     width: 100%;
+    max-height: 100vh;
+    overflow-y: auto;
     position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: var(--main-color);
+    top: 0;
+    right: -100%;
+    background-color: #362C29;
+    transition: var(--main-transition);
+    z-index: 1100;
   }
-  .links.shown > li {
+  .links.shown {
+    padding: 12px 24px 240px;
+    right: 0;
+  }
+  .links > li {
     width: 100%;
   }
-  .links.shown > li > .main-links,
-  .links.shown > li > .user-links {
+  .links > li > .main-links,
+  .links > li > .user-links {
     flex-direction: column;
     justify-content: start !important;
     width: 100%;
   }
-  .links.shown > li > .main-links > li,
-  .links.shown > li > .user-links > li {
+  .links > li > .main-links > li,
+  .links > li > .user-links > li {
     width: 100%;
   }
-  .links.shown > li > .main-links > li > a,
-  .links.shown > li > .user-links > li > a {
+  .links > li > .main-links > li > a,
+  .links > li > .user-links > li > a {
     width: 100%;
-    font-size: 14px;
+    font-size: 16px !important;
     height: auto;
+    margin-bottom: 24px !important;
+  }
+  .links > li > .main-links > li > a {
+    padding: 0 !important;
+    padding-bottom: 24px !important;
     justify-content: flex-start !important;
-    padding:  15px !important;
-    padding-left: 20px !important;
+    position: relative;
+  }
+  .links > li > .main-links > li:not(:last-of-type) > a {
+    border-bottom: 0.2px solid #1E1814;
   }
   .links > li > .user-links > li > a {
-    background-color: initial;
-    border: initial;
-    color: white;
-    border-radius: initial;
-    font-family: main-font !important;
+    width: 100% !important;
+    margin: 0;
   }
 }
 /* End Nav */

@@ -47,22 +47,22 @@
                 <p class="ms-4 mb-0">{{booster.booster.achived_rank_valo.rank_name}}</p>
               </div>
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                  <p class="mb-0">
-                    {% for star in "*****" %}
-                      {% if forloop.counter <= booster.get_average_rating %}
-                        <i class="fa-solid fa-star" style="color: #FFD700;"></i>
-                      {% else %}
-                        <i class="fa-regular fa-star" style="color: #808080;"></i>
-                      {% endif %}
-                    {% endfor %}
-                    <span class="ms-1"></span>{{booster.get_average_rating}}/5
-                  </p>
+                <p class="mb-0">
+                  {% for star in "*****" %}
+                    {% if forloop.counter <= booster.get_average_rating %}
+                      <i class="fa-solid fa-star" style="color: #FFD700;"></i>
+                    {% else %}
+                      <i class="fa-regular fa-star" style="color: #808080;"></i>
+                    {% endif %}
+                  {% endfor %}
+                  <span class="ms-1"></span>{{booster.get_average_rating}}/5
+                </p>
               </div>
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                  <p class="mb-0">{{booster.order_count}} Orders</p>
+                <p class="mb-0">{{booster.order_count}} Orders</p>
               </div>
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                  <a class="mb-0 view-profile" href="{% url 'booster.details' booster_id=booster.booster.booster.pk %}">View Profile</a>
+                <a class="mb-0 view-profile" href="{% url 'booster.details' booster_id=booster.booster.booster.pk %}">View Profile</a>
               </div>
             </div>
           </div>  
