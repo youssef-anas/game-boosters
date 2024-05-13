@@ -10,6 +10,8 @@ from datetime import date, timedelta
 BaseUser = get_user_model()
 from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
+from accounts.models import BaseOrder
+
 
 class Registration(UserCreationForm):
     class Meta:
@@ -258,3 +260,14 @@ class ProfileEditForm(UserChangeForm):
 class CustomOrderForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Enter email'}))
     order = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 8, 'placeholder': 'For example: I want my account to be boosted from Iron IV to Challenger in League in Euw server.'}))
+
+
+class BaseOrderForm(forms.ModelForm):
+    class Meta:
+        model = BaseOrder
+        fields = ['customer_gamename', 'customer_password', 'customer_username']
+        widgets = {
+            'customer_gamename': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Enter In Game Name'}),
+            'customer_password': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Enter Password', 'required': 'required'}),
+            'customer_username': forms.TextInput(attrs={'class': 'form-control custom-input', 'placeholder': 'Enter Username'}),
+        }

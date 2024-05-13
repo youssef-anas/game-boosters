@@ -205,10 +205,13 @@ def get_boosters(id: int) -> List[Booster]:
 
 #--------------------------------------------------------------------------
 def live_orders():
-    orders = BaseOrder.objects.filter(booster=None).order_by('-created_at')
+    orders = BaseOrder.objects.filter(booster=None).order_by('-id')
     all_orders_dict = []
     for order in orders:
-
+        if order.captcha:
+           captcha=order.captcha.image.name
+        else:
+            captcha=None
         if order.game.pk == 1 or order.game.pk == 2 or order.game.pk == 4:
             champions_queryset = order.related_order.champions.all()
             champions = []
@@ -240,7 +243,7 @@ def live_orders():
             'turbo_boost': order.turbo_boost,
             'streaming': order.streaming,
             'select_champion': order.related_order.select_champion if hasattr(order, 'related_order') and hasattr(order.related_order, 'select_champion') else 0,
-
+            'captcha': captcha,
             'champions': champions,
             'url':f'{order.game.link}/{order.pk}/',
         }
@@ -334,11 +337,11 @@ def upload_image_to_firebase(image_data, image_name):
     if image_data is None:
         return None
 
-    # if not isinstance(image_data, InMemoryUploadedFile):
-    #     raise TypeError("Expected an InMemoryUploadedFile object")
-
     # Read the contents of the image file as bytes
     image_file = image_data.file.read()
+
+    # Reset the file pointer to the beginning of the file data
+    image_data.file.seek(0)
 
     # Generate a unique ID for the image filename
     unique_id = str(uuid.uuid4())
@@ -355,6 +358,7 @@ def upload_image_to_firebase(image_data, image_name):
     print(blob.public_url)
     url = get_half_img_url(blob.public_url)
     return url
+
 
 
 def get_booster_game_ids(user):

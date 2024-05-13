@@ -18,7 +18,6 @@ from accounts.models import BaseOrder, Transaction, BoosterPercent, BaseUser
 from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from rest_framework.pagination import PageNumberPagination
-from booster.controller.permissions import IsBooster
 from customer.controllers.order_creator import create_order
 from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
@@ -26,6 +25,9 @@ from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsLevel4Form, WorkWithUsForm
 from gameBoosterss.utils import upload_image_to_firebase, get_booster_game_ids
 import uuid
+from gameBoosterss.permissions import IsBooster
+from django.views.generic import View
+
 
 # def register_booster_view(request):
 #     form = Registeration_Booster()
@@ -44,29 +46,31 @@ import uuid
 
 @login_required
 def booster_setting(request):
+    booster_instance = get_object_or_404(Booster, booster=request.user )
+    paypal_email = booster_instance.paypal_account
     profile_form = ProfileEditForm(instance=request.user)
-    paypal_form = PayPalEmailEditForm(user=request.user)
+    paypal_form = PayPalEmailEditForm(user=request.user, initial={'paypal_account': paypal_email})
     password_form = PasswordEditForm(user=request.user)
 
     if request.method == 'POST':
         if 'profile_submit' in request.POST:
             profile_form = ProfileEditForm(request.POST, request.FILES, instance=request.user)
             if profile_form.is_valid():
-                profile_form.save(commit=True)
                 if request.FILES:
-                    img= request.FILES['profile_image']
-                    try:
-                        ext = img.name.split('.')[-1]
-                        name = f"booster/images/{request.user.id}/{str(uuid.uuid4())}.{ext}"
-                        url = upload_image_to_firebase(img, name)
-                    except Exception as e:
-                        return HttpResponseBadRequest({'success': False, 'message': str(e)})
+                    img= request.FILES.get('profile_image', None)
+                    print(img)
+                    ext = img.name.split('.')[-1]
+                    img.file.seek(0)
+
+                    name = f"booster/images/{request.user.id}/{str(uuid.uuid4())}.{ext}"
+                    url = upload_image_to_firebase(img, name)
+
                     booster = Booster.objects.get(booster = request.user)
                     booster.profile_image = url
                     print(booster.profile_image)
                     booster.save()
                     booster.booster.save()
-                    profile_form.save()
+                profile_form.save()
                 messages.success(request, 'Profile updated successfully.')
                 return redirect('booster.setting')
             
@@ -120,23 +124,24 @@ def orders_jobs(request):
     }
     return render(request,'booster/orders_jobs.html', context)
 
-@login_required
-def calm_order(request, game_name, id):
-    order = get_object_or_404(BaseOrder, id=id)
-    print(request.user)
-    ids = get_booster_game_ids(request.user)
-    if order.game.id in ids :
-        try:
-            order.booster = request.user
-            order.save()
-        except Exception as e:
-            print(f"Error updating order: {e}")
-            return HttpResponseBadRequest(f"Error updating order{e}")
-    else:
-        messages.error(request, "You aren't play this game!")
-        return redirect(reverse_lazy('orders.jobs'))
-    refresh_order_page()
-    return redirect(reverse_lazy('booster.orders'))
+class ClaimOrderView(View):
+    permission_classes = [IsBooster]
+    def post(self, request, game_name, id):
+        order = get_object_or_404(BaseOrder, id=id)
+        ids = get_booster_game_ids(request.user)
+        captcha = request.POST.get('captcha_input', None)
+        if order.game.id in ids and captcha == order.captcha.value:
+            try:
+                order.booster = request.user
+                order.save()
+            except Exception as e:
+                print(f"Error updating order: {e}")
+                return HttpResponseBadRequest(f"Error updating order{e}")
+        else:
+            messages.error(request, "You aren't playing this game!")
+            return redirect(reverse_lazy('orders.jobs'))
+        refresh_order_page()
+        return redirect(reverse_lazy('booster.orders'))
 
 # All Boosters
 def boosters(request):

@@ -6,7 +6,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from accounts.models import BaseUser, BaseOrder, Wallet, Transaction, BoosterPercent, TokenForPay, Tip_data, PromoCode
 from chat.models import  Room, Message
+from accounts.models import Captcha
 
+admin.site.register(Captcha)
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
     list_display = ('username', 'email', 'is_staff','is_active','is_booster','is_customer','is_admin')
@@ -63,7 +65,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
         ('Admin Info', {'fields': ('name','details','finish_image','approved')}),
         ('Order Info', {'fields': ('customer','booster','is_done')}),
         ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
-        ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code')}),
+        ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
     )
 
 

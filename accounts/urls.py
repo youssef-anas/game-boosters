@@ -16,4 +16,5 @@ urlpatterns = [
     path('add/images/', list_blobs, name='.change'),
     path('delete/images/', delete_public_images, name='.change'),
     path('message/', test_email_view, name='.change'),
+    path('img/', generate_captcha_image, name='generate_captcha_image'),
 ]

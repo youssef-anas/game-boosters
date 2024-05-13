@@ -74,7 +74,7 @@ def payment_sucess_view(request, token):
     Room.create_room_with_booster(request.user, booster, order.order.name)
     refresh_order_page()
     # async_task(update_database_task, order.order.id)
-    return redirect(reverse('customer.orders.details', kwargs={'order_name': order.order.name}))
+    return redirect(reverse('customer.filldata', kwargs={'order_name': order.order.name}))
     
 
 def customer_orders(request):
@@ -150,7 +150,7 @@ def customer_side(request, order_name):
             template_name = 'customer/customer_side.html'
             return render(request, template_name, context)
         return  HttpResponse("error on creating chat")
-    messages.error(request, "This order dosent belong to you, dont try to cheat (:")
+    messages.error(request, "This order dosent belong to you (:")
     return  redirect(reverse('homepage.index'))
 
 
@@ -318,3 +318,39 @@ def custom_order(request, game_id):
         'form': form,
     }
     return render(request, 'customer/custom-order.html', context)
+
+
+from django.views.generic import FormView
+from django.urls import reverse
+from .forms import BaseOrderForm
+from accounts.models import BaseOrder
+
+class BaseOrderFormView(FormView):
+    template_name = 'customer/set_data.html'
+    form_class = BaseOrderForm
+
+    def get_success_url(self):
+        return reverse('customer.orders.details', kwargs={'order_name': self.kwargs['order_name']})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        order_name = self.kwargs.get('order_name')
+        if order_name:
+            order = BaseOrder.objects.filter(name=order_name).order_by('id').last()
+            kwargs['instance'] = order
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+        
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_name = self.kwargs.get('order_name')
+        if order_name:
+            order = BaseOrder.objects.filter(name=order_name).order_by('id').last()
+            context['order'] = order
+        return context

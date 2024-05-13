@@ -312,3 +312,60 @@ def test_email_view(request):
         return HttpResponse('Email sent successfully!')
     except Exception as e:
         return HttpResponse('An error occurred: {}'.format(str(e)))
+
+
+from django.http import HttpResponse
+from PIL import Image, ImageDraw, ImageFont
+import random
+import io, string, os
+from django.core.files.base import ContentFile
+from accounts.models import Captcha
+
+def generate_random_value():
+    uppercase_letters = string.ascii_uppercase
+    lowercase_letters = string.ascii_lowercase
+    digits = string.digits
+    
+    # Generate 3 random uppercase letters
+    uppercase_chars = ''.join(random.choices(uppercase_letters, k=2))
+    
+    # Generate 1 random lowercase letter
+    lowercase_char = random.choice(lowercase_letters)
+    
+    # Generate 1 random digit
+    digit = random.choice(digits)
+    
+    # Combine and shuffle
+    value = uppercase_chars + lowercase_char + digit
+    value_list = list(value)
+    random.shuffle(value_list)
+    
+    return ''.join(value_list)
+
+def generate_captcha_image(request):
+    # static_folder = "static/captcha_images/"
+    # os.makedirs(static_folder, exist_ok=True)
+
+    # for _ in range(1000):
+    #     value = generate_random_value()
+
+    #     # Generate the image
+    #     width, height = 200, 100
+    #     image = Image.new("RGB", (width, height), color=(255, 255, 255))
+    #     draw = ImageDraw.Draw(image)
+
+    #     # Add text to the image
+    #     font_size = 30
+    #     font = ImageFont.truetype("arial.ttf", font_size)
+    #     text_bbox = draw.textbbox((0, 0), value, font=font)
+    #     text_position = ((width - text_bbox[2]) // 2, (height - text_bbox[3]) // 2)
+    #     draw.text(text_position, value, fill="black", font=font)
+
+    #     # Save image to static folder
+    #     image_path = os.path.join(static_folder, f"{value}.png")
+    #     image.save(image_path)
+
+    #     # Save image path to model
+    #     Captcha.objects.create(value=value, image=image_path)
+
+    return HttpResponse("Images generated and saved successfully.")

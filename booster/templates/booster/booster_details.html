@@ -268,9 +268,11 @@
           {% if booster.booster.booster_portfolio %}
           <div class="swiper-wrapper">
             {% for portfolio in booster.booster.booster_portfolio.all %}
+            {% if portfolio.approved %}
             <div class="swiper-slide image">
               <img src="{{portfolio.get_image_url}}" alt="" class="img-fluid">
             </div>
+            {% endif %}
             {% endfor %}
           </div>
 
