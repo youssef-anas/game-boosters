@@ -82,7 +82,7 @@ html {
 }
 body {
   font-family: main-font;
-  background-color: var(--background-color);
+  background-color: #1E1814;
   color: #fff;
 }
 a {
@@ -296,7 +296,7 @@ ul {
     overflow-y: auto;
     position: absolute;
     top: 0;
-    right: -100%;
+    right: -1000%;
     background-color: #362C29;
     transition: var(--main-transition);
     z-index: 1100;

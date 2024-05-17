@@ -240,17 +240,17 @@
                 ${order.champions !== null ?
                 order.select_champion && order.champions.length > 0 ?
                   `
-                        <div class='champions d-flex align-item-center justify-content-center'> 
-                          ${order.champions.map(champion => `
-                            <div class='champion'>
-                              <img src='${champion.image}' alt="${champion.name}" width='48' height='48'>
-                            </div>
-                          `).join('')}
-                          </div>
-                        `
+                    <div class='champions d-flex align-item-center justify-content-center'> 
+                      ${order.champions.map(champion => `
+                        <div class='champion'>
+                          <img src='${champion.image}' alt="${champion.name}" width='48' height='48'>
+                        </div>
+                      `).join('')}
+                    </div>
+                  `
                   : ''
                 : ''
-              }
+                }
                 <ul class="order">
                   <li class="table-header ${order.turbo_boost && "turbo-boost-header"}">
                     <div class="col col-1">Order ID</div>
@@ -267,9 +267,9 @@
                       ${extractOrderFrom(order.details)}
                       <div class="extra select-champion mt-4">
                         ${order.select_champion ?
-                '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-              }
+                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
                         Select Champion
                       </div>
                     </div>
@@ -277,9 +277,9 @@
                       ${extractOrderTo(order.details)}
                       <div class="extra stream-games mt-4 ms-4">
                         ${order.streaming ?
-                '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-              }
+                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
                         Stream Games
                       </div>
                     </div>
@@ -308,17 +308,17 @@
                     <div class="col col-hidden" data-label="claim">
                       <div class="extra select-champion">
                         ${order.select_champion ?
-                '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-              }
+                        '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                        : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
                         Select Champion
                       </div>
 
                       <div class="extra stream-games ms-2">
                         ${order.streaming ?
-                '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-              }
+                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
+                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
+                        }
                         Stream Games
                       </div>
 

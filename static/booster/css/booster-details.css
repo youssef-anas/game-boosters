@@ -1,6 +1,5 @@
 .booster-container {
   position: relative;
-  background-color: var(--background-color);
 }
 /* Start Landing */
 .booster-container .booster-landing {
@@ -8,7 +7,8 @@
   height: 690px;
   background-image: url('./../../games/images/games_bg.jpg');
   background-size: cover;
-  background-position-y: -700px;
+  background-position-y: -277px;
+  background-position-x: center;
   position: relative;
   display: flex;
   justify-content: center;
@@ -17,11 +17,22 @@
 .booster-container .booster-landing::before {
   content: "";
   width: 100%;
-  height: 100%;
+  height: 120%;
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url('./../../games/images/bg_cover.png');
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 91.08%);
+}
+@media (max-width: 1199px) {
+  .booster-container .booster-landing {
+    background-position-y: -167px;
+  }
+}
+@media (max-width: 767px) {
+  .booster-container .booster-landing {
+    background-position-y: -66px;
+    /* background-position-x: -186px; */
+  }
 }
 .booster-landing .heading {
   position: absolute;
@@ -39,18 +50,28 @@
   font-size: 1.5rem;
   font-weight: 300;
 }
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .booster-landing .heading h1 {
-    font-size: 50px;
+    font-size: 40px;
   }
   .booster-landing .heading p {
-    font-size: 1.2rem;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 767px) {
+  .booster-landing .heading p {
+    font-size: 12px;
   }
 }
 /* Start Boosters */
 .booster {
   position: relative;
-  margin-top: -300px; /* Adjust this value as needed */
+  margin-top: -280px; /* Adjust this value as needed */
+}
+@media (max-width: 767px) {
+  .booster {
+    margin-top: -375px;
+  }
 }
 .booster-info {
   border-radius: 24px;
@@ -92,6 +113,14 @@
   }
   .booster-username {
     font-size: 24px;
+  }
+}
+.games-he-play h3 {
+  font-size: 24px !important;
+}
+@media (max-width: 991px) {
+  .games-he-play h3 {
+    font-size: 16px !important;
   }
 }
 .banner-container {
@@ -157,7 +186,7 @@
   transform: translateX(-50%);
 }
 .special-data p.head {
-  font-family: var(--heading-font);
+  font-family: var(--sharp-semibold-15);
   font-size: 1.5rem;
 }
 @media (max-width: 767px) {
@@ -222,18 +251,77 @@ h1 {
 }
 
 /* Start History */
-.history-container {
-  width: 100%;
-  overflow-x: auto;
-}
-.history-table .table-row:not(:last-of-type) {
-  min-height: 170px;
+.history:not(:last-of-type) .table-row {
   border-bottom: 0.5px solid var(--main-color);
 }
-.table-row {
-  width: 1384px;
-}
-.table-row .col {
-  flex-basis: calc(100% / 4);
+.history {
+  li {
+    display: flex;
+    justify-content: space-between;
+  }
+  .table-header {
+    margin-top: 2rem;
+  }
+  .table-header .col {
+    font-size: 24px;
+  }
+  .col {
+    flex-basis: calc(100% / 4);
+  }
+  .table-row .col {
+    padding: 16px 0 40px;
+  }
+  .table-row .col p {
+    font-size: 24px;
+  }
+  .table-row .col img {
+    width: 48px;
+    height: 48px;
+  }
+
+  @media all and (max-width: 1199px) {
+    .table-row .col, .table-row .col p, .table-row div, .table-header .col {
+      font-size: 16px;
+    }
+    .table-row .col img {
+      width: 41px;
+      height: 41px;
+    }
+  }
+  
+  @media all and (max-width: 767px) {
+    .table-row .col, .table-row .col p, .table-row div {
+      font-size: 1rem !important;
+    }
+    .table-header {
+      display: none;
+    }
+    .table-row {
+      display: flex !important;
+      flex-wrap: wrap;
+      padding: 23px 21px;
+    }
+    .table-row .col img {
+      width: 24px !important;
+      height: 24px !important;
+    }
+    li {
+      display: block;
+    }
+    .col {
+      display: flex !important;
+      flex-basis: 100% !important;
+      justify-content: space-between;
+    }
+    .col {
+      padding: 0 0 1rem !important;
+      &:before {
+        color: #ffffff80;
+        content: attr(data-label);
+        flex-basis: 40%;
+        font-size: 0.9rem !important;
+      }
+    }
+  }
 }
 /* End History */
