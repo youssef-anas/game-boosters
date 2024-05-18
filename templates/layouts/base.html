@@ -158,6 +158,10 @@
                       <li>
                         <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
                       </li>
+
+                      <li>
+                        <a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a>
+                      </li>
         
                       <li>
                         <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>

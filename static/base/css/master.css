@@ -13,6 +13,7 @@
   --heading-font: heading-font;
   --sharp-bold-15: sharp-bold-15;
   --sharp-semibold-15: sharp-semibold-15;
+  --sharp-book-15: book-15;
 
   --sharp-font: sharp-medium-font;
   --normal-sharp-font: normal-sharp-font;
@@ -70,6 +71,10 @@
   src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Medium25.otf');
 }
 @font-face {
+  font-family: book-15;
+  src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Book15.otf');
+}
+@font-face {
   font-family: sharp-thin-font;
   src: url('./../fonts/Sharp_Grotesk/SharpGrotesk-Thin20.otf');
 }
@@ -94,7 +99,7 @@ ul {
   padding: 0;
 }
 .container {
-  --bs-gutter-x: 3.5rem !important; 
+  --bs-gutter-x: 28px!important; 
 }
 @media (min-width: 576px) {
   .container {
@@ -253,6 +258,9 @@ ul {
   .nav .links .main-links  > li > a {
     font-size: 14px;
     padding: 0 12px;
+  }
+  .nav a {
+    font-size: 8px !important;
   }
 }
 @media (max-width: 992px) { 

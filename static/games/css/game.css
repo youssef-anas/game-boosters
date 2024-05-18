@@ -47,6 +47,29 @@
   background-image: url('./../images/mobileLegends_bg.jpg');
   background-position-y: -150px;
 }
+@media (max-width: 767px) {
+  .game-landing.valorant, .game-landing.tft, .game-landing.pubg, .game-landing.csgo {
+    background-position-x: -415px !important;
+  }
+  .game-landing.honorOfKings {
+    background-position-x: -330px !important;
+  }
+  .game-landing.wow {
+    background-position-x: -500px !important;
+  }
+  .game-landing.hearthstone {
+    background-position-y: -97px;
+    background-position-x: -500px !important;
+  }
+  .game-landing.lol {
+    background-position-x: -505px !important;
+    background-position-y: 0 !important;
+  }
+  .row > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
 /* Start Diff Games */
 
 /* Start Base Design For Form Element */
@@ -126,21 +149,27 @@ select::-ms-expand {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-position-x: center;
 }
 .game-container .game-landing::before {
   content: "";
   width: 100%;
-  height: 100%;
+  height: 120%;
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url('./../images/bg_cover.png');
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
 }
 .game-landing .heading {
   position: absolute;
   top: 30%;
   text-align: center;
   color: white;
+}
+@media (max-width: 767px) {
+  .game-landing .heading {
+    top: 25%;
+  }
 }
 .game-landing .heading h1 {
   font-weight: bolder;

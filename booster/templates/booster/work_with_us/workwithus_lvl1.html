@@ -67,7 +67,7 @@
 
   <body>
    <!-- Start Header -->
-  <div class="nav" id="nav">
+   <div class="nav" id="nav">
     <div class="container">
       <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
 
@@ -80,7 +80,19 @@
         <div class="main-nav p-0 text-md-center text-end">
           <i class="fa-solid fa-bars toggle-menu"></i>
           <ul class="links">
-            
+            <li class="small-header">
+              <ul class="d-flex justify-content-between align-items-center">
+                <li class="logo-icon">
+                  <a href="{% url 'homepage.index' %}" class="logo">
+                    <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                  </a>
+                </li>
+
+                <li class="close-icon" id="close-icon">
+                  <i class="fa-solid fa-x"></i>
+                </li>
+              </ul>
+            </li>
             {% if not request.user.id %}
               <li class="mx-auto">
                 <ul class="main-links">
@@ -134,16 +146,35 @@
                       <a href="{% url 'orders.jobs' %}">Jobs</a>
                     </li>
 
-                    <li class="links-hidden">
-                      <a href="{% url 'account.logout' %}">Logout</a>
-                    </li>
-
                     <li>
                       <a href="{% url 'booster.history' %}" {% if request.path == '/booster/history/' %}class="active"{% endif %}>
                         <img src="{% static 'base/images/wallet.png' %}" alt="" width="19" height="19" class="me-2"> <span class="me-2 fw-bold"> wallet </span><span style="color: #FFFFFF80" class="fw-bold">{{request.user.wallet.money|floatformat:2}}$</span>
                       </a>
                     </li>
 
+                    <li class="links-hidden">
+                      <a href="{% url 'account.logout' %}">Logout</a>
+                    </li>
+
+                    <!-- <li>
+                      <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
+                    </li>
+      
+                    <li>
+                      <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
+                    </li>
+      
+                    <li>
+                      <a href="" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
+                    </li>
+
+                    <li>
+                      <a href="{% url 'booster.orders' %}" {% if request.path == '/booster/orders/' %}class="active"{% endif %}>My Orders</a>
+                    </li>
+
+                    <li>
+                      <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active"{% endif %}>Work With Us</a>
+                    </li> -->
                   </ul>
                 </li>
 
@@ -164,10 +195,6 @@
                     <li class="links-hidden">
                       <a href="{% url 'customer.setting' %}" >Profile</a>
                     </li>
-                    
-                    <li class="links-hidden">
-                      <a href="{% url 'account.logout' %}">Logout</a>
-                    </li>
 
                     <li>
                       <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
@@ -187,6 +214,11 @@
 
                     <li>
                       <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active"{% endif %}>Work With Us</a>
+                    </li>
+
+                     
+                    <li class="links-hidden">
+                      <a href="{% url 'account.logout' %}">Logout</a>
                     </li>
                   </ul>
                 </li>

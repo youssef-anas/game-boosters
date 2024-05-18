@@ -50,35 +50,50 @@
   <div class="nav" id="nav">
     <div class="container">
       <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
+
         <div class="p-0">
           <a href="{% url 'homepage.index' %}" class="logo">
             <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
           </a>
         </div>
+
         <div class="main-nav p-0 text-md-center text-end">
           <i class="fa-solid fa-bars toggle-menu"></i>
           <ul class="links">
+            <li class="small-header">
+              <ul class="d-flex justify-content-between align-items-center">
+                <li class="logo-icon">
+                  <a href="{% url 'homepage.index' %}" class="logo">
+                    <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
+                  </a>
+                </li>
+
+                <li class="close-icon" id="close-icon">
+                  <i class="fa-solid fa-x"></i>
+                </li>
+              </ul>
+            </li>
             {% if not request.user.id %}
               <li class="mx-auto">
                 <ul class="main-links">
                   <li>
-                    <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active" {% endif %}>Games</a>
+                    <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
+                  </li>
+    
+                  <li>
+                    <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
                   </li>
 
                   <li>
-                    <a href="" {% if request.path == '/store/' %}class="active" {% endif %}>Store</a>
+                    <a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a>
+                  </li>
+    
+                  <li>
+                    <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                   </li>
 
                   <li>
-                    <a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active" {% endif %}>Last orders</a>
-                  </li>
-
-                  <li>
-                    <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active" {% endif %}>Boosters</a>
-                  </li>
-
-                  <li>
-                    <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active" {% endif %}>Work With Us</a>
+                    <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active"{% endif %}>Work With Us</a>
                   </li>
                 </ul>
               </li>
@@ -86,11 +101,11 @@
               <li>
                 <ul class="user-links">
                   <li>
-                    <a href="{% url 'accounts.signup' %}" class="custom-btn header-btn outline me-3" {% if request.path == '/accounts/signup/' %}class="active" {% endif %}>Sign Up</a>
+                    <a href="{% url 'accounts.signup' %}" class="custom-btn header-btn outline me-3" {% if request.path == '/accounts/signup/' %}class="active"{% endif %}>Sign Up</a>
                   </li>
-
+                  
                   <li>
-                    <a href="{% url 'account.login' %}" class="custom-btn header-btn filled" {% if request.path == '/accounts/login/' %}class="active" {% endif %}>Log In</a>
+                    <a href="{% url 'account.login' %}" class="custom-btn header-btn filled" {% if request.path == '/accounts/login/' %}class="active"{% endif %}>Log In</a>
                   </li>
                 </ul>
               </li>
@@ -100,7 +115,7 @@
                 <li class="mx-auto">
                   <ul class="main-links">
                     <li class="links-hidden">
-                      <a href="{% url 'booster.setting' %}">Profile</a>
+                      <a href="{% url 'booster.setting' %}" >Profile</a>
                     </li>
 
                     <li class="links-hidden">
@@ -111,24 +126,40 @@
                       <a href="{% url 'orders.jobs' %}">Jobs</a>
                     </li>
 
+                    <li>
+                      <a href="{% url 'booster.history' %}" {% if request.path == '/booster/history/' %}class="active"{% endif %}>
+                        <img src="{% static 'base/images/wallet.png' %}" alt="" width="19" height="19" class="me-2"> <span class="me-2 fw-bold"> wallet </span><span style="color: #FFFFFF80" class="fw-bold">{{request.user.wallet.money|floatformat:2}}$</span>
+                      </a>
+                    </li>
+
                     <li class="links-hidden">
                       <a href="{% url 'account.logout' %}">Logout</a>
                     </li>
 
+                    <!-- <li>
+                      <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
+                    </li>
+      
                     <li>
-                      <a href="{% url 'booster.history' %}" {% if request.path == '/booster/history/' %}class="active"{% endif %}>
-                        <img src="{% static 'base/images/wallet.png' %}" alt="" width="19" height="19" class="me-2"> <span
-                          class="me-2 fw-bold"> wallet </span><span style="color: #FFFFFF80"
-                          class="fw-bold">{{request.user.wallet.money|floatformat:2}}$</span>
-                      </a>
+                      <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
+                    </li>
+      
+                    <li>
+                      <a href="" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                     </li>
 
+                    <li>
+                      <a href="{% url 'booster.orders' %}" {% if request.path == '/booster/orders/' %}class="active"{% endif %}>My Orders</a>
+                    </li>
+
+                    <li>
+                      <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active"{% endif %}>Work With Us</a>
+                    </li> -->
                   </ul>
                 </li>
 
                 <div class="dropdown custom-dropdown">
-                  <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                  <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {{request.user.first_name}} {{request.user.last_name}}
                   </button>
                   <ul class="dropdown-menu">
@@ -142,23 +173,19 @@
                 <li class="mx-auto">
                   <ul class="main-links">
                     <li class="links-hidden">
-                      <a href="{% url 'customer.setting' %}">Profile</a>
-                    </li>
-
-                    <li class="links-hidden">
-                      <a href="{% url 'account.logout' %}">Logout</a>
+                      <a href="{% url 'customer.setting' %}" >Profile</a>
                     </li>
 
                     <li>
-                      <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active" {% endif %}>Games</a>
+                      <a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a>
                     </li>
-
+      
                     <li>
-                      <a href="" {% if request.path == '/store/' %}class="active" {% endif %}>Store</a>
+                      <a href="" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a>
                     </li>
-
+      
                     <li>
-                      <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active" {% endif %}>Boosters</a>
+                      <a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a>
                     </li>
 
                     <li class="links-hidden">
@@ -168,23 +195,27 @@
                     <li>
                       <a href="{% url 'workwithus' %}" {% if request.path == '/work-with-us/' %}class="active"{% endif %}>Work With Us</a>
                     </li>
+
+                     
+                    <li class="links-hidden">
+                      <a href="{% url 'account.logout' %}">Logout</a>
+                    </li>
                   </ul>
                 </li>
 
                 <div class="order-link me-3">
-                  <a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active" {% endif %}>
+                  <a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active"{% endif %}>
                     <img src="{% static 'base/images/orders.png' %}" class="me-2" width="16" height="16">
                     Orders
                   </a>
                 </div>
 
                 <div class="dropdown custom-dropdown">
-                  <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                  <button class="btn custom-btn filled dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     {{request.user.first_name}} {{request.user.last_name}}
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{% url 'customer.setting' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'customer.setting' %}" >Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'account.logout' %}">Logout</a></li>
                   </ul>
                 </div>
@@ -192,6 +223,7 @@
             {% endif %}
           </ul>
         </div>
+
       </div>
     </div>
   </div>

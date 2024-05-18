@@ -8,26 +8,42 @@
   height: 690px;
   background-image: url('./../../games/images/games_bg.jpg');
   background-size: cover;
-  background-position-y: -700px;
+  background-position-y: -277px;
+  background-position-x: center; 
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+@media (max-width: 1199px) {
+  .orders-container .orders-landing {
+    background-position-y: -167px;
+  }
+}
+@media (max-width: 767px) {
+  .orders-container .orders-landing{
+    background-position-y: -66px;
+  }
+}
 .orders-container .orders-landing::before {
   content: "";
   width: 100%;
-  height: 100%;
+  height: 120%;
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url('./../../games/images/bg_cover.png');
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
 }
 .orders-landing .heading {
   position: absolute;
   top: 30%;
   text-align: center;
   color: white;
+}
+@media (max-width: 767px) {
+  .orders-landing .heading {
+    top: 23%;
+  }
 }
 .orders-landing .heading h1 {
   font-weight: bolder;
@@ -41,10 +57,10 @@
 }
 @media (max-width: 767px) {
   .orders-landing .heading h1 {
-    font-size: 50px;
+    font-size: 31px;
   }
   .orders-landing .heading p {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
 /* Start Orders */
@@ -52,15 +68,19 @@
   position: relative;
   margin-top: -250px;
 }
+@media (max-width: 767px) {
+  .orders {
+    margin-top: -375px;
+  }
+}
 .order {
   background-color: var(--main-color);
-  /* height: 550px; */
   border-radius: 1.5rem;
-  padding: 1.5rem;
+  padding: 24px 15px;
 }
 .order .banner {
   width: 100%;
-  height: 440px;
+  height: 352px;
 }
 .order .banner img {
   border-radius: 24px;
@@ -71,6 +91,9 @@
   border-radius: calc(var(--main-radius) * 2);
   width: 75px !important;
   height: 75px !important;
+}
+.order h2, .order p {
+  font-family: var(--sharp-semibold-15);
 }
 .order .information .booster .name p:first-child,
 .order .information .reached-info-container p:first-child,
@@ -86,12 +109,12 @@
 }
 @media (max-width: 767px) {
   .order .information .booster .name p,
-.order .information .reached-info-container p,
-.order .information .from-container p,
-.order .information .to-container p,
-.from-to p {
-  font-size: 12px;
-}
+  .order .information .reached-info-container p,
+  .order .information .from-container p,
+  .order .information .to-container p,
+  .from-to p {
+    font-size: 12px;
+  }
 }
 #duo-or-solo {
   padding: 4px 8px 6px;

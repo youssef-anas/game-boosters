@@ -16,7 +16,7 @@
 .landing .text h1 span, .landing .text p span {
   color: var(--secondary-color);
 }
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
   .landing .text h1 {
     font-size: 40px;
   }
@@ -100,7 +100,7 @@
   font-size: 24px;
   font-family: var(--sharp-semibold-15);
 }
-@media (max-width: 991px) {
+@media (max-width: 1199px) {
   .games .game .game-logo {
     height: 96px !important;
     border-radius: 8px;
@@ -150,7 +150,7 @@
   color: #ffffff;
   font-family: var(--sharp-semibold-15);
 }
-/* @media (max-width: 991px) {
+/* @media (max-width: 1199px) {
   .order .information .booster .name p,
   .order .information .reached-info-container p {
     font-size: 10px;

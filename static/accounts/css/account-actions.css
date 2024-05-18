@@ -1,20 +1,19 @@
-body {
-  background-color: #1E1814;
+.select2.select2-container.select2-container--default {
+  width: 100% !important;
 }
 @media (max-width: 1199px) {
   .content {
     width: 100%;
-    min-height: 690px;
-    background-position: center;
+    height: 690px;
     position: relative;
     background-repeat: no-repeat;
-    background-size: 150% 700px;
+    background-size: 100% 700px;
     background-position: center -10px;
   }
   .content .overlay {
     width: 100%;
-    min-height: 690px;
-    background-image: url('./../images/bg_cover.png');
+    height: 720px;
+    background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
     padding-top: 8rem;
     padding-bottom: 8rem;
     background-size: 100% 800px;
@@ -22,21 +21,30 @@ body {
   }
 
   .signup-content {
-    background-image: url('./../images/signup.png');
+    background-image: url('./../images/signup.jpg');
   }
   .login-content {
-    background-image: url('./../images/login.png');
+    background-image: url('./../images/login.jpg');
   }
   .reset-password-content {
-    background-image: url('./../images/password-reset.png');
+    background-image: url('./../images/password-reset.jpg');
   }
   .workwithus-content {
-    background-image: url('./../images/workwithus.png');
+    background-image: url('./../images/workwithus.jpg');
   }
 }
 @media (max-width: 767px) {
-  .content {
-    background-size: 250% 700px;
+  .signup-conten {
+    background-size: 100% 800px;
+  }
+  .login-content {
+    background-size: 250% 720px;
+  }
+  .reset-password-content {
+    background-size: 225% 550px;
+  }
+  .workwithus-content {
+    background-size: 150% 660px;
   }
 }
 .left-side .text h1 {
@@ -44,7 +52,7 @@ body {
   font-size: 72px;
 }
 .left-side .text p {
-  font-family: var(--heading-font);
+  font-family: var(--sharp-bold-15);
   font-size: 32px;
   width: 592px;
 }
@@ -66,6 +74,12 @@ body {
   font-family: var(--heading-font);
   margin-bottom: 1.5rem;
   text-align: center;
+  font-size: 48px;
+}
+@media (max-width: 767px) {
+  .right-side .head h1 {
+    font-size: 31px;
+  }
 }
 .progress {
   height: 4px;

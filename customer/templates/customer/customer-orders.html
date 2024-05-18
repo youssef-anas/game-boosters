@@ -39,7 +39,7 @@
       </div>
     </div>
     
-    <div class="row row-cols-xl-2 row-cols-1 justify-content-between align-items-stretch">
+    <div class="row row-cols-md-2 row-cols-1 justify-content-between align-items-stretch">
       {% for order in orders %}
       <div class="col">
 
@@ -53,7 +53,7 @@
 
             <div class="d-flex justify-content-between align-items-center">
               {% if order.order.booster %}
-                <div class="booster-info d-flex flex-wrap align-items-center">
+                <div class="booster-info d-flex align-items-center">
 
                   <div class="image">
                     {% if order.order.booster.booster.get_image_url %}
@@ -102,7 +102,7 @@
                       <p class="reached-info text-capitalize mb-0">{{ order.reached_rank }}</p>
 
                     {% elif order.order.game.link == 'csgo2' and order.order.game_type == 'A'  %}
-                      <p class="reached-info text-capitalize mb-0 mt-3" reached-info>{{ order.reached_division }} Premier</p>
+                      <p class="reached-info text-capitalize mb-0" reached-info>{{ order.reached_division }} Premier</p>
 
                     {% endif %}
                     

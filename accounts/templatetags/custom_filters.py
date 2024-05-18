@@ -227,5 +227,5 @@ def extract_order_to(text):
   
 @register.filter
 def first_two_chars(value):
-  # Return the first two characters of the string
-  return value[:2]
+  value_str = str(value)
+  return value_str[:2]

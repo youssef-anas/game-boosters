@@ -8,26 +8,42 @@
   height: 690px;
   background-image: url('./../../games/images/games_bg.jpg');
   background-size: cover;
-  background-position-y: -700px;
+  background-position-y: -277px;
+  background-position-x: center; 
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+@media (max-width: 1199px) {
+  .booster-container .booster-landing {
+    background-position-y: -167px;
+  }
+}
+@media (max-width: 767px) {
+  .booster-container .booster-landing {
+    background-position-y: -66px;
+  }
+}
 .boosters-container .boosters-landing::before {
   content: "";
   width: 100%;
-  height: 100%;
+  height: 120%;
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url('./../../games/images/bg_cover.png');
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
 }
 .boosters-landing .heading {
   position: absolute;
   top: 30%;
   text-align: center;
   color: white;
+}
+@media (max-width: 767px) {
+  .boosters-landing .heading {
+    top: 23%;;
+  }
 }
 .boosters-landing .heading h1 {
   font-weight: bolder;
@@ -41,6 +57,10 @@
 }
 .select-container {
   width: 380px !important;
+}
+select, .select-container::after {
+  background-color: var(--alternative-color) !important;
+  box-shadow: 0px 0px 10px 0px #00000040 inset !important;
 }
 .search {
   width: 380px !important;
@@ -66,11 +86,11 @@
 }
 .boosters .booster {
   width: 384px;
-  min-height: 705px;
+  min-height: fit-content;
   border-radius: calc(var(--main-radius) * 2);
   border: 1px solid #332A27;
   position: relative;
-  background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
   transition: 1s linear;
 }
 .boosters .booster::after {
@@ -82,7 +102,14 @@
   left: 0;
   border-radius: calc(var(--main-radius) * 2);
   background: linear-gradient(360deg, #1E1814 31.88%, rgba(30, 24, 20, 0) 69.08%);
-  transition: 1s linear;
+}
+@media (max-width: 767px) {
+  .boosters {
+    margin-top: -355px;
+  }
+  .boosters .booster {
+    width: 100% !important;
+  }
 }
 .boosters .booster .banner {
   width: 100%;

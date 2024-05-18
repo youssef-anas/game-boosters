@@ -8,20 +8,31 @@
   height: 690px;
   background-image: url('./../../games/images/games_bg.jpg');
   background-size: cover;
-  background-position-y: -700px;
+  background-position-y: -277px;
+  background-position-x: center; 
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+@media (max-width: 1199px) {
+  .rate-container .rate-landing {
+    background-position-y: -167px;
+  }
+}
+@media (max-width: 767px) {
+  .rate-container .rate-landing {
+    background-position-y: -66px;
+  }
+}
 .rate-container .rate-landing::before {
   content: "";
   width: 100%;
-  height: 100%;
+  height: 120%;
   position: absolute;
   top: 0;
   left: 0;
-  background-image: url('./../../games/images/bg_cover.png');
+  background: linear-gradient(180deg, rgba(72, 54, 33, 0.65) 0%, #1E1814 64.35%);
 }
 .rate-landing .heading {
   position: absolute;
@@ -40,11 +51,14 @@
   font-weight: 300;
 }
 @media (max-width: 767px) {
+  .rate-landing .heading {
+    top: 23%;
+  }
   .rate-landing .heading h1 {
-    font-size: 50px;
+    font-size: 31px;
   }
   .rate-landing .heading p {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
 }
 /* Start Orders */
@@ -126,6 +140,14 @@
 }
 .rating-container label:hover svg {
   transform: scale(1.25) rotate(10deg);
+}
+@media (max-width: 767px) {
+  .rate {
+    margin-top: -410px;
+  }
+  .rate-part h4 {
+    font-size: 16px !important;
+  }
 }
 .comment {
   margin-top: -1rem !important;

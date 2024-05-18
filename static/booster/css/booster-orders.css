@@ -168,6 +168,9 @@ input[type="radio"]:checked + label {
   border-color: #f26e3e00  !important;
   opacity: 1 !important;
 }
+.select-container {
+  width: calc((100% / 3) - 5px) !important;
+}
 @media (max-width: 767px) {
   .update-rating-btn   {
     font-size: 1.1rem !important;
@@ -431,7 +434,8 @@ input[type="radio"]:checked + label {
     max-width: 100%;
   }
   .chat-messages .day-date::before, .chat-messages .day-date::after {
-    width: 25%;
+    width: 37%;
+    top: 29%;
   }
   .message-send-container .message-input {
     width: calc(100% - 80px) !important;
@@ -444,3 +448,26 @@ input[type="radio"]:checked + label {
   }
 }
 /* End Chat Container */
+/* Order in Tablet and Mobile Screen */
+@media (max-width: 1199px) {
+  .chat-container {
+    order: 0 !important;
+    margin-bottom: 40px !important;
+  }
+  .chat-container p:not(.message-time), .chat-container div, .chat-container button {
+    font-size: 12px;
+  }
+  .order-info-container {
+    order: 1 !important;
+  }
+  .account-details {
+    margin-bottom: 40px !important;
+  }
+  .order-info {
+    margin-bottom: 40px !important;
+  }
+  .progress-drop-parent {
+    order: 2 !important;
+    margin-bottom: 40px !important;
+  }
+}

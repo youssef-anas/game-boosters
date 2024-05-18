@@ -58,7 +58,7 @@
 
           <div class="booster-data px-4">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <h3 class="mb-0">{{booster.username}}</h3>
               <p class="fw-bold mb-0">
                 <img src="https://storage.googleapis.com/mad-boost.appspot.com/{{booster.achived_rank_image}}" alt="{{booster.achived_rank_name}}" width="32" height="32" />
@@ -66,31 +66,31 @@
               </p>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <p class="mb-0">Languages:</p>
               <div class="d-flex justify-content-between align-items-center">
                 {% for language in booster.booster.languages.all %}
-                  <p class="language mb-0 ms-2">{{ language }}</p>
+                  <p class="language mb-0 ms-2">{{ language|first_two_chars }}</p>
                 {% endfor %}
               </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <p class="mb-0">Completed boosts:</p>
               <p class="mb-0">{{booster.order_count}}</p>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <p class="mb-0">Last Boost:</p>
               <p class="mb-0">{{booster.last_boost|custom_timesince}}</p>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <p class="mb-0">On MadBoost:</p>
               <p class="mb-0">{{booster.created_at|format_date}}</p>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-center mt-3">
               <p class="mb-0">Rating:</p>
               <p class="mb-0">
                 {% for star in "*****" %}
@@ -104,7 +104,7 @@
               </p>
             </div>
 
-            <a href="{% url 'booster.details' booster_id=booster.id %}" class="btn custom-btn filled">See Profile</a>
+            <a href="{% url 'booster.details' booster_id=booster.id %}" class="btn custom-btn filled mt-4 mb-3">See Profile</a>
 
           </div>
         </div>

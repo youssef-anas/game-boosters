@@ -66,7 +66,7 @@
   padding: 30px;
   background-color: #433733;
   margin-bottom: 2rem;
-  min-height: 424px;
+  /* min-height: 424px; */
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
   linear-gradient(180deg, #917a65 0%, #43373300 100%);
@@ -75,6 +75,9 @@
   border-radius: var(--main-radius);
   background-color: var(--background-color);
   min-height: 56px;
+}
+.account-details p:last-child {
+  font-size: 8px;
 }
 /* Chat */
 .chat-header {
@@ -86,5 +89,14 @@
 @media (max-width: 767px) {
   .order-info, .account-details {
     padding: 10px !important;
+  }
+}
+@media (max-width: 767px) {
+  .day-date {
+    font-size: 8px !important;
+  }
+  .row > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }

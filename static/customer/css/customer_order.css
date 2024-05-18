@@ -49,12 +49,32 @@ input[type="radio"]:disabled+label {
   border-radius: calc(var(--main-radius) * 2);
   background: linear-gradient(0deg, #281F1B, #281F1B),
   linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+  font-size: 16px !important;
+}
+@media (max-width: 1199px) {
+  .order-information .action-for-booster {
+    padding: 1rem !important;
+  }
+  .order-information .action-for-booster * {
+    font-size: 12px !important;
+  }
+}
+@media (max-width: 767px) {
+  .order-information .action-for-booster .actions * {
+    font-size: 8px !important;
+  }
 }
 /* Booster Data */
 .booster-info .profile-image {
   width: 64px;
   height: 64px;
   border-radius: var(--main-radius);
+}
+@media (max-width: 767px) {
+  .booster-info .profile-image {
+    width: 40px;
+    height: 40px;
+  }
 }
 .booster-info .text h3 {
   font-family: var(--heading-font);
@@ -114,7 +134,13 @@ input[type="radio"]:disabled+label {
   width: 49%;
 }
 @media (max-width: 767px) {
-  .chat-header .switch-chat {
+  .chat-header .switch-chat * {
+    font-size: 8px;
+  }
+  .chat-header .booster-info * {
+    font-size: 12px;
+  }
+  /* .chat-header .switch-chat {
     background-color: transparent;
   }
   .chat-header .switch-chat .booster,
@@ -124,7 +150,7 @@ input[type="radio"]:disabled+label {
     background-color: var(--background-color);
     border-radius: 40px;
     margin-bottom: 3px;
-  }
+  } */
 }
 .chat-header  .switch-chat .chat-booster-option-label,
 .chat-header  .switch-chat .chat-admin-option-label {
@@ -246,6 +272,11 @@ input[type="radio"]:disabled+label {
   text-align: center;
   position: relative;
 }
+@media (max-width: 767px) {
+  .chat-messages .day-date {
+    font-size: 8px !important;
+  }
+}
 .chat-messages .day-date::before {
   content: "";
   position: absolute;
@@ -269,12 +300,18 @@ input[type="radio"]:disabled+label {
 @media (max-width: 767px) {
   .booster-chat-message .message, .admin-chat-message .message {
     max-width: 100%;
+    font-size: 12px;
   }
   .chat-messages .day-date::before, .chat-messages .day-date::after {
-   width: 25% !important;
+    width: 37%;
+    top: 29%;
   }
   .custom-btn {
     font-size: 1.1rem !important;
+  }
+  .row > * {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 /* End Order Info And Chat */
