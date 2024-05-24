@@ -140,6 +140,10 @@ ul {
   z-index: 5;
   padding: 10px 0;
   transition: background-color 0.3s ease;
+  overflow: hidden !important;
+}
+.nav.shown {
+  overflow: visible !important;
 }
 .nav.fixed {
   background-color: var(--background-color);
@@ -299,19 +303,21 @@ ul {
   .nav .links {
     display: flex !important;
     flex-direction: column;
-    width: 100%;
+    width: 100vw;
     max-height: 100vh;
     overflow-y: auto;
     position: absolute;
     top: 0;
-    right: -1000%;
+    right: 0;
     background-color: #362C29;
-    transition: var(--main-transition);
     z-index: 1100;
+    transform: translateX(150%);
+    overflow-x: hidden !important;
   }
   .links.shown {
+    transition: var(--main-transition);
     padding: 12px 24px 240px;
-    right: 0;
+    transform: translateX(0);
   }
   .links > li {
     width: 100%;

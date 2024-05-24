@@ -14,13 +14,18 @@ window.addEventListener('scroll', function() {
 
 $(document).ready(function () {
   $toggleMenu = $('.main-nav .toggle-menu');
+  $nav = $('.nav#nav');
   $links = $('.main-nav .links');
+
   $toggleMenu.click(function () {
     $links.toggleClass('shown')
+    $nav.toggleClass('shown')
   })
+
   $closeIcon = $('.links .close-icon')
   $closeIcon.click(function () {
     $links.removeClass('shown')
+    $nav.removeClass('shown')
   })
 
   // Function to enable/disable the submit button for a specific form
