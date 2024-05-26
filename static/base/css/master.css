@@ -140,10 +140,14 @@ ul {
   z-index: 5;
   padding: 10px 0;
   transition: background-color 0.3s ease;
-  overflow: hidden !important;
 }
-.nav.shown {
-  overflow: visible !important;
+@media (max-width: 767px) {
+  .nav {
+    overflow: hidden !important;
+  }
+  .nav.shown {
+    overflow: visible !important;
+  }
 }
 .nav.fixed {
   background-color: var(--background-color);
