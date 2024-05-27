@@ -664,7 +664,7 @@ class WiningNumber(View):
 class BoosterRankCreateView(CreateView):
     model = BoosterRank
     template_name = 'booster/boosterrank_form.html'
-    fields = ['rank', 'rank_image', 'game']
+    fields = ['rank_name', 'rank_image', 'game']
     success_url = reverse_lazy('boosterrank_create')
 
     def form_valid(self, form):
