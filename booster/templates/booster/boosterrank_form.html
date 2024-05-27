@@ -1,0 +1,9 @@
+
+{% block container %}
+  <h2>{{ view.object.pk|yesno:"Update Booster Rank,Create Booster Rank" }}</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock %}

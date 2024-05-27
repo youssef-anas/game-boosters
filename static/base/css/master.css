@@ -35,7 +35,7 @@
   color: white;
 }
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 16px;
   height: 4px; 
 }
 @media (max-width: 767px) {

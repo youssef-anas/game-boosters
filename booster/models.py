@@ -48,6 +48,15 @@ def profile_image_upload_path(instance, filename):
     # Construct the upload path dynamically based on the Booster's primary key
     return f'booster/images/{instance.booster.pk}/{filename}'
 
+class BoosterRank(models.Model):
+    rank_name = models.CharField(max_length=100)
+    rank_image = models.ImageField(upload_to='rank/', blank=True, null=True)
+    game = models.ForeignKey(Game, on_delete=models.PROTECT)
+
+
+    def __str__(self) -> str:
+        return f'{self.rank_name} | {self.game.name}'
+
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
     # profile_image_url = models.URLField(null=True, blank=True, max_length=1000)
@@ -66,43 +75,43 @@ class Booster(models.Model):
     email_verified_at = models.DateTimeField(null=True,blank=True)
 
     is_wr_player = models.BooleanField(default=False)
-    achived_rank_wr = models.ForeignKey(WildRiftRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank')
+    achived_rank_wr = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank', limit_choices_to={'game__pk': 1})
 
     is_valo_player = models.BooleanField(default=False)
-    achived_rank_valo = models.ForeignKey(ValorantRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank')
+    achived_rank_valo = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='valo_rank', limit_choices_to={'game__pk': 2})
 
     is_pubg_player = models.BooleanField(default=False)
-    achived_rank_pubg = models.ForeignKey(PubgRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank')
+    achived_rank_pubg = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='pubg_rank', limit_choices_to={'game__pk': 3})
 
     is_lol_player = models.BooleanField(default=False)
-    achived_rank_lol = models.ForeignKey(LeagueOfLegendsRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='lol_rank')
+    achived_rank_lol = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='lol_rank', limit_choices_to={'game__pk': 4})
 
     is_tft_player = models.BooleanField(default=False)
-    achived_rank_tft = models.ForeignKey(TFTRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='tft_rank')
+    achived_rank_tft = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='tft_rank', limit_choices_to={'game__pk': 5})
 
     is_wow_player = models.BooleanField(default=False)
-    achived_rank_wow = models.ForeignKey(WorldOfWarcraftRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank')
+    achived_rank_wow = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='wow_rank', limit_choices_to={'game__pk': 6})
 
     is_hearthstone_player = models.BooleanField(default=False)
-    achived_rank_hearthstone = models.ForeignKey(HearthstoneRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='hearthstone_rank')
+    achived_rank_hearthstone = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='hearthstone_rank', limit_choices_to={'game__pk': 7})
 
     is_mobleg_player = models.BooleanField(default=False)
-    achived_rank_mobleg = models.ForeignKey(MobileLegendsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank')
+    achived_rank_mobleg = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='mobleg_rank', limit_choices_to={'game__pk': 8})
 
     is_rl_player = models.BooleanField(default=False)
-    achived_rank_rl= models.ForeignKey(RocketLeagueRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='rl_rank')
+    achived_rank_rl= models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='rl_rank', limit_choices_to={'game__pk': 9})
 
     is_dota2_player = models.BooleanField(default=False)
-    achived_rank_dota2 = models.ForeignKey(Dota2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank')
+    achived_rank_dota2 = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='dota2_rank', limit_choices_to={'game__pk': 10})
 
     is_hok_player = models.BooleanField(default=False)
-    achived_rank_hok = models.ForeignKey(HonorOfKingsRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='hok_rank')
+    achived_rank_hok = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='hok_rank', limit_choices_to={'game__pk': 11})
 
     is_overwatch2_player = models.BooleanField(default=False)
-    achived_rank_overwatch2 = models.ForeignKey(Overwatch2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank')
+    achived_rank_overwatch2 = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='overwatch2_rank', limit_choices_to={'game__pk': 12})
 
     is_csgo2_player = models.BooleanField(default=False)
-    achived_rank_csgo2 = models.ForeignKey(Csgo2Rank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank')
+    achived_rank_csgo2 = models.ForeignKey(BoosterRank, on_delete = models.SET_NULL, null=True, blank=True, related_name='csgo2_rank', limit_choices_to={'game__pk': 13})
        
     def profile_image_upload_path(instance, filename):
         # Construct the upload path dynamically based on the Booster's primary key

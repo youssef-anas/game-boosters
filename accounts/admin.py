@@ -7,6 +7,7 @@ from django.contrib.auth.admin import UserAdmin
 from accounts.models import BaseUser, BaseOrder, Wallet, Transaction, BoosterPercent, TokenForPay, Tip_data, PromoCode
 from chat.models import  Room, Message
 from accounts.models import Captcha
+from django.utils.html import format_html
 
 admin.site.register(Captcha)
 class CustomUserAdmin(UserAdmin):
@@ -58,7 +59,7 @@ class HasBoosterFilter(admin.SimpleListFilter):
 
 @admin.register(BaseOrder)
 class BaseOrderAdmin(admin.ModelAdmin):
-    list_display = ['name', 'status','details','booster','finish_image_url']
+    list_display = ['name', 'status','details','booster', 'chat_link','finish_image_url']
     list_filter = ['game','is_done',"approved", HasBoosterFilter]
     search_fields = ['name', 'customer__username', 'booster__username']
     fieldsets = (
@@ -70,6 +71,17 @@ class BaseOrderAdmin(admin.ModelAdmin):
 
 
     def finish_image_url(self, obj):
-        return obj.finish_image.url if obj.finish_image else None
+        if obj.finish_image:
+            return format_html('<a href="{}" target="_blank">Finish Img</a>', obj.finish_image.url)
+        return None
 
     finish_image_url.short_description = 'Image'
+
+
+    def chat_link(self, obj):
+        if not obj.is_drop:
+            chat_url = f'/dashboard/chat/{obj.name}/'
+            return format_html('<a href="{}" target="_blank">Open Chat</a>', chat_url)
+        return None
+
+    chat_link.short_description = 'Chat'

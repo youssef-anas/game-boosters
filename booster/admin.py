@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import reverse
-from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster, Language
+from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster, Language, BoosterRank
 from django.utils.safestring import mark_safe
 from django.forms import ModelForm, ValidationError
 from gameBoosterss.utils import upload_image_to_firebase
@@ -16,6 +16,7 @@ faker = Faker()
 admin.site.register(OrderRating)
 admin.site.register(Photo)
 admin.site.register(BoosterPortfolio)
+admin.site.register(BoosterRank)
 
 class PhotoInline(admin.TabularInline):
     model = Photo

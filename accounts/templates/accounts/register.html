@@ -16,6 +16,24 @@
   <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
   <title>Sign Up</title>
 
+  <style>
+    .form-group {
+    position: relative;
+    }
+
+    .password-input-container {
+        position: relative;
+    }
+
+    .togglePassword {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -254,7 +272,10 @@
                 </div>
                 <div class="form-group mb-4">
                   <!-- Render the username field with placeholder -->
-                  {{ form.username }}
+                  <div class="form-group mb-4">
+                    <input type="text" name="username" class="form-control custom-input" placeholder="Username" autofocus required id="id_username">
+                    <div id="usernameHelpBlock" class="message error-message mt-2 w-100 d-none">Username can only contain letters, numbers, underscores, and hyphens</div>
+                  </div>
                   {% if form.username.errors %}
                   <div class="message error-message mt-2 w-100">
                     {% for error in form.username.errors %}
@@ -263,9 +284,14 @@
                   </div>
                   {% endif %}
                 </div>
-                <div class="form-group mb-4">
+
+                <div class="form-group mb-4" id="password1Container">
                   <!-- Render the password1 field with placeholder -->
-                  {{ form.password1 }}
+                  <div class="password-input-container">
+                    <input type="password" name="password1" class="form-control custom-input" placeholder="Enter password" required="" id="id_password1">
+                    <i class="fa fa-eye togglePassword" id="togglePassword1"></i>
+                </div>
+                <div id="password1HelpBlock" class="message error-message mt-2 w-100 d-none">Shold be Strong Password</div>
                   {% if form.password1.errors %}
                   <div class="message error-message mt-2 w-100">
                     {% for error in form.password1.errors %}
@@ -274,9 +300,13 @@
                   </div>
                   {% endif %}
                 </div>
-                <div class="form-group mb-4">
+                <div class="form-group mb-4" id="password2Container">
                   <!-- Render the password2 field with placeholder -->
-                  {{ form.password2 }}
+                  <div class="password-input-container">
+                    <input type="password" name="password2" class="form-control custom-input" placeholder="Confirm password" required="" id="id_password2">
+                    <i class="fa fa-eye togglePassword" id="togglePassword2"></i>
+                </div>
+                <div id="password2HelpBlock" class="message error-message mt-2 w-100 d-none">Passwords do not match</div>
                   {% if form.password2.errors %}
                   <div class="message error-message mt-2 w-100">
                     {% for error in form.password2.errors %}
@@ -284,6 +314,7 @@
                     {% endfor %}
                   </div>
                   {% endif %}
+                  <div id="password2HelpBlock" class="message error-message mt-2 w-100 d-none">2 passwords don't match</div>
                 </div>
                 <div class="form-group mb-4">
                   <div class="select-container">
@@ -317,7 +348,7 @@
                   <p class="text-center footer-link">Have an account? <a href="{% url 'account.login' %}"
                       style="color: var(--secondary-color);">Log in!</a></p>
                 </div>
-                <button type="submit" class="btn update-btn">Create Account</button>
+                <button id="register-btn" type="submit" class="btn update-btn">Create Account</button>
               </form>
             </div>
           </div>
@@ -352,6 +383,113 @@
       addEmptyOptionToCountryField();
     });
   </script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+      const togglePassword1 = document.querySelector("#togglePassword1");
+      const password1 = document.querySelector("#id_password1");
+      const togglePassword2 = document.querySelector("#togglePassword2");
+      const password2 = document.querySelector("#id_password2");
+      const password1HelpBlock = document.querySelector("#password1HelpBlock");
+      const password2HelpBlock = document.querySelector("#password2HelpBlock");
+      const usernameInput = document.querySelector("#id_username");
+      const usernameHelpBlock = document.querySelector("#usernameHelpBlock");
+      const submitBtn = document.getElementById("register-btn");
+
+      // List of common passwords to check against
+      const commonPasswords = [
+          "password",
+          "123456",
+          "12345678",
+          "qwerty",
+          "abc123",
+          "password1",
+          "1234567",
+          "123123",
+          // Add more common passwords as needed
+      ];
+
+      // Toggle password visibility
+      togglePassword1.addEventListener("click", function() {
+          const type = password1.getAttribute("type") === "password" ? "text" : "password";
+          password1.setAttribute("type", type);
+          this.classList.toggle("fa-eye");
+          this.classList.toggle("fa-eye-slash");
+      });
+
+      togglePassword2.addEventListener("click", function() {
+          const type = password2.getAttribute("type") === "password" ? "text" : "password";
+          password2.setAttribute("type", type);
+          this.classList.toggle("fa-eye");
+          this.classList.toggle("fa-eye-slash");
+      });
+
+      // Validate password1 for containing both numbers, characters, and minimum length
+      password1.addEventListener("input", function() {
+          const passwordValue1 = password1.value;
+          const hasNumber = /\d/.test(passwordValue1);
+          const hasCharacter = /[a-zA-Z]/.test(passwordValue1);
+          const hasMinimumLength = passwordValue1.length >= 8;
+
+          // Check for common passwords
+          const isCommonPassword = commonPasswords.includes(passwordValue1.toLowerCase());
+
+          // Check for sequential numbers
+          const hasSequentialNumbers = /(123|234|345|456|567|678|789|987|876|765|654|543|432|321)/.test(passwordValue1);
+
+          // Check for commonly used patterns like "123456789"
+          const hasCommonPattern = /123456789/.test(passwordValue1);
+
+          // Display appropriate error messages
+          if (!hasNumber || !hasCharacter || !hasMinimumLength || isCommonPassword || hasSequentialNumbers || hasCommonPattern) {
+              password1HelpBlock.classList.remove("d-none");
+          } else {
+              password1HelpBlock.classList.add("d-none");
+          }
+
+          // Validate password2 again if it's already entered
+          if (password2.value !== '') {
+              password2.dispatchEvent(new Event('input'));
+          }
+
+          toggleSubmitBtnState();
+      });
+
+      // Validate password2 for matching password1
+      password2.addEventListener("input", function() {
+          const passwordValue1 = password1.value;
+          const passwordValue2 = password2.value;
+
+          if (passwordValue1 !== passwordValue2) {
+              password2HelpBlock.classList.remove("d-none");
+          } else {
+              password2HelpBlock.classList.add("d-none");
+          }
+          toggleSubmitBtnState();
+      });
+
+      // Validate username for valid characters
+      usernameInput.addEventListener("input", function() {
+          const username = usernameInput.value.trim();
+          const isValid = /^[a-zA-Z0-9_-]*$/.test(username);
+
+          if (!isValid) {
+              usernameHelpBlock.classList.remove("d-none");
+          } else {
+              usernameHelpBlock.classList.add("d-none");
+          }
+          toggleSubmitBtnState();
+      });
+
+      // Function to toggle submit button state based on errors
+      function toggleSubmitBtnState() {
+          const hasError = !password1HelpBlock.classList.contains("d-none") ||
+                           !password2HelpBlock.classList.contains("d-none") ||
+                           !usernameHelpBlock.classList.contains("d-none");
+
+          submitBtn.disabled = hasError;
+      }
+  });
+</script>
 </body>
 
 </html>

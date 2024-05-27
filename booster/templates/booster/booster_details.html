@@ -201,12 +201,12 @@
       </div>
 
     </div>
-
+    {% if booster.booster.can_choose_me %}
     <div class="games-he-play mt-5">
       <h3 class="fw-bold text-center">Select This Booster for:</h3>
       <div class="row row-cols-md-3 row-cols-1 justify-content-between mt-4">
         {% for game in booster.booster.games.all %}
-        <div class="banner-container mb-3">
+        <div class="banner-container mb-3" style="display: block !important;">
           <a class="mt-3 game-link" href="{% url game.link %}?choose_booster={{ booster.id }}">
             <img src="{{game.get_banner_image_url}}" class="img-fluid game-banner" alt="{{game.link}}">
 
@@ -216,6 +216,8 @@
         {% endfor %}
       </div>
     </div>
+    {% endif %}
+    
 
     <!-- Import Feedback Component -->
     {% include 'components/customer_feedbacks.html' with feedbacks=feedbacks is_booster_page=True %}

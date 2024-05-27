@@ -15,6 +15,21 @@
   <!-- Our Style -->
   <link rel="stylesheet" href="{% static 'accounts/css/account-actions.css' %}">
   <title>Login</title>
+  <style>
+    .form-group {
+        position: relative;
+    }
+    #id_password1, #id_password2 {
+        padding-right: 30px;
+    }
+    .togglePassword {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+  </style>
 
 </head>
 
@@ -243,7 +258,8 @@
                 </div>
                 <div class="form-group mb-4">
                   <!-- Render the full_name field with placeholder -->
-                  {{ form.password }}
+                  <input type="password" name="password" class="form-control custom-input" placeholder="Enter password" required="" id="id_password">
+                  <i class="fa fa-eye" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
                   {% if form.password.errors %}
                   <div class="message error-message mt-2 w-100">
                     {% for error in form.password.errors %}
@@ -290,6 +306,19 @@
   <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
   <script src="{% static  'base/js/base.js' %}"></script>
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const togglePassword = document.querySelector("#togglePassword");
+        const password = document.querySelector("#id_password");
+
+        togglePassword.addEventListener("click", function() {
+            const type = password.getAttribute("type") === "password" ? "text" : "password";
+            password.setAttribute("type", type);
+            this.classList.toggle("fa-eye");
+            this.classList.toggle("fa-eye-slash");
+        });
+    });
+  </script>
   <script>
     AOS.init();
   </script>

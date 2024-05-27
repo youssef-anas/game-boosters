@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from .controller.forms import ProfileEditForm, ProfileEditForm, PasswordEditForm, PayPalEmailEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from booster.models import OrderRating, Photo, BoosterPortfolio, WorkWithUs, Booster
+from booster.models import OrderRating, Photo, BoosterPortfolio, WorkWithUs, Booster, BoosterRank
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import status
@@ -633,7 +633,7 @@ def work_with_us_accepted_data(request):
 
 
 from django.views import View
-
+from django.views.generic import CreateView
 
 
 class WiningNumber(View):
@@ -660,3 +660,22 @@ class WiningNumber(View):
         return redirect(reverse('booster.orders')) 
         # return HttpResponse(f'money :{money}')
         
+
+class BoosterRankCreateView(CreateView):
+    model = BoosterRank
+    template_name = 'booster/boosterrank_form.html'
+    fields = ['rank', 'rank_image', 'game']
+    success_url = reverse_lazy('boosterrank_create')
+
+    def form_valid(self, form):
+        booster_rank = form.save(commit=False)
+        image_data = self.request.FILES.get('rank_image')
+        ext = image_data.name.split('.')[-1]
+
+        if image_data:
+            image_name = 'rank/'+ booster_rank.rank + '.' + ext
+            image_url = upload_image_to_firebase(image_data, image_name)
+            booster_rank.rank_image = image_url  
+
+        booster_rank.save()
+        return super().form_valid(form)
