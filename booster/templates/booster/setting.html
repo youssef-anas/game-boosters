@@ -71,6 +71,7 @@
     <div class="py-3 mx-auto message-container">
       <div class="alert {{ message.tags }} mb-0 alert-success" role="alert">
         {{ message }}
+        <div class="loader"></div>
       </div>
     </div>
     {% endfor %}
@@ -96,7 +97,7 @@
           Portfolio</a></li>
         <li><a href="#withdrawal-info" onclick="highlightLink(this)"><img src="{% static 'base/images/wallet.png' %}"
           alt="" width="19" height="19" class="me-3"> Withdrawal Info</a></li>
-        <li><a href="#password" onclick="highlightLink(this)"><i class="fa-solid fa-key me-3"></i> Password</a></li>
+        <li><a href="#password" onclick="highlightLink(this)"><img src="{% static 'base/images/password_icon.svg' %}" alt="Password Icon" class="me-3" />  Password</a></li>
       </ul>
     </div>
 

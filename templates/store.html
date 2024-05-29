@@ -5,37 +5,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="{% static 'bootstrap/css/bootstrap.css'%}" rel="stylesheet" />
+  <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet" />
   <link href="{% static 'fontawesome/css/all.css' %}" rel="stylesheet">
   <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-  <link rel="stylesheet" href="{% static 'base/css/master.css'%}" />
+  <link rel="stylesheet" href="{% static 'base/css/master.css' %}" />
   <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
   <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 
-  <title>404</title>
+  <title>Store: Coming Soon</title>
   <style>
     body {
       background-color: #1E1814;
     }
-    img.image-404 {
+
+    img.image-coming-soon {
       height: 356px !important;
     }
+
     .home-link {
       background-color: var(--secondary-color);
       border-radius: 30px;
       padding: 11px 30px;
       color: white;
     }
+
     .home-link:hover {
       background-color: var(--alt-secondary-color);
       color: white;
     }
+    .text-orange {
+      color: #F26E3E;
+      font-size: 6rem;
+    }
+
     @media (max-width: 767px) {
       h2 {
         font-size: 1rem !important;
       }
-      img.image-404 {
+
+      img.image-coming-soon {
         height: 200px !important;
       }
     }
@@ -50,19 +59,18 @@
 
     <!-- Start Container -->
     <div class="container py-5">
-        <div class="d-flex flex-column justify-content-center align-items-center py-5 mt-5">
-            <h2 class="mb-4">The page you are looking for is unavailable at the moment.</h2>
-            <img src="{% static 'gameboosterss/images/404.png' %}" alt="404" class="img-fluid image-404 mb-5">
-            <a href="{% url 'homepage.index' %}" class="fw-bold fs-4 home-link"><i class="fa-solid fa-tent-arrow-turn-left me-2"></i> Go Home</a>
-        </div>
+      <div class="d-flex flex-column justify-content-center align-items-center py-5 mt-5">
+        <h2 class="mb-4">We're working hard to bring you this page soon.</h2>
+        <h1 class="text-orange mb-5">Coming Soon</h1>
+        <a href="{% url 'homepage.index' %}" class="fw-bold fs-4 home-link"><i class="fa-solid fa-tent-arrow-turn-left me-2"></i> Go Home</a>
+      </div>
     </div>
     <!-- End Container -->
 
   </div>
-  <script src="{% static  'jQuery/jquery-3.7.0.js' %}"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.js'%}"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.bundle.js'%}"></script>
-  
+  <script src="{% static 'jQuery/jquery-3.7.0.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.bundle.js' %}"></script>
 </body>
 
 </html>

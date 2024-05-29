@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm, SetPasswordForm
 from phonenumber_field.formfields import PhoneNumberField
 from django.contrib.auth import get_user_model
-from booster.models import Booster
+from booster.models import Booster, BoosterRank
 from wildRift.models import WildRiftRank
 from valorant.models import ValorantRank
 from pubg.models import PubgRank
@@ -73,31 +73,31 @@ class ProfileEditForm(UserChangeForm, forms.ModelForm):
 
     
     # Define form fields for achived ranks
-    achived_rank_wr = forms.ModelChoiceField(queryset=WildRiftRank.objects.all(), required=False, label='Lol: Wild Rift')
+    achived_rank_wr = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=1), required=False, label='Lol: Wild Rift')
 
-    achived_rank_valo = forms.ModelChoiceField(queryset=ValorantRank.objects.all(), required=False, label='VALORANT')
+    achived_rank_valo = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=2), required=False, label='VALORANT')
 
-    achived_rank_pubg = forms.ModelChoiceField(queryset=PubgRank.objects.all(), required=False, label='Pubg Mobile')
+    achived_rank_pubg = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=3), required=False, label='Pubg Mobile')
 
-    achived_rank_lol = forms.ModelChoiceField(queryset=LeagueOfLegendsRank.objects.all(), required=False, label='League of Legends')
+    achived_rank_lol = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=4), required=False, label='League of Legends')
 
-    achived_rank_tft = forms.ModelChoiceField(queryset=TFTRank.objects.all(), required=False, label='Team Fight Tactics')
+    achived_rank_tft = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=5), required=False, label='Team Fight Tactics')
 
-    achived_rank_wow = forms.ModelChoiceField(queryset=WorldOfWarcraftRank.objects.all(), required=False, label='World of Warcraft')
+    achived_rank_wow = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=6), required=False, label='World of Warcraft')
 
-    achived_rank_hearthstone = forms.ModelChoiceField(queryset=HearthstoneRank.objects.all(), required=False, label='Hearthstone')
+    achived_rank_hearthstone = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=7), required=False, label='Hearthstone')
 
-    achived_rank_mobleg = forms.ModelChoiceField(queryset=MobileLegendsRank.objects.all(), required=False, label='Mobile Legends')
+    achived_rank_mobleg = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=8), required=False, label='Mobile Legends')
 
-    achived_rank_rl = forms.ModelChoiceField(queryset=RocketLeagueRank.objects.all(), required=False, label='Rocket League')
+    achived_rank_rl = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=9), required=False, label='Rocket League')
 
-    achived_rank_dota2 = forms.ModelChoiceField(queryset=Dota2Rank.objects.all(), required=False, label='Dota 2')
+    achived_rank_dota2 = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=10), required=False, label='Dota 2')
 
-    achived_rank_hok = forms.ModelChoiceField(queryset=HonorOfKingsRank.objects.all(), required=False, label='Honer Of King')
+    achived_rank_hok = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=11), required=False, label='Honer Of King')
 
-    achived_rank_overwatch2 = forms.ModelChoiceField(queryset=Overwatch2Rank.objects.all(), required=False, label='Overwatch 2')
+    achived_rank_overwatch2 = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=12), required=False, label='Overwatch 2')
 
-    achived_rank_csgo2 = forms.ModelChoiceField(queryset=Csgo2Rank.objects.all(), required=False, label='CS GO 2')
+    achived_rank_csgo2 = forms.ModelChoiceField(queryset=BoosterRank.objects.filter(game__pk=13), required=False, label='CS GO 2')
 
     class Meta:
         model = BaseUser

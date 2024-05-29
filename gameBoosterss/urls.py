@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from gameBoosterss.views import index, last_orders, privacy_policy, download_media_zip, social_auth_exception_handler, facebook_data_deletion_handler
+from gameBoosterss.views import index, last_orders, privacy_policy, download_media_zip, social_auth_exception_handler, facebook_data_deletion_handler, StoreView
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 from django.contrib.auth import views as auth_views
@@ -42,7 +42,7 @@ urlpatterns = [
     path('download/media/zip/', download_media_zip, name='download_media_zip'),
     path('social/', include('social_django.urls', namespace='social')),
 
-    path('store/',index, name='store'),
+    path('store/',StoreView.as_view(), name='store'),
 
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

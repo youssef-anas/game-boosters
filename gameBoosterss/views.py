@@ -3,6 +3,7 @@ from booster.models import OrderRating
 from games.models import Game
 from accounts.models import BaseOrder
 import json
+from django.views.generic import TemplateView
 
 def index(request):
 
@@ -106,3 +107,7 @@ def facebook_data_deletion_handler(request):
     else:
         # Handle invalid requests (e.g., GET requests)
         return HttpResponse('Method not allowed', status=405)
+
+
+class StoreView(TemplateView):
+    template_name = 'store.html'

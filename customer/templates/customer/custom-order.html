@@ -57,6 +57,7 @@
           <div class="py-3 mx-auto message-container">
             <div class="alert {% if message.tags == 'success' %}alert-successful{% elif message.tags == 'error' %}alert-error{% endif %}  alert-dismissible mb-0" role="alert" >
               {{ message }}
+              <div class="loader"></div>
             </div>
           </div>
         {% endfor %}

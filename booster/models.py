@@ -54,8 +54,12 @@ class BoosterRank(models.Model):
     game = models.ForeignKey(Game, on_delete=models.PROTECT)
 
 
-    def __str__(self) -> str:
-        return f'{self.rank_name} | {self.game.name}'
+    def __str__(self):
+        return f'{self.rank_name}'
+    
+    def get_image_url(self):
+        if self.rank_image:
+            return self.rank_image.url
 
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})

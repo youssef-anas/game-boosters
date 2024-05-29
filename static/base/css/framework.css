@@ -73,7 +73,7 @@
 }
 .alert::after {
   content: '';
-  width: 75%;
+  width: 0; /* Start at 0% width */
   height: 11px;
   border-radius: var(--main-radius);
   border-top-left-radius: 0 !important;
@@ -81,4 +81,10 @@
   position: absolute;
   bottom: 0;
   left: 0;
+  transition: width 5s linear; /* Adjust the time as needed */
+}
+
+/* New CSS to handle the loader */
+.alert.loader-active::after {
+  width: 100%; /* Transition to 100% width */
 }

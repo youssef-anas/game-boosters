@@ -75,12 +75,16 @@ let selectedIds = [];
 
 function disableButton(disable, type='both') {
   if(type == 'champion') {
-    selectChampionButton.disabled = disable;
+    if (selectChampionButton){
+      selectChampionButton.disabled = disable;
+    }
   } else if(type == 'booster') {
     selectBoosterButton.disabled = disable;
   } else {
     selectBoosterButton.disabled = disable;
-    selectChampionButton.disabled = disable;
+    if (selectChampionButton){
+      selectChampionButton.disabled = disable;
+    }
   }
 }
 
@@ -196,9 +200,18 @@ function disable_alert(message){
 }
 
 
-const messages = document.querySelectorAll('.message-container')
-if (messages){
-  messages.forEach(message =>{
-    disable_alert(message)
-  })
-}
+document.addEventListener("DOMContentLoaded", function() {
+  var alerts = document.querySelectorAll('.alert');
+  console.log(alerts)
+  alerts.forEach(function(alert) {
+    // Start the loader animation by adding the class
+    setTimeout(function() {
+      alert.classList.add('loader-active');
+    }, 100); // Slight delay to ensure transition works
+
+    // Hide the alert after the animation is complete
+    setTimeout(function() {
+      alert.style.display = 'none';
+    }, 5100); // Slightly more than the transition time
+  });
+});

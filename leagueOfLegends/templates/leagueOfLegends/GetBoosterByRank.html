@@ -48,7 +48,9 @@
       </div>
       {% endfor %}
     </div>
-    <!-- <button type="button" onclick="closeFormChampion()">Close</button> -->
+    <div class="d-flex justify-content-center align-items-center  form-have-select-button">
+      <button id="selectBoosterButton" onclick=closeFormBooster() class="btn update-btn">Select</button>
+    </div>
   </div>
 </div>
 <!-- ------------------------------ Booster Select Popup ------------------------------ -->
@@ -125,6 +127,7 @@
         <div class="py-3 mx-auto message-container">
           <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
           {{ message }}
+          <div class="loader"></div>
           </div>
         </div>
         {% endfor %}

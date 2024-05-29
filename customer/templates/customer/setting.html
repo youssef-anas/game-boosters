@@ -13,6 +13,7 @@
       <div class="py-3 mx-auto message-container">
         <div class="alert {{ message.tags }} mb-0 alert-success" role="alert" >
           {{ message }}
+          <div class="loader"></div>
         </div>
       </div>
       {% endfor %}
@@ -31,8 +32,8 @@
       <h3>Account Management</h3>
       <ul class="links">
         <li><a href="#email" onclick="highlightLink(this)" class="active"><i class="fa-solid fa-envelope me-3"></i> Email</a></li>
-        <li><a href="#password" onclick="highlightLink(this)"><i class="fa-solid fa-key me-3"></i> Password</a></li>
-        <li><a href="#personal-information" onclick="highlightLink(this)"><i class="fa-solid fa-circle-info me-3"></i> Personal Information</a></li>
+        <li><a href="#password" onclick="highlightLink(this)"><img src="{% static 'base/images/password_icon.svg' %}" alt="Password Icon" class="me-3" /> Password</a></li>
+        <li><a href="#personal-information" onclick="highlightLink(this)"><img src="{% static 'base/images/info.svg' %}" alt="Password Icon" class="me-3" /> Personal Information</a></li>
       </ul>
     </div>
 
