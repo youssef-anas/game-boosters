@@ -44,6 +44,8 @@ urlpatterns = [
 
     path('store/',StoreView.as_view(), name='store'),
 
+    path('blog/', include('news.urls')),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

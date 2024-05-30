@@ -349,14 +349,15 @@ def upload_image_to_firebase(image_data, image_name):
     # Upload image to Firebase Storage
     bucket = storage.bucket()
     blob = bucket.blob(image_name)
-    blob.upload_from_string(image_file)
+
+    blob.upload_from_string(image_file, content_type=image_data.content_type)
 
     # Make the uploaded image publicly accessible
     blob.make_public()
 
     # Return the URL of the uploaded image
     print(blob.public_url)
-    url = get_half_img_url(blob.public_url)
+    url = get_half_img_url(blob.public_url, )
     return url
 
 

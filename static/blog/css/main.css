@@ -1,0 +1,25 @@
+.text-orange {
+  color: var(--orange);
+}
+
+.muted-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: SharpGrotesk-ThinItalic15;
+}
+
+.card {
+  background-color: transparent;
+}
+
+.card-body {
+  padding-inline: 0;
+  padding-block: 16px;
+}
+
+.sharp-semibold {
+  font-family: SharpGrotesk-SemiBold25;
+}
+
+.helvetica-light {
+  font-family: Helvetica-Light;
+}

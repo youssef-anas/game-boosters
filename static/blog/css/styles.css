@@ -1,0 +1,274 @@
+:root {
+  --orange: #F36E3F;
+  --orange-50: #F26E3E;
+}
+
+@font-face {
+  font-family: "Helvetica";
+  src: url("/static/fonts/helvetica.ttf");
+}
+
+@font-face {
+  font-family: "Helvetica-Light";
+  src: url("/static/fonts/helvetica-light.ttf");
+}
+
+@font-face {
+  font-family: "Helvetic-Bold";
+  src: url("/static/fonts/helvetic-bold.ttf");
+}
+
+@font-face {
+  font-family: "SharpGrotesk-SemiBold25";
+  src: url("/static/fonts/SharpGrotesk-SemiBold25.otf");
+}
+
+@font-face {
+  font-family: "SharpGrotesk-ThinItalic15";
+  src: url("/static/fonts/SharpGrotesk-ThinItalic15.otf");
+}
+
+
+body {
+  background-color: #171313;
+  color: #ffffff;
+  font-family: Helvetic-Bold;
+}
+
+
+img.logo {
+  height: 85px;
+  width: 188px;
+}
+
+
+ul.navbar-nav {
+  gap: 24px;
+}
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+}
+
+.btn-outline-orange {
+  color: #ffffff;
+  border: 3px solid var(--orange);
+}
+
+nav .btn {
+  padding: 16px 24px;
+  line-height: 16px;
+}
+
+.btn-outline-orange:hover,
+.btn-orange {
+  background-color: var(--orange);
+  color: #ffffff;
+}
+
+section {
+  margin-bottom: 84px;
+}
+
+.hero img {
+  border-radius: 16px;
+  min-height: 200px;
+  object-fit: cover;
+}
+
+.hero .caption {
+  bottom: 20px;
+  left: min(6%,72px);
+  width: min(85%, 985px);
+}
+
+.hero .caption h4{
+  line-height: normal;
+
+}
+
+.card img {
+  border-radius: 16px;
+}
+
+
+.headlines {
+  gap: 32px;
+}
+
+.advertisement-vertical {
+  min-width: 20%;
+  height: fit-content !important;
+  margin-top: 70px;
+}
+
+.advertisement-vertical .caption{
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px !important;
+  border-radius: 0 0 16px 16px;
+}
+
+.advertisement-vertical .caption p{
+  line-height: 1.5;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+.advertisement-horizontal {
+  min-width: 20%;
+  height: fit-content;
+}
+
+.advertisement-horizontal .caption{
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: min(50%, 268px);
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 16px 0 0 16px;
+}
+
+.advertisement-horizontal .caption p{
+  line-height: 1.5;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+
+.footer {
+  background-color: #171313;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 20px 0;
+  margin-bottom: 0;
+}
+
+
+.footer .d-flex {
+  gap: 24px;
+}
+
+.footer .footer-description {
+  font-size: 14px;
+  font-family: Helvetica;
+  text-align: left;
+}
+
+.copyright {
+  font-size: 12px;
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 22px;
+}
+
+.footer a:hover {
+  text-decoration: none;
+}
+
+@media (max-width: 576px) {
+  .footer .d-flex {
+    flex-direction: column;
+  }
+  .footer .d-flex.links {
+    width: 100%;
+  }
+  .footer .d-flex.links a {
+    font-size: 20px;
+  }
+  .card {
+    flex-direction: row;
+    gap: 16px;
+    height: 100px;
+  }
+
+  .card .card-img-top {
+    width: min(50%, 156px);
+    object-fit: cover;
+  }
+
+  .card .card-body {
+    padding: 0;
+    
+  }
+  .card .card-text {
+    font-size: 10px;
+  }
+  .advertisement-vertical {
+    display: block;
+    margin-top: 0 !important;
+  }
+  .advertisement-horizontal {
+    display: none;
+  }
+  .advertisement-vertical.card .card-img-top{
+    width: 100%;  
+    max-height: 654px;
+    object-position: top;
+    object-fit: cover;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 992px) {
+  .advertisement-vertical {
+    display: none !important;
+  }
+  .advertisement-horizontal {
+    display: block !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    max-width: 100% !important;
+    padding-inline: 24px;
+  }
+  
+  .hero .caption h4{
+    font-size: 16px;
+  }
+  
+  .footer a {
+    font-size: 12px;
+  }
+    
+  .footer .d-flex {
+    gap: 16px;
+  }
+  
+  .footer .footer-description {
+    font-size: 10px;
+    font-family: Helvetica;
+    text-align: center;
+  }
+}
+
+@media (max-width: 992px) {
+  .headlines {
+    flex-direction: column !important;
+  }
+  section {
+    margin-bottom: 48px;
+  }
+  .advertisement-vertical {
+    display: block;
+  }
+  .advertisement-horizontal {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 1200px !important;
+  }
+}
+

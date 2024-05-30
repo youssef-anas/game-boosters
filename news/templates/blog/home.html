@@ -1,0 +1,134 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Mad Boost - Blog {% endblock %}
+{% block style %}
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}" />
+<link rel="stylesheet" href="{% static 'blog/css/main.css' %}" />
+{% endblock %}
+
+{% block container %}
+<main class="container">
+    <section class="hero position-relative">
+        <img
+        src="{{blog.get_main_image}}"
+        class="img-fluid rounded-1"
+        alt="Clove"
+        />
+        <div class="caption position-absolute">
+        <h4 class="m-0 mb-1 mb-lg-3">
+            <!-- VALORANT's Newest Agent <span class="text-orange">Clove</span> shook
+            the general opinion during her reveal and sat the curtains on fire! -->
+            {{blog.header}}
+        </h4>
+        <p class="muted-text m-0">{{blog.created_at.date}}</p>
+        </div>
+    </section>
+
+    <section class="row">
+        {% for headline in headlines|slice:":3" %}
+        <div class="col-12 col-sm-6 col-lg-4 mb-3 mb-lg-0">
+        <div class="card">
+            <img
+            src="{{headline.get_main_image2}}"
+            class="card-img-top rounded-2"
+            alt="..."
+            />
+            <div class="card-body">
+            <p class="card-text">
+                <!-- Riot reveals the new <span class="text-orange">Skarner</span>. -->
+                {{headline.header}}
+            </p>
+            <p class="card-text muted-text">{{headline.created_at.date}}</p>
+            </div>
+        </div>
+        </div>
+        {% endfor %}
+    </section>
+
+    
+    <section class="d-flex flex-row-reverse headlines">
+        <div class="card mb-3 advertisement-vertical position-relative">
+        <img
+            src="{{blog.get_order_image}}"
+            class="card-img-top"
+            alt="Advertisement"
+        />
+        <div class="card-body text-center position-absolute caption">
+            <p class="card-text sharp-semibold">
+            <!-- Get to your desired rank using
+            <span class="text-orange">ISO</span> -->
+            {{blog.order_name}}
+            </p>
+            <a href="{{blog.order_link}}" class="btn btn-orange rounded-pill w-100 sharp-semibold">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="21"
+                viewBox="0 0 17 21"
+                fill="none"
+            >
+                <path
+                d="M11.0336 8.39078C10.2143 7.91759 9.93283 6.869 10.4057 6.04974C10.8792 5.22959 11.9278 4.94959 12.747 5.42277C13.5657 5.89566 13.8478 6.94366 13.3743 7.76352C12.9014 8.58278 11.8525 8.86366 11.0336 8.39078ZM12.4161 13.861L13.7073 11.6246C16.5882 6.63492 16.2176 2.40233 15.9364 0.850331C15.9065 0.682034 15.8039 0.536553 15.6573 0.450331C15.5097 0.364405 15.3328 0.347516 15.1711 0.403812C13.6733 0.925294 9.77905 2.69715 6.89579 7.69152L5.60423 9.92855L5.03061 9.96826C3.92424 10.0459 2.92809 10.6681 2.37342 11.6293L0.832086 14.2986C0.740827 14.4569 0.74379 14.6533 0.839494 14.8091C0.936383 14.9644 1.1106 15.0539 1.29312 15.0414L3.1509 14.9226C3.67238 14.8897 4.19179 15.0106 4.64453 15.272L5.6309 15.8414L4.88394 17.1351C4.74646 17.373 4.82794 17.677 5.06527 17.8142L5.8552 18.2702C6.09253 18.4071 6.39653 18.3259 6.53401 18.0877L7.28098 16.794L8.26705 17.3635C8.71979 17.6249 9.08542 18.0136 9.31742 18.4838L10.1426 20.1508C10.2229 20.3152 10.3876 20.4213 10.5708 20.4275C10.7536 20.4326 10.9254 20.3366 11.0167 20.1786L12.558 17.5093C13.1121 16.5496 13.1524 15.3751 12.6676 14.3777L12.4161 13.861Z"
+                fill="white"
+                />
+            </svg>
+            Order Now</a
+            >
+        </div>
+        </div>
+        <div class="card mb-3 d-md-none advertisement-horizontal position-relative">
+        <img
+            src="{{blog.get_order_image}}"
+            class="card-img-top"
+            alt="Advertisement"
+        />
+        <div class="card-body text-center position-absolute caption">
+            <p class="card-text sharp-semibold">
+            <!-- Get to your desired rank using
+            <span class="text-orange">ISO</span> -->
+            {{blog.order_name}}
+            </p>
+            <a href="{{blog.order_link}}" class="btn btn-orange rounded-pill w-100 sharp-semibold">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="21"
+                viewBox="0 0 17 21"
+                fill="none"
+            >
+                <path
+                d="M11.0336 8.39078C10.2143 7.91759 9.93283 6.869 10.4057 6.04974C10.8792 5.22959 11.9278 4.94959 12.747 5.42277C13.5657 5.89566 13.8478 6.94366 13.3743 7.76352C12.9014 8.58278 11.8525 8.86366 11.0336 8.39078ZM12.4161 13.861L13.7073 11.6246C16.5882 6.63492 16.2176 2.40233 15.9364 0.850331C15.9065 0.682034 15.8039 0.536553 15.6573 0.450331C15.5097 0.364405 15.3328 0.347516 15.1711 0.403812C13.6733 0.925294 9.77905 2.69715 6.89579 7.69152L5.60423 9.92855L5.03061 9.96826C3.92424 10.0459 2.92809 10.6681 2.37342 11.6293L0.832086 14.2986C0.740827 14.4569 0.74379 14.6533 0.839494 14.8091C0.936383 14.9644 1.1106 15.0539 1.29312 15.0414L3.1509 14.9226C3.67238 14.8897 4.19179 15.0106 4.64453 15.272L5.6309 15.8414L4.88394 17.1351C4.74646 17.373 4.82794 17.677 5.06527 17.8142L5.8552 18.2702C6.09253 18.4071 6.39653 18.3259 6.53401 18.0877L7.28098 16.794L8.26705 17.3635C8.71979 17.6249 9.08542 18.0136 9.31742 18.4838L10.1426 20.1508C10.2229 20.3152 10.3876 20.4213 10.5708 20.4275C10.7536 20.4326 10.9254 20.3366 11.0167 20.1786L12.558 17.5093C13.1121 16.5496 13.1524 15.3751 12.6676 14.3777L12.4161 13.861Z"
+                fill="white"
+                />
+            </svg>
+            Order Now</a
+            >
+        </div>
+        </div>
+        <div class="row">
+        <h2 class="col-12 sharp-semibold mb-4 pb-2">Headline Section</h2>
+        {% for headline in headlines|slice:":9" %}
+        <div class="col-12 col-sm-6 col-lg-4 mb-3">
+            <div class="card">
+            <img
+                src="{{headline.get_main_image2}}"
+                class="card-img-top"
+                alt="..."
+            />
+            <div class="card-body">
+                <p class="card-text">
+                <!-- Overwatch 2 Reveals How <span class="text-orange">Colosseo</span> Is Changing -->
+                {{headline.header}}
+                </p>
+                <p class="card-text">
+                <small class="text-muted">{{headline.created_at.date}}</small>
+                </p>
+            </div>
+            </div>
+        </div>
+        {%endfor%}
+        </div>
+    </section>
+</main>
+{% endblock %}

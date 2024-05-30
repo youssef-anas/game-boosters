@@ -594,7 +594,7 @@
                           </div>
                           <div class="modal-body">
                             <p id="image-over-size-error" class="text-danger"></p>
-                            <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data" id="complete-image-upload">
+                            <form action="{% url 'order.upload.image' %}" method="POST" enctype="multipart/form-data" id="complete-image-upload" class="no-disabled-form">
                               {% csrf_token %}
                               {% if error %} <p class="error text-danger">{{error}}</p> {% endif %}
                               <input type="hidden" name="order_id" value="{{ order.order.order.id }}">

@@ -1,5 +1,5 @@
 <div class="updata-now">
-  <form action="{% url 'update.wins' order_id=order.order.order.id %}" method="POST">
+  <form action="{% url 'update.wins' order_id=order.order.order.id %}" method="POST" class="no-disabled-form">
     {% csrf_token %}
     {% if error %} <p class="error-message message">{{error}}</p> {% endif %}
     <div class="mb-3">

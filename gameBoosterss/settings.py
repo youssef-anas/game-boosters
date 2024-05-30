@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'csgo2.apps.Csgo2Config',
     'chat.apps.ChatConfig',
     'games.apps.GamesConfig',
+    'news.apps.NewsConfig',
 
     # 'django_q',
     # 'modeltranslation',
