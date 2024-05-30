@@ -673,7 +673,7 @@ class BoosterRankCreateView(CreateView):
         ext = image_data.name.split('.')[-1]
 
         if image_data:
-            image_name = 'rank/'+ booster_rank.rank + '.' + ext
+            image_name = 'rank/'+ str(uuid.uuid4()) + '.' + ext
             image_url = upload_image_to_firebase(image_data, image_name)
             booster_rank.rank_image = image_url  
 
