@@ -3,36 +3,11 @@
   --orange-50: #F26E3E;
 }
 
-@font-face {
-  font-family: "Helvetica";
-  src: url("/static/fonts/helvetica.ttf");
-}
-
-@font-face {
-  font-family: "Helvetica-Light";
-  src: url("/static/fonts/helvetica-light.ttf");
-}
-
-@font-face {
-  font-family: "Helvetic-Bold";
-  src: url("/static/fonts/helvetic-bold.ttf");
-}
-
-@font-face {
-  font-family: "SharpGrotesk-SemiBold25";
-  src: url("/static/fonts/SharpGrotesk-SemiBold25.otf");
-}
-
-@font-face {
-  font-family: "SharpGrotesk-ThinItalic15";
-  src: url("/static/fonts/SharpGrotesk-ThinItalic15.otf");
-}
 
 
 body {
   background-color: #171313;
   color: #ffffff;
-  font-family: Helvetic-Bold;
 }
 
 
@@ -139,36 +114,7 @@ section {
 }
 
 
-.footer {
-  background-color: #171313;
-  color: rgba(255, 255, 255, 0.3);
-  padding: 20px 0;
-  margin-bottom: 0;
-}
 
-
-.footer .d-flex {
-  gap: 24px;
-}
-
-.footer .footer-description {
-  font-size: 14px;
-  font-family: Helvetica;
-  text-align: left;
-}
-
-.copyright {
-  font-size: 12px;
-}
-
-.footer a {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 22px;
-}
-
-.footer a:hover {
-  text-decoration: none;
-}
 
 @media (max-width: 576px) {
   .footer .d-flex {
@@ -242,7 +188,6 @@ section {
   
   .footer .footer-description {
     font-size: 10px;
-    font-family: Helvetica;
     text-align: center;
   }
 }
