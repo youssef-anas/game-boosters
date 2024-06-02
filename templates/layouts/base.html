@@ -59,9 +59,11 @@
                   <a href="" >Contact us</a>
                 </li>
 
+                {% if not request.user.is_booster %}
                 <li>
                   <a href="{% url 'workwithus' %}" >Work with us</a>
                 </li>
+                {% endif %}
     
                 <li>
                   <a href="" >Report</a>

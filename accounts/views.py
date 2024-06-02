@@ -43,6 +43,17 @@ class CustomLoginView(LoginView):
         
         # Re-render the form with errors
         return self.render_to_response(self.get_context_data(form=form))
+    
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.request.user.is_booster:
+            if not self.request.user.booster.profile_completed():
+                messages.error(self.request, 'Please complete your profile first!')
+                return redirect('booster.setting')
+            messages.success(self.request, 'Welcome back!')
+            return redirect('booster.orders')
+        return response
 
 class CustomLogoutView(View):
     redirect_url = reverse_lazy('homepage.index')

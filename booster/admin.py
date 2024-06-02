@@ -52,7 +52,7 @@ class BoosterAdminForm(ModelForm):
         else:
             # If no image data is provided, handle the case accordingly
             error_message = "No image data provided"
-            raise ValidationError({'profile_image': [error_message]})
+            forms.ValidationError({'profile_image': [error_message]})
         if commit:
             instance.save()
         return instance

@@ -308,3 +308,8 @@ class PasswordEditForm(PasswordChangeForm, SetPasswordForm):
             field.label = ''
 
         self.fields['new_password1'].help_text = ''
+        
+        # Ensuring no field has the autofocus attribute
+        for field in self.fields.values():
+            if 'autofocus' in field.widget.attrs:
+                del field.widget.attrs['autofocus']

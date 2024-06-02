@@ -3,7 +3,7 @@
     <div class="container">
       <div class="nav-row d-flex justify-content-md-start justify-content-between align-items-center">
         <div class="p-0">
-          <a href="{% url 'homepage.index' %}" class="logo">
+          <a {% if not request.user.is_booster %} href="{% url 'homepage.index' %}" {% else %} href="{% url 'booster.orders' %}" {% endif %} class="logo">
             <img src="{% static 'base/images/logo.png' %}" class="img-fluid" alt="Logo">
           </a>
         </div>
@@ -46,6 +46,11 @@
                     <li class="links-hidden"><a href="{% url 'booster.orders' %}">Orders</a></li>
                     <li class="links-hidden"><a href="{% url 'orders.jobs' %}">Jobs</a></li>
                     <li>
+                      <a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>
+                        <span class="me-2 fw-bold">Last Orders</span>
+                      </a>
+                    </li>
+                    <li>
                       <a href="{% url 'booster.history' %}" {% if request.path == '/booster/history/' %}class="active"{% endif %}>
                         <img src="{% static 'base/images/wallet.png' %}" alt="wallet" width="19" height="19" class="me-2">
                         <span class="me-2 fw-bold">wallet</span>
@@ -73,6 +78,7 @@
                     <li><a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a></li>
                     <li><a href="{% url 'store' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a></li>
                     <li><a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active"{% endif %}>My orders</a></li>
+                    <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                     <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>
                     <li><a href="#" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
                     <li class="links-hidden"><a href="{% url 'account.logout' %}">Log out</a></li>

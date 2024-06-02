@@ -266,23 +266,17 @@
                     <div class="col col-1 fw-bold" data-label="Order ID">ID: ${order.name}</div>
                     <div class="col col-2 fw-bold" data-label="From">
                       ${extractOrderFrom(order.details)}
-                      <div class="extra select-champion mt-4">
-                        ${order.select_champion ?
-                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Select Champion
-                      </div>
+                      ${order.select_champion ?
+                      '<div class="extra select-champion mt-4">Select Champion</div>'
+                      : ''
+                    }
                     </div>
                     <div class="col col-3 fw-bold" data-label="To">
                       ${extractOrderTo(order.details)}
-                      <div class="extra stream-games mt-4 ms-4">
-                        ${order.streaming ?
-                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Stream Games
-                      </div>
+                      ${order.streaming ?
+                      '<div class="extra select-champion mt-4">Stream Games</div>'
+                      : ''
+                    }
                     </div>
                     <div class="col col-4 fw-bold" data-label="Server">${order.server}</div>
                     <div class="col col-5 fw-bold" data-label="Queue">
@@ -307,21 +301,15 @@
                       </div>
                     </div>
                     <div class="col col-hidden" data-label="claim">
-                      <div class="extra select-champion">
-                        ${order.select_champion ?
-                        '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                        : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Select Champion
-                      </div>
+                      ${order.select_champion ?
+                      '<div class="extra select-champion mt-4">Select Champion</div>'
+                      : ''
+                    }
 
-                      <div class="extra stream-games ms-2">
-                        ${order.streaming ?
-                          '<i class="fa-solid fa-square-check me-2" style="color: var(--secondary-color);"></i>'
-                          : '<i class="fa-regular fa-square me-2" style="color: var(--secondary-color);"></i>'
-                        }
-                        Stream Games
-                      </div>
+                    ${order.streaming ?
+                      '<div class="extra select-champion mt-4">Stream Games</div>'
+                      : ''
+                    }
 
                     </div>
                     <div class="col col-7" data-label="claim">
