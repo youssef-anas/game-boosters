@@ -96,7 +96,8 @@ class Message(models.Model):
         (1, 'normal'),
         (2, 'tip'),
         (3, 'changes'),
-        (4, 'admin')
+        (4, 'admin'),
+        (5, 'refresh'),
     )
     user = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     content = models.TextField()
@@ -130,6 +131,17 @@ class Message(models.Model):
             content=content,
             room=room,
             msg_type= 3
+        )
+        return new_message
+    
+    @classmethod
+    def create_refresh_message(cls, user, room):
+        content = 'Rate Changed.'
+        new_message = cls.objects.create(
+            user=user,
+            content=content,
+            room=room,
+            msg_type= 5
         )
         return new_message
     

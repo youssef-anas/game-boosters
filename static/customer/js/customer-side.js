@@ -156,57 +156,62 @@ $('document').ready(function () {
 
       messageElement.classList.add("info-message", "mb-0");
       messageElement.innerHTML = `<i class="fa-solid fa-circle-info ms-1"></i> ${data.message}`;
+
+    }else if (data.msg_type === 5) {
+      console.log("message type 5 refresh now");
+      window.location.reload();
     }
-
-    applyReadMore(messageElement)
-    messageTimeElement.classList.add("message-time", "mb-0", "me-1");
-    messageTimeElement.textContent = "Just Now";
-
-    if(data.username === user) {
-      messageTimeElement.classList.add("message-time", "mb-0", "me-2");
-      div.appendChild(messageTimeElement);
-      div.appendChild(messageElement);
-    }
-    else {
-      messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
-      const booster_image = JSON.parse(document.getElementById('booster_image').textContent);
-
-      const imageDiv = document.createElement('div');
-      imageDiv.className = 'image me-3';
-
-      const imgElement = document.createElement('img');
-      imgElement.src = booster_image || staticUrl; // Use booster_image if available, otherwise fallback to staticUrl
-      imgElement.alt = '';
-      imgElement.width = 40;
-      imgElement.height = 40;
-
-      imageDiv.appendChild(imgElement);
-
-      div.appendChild(imageDiv);
-      div.appendChild(messageElement);
-      div.appendChild(messageTimeElement);
-
-    }
-
-    if (data.username === user) {
-      if (data.message.msg_type == 2) {
-        div.classList.add("booster-chat-message", "tip-message");
-      } else if (data.message.msg_type == 3) {
-        div.classList.add("booster-chat-message", "changes-message");
-      } else if (data.message.msg_type == 4) {
-        div.classList.add("booster-chat-message", "from-admin-message");
-      } else {
-        div.classList.add("booster-chat-message", "user-message");
+    if (data.msg_type !== 5){
+      applyReadMore(messageElement)
+      messageTimeElement.classList.add("message-time", "mb-0", "me-1");
+      messageTimeElement.textContent = "Just Now";
+  
+      if(data.username === user) {
+        messageTimeElement.classList.add("message-time", "mb-0", "me-2");
+        div.appendChild(messageTimeElement);
+        div.appendChild(messageElement);
       }
-
-    } else {
-      div.classList.add("booster-chat-message", "booster-message");
+      else {
+        messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
+        const booster_image = JSON.parse(document.getElementById('booster_image').textContent);
+  
+        const imageDiv = document.createElement('div');
+        imageDiv.className = 'image me-3';
+  
+        const imgElement = document.createElement('img');
+        imgElement.src = booster_image || staticUrl; // Use booster_image if available, otherwise fallback to staticUrl
+        imgElement.alt = '';
+        imgElement.width = 40;
+        imgElement.height = 40;
+  
+        imageDiv.appendChild(imgElement);
+  
+        div.appendChild(imageDiv);
+        div.appendChild(messageElement);
+        div.appendChild(messageTimeElement);
+  
+      }
+  
+      if (data.username === user) {
+        if (data.message.msg_type == 2) {
+          div.classList.add("booster-chat-message", "tip-message");
+        } else if (data.message.msg_type == 3) {
+          div.classList.add("booster-chat-message", "changes-message");
+        } else if (data.message.msg_type == 4) {
+          div.classList.add("booster-chat-message", "from-admin-message");
+        } else {
+          div.classList.add("booster-chat-message", "user-message");
+        }
+  
+      } else {
+        div.classList.add("booster-chat-message", "booster-message");
+      }
+  
+  
+      document.querySelector("#booster-message-input").value = "";
+      document.querySelector("#booster-chatbox").appendChild(div);
+      scrollToBottom();
     }
-
-
-    document.querySelector("#booster-message-input").value = "";
-    document.querySelector("#booster-chatbox").appendChild(div);
-    scrollToBottom();
   };
 
 

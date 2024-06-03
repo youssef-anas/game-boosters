@@ -319,7 +319,18 @@ def send_change_data_msg(message):
         "room_name": message.room.order_name,
         "msg_type": message.msg_type
     }
-    async_to_sync(channel_layer.group_send)(f'chat_roomFor-{message.user}-{message.room.order_name}', event_data)
+    async_to_sync(channel_layer.group_send)(f'chat_roomFor-{message.user.username}-{message.room.order_name}', event_data)
+
+def send_refresh_msg(booster, customer, order_name):
+
+    event_data = {
+        'type': 'change_data',
+        'message': 'refresh',
+        "username": booster,
+        "room_name": order_name,
+        "msg_type": 5,
+    }
+    async_to_sync(channel_layer.group_send)(f'chat_roomFor-{customer}-{order_name}', event_data)
 
 
 

@@ -23,7 +23,7 @@ from gameBoosterss.utils import refresh_order_page
 from accounts.templatetags.custom_filters import wow_ranks, dota2_ranks, csgo2_ranks, custom_timesince, format_date
 from django.db.models import Avg, Sum, Case, When, IntegerField, Max, F
 from booster.forms import WorkWithUsLevel1Form, WorkWithUsLevel2Form, WorkWithUsLevel3Form, WorkWithUsLevel4Form, WorkWithUsForm
-from gameBoosterss.utils import upload_image_to_firebase, get_booster_game_ids
+from gameBoosterss.utils import upload_image_to_firebase, get_booster_game_ids, send_change_data_msg, send_refresh_msg
 import uuid
 from gameBoosterss.permissions import IsBooster
 from django.views.generic import View
@@ -127,7 +127,7 @@ def orders_jobs(request):
 class ClaimOrderView(View):
     permission_classes = [IsBooster]
     def post(self, request, game_name, id):
-        order = get_object_or_404(BaseOrder, id=id)
+        order = get_object_or_404(BaseOrder, id=id, booster__isnull=True)
         ids = get_booster_game_ids(request.user)
         captcha = request.POST.get('captcha_input', None)
         if order.game.id in ids and captcha == order.captcha.value:
@@ -141,6 +141,7 @@ class ClaimOrderView(View):
             messages.error(request, "You aren't playing this game!")
             return redirect(reverse_lazy('orders.jobs'))
         refresh_order_page()
+        send_refresh_msg(request.user.username , order.customer.username, order.name)
         return redirect(reverse_lazy('booster.orders'))
 
 # All Boosters
@@ -478,6 +479,9 @@ def update_rating(request, order_id):
         game.reached_marks = reached_marks
         
         game.save()    
+
+        send_refresh_msg(request.user.username , base_order.customer.username, base_order.name)
+
         return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
 
@@ -657,9 +661,13 @@ class WiningNumber(View):
         if order.game.pk in [2, 4, 5, 8, 9, 10, 12]:
             money = self.update_wins(order, wins_number, number_of_match)
 
-        return redirect(reverse('booster.orders')) 
-        # return HttpResponse(f'money :{money}')
+            # room = Room.get_specific_room(order.customer, order.name)
+            # message_change = Message.create_refresh_message(request.user, room)
+
+            send_refresh_msg(request.user.username , order.customer.username, order.name)
         
+        return redirect(reverse('booster.orders'))   
+
 
 class BoosterRankCreateView(CreateView):
     model = BoosterRank
