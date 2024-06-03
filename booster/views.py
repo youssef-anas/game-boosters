@@ -141,6 +141,10 @@ class ClaimOrderView(View):
             messages.error(request, "You aren't playing this game!")
             return redirect(reverse_lazy('orders.jobs'))
         refresh_order_page()
+        room = Room.get_specific_room(order.customer.username, order.name)
+        if room:
+            Message.create_booster_message(room, "Hello there, I will be your booster", request.user)
+
         send_refresh_msg(request.user.username , order.customer.username, order.name)
         return redirect(reverse_lazy('booster.orders'))
 

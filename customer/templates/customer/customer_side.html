@@ -337,39 +337,27 @@
   
                   <div class="d-flex justify-content-between align-items-center">
                     <label for="gameName">In Game Name:</label>
-                    <span id="gameNameText">{{ order.order.customer_gamename }}</span>
-                    <input type="text" id="gameNameInput" value="{% if order.order.customer_gamename %} {{order.order.customer_gamename}} {% endif %}" class="d-none form-control custom-input" style="width: 65% !important;">
+                    <span id="gameNameText">{{order.order.customer_gamename}}</span>
+                    <input type="text" id="gameNameInput" value="{% if order.order.customer_gamename %}{{order.order.customer_gamename}}{% endif %}" class="d-none form-control custom-input" style="width: 65% !important;">
                   </div>
   
                   <div class="d-flex justify-content-between align-items-center">
                     <label for="server">Server:</label>
-                    <span id="serverText">{{ order.order.customer_server }}</span>
-                    <div class="select-container d-none" id="serverSelect">
-                      <select class="serverSelect">
-                        <option value="North America" {% if order.order.customer_gamename == 'North America' %}selected{% endif %}>North America (NA)</option>
-  
-                        <option value="Europe" {% if order.order.customer_gamename == 'Europe' %}selected{% endif %}>Europe (EU)</option>
-  
-                        <option value="Latin America" {% if order.order.customer_gamename == 'Latin America' %}selected{% endif %}>Latin America (LATAM)</option>
-  
-                        <option value="Brazil" {% if order.order.customer_gamename == 'Brazil' %}selected{% endif %}>Brazil (BR)</option>
-  
-                        <option value="Korea" {% if order.order.customer_gamename == 'Korea' %}selected{% endif %}>Korea (KR)</option>
-                      </select>
-                    </div>
+                    <span id="serverText">{{order.order.customer_server}}</span>
+                    <input type="text" readonly value="{{order.order.customer_server}}" class="d-none form-control custom-input" style="width: 65% !important;">
                   </div>
   
                   <div class="d-flex justify-content-between align-items-center">
                     <label for="username">Username:</label>
                     <span id="usernameText">{{ order.order.customer_username }}</span>
-                    <input type="text" id="usernameInput" value="{% if order.order.customer_username %} {{order.order.customer_username}} {% endif %}" class="d-none form-control custom-input" style="width: 65% !important;">
+                    <input type="text" id="usernameInput" value="{% if order.order.customer_username %}{{order.order.customer_username}}{% endif %}" class="d-none form-control custom-input" style="width: 65% !important;">
                   </div>
   
                   {% if not order.order.duo_boosting %}
                     <div class="d-flex justify-content-between align-items-center">
                       <label for="password">Password:</label>
-                      <span id="passwordText">{{ order.order.customer_password }}</span>
-                      <input type="text" id="passwordInput" value="{% if order.order.customer_password %} {{order.order.customer_password}} {% endif %}" class="d-none form-control custom-input" style="width: 65% !important;">
+                      <span id="passwordText">********</span>
+                      <input type="text" id="passwordInput" value="{%if order.order.customer_password%}{{order.order.customer_password}}{%endif%}" class="d-none form-control custom-input" style="width: 65% !important;">
                     </div>
                   {% endif %}
   

@@ -16,7 +16,11 @@ faker = Faker()
 admin.site.register(OrderRating)
 admin.site.register(Photo)
 admin.site.register(BoosterPortfolio)
-admin.site.register(BoosterRank)
+
+class BoosterRankAdmin(admin.ModelAdmin):
+    list_filter = ('game',)
+
+admin.site.register(BoosterRank, BoosterRankAdmin)
 
 class PhotoInline(admin.TabularInline):
     model = Photo

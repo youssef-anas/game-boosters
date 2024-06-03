@@ -178,13 +178,13 @@ def set_customer_data(request):
         if serializer.is_valid():
             customer_gamename = serializer.validated_data.get('customer_gamename')
             customer_password = serializer.validated_data.get('customer_password')
-            customer_server = serializer.validated_data.get('customer_server')
+            # customer_server = serializer.validated_data.get('customer_server')
             customer_username = serializer.validated_data.get('customer_username')
             # booster = serializer.validated_data.get('chosen_booster_id')
 
             order = get_object_or_404(BaseOrder, pk=order_id)
             order.customer_gamename = customer_gamename
-            order.customer_server = customer_server
+            # order.customer_server = customer_server
             order.customer_username = customer_username
 
             order.message = None
