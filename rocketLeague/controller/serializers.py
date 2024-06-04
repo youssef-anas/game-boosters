@@ -85,6 +85,16 @@ class PlacementSerializer(serializers.Serializer):
               Booster.objects.get(booster_id = choose_booster, is_pubg_player= True, can_choose_me= True)
           except Booster.DoesNotExist:
               raise serializers.ValidationError("Please select valid booster")      
+          
+
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value        
 
   def to_internal_value(self, data):
       data = super().to_internal_value(data)
@@ -119,6 +129,15 @@ class SeasonalSerializer(serializers.Serializer):
   def validate(self, attrs):
       self.booster_validate(attrs)
       return attrs
+  
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value      
 
   def booster_validate(self, attrs):
       choose_booster = attrs.get('choose_booster', '')
@@ -161,6 +180,15 @@ class TournamentSerializer(serializers.Serializer):
   def validate(self, attrs):
       self.booster_validate(attrs)
       return attrs
+  
+  def validate_server(self, value):
+    valid_servers = [
+        "North America", "Europe", "Brazil", "Asia Pacific",
+        "Middle East", "Oceania", "Japan"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value      
 
   def booster_validate(self, attrs):
       choose_booster = attrs.get('choose_booster', '')

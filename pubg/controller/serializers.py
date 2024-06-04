@@ -48,3 +48,9 @@ class DivisionSerializer(serializers.Serializer):
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
         return data
+    
+    def validate_server(self, value):
+        valid_servers = ["Europe", "Asia", "Middle East", "North America", "South America", "KRJP"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value

@@ -71,7 +71,7 @@
                 </div>
                 <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                   <img src="{{booster.booster.achived_rank_wr.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
-                  <p class="ms-4 mb-0">{{booster.booster.achived_rank_valo.rank_name}}</p>
+                  <p class="ms-4 mb-0">{{booster.booster.achived_rank_wr.rank_name}}</p>
                 </div>
                 <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                     <p class="mb-0">
@@ -131,7 +131,7 @@
                 <input type="radio" id="division-boost" name="radio-group-type" checked>
                 <label for="division-boost" class="radio-btn" style="width: 147px;">Normal Rank</label>
                 <input type="radio" id="legendary-boost" name="radio-group-type">
-                <label for="legendary-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 173px;">Legendary Rank</label>
+                <label for="legendary-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2 d-none" style="width: 173px;">Legendary Rank</label>
             </div>
 
             <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5" id="OrderNow">
@@ -235,6 +235,7 @@
                             <p class="text-white mt-4" style="font-size: 16px;">Server</p>
                             <div class="select-container">
                                 <select class="division-servers-select">
+                                    <option value="------------">------------</option>
                                     <option value="North America">North America</option>
                                     <option value="Europe West">Europe West</option>
                                     <option value="Brazil">Brazil</option>

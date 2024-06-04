@@ -46,6 +46,12 @@ class RankBoostSerializer(serializers.Serializer):
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
         return data   
+    
+    def validate_server(self, value):
+        valid_servers = ["US West", "US East", "EU West", "EU East", "Asia", "South America", "Russia", "South Africa", "OCE"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value
 
 
 class PlacementSerializer(serializers.Serializer):
@@ -91,3 +97,9 @@ class PlacementSerializer(serializers.Serializer):
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
         return data   
+    
+    def validate_server(self, value):
+        valid_servers = ["US West", "US East", "EU West", "EU East", "Asia", "South America", "Russia", "South Africa", "OCE"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value

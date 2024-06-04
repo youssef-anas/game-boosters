@@ -41,6 +41,14 @@ class DivisionSerializer(serializers.Serializer):
         except Booster.DoesNotExist:
             raise serializers.ValidationError("Please select valid booster") 
         
+  def validate_server(self, value):
+    valid_servers = [
+        "Americas", "Europe", "Asia", "China"
+    ]
+    if value not in valid_servers:
+        raise serializers.ValidationError("Invalid server selection")
+    return value               
+        
   def to_internal_value(self, data):
     data = super().to_internal_value(data)
     if data['select_booster'] == False  :

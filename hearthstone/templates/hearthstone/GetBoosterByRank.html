@@ -44,7 +44,7 @@
               </div>
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                 <img src="{{booster.booster.achived_rank_hearthstone.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
-                <p class="ms-4 mb-0">{{booster.booster.achived_rank_valo.rank_name}}</p>
+                <p class="ms-4 mb-0">{{booster.booster.achived_rank_hearthstone.rank_name}}</p>
               </div>
               <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
                 <p class="mb-0">
@@ -239,6 +239,7 @@
               <p class="text-white mt-4" style="font-size: 16px;">Server</p>
               <div class="select-container">
                 <select class="division-servers-select">
+                  <option value="------------">------------</option>
                   <option value="Americas">Americas </option>
                   <option value="Europe">Europe</option>
                   <option value="Asia">Asia</option>
