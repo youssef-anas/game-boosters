@@ -9,6 +9,16 @@
 <link rel="stylesheet" href="{% static 'booster/css/booster-details.css' %}">
 <!-- STYLE FEEDBACK -->
 <link href="{% static 'components/css/customer-feedbacks.css'%}" rel="stylesheet" />
+<style>
+  @media (max-width: 767.98px) {
+    .image img {
+      width: 148px !important;
+      height: 148px !important;
+    }
+  }
+</style>
+
+
 {% endblock %}
 {% block container %}
 <div class="booster-container">
@@ -21,16 +31,19 @@
   </div>
 
   <div class="booster container">
+
+
+
     <div class="booster-info py-4 row justify-content-between">
 
-      <div class="image col-md-3 col-12 p-0">
+      <div class="image col-md-3 col-12 p-0 mb-4 mb-md-0 text-center text-md-left">
         <img src="{{booster.booster.get_image_url}}" alt="{{booster.username}} Profile Image"
           class="rounded-circle img-fluid profile-image">
       </div>
 
-      <div class="col-md-5 col-12 p-0">
-        <h1 class="fw-bold booster-username">{{booster.username}}</h1>
-        <div class="ranks d-flex">
+      <div class="info-data col-md-5 col-12 p-0 mb-4 mb-md-0">
+        <h1 class="fw-bold booster-username text-center text-md-start">{{booster.username}}</h1>
+        <div class="ranks d-flex flex-wrap justify-content-center justify-content-md-start">
           {% if booster.booster.is_wr_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_wr.get_image_url %}
@@ -40,7 +53,7 @@
             {{booster.booster.achived_rank_wr.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_valo_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_valo.get_image_url %}
@@ -50,7 +63,7 @@
             {{booster.booster.achived_rank_valo.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_pubg_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_pubg.get_image_url %}
@@ -60,7 +73,7 @@
             {{booster.booster.achived_rank_pubg.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_lol_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_lol.get_image_url %}
@@ -70,7 +83,7 @@
             {{booster.booster.achived_rank_lol.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_tft_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_tft.get_image_url %}
@@ -80,7 +93,7 @@
             {{booster.booster.achived_rank_tft.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_wow_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_wow.get_image_url %}
@@ -90,7 +103,7 @@
             {{booster.booster.achived_rank_wow.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_hearthstone_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_hearthstone.get_image_url %}
@@ -100,17 +113,17 @@
             {{booster.booster.achived_rank_hearthstone.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_mobleg_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_mobleg.get_image_url %}
-            <img src="{{booster.booster.achived_rank_mobleg.get_image_url}}" alt="Rank Name" class="img-fluid"
-              width="32" height="32" />
+            <img src="{{booster.booster.achived_rank_mobleg.get_image_url}}" alt="Rank Name" class="img-fluid" width="32"
+              height="32" />
             {% endif %}
             {{booster.booster.achived_rank_mobleg.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_rl_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_rl.get_image_url %}
@@ -120,7 +133,7 @@
             {{booster.booster.achived_rank_rl.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_dota2_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_dota2.get_image_url %}
@@ -130,7 +143,7 @@
             {{booster.booster.achived_rank_dota2.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_hok_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_hok.get_image_url %}
@@ -140,7 +153,7 @@
             {{booster.booster.achived_rank_hok.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_overwatch2_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_overwatch2.get_image_url %}
@@ -150,7 +163,7 @@
             {{booster.booster.achived_rank_overwatch2.rank_name}}
           </p>
           {% endif %}
-
+    
           {% if booster.booster.is_csgo2_player %}
           <p class="mb-0 me-2">
             {% if booster.booster.achived_rank_csgo2.get_image_url %}
@@ -160,31 +173,31 @@
             {{booster.booster.achived_rank_csgo2.rank_name}}
           </p>
           {% endif %}
-
+    
         </div>
-
+    
         <h3 class="fw-bold mt-4">Bio:</h3>
-        <p>{{booster.booster.about_you}}</p>
+        <p class="p-1">{{booster.booster.about_you}}</p>
       </div>
-
-      <div class="col-md-2 col-5 p-0">
+    
+      <div class="col-md-2 col-6 p-0 mb-4 mb-md-0">
         <div class="mb-md-5 mb-3">
           <p class="fw-bold">Completed Boosts:</p>
           <p>{{booster.orders_count}}</p>
         </div>
-
+    
         <div>
           <p class="fw-bold">On MadBoost:</p>
           <p>{{booster.created_at|format_date}}</p>
         </div>
       </div>
-
-      <div class="col-md-2 col-5 p-0">
+    
+      <div class="col-md-2 col-6 p-0">
         <div class="mb-md-5 mb-3">
           <p class="fw-bold">Last Boost:</p>
           <p>{{booster.last_boost|custom_timesince}}</p>
         </div>
-
+    
         <div>
           <p class="fw-bold">Customer Ratings:</p>
           <p class="mb-0">
@@ -199,8 +212,13 @@
           </p>
         </div>
       </div>
-
+    
     </div>
+    
+
+
+
+
     {% if booster.booster.can_choose_me %}
     <div class="games-he-play mt-5">
       <h3 class="fw-bold text-center">Select This Booster for:</h3>
