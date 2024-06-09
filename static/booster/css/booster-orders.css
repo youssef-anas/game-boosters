@@ -17,7 +17,7 @@ label {
   min-height: 690px;
   background-image: url('./../../accounts/images/customer_side_bg.jpg');
   background-size: cover;
-  background-position: center;
+  background-position: top center;
   position: relative;
   background-position-y: -10px;
   background-size: 100% 800px;
@@ -29,7 +29,9 @@ label {
   background-image: url('./../../accounts/images/bg_cover.png');
   padding-top: 8rem;
   background-size: 100% 800px;
+  background-size: cover;
   background-repeat: no-repeat;
+  background-position: top center;
 }
 /* End Container */
 

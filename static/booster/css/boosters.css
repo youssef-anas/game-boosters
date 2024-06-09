@@ -14,6 +14,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 @media (max-width: 1199px) {
   .booster-container .booster-landing {
@@ -132,6 +134,9 @@ select, .select-container::after {
   border-top-right-radius: calc(var(--main-radius) * 2);;
   background-position-x: -100px;
   background-image: url('./../../games/images/bg_cover.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
 }
 .boosters .booster .booster-data {
   width: 100%;

@@ -13,6 +13,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-repeat: no-repeat;
+  /* background-position: top center; */
 }
 .booster-container .booster-landing::before {
   content: "";
@@ -160,6 +162,8 @@
   background-size: cover;
   object-fit: cover;
   border-radius: var(--main-radius);
+  background-repeat: no-repeat;
+  background-position: top center;
 }
 .game-banner {
   width: 100%;

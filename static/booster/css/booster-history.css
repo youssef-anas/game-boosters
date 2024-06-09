@@ -22,6 +22,9 @@
   top: 0;
   left: 0;
   background-image: url('./../../games/images/bg_cover.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: top center;
 }
 .history-landing .heading {
   position: absolute;

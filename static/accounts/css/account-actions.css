@@ -22,15 +22,28 @@
 
   .signup-content {
     background-image: url('./../images/signup.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
+
   .login-content {
     background-image: url('./../images/login.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
   .reset-password-content {
     background-image: url('./../images/password-reset.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
   .workwithus-content {
     background-image: url('./../images/workwithus.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
   }
 }
 @media (max-width: 767px) {

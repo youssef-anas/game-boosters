@@ -62,7 +62,7 @@ class BaseUser(AbstractUser):
 
         else:
             # If the user is not a booster, return None or any other appropriate value
-            return None
+            return 0.0
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

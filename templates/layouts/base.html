@@ -12,6 +12,21 @@
   <link rel="stylesheet" href="{% static 'base/css/fields.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/framework.css' %}">
   <link id="favicon" rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+  <style>
+  .banner {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+  }
+
+  .bner-img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+  }
+  </style>
 
   <title>{% block title %}Mad Boost{% endblock %}</title>
   {% block style %}

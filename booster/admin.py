@@ -64,6 +64,15 @@ class BoosterAdminForm(ModelForm):
 @admin.register(Booster)
 class YourModelAdmin(admin.ModelAdmin):
     form = BoosterAdminForm
+    def has_delete_permission(self, request, obj=None):
+        return False
+    
+    fieldsets = (
+        (None, {'fields': ('games', 'paypal_account', 'discord_id', 'can_choose_me')}),
+        ('Personal info', {'fields': ('languages', 'about_you', 'profile_image')}),
+        ('played Games', {'fields': ('is_wr_player', 'is_valo_player', 'is_pubg_player','is_lol_player','is_tft_player','is_wow_player', 'is_hearthstone_player', 'is_mobleg_player', 'is_rl_player', 'is_dota2_player', 'is_hok_player', 'is_overwatch2_player', 'is_csgo2_player')}),
+        ('Ranks', {'fields': ('achived_rank_wr', 'achived_rank_valo', 'achived_rank_pubg', 'achived_rank_lol', 'achived_rank_tft', 'achived_rank_wow', 'achived_rank_hearthstone', 'achived_rank_mobleg', 'achived_rank_rl', 'achived_rank_dota2', 'achived_rank_hok', 'achived_rank_overwatch2', 'achived_rank_csgo2')}),
+    )
 
 class CreateBoosterForm(ModelForm):
     class Meta:

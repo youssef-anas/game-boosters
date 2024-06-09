@@ -1,20 +1,6 @@
 from django.db import models
 from accounts.models import BaseUser, BaseOrder
-from wildRift.models import WildRiftRank
-from valorant.models import ValorantRank
-from pubg.models import PubgRank
-from leagueOfLegends.models import LeagueOfLegendsRank
-from tft.models import TFTRank
-from hearthstone.models import HearthstoneRank
-from rocketLeague.models import RocketLeagueRank
-from mobileLegends.models import MobileLegendsRank
-from WorldOfWarcraft.models import WorldOfWarcraftRank
-from overwatch2.models import Overwatch2Rank
-from dota2.models import Dota2Rank
-from csgo2.models import Csgo2Rank
-from honorOfKings.models import HonorOfKingsRank
 from games.models import Game
-from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django_countries.fields import CountryField
 
@@ -63,12 +49,9 @@ class BoosterRank(models.Model):
 
 class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
-    # profile_image_url = models.URLField(null=True, blank=True, max_length=1000)
-    profile_image = models.ImageField(upload_to=profile_image_upload_path, blank=True, null=True)
+    profile_image = models.ImageField(upload_to=profile_image_upload_path, blank=True, null=True, default='/booster/images/27/ed5a10fa-3efe-41ed-a5f6-dc518d3393ef.webp')
     about_you = models.TextField(max_length=300,null=True, blank=True)
     can_choose_me = models.BooleanField(default=False ,blank=True)
-    choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False, max_length=200)
-    start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False, max_length=200)
 
     languages = models.ManyToManyField(Language)
     games = models.ManyToManyField(Game, related_name='games')

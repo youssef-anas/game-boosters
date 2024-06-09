@@ -17,11 +17,11 @@ label {
   min-height: 690px;
   background-image: url('./../../accounts/images/customer_side_bg.jpg');
   background-size: cover;
-  background-position: center;
   position: relative;
   background-position-y: -10px;
   background-size: 100% 800px;
   background-repeat: no-repeat;
+  background-position: top center;
 }
 .orders-jobs-container .orders-jobs-contant .overlay {
   width: 100%;
@@ -30,7 +30,9 @@ label {
   padding-top: 8rem;
   padding-bottom: 8rem;
   background-size: 100% 800px;
+  background-size: cover;
   background-repeat: no-repeat;
+  background-position: top center;
 }
 /* End Container */
 

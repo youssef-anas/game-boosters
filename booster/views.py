@@ -143,7 +143,7 @@ class ClaimOrderView(View):
         refresh_order_page()
         room = Room.get_specific_room(order.customer.username, order.name)
         if room:
-            Message.create_booster_message(room, "Hello there, I will be your booster", request.user)
+            Message.create_booster_message(room, "Hi, I'm your booster. It's a pleasure to work together, and I will start your order in 15 minutes or less.", request.user)
 
         send_refresh_msg(request.user.username , order.customer.username, order.name)
         return redirect(reverse_lazy('booster.orders'))
@@ -170,13 +170,18 @@ def boosters(request):
         return game_fields_map.get(game_id)
 
     if request.method == 'POST':
-        game_id = request.POST.get('game_id', 1)
-        game_id = int(game_id)
+        game_id = request.POST.get('game_id')
     else:
-        game_id = 1 
+        game_id = request.GET.get('game_id')
+
+    try:
+        game_id = int(game_id)
+    except (TypeError, ValueError):
+        print(f"Invalid game_id: {game_id}")
+        game_id = 1  # Default game_id if none provided or invalid
 
     game_pk_condition = Case(
-        When(booster_orders__game__pk=game_id , booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
+        When(booster_orders__game__pk=game_id, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
         default=0,
         output_field=IntegerField()
     )
@@ -197,8 +202,9 @@ def boosters(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         boosters_with_additional_data = []
         for booster in boosters:
-            profile_image_url = booster.profile_image.url if booster.profile_image else None
-            achived_rank_image_url = booster.achived_rank_image if booster.achived_rank_image else None
+            profile_image_url = booster.get_image_url()
+            achived_rank_image_url = booster.achived_rank_image if booster.achived_rank_image else ''
+            languages = [language.language for language in booster.booster.languages.all()]  # Convert to a list of strings
             data = {
                 "id": booster.pk,
                 "username": booster.username,
@@ -209,8 +215,7 @@ def boosters(request):
                 "achived_rank_image": achived_rank_image_url,
                 "order_count": booster.order_count,
                 "average_rating": booster.get_average_rating(),
-
-                'languages': booster.booster.languages,
+                'languages': languages,  # Use the list of strings
                 'last_boost': custom_timesince(booster.last_boost),
                 'on_madboost': format_date(booster.created_at),
             }

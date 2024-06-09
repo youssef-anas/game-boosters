@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.contrib.admin.models import LogEntry
 # Register your models here.
 
 from django.contrib import admin
@@ -9,18 +9,24 @@ from chat.models import  Room, Message
 from accounts.models import Captcha
 from django.utils.html import format_html
 
+class AdminLog(admin.ModelAdmin):
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+admin.site.register(LogEntry, AdminLog)
+
+
 admin.site.register(Captcha)
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
-    list_display = ('username', 'email', 'is_staff','is_active','is_booster','is_customer','is_admin')
+    list_display = ('username', 'email', 'is_active','is_booster','is_customer')
     search_fields = ('email', 'username',)
-    ordering = ('email',)
+    ordering = ('id',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password','is_online','last_online')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'country', 'date_of_birth')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser','is_booster','is_customer','is_admin')}),
         ('Important dates', {'fields': ('last_login', 'date_joined', 'rest_password_code', 'activation_code')}),
-        # ('History', {'fields': ('show_history',)}),
     )
     # readonly_fields = ('show_history',)  # Make the history field read-only
 

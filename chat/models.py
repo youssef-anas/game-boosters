@@ -51,7 +51,7 @@ class Room(models.Model):
                     is_for_admins = False,
                 )
             if booster :
-                Message.create_booster_message(room=room, message="Hello there, I will be your booster", sender=booster)
+                Message.create_booster_message(room=room, message="Hi, I'm your booster. It's a pleasure to work together, and I will start your order in 15 minutes or less.", sender=booster)
             else:
                 Message.create_booster_message(room=room, message='One of our booster will join chat soon...', sender=BaseUser.objects.get(id=1))
         return room  

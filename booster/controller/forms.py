@@ -61,7 +61,7 @@ BaseUser = get_user_model()
 class ProfileEditForm(UserChangeForm, forms.ModelForm):
     full_name = forms.CharField(max_length=300, 
     widget=forms.TextInput(attrs={'placeholder': 'Enter full name', 'class': 'form-control custom-input'}),
-    label='Name')
+    label='Name', required=False)
 
     profile_image = forms.ImageField(required=False, widget=forms.ClearableFileInput())
     about_you = forms.CharField(
