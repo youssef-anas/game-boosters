@@ -11,6 +11,27 @@
 <link rel="stylesheet" href="{% static 'customer/css/customer_order.css' %}">
 <!-- Ranks Colors -->
 <link rel="stylesheet" href="{% static 'games/css/ranks-colors.css' %}">
+<!-- Toastify -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<style>
+  .copy-icon {
+    cursor: pointer;
+    font-size: 1em;
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .copy-icon:hover {
+    color: #F26E3E;
+  }
+
+  .copy-icon:focus {
+    outline: none;
+  }
+</style>
 {% endblock %}
 {% block container %}
 <div id="user-id" data-user-id="{{ order.order.booster.id }}"></div>
@@ -329,6 +350,15 @@
                 <h4 style="font-weight: 700;">Account Details</h4>
                 
                 <form action="" class="details pt-2" method="POST" id="details">
+
+                  <div class="d-flex justify-content-between align-items-center">
+                    <label for="userId">Order ID:</label>
+                    <div>
+                      <span id="userIdText{{order.order.order.id}}">{{ order.order.name }}</span>
+                      <i class="fas fa-copy copy-icon" data-target="#userIdText{{order.order.order.id}}"></i>
+                    </div>
+                  </div>
+
                   <input type="hidden" name="order_id" id="order_id" value="{{ order.order.id }}">
                   {% csrf_token %}
                   {% if order.order.message %}
@@ -402,7 +432,7 @@
                   <div class="text ms-md-4 ms-0">
                     <h3>{{order.order.booster.username}}</h3>
                     {% if order.order.booster.is_online %}
-                      <p class="status status-online text-uppercase"><span class="online"></span>Online</p>
+                      <p class="status status-online"><span class="online"></span>Online</p>
                     {% else %}
                       <p class="status status-offline"><span class="offline"></span>Last seen {{ order.order.booster.last_online|custom_timesince }}</p>
                     {% endif %}
@@ -583,4 +613,68 @@
 <script src='{% static "customer/js/customer-side.js" %}'></script>
 <script src='{% static "customer/js/customer-side-details.js" %}'></script>
 <script src='{% static "accounts/js/switch-chat.js" %}'></script>
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const copyIcons = document.querySelectorAll('.copy-icon');
+
+    copyIcons.forEach(icon => {
+      icon.addEventListener('click', function() {
+        const targetSelector = this.getAttribute('data-target');
+        const targetElement = document.querySelector(targetSelector);
+        
+        if (targetElement) {
+          const textToCopy = targetElement.textContent;
+
+          // Attempt to copy using Clipboard API
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              Toastify({
+                text: 'Copied',
+                duration: 3000,
+                close: true,
+                gravity: 'top',
+                position: 'right',
+                backgroundColor: '#4CAF50',
+              }).showToast();
+            }).catch(err => {
+              console.error('Failed to copy text: ', err);
+              // Fallback for older browsers
+              fallbackCopyTextToClipboard(textToCopy);
+            });
+          } else {
+            // Fallback for browsers that don't support the Clipboard API
+            fallbackCopyTextToClipboard(textToCopy);
+          }
+        }
+      });
+    });
+
+    function fallbackCopyTextToClipboard(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";  
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        const successful = document.execCommand('copy');
+        const msg = successful ? 'Copied' : 'Error: unable to copy';
+        Toastify({
+          text: msg,
+          duration: 3000,
+          close: true,
+          gravity: 'top',
+          position: 'right',
+          backgroundColor: '#4CAF50',
+        }).showToast();
+      } catch (err) {
+        console.error('Fallback: Unable to copy text', err);
+      }
+
+      document.body.removeChild(textArea);
+    }
+  });
+</script>
 {% endblock %}

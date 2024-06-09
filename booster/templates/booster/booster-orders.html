@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="{% static 'booster/css/booster-orders.css' %}">
 <!-- Ranks Colors -->
 <link rel="stylesheet" href="{% static 'games/css/ranks-colors.css' %}">
+<!-- Toastify -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
 <style>
@@ -62,6 +63,16 @@
   .toggle-password-checkbox:checked ~ .password-field {
     display: none;
   }
+  .scrollBtn {
+          display: none;
+      }
+      @media only screen and (max-width: 768px) {
+          .scrollBtn {
+              display: inline-flex;
+              margin: 10px;
+          }
+        }
+  
 </style>
 {% endblock %}
 {% block container %}
@@ -735,6 +746,7 @@
                     {% endif %}
 
                     <div class="avalible-to-play flex-end">
+                      <button style="background-color: #F26E3E;" class="btn scrollBtn">Update progress</button>
                       <button class="btn">Available to Play</button>
                     </div>
                   </div>
@@ -969,6 +981,18 @@
 
       document.body.removeChild(textArea);
     }
+  });
+</script>
+<script>
+  function scrollToTarget() {
+      window.scrollTo({
+          top: 1930, 
+          behavior: 'smooth' 
+      });
+  }
+
+  document.querySelectorAll('.scrollBtn').forEach(button => {
+      button.addEventListener('click', scrollToTarget);
   });
 </script>
 

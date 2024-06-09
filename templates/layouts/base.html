@@ -65,9 +65,11 @@
                 </li>
                 {% endif %}
     
+                {% if not request.user.is_booster %}
                 <li>
                   <a href="" >Report</a>
                 </li>
+                {% endif %}
     
                 <li>
                   <a href="{% url 'privacy.policy' %}" >Terms of Service</a>
