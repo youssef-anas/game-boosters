@@ -453,6 +453,13 @@ def drop_order(request, order_id):
             order.save()
             base_order.save()
 
+            room = Room.get_specific_room(customer=order.order.customer, order_name=order.order.name)
+
+            drop_message = 'Your order has been dropped.\nPlease wait for another booster to accept your order.'
+            Message.objects.create(content=drop_message, user_id= 1, room=room, msg_type=1)
+
+
+            send_refresh_msg(request.user.username , base_order.customer.username, base_order.name)
             return redirect(reverse_lazy('booster.orders'))
         # except:
         #     return JsonResponse({'Drop Success': False})

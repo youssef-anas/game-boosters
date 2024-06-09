@@ -65,7 +65,7 @@ class Booster(models.Model):
     booster = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='booster', null=True,  limit_choices_to={'is_booster': True})
     # profile_image_url = models.URLField(null=True, blank=True, max_length=1000)
     profile_image = models.ImageField(upload_to=profile_image_upload_path, blank=True, null=True)
-    about_you = models.TextField(max_length=1000,null=True, blank=True)
+    about_you = models.TextField(max_length=300,null=True, blank=True)
     can_choose_me = models.BooleanField(default=False ,blank=True)
     choosen_chat_message = models.CharField(default='Thank you for choose me as your booster, ',null=False, blank=False, max_length=200)
     start_chat_message = models.CharField(default='Hello I will be your booster',null=False, blank=False, max_length=200)
