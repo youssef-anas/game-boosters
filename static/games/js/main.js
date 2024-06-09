@@ -102,6 +102,15 @@ function togglePopupChampion() {
   }
 }
 
+function closeFormChampionWithMakechekboxfalse() {
+  closeFormChampion();
+  const checkbox = document.getElementById("select_champion");
+  checkbox.click();
+  championDataInputs.forEach(input => {
+    input.value = 'null'; 
+  });
+}
+
 function openFormChampoin() {
   document.getElementById("popup-champion-form").style.display = "flex";
   championDataInputs.forEach(input => {
@@ -114,6 +123,8 @@ function openFormChampoin() {
 }
 
 function closeFormChampion() {
+  const selectChampionButton = document.getElementById('selectChampionButton')
+  selectChampionButton.disabled = true
   document.getElementById("popup-champion-form").style.display = "none";
   checkboxes.forEach(checkbox => {
     checkbox.checked = false;
@@ -169,11 +180,24 @@ function togglePopupBooster() {
   }
 }
 
+function closeFormBoosterWithMakechekboxfalse() {
+  closeFormBooster();
+  const checkbox = document.getElementById("select-booster");
+  checkbox.click();
+  const chooseBoosterInput = document.querySelectorAll(".choose-booster-input");
+  chooseBoosterInput.forEach(input => {
+    input.value = 0;
+  });
+}
+
+
 function openFormBooster() {
   document.getElementById("popup-booster-form").style.display = "block";
 }
 
 function closeFormBooster() {
+  const selectBoosterButton = document.getElementById('selectBoosterButton')
+  selectBoosterButton.disabled = true
   document.getElementById("popup-booster-form").style.display = "none";
   boostersCards.forEach(card => {
     card.classList.remove('selected-booster');
