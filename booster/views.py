@@ -465,6 +465,8 @@ def drop_order(request, order_id):
 
 
             send_refresh_msg(request.user.username , base_order.customer.username, base_order.name)
+
+            refresh_order_page()
             return redirect(reverse_lazy('booster.orders'))
         # except:
         #     return JsonResponse({'Drop Success': False})
