@@ -9,13 +9,17 @@ from accounts.models import BaseUser
 from gameBoosterss.utils import booster_added_message
 from faker import Faker
 from django.shortcuts import redirect
+from accounts.admin import NoDeleteAdmin, NoDeleteEditAdmin
 
 faker = Faker()
 
 
-admin.site.register(OrderRating)
-admin.site.register(Photo)
-admin.site.register(BoosterPortfolio)
+admin.site.register(OrderRating, NoDeleteAdmin)
+# admin.site.register(Photo)
+
+class BoosterPortfolioAdmin(admin.ModelAdmin):
+    list_filter = ('approved',)
+admin.site.register(BoosterPortfolio, BoosterPortfolioAdmin)
 
 class BoosterRankAdmin(admin.ModelAdmin):
     list_filter = ('game',)

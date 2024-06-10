@@ -390,13 +390,13 @@ class Transaction(models.Model):
         ('Tip', 'Tip')
     ]
     user = models.ForeignKey(BaseUser, on_delete=models.PROTECT)
-    amount = models.FloatField(default=0, validators=[MinValueValidator(0)])
-    order = models.ForeignKey(BaseOrder, on_delete=models.PROTECT, related_name='from_order')
-    notice = models.TextField(default='_')
+    amount = models.FloatField(default=0)
+    order = models.ForeignKey(BaseOrder, on_delete=models.PROTECT, related_name='from_order', null=True, blank=True)
+    notice = models.TextField(default='_', max_length=100)
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
-    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.PROTECT, null=True) 
+    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.PROTECT, null=True, blank=True) 
 
     def __str__(self):
         return f'{self.user.username} {self.type} {self.amount}$'

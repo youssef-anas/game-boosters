@@ -9,14 +9,15 @@ from chat.models import  Room, Message
 from accounts.models import Captcha
 from django.utils.html import format_html
 
-class AdminLog(admin.ModelAdmin):
+
+class NoDeleteAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
+        return False    
+    
+class NoDeleteEditAdmin(NoDeleteAdmin):
+    def has_change_permission(self, request, obj=None):
         return False
 
-admin.site.register(LogEntry, AdminLog)
-
-
-admin.site.register(Captcha)
 class CustomUserAdmin(UserAdmin):
     # Customize the display fields for the user model
     list_display = ('username', 'email', 'is_active','is_booster','is_customer')
@@ -28,24 +29,10 @@ class CustomUserAdmin(UserAdmin):
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser','is_booster','is_customer','is_admin')}),
         ('Important dates', {'fields': ('last_login', 'date_joined', 'rest_password_code', 'activation_code')}),
     )
-    # readonly_fields = ('show_history',)  # Make the history field read-only
+    def has_delete_permission(self, request, obj=None):
+            return False
 
-    # def show_history(self, obj):
-    #     return self.get_history(obj)
-    
-    # show_history.short_description = 'History'
-
-admin.site.register(BaseUser ,CustomUserAdmin)
-# admin.site.register(BaseOrder)
-admin.site.register(Room)
-admin.site.register(Message)
-admin.site.register(Wallet)
-admin.site.register(Transaction)
-admin.site.register(BoosterPercent)
-admin.site.register(TokenForPay)
-admin.site.register(Tip_data)
-admin.site.register(PromoCode)
-
+admin.site.register(BaseUser ,CustomUserAdmin)    
 
 class HasBoosterFilter(admin.SimpleListFilter):
     title = 'Has Booster'
@@ -91,3 +78,33 @@ class BaseOrderAdmin(admin.ModelAdmin):
         return None
 
     chat_link.short_description = 'Chat'
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
+
+
+class TransactionAdmin(NoDeleteEditAdmin):
+    def save_model(self, request, obj, form, change):
+        if not change:
+            wallet, created = Wallet.objects.get_or_create(user=obj.user)
+            money = wallet.money
+            wallet.money = money + obj.amount
+            wallet.save()
+        super().save_model(request, obj, form, change)
+
+
+# No edit No delete
+# admin.site.register(Room, NoDeleteEditAdmin)
+# admin.site.register(Message, NoDeleteEditAdmin)
+# admin.site.register(Captcha, NoDeleteEditAdmin)
+admin.site.register(TokenForPay, NoDeleteEditAdmin)
+admin.site.register(LogEntry, NoDeleteEditAdmin)
+admin.site.register(Wallet, NoDeleteEditAdmin)
+admin.site.register(Transaction, TransactionAdmin)
+admin.site.register(Tip_data, NoDeleteEditAdmin)
+
+# No delete
+admin.site.register(BoosterPercent, NoDeleteAdmin)
+admin.site.register(PromoCode, NoDeleteAdmin)
