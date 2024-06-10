@@ -1,4 +1,5 @@
 $('document').ready(function () {
+  const voiceSound = document.getElementById('notificationSound');
   // -------------------------- Chats --------------------------
   const user = JSON.parse(document.getElementById('user').textContent);
   const admin_room = JSON.parse(document.getElementById('admin_room').textContent);
@@ -204,6 +205,10 @@ $('document').ready(function () {
         }
   
       } else {
+        // run voice sound
+        console.log();
+        voiceSound.play();
+
         div.classList.add("booster-chat-message", "booster-message");
       }
   

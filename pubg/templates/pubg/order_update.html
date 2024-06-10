@@ -47,24 +47,20 @@
 <script>
 
 
-  const ranks = document.getElementById('reached_rank_pubg')
-  const divisions = document.getElementById('reached_division_pubg')
-  const marks = document.getElementById('reached_marks_pubg')
-
   function set_marks(){
-    const selectedRank = parseInt(ranks.value);
-    const selectedDivision = parseInt(divisions.value);
+    const selectedRank = parseInt(document.getElementById('reached_rank_pubg').value);
+    const selectedDivision = parseInt(document.getElementById('reached_division_pubg').value);
     if (selectedRank === 9 && selectedDivision === 5) {
-      marks.style.display = 'none'; 
-      marks.selectedIndex = 0;
+      document.getElementById('reached_marks_pubg').style.display = 'none'; 
+      document.getElementById('reached_marks_pubg').selectedIndex = 0;
     } else {
-      marks.style.display = 'block';
+      document.getElementById('reached_marks_pubg').style.display = 'block';
     }
   }
-  ranks.addEventListener('change',function(){
+  document.getElementById('reached_rank_pubg').addEventListener('change',function(){
     set_marks()
   })
-  divisions.addEventListener('change',function(){
+  document.getElementById('reached_division_pubg').addEventListener('change',function(){
     set_marks()
   })
   set_marks()

@@ -220,6 +220,12 @@
   const allowedGameIDs = {{ ids }};
   const orderSocket = new WebSocket(wsProtocol + host + '/ws/order/');
   orderSocket.onmessage = function (e) {
+    
+    const voiceSound = document.getElementById('notificationSound');
+    // run voice sound
+    console.log();
+    voiceSound.play();
+
     let data = JSON.parse(e.data);
     if (data.type === 'order' && Array.isArray(data.order)) {
       // Filter orders based on the allowed game IDs

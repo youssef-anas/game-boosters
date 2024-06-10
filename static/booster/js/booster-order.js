@@ -188,7 +188,12 @@ function chat(booster_room_name, roomName, orderId) {
       div.appendChild(messageElement);
       div.appendChild(imageDiv);
     } else {
+      const voiceSound = document.getElementById('notificationSound');
+      // run voice sound
+      console.log();
+      voiceSound.play();
       messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
+
       if (data.message.msg_type == 4) {
         const imageDiv = document.createElement('div');
         imageDiv.className = 'image ms-3';
