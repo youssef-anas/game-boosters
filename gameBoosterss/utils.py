@@ -410,8 +410,11 @@ def send_available_to_play_mail(user, order, client_url):
         email = order.customer.email
         madboost_user = order.customer
     else:
-        email = order.booster.email
-        madboost_user = order.booster
+        if order.booster:
+            email = order.booster.email
+            madboost_user = order.booster
+        else:
+            return None
     subject = 'Are you Available to Play ?'
     users_list = [email]
     html_content = render_to_string('mails/available_mail_form.html', {'madboost_user': madboost_user,'order': order, 'requested_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'), 'client_url': client_url})
@@ -427,11 +430,25 @@ def send_message_mail(user, order, message):
         email = order.customer.email
         madboost_user = order.customer
     else:
-        email = order.booster.email
-        madboost_user = order.booster
+        if order.booster:
+            email = order.booster.email
+            madboost_user = order.booster
+        else:
+            return None
     subject = 'New Message Arraive'
     users_list = [email]
     html_content = render_to_string('mails/message_mail_form.html', {'madboost_user': madboost_user,'order': order,'message': message})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    return True
+
+def send_mail_bootser_choose(order_name, booster):
+    subject = 'You Have new Order'
+    users_list = [booster.email]
+    html_content = render_to_string('mails/bootser_choose_mail_form.html', {'order_name': order_name,'booster': booster, 'requested_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S')})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)

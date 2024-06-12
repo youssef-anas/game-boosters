@@ -13,18 +13,22 @@ def send_mail_in_thread(user, order, instance):
 @receiver(post_save, sender=Message)
 def message_post_save(sender, instance, created, **kwargs):
     if created:
+        if instance.room.slug.split('-')[-2].startswith('admins'):
+            print("admins_message")
+            return None
         user = instance.user
         room = instance.room.order_name
-        order = BaseOrder.objects.filter(name=room).last()
-
+        order = BaseOrder.objects.filter(name=room).last()        
         # Create and start the thread
         if user.is_booster:
             if order.customer.is_online:
                 print("user is online no message sent, as customer ", order.customer)
                 return None
         else:
-            if order.booster.is_online:   
-                print("user is online no message sent, as booster", order.booster)
-                return None 
+            if order.booster:
+                if order.booster.is_online:   
+                    print("user is online no message sent, as booster", order.booster)
+                    return None 
         email_thread = threading.Thread(target=send_mail_in_thread, args=(user, order, instance))
         email_thread.start()
+        print("message sent")

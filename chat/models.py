@@ -1,7 +1,6 @@
 from django.db import models
 from accounts.models import BaseUser
-from django.utils import timezone
-
+from gameBoosterss.utils import send_mail_bootser_choose
 class Room(models.Model):
     name = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
@@ -52,6 +51,7 @@ class Room(models.Model):
                 )
             if booster :
                 Message.create_booster_message(room=room, message="Hi, I'm your booster. It's a pleasure to work together, and I will start your order in 15 minutes or less.", sender=booster)
+                send_mail_bootser_choose(order_name, booster)
             else:
                 Message.create_booster_message(room=room, message='One of our booster will join chat soon...', sender=BaseUser.objects.get(id=1))
         return room  
