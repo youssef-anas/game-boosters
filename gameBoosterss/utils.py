@@ -403,3 +403,38 @@ def get_booster_game_ids(user):
     if booster.is_csgo2_player:
         ids.append(13)
     return ids       
+
+
+def send_available_to_play_mail(user, order, client_url):
+    if user.is_booster:
+        email = order.customer.email
+        madboost_user = order.customer
+    else:
+        email = order.booster.email
+        madboost_user = order.booster
+    subject = 'Are you Available to Play ?'
+    users_list = [email]
+    html_content = render_to_string('mails/available_mail_form.html', {'madboost_user': madboost_user,'order': order, 'requested_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'), 'client_url': client_url})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    return True
+
+def send_message_mail(user, order, message):
+    if user.is_booster:
+        email = order.customer.email
+        madboost_user = order.customer
+    else:
+        email = order.booster.email
+        madboost_user = order.booster
+    subject = 'New Message Arraive'
+    users_list = [email]
+    html_content = render_to_string('mails/message_mail_form.html', {'madboost_user': madboost_user,'order': order,'message': message})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    return True

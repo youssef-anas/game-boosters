@@ -66,7 +66,7 @@
             <div class="actions d-flex flex-wrap align-items-center gap-md-4 gap-2">
   
               <div class="avalible-to-play">
-                <button class="btn">Available to Play</button>
+                <button id="{{order.order.id}}" class="btn available-btn">Available to Play</button>
               </div>
   
               <div class="extend-order">
@@ -609,11 +609,13 @@
 <script>
   let staticUrl = "{% static 'base/images/no_profile_image.png' %}";
 </script>
+
 <script src='{% static "accounts/js/readmore.js" %}'></script>
 <script src='{% static "customer/js/customer-side.js" %}'></script>
 <script src='{% static "customer/js/customer-side-details.js" %}'></script>
 <script src='{% static "accounts/js/switch-chat.js" %}'></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="{% static 'base/js/mails.js' %}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const copyIcons = document.querySelectorAll('.copy-icon');

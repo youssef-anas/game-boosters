@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data
 from customer.controllers.order_creator import create_order
 from chat.models import Room, Message
-from gameBoosterss.utils import refresh_order_page, send_change_data_msg
+from gameBoosterss.utils import refresh_order_page, send_change_data_msg, send_available_to_play_mail
 # from accounts.tasks import update_database_task
 # from django_q.tasks import async_task
 from django.utils import timezone
@@ -354,3 +354,43 @@ class BaseOrderFormView(FormView):
             order = BaseOrder.objects.filter(name=order_name).order_by('id').last()
             context['order'] = order
         return context
+    
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.core.cache import cache
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from datetime import datetime, timedelta
+
+class AvailableToPlayMail(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id):
+        user = request.user
+        cache_key = f"available_to_play_mail_{user.id}_{id}"
+        block_duration = timedelta(minutes=14)
+
+        # Check if the user has made a request within the last 5 minutes
+        last_request_time = cache.get(cache_key)
+        if last_request_time:
+            time_since_last_request = datetime.now() - last_request_time
+            if time_since_last_request < block_duration:
+                remaining_time = block_duration - time_since_last_request
+                minutes, seconds = divmod(remaining_time.seconds, 60)
+                return Response({
+                    'message': 'You can only send an available to play mail every 5 minutes.',
+                    'remaining_time': f'{minutes} minutes, {seconds} seconds'
+                }, status=403)
+
+        host = request.get_host()
+        order = get_object_or_404(BaseOrder, Q(pk=id) & (Q(customer=user) | Q(booster=user)))
+        client_url = f"{request.scheme}://{host}"
+        print(client_url)
+        send_available_to_play_mail(user, order, client_url)
+
+        # Update the cache with the current request time
+        cache.set(cache_key, datetime.now(), timeout=block_duration.seconds)
+
+        return Response({'message': 'Available to play mail sent successfully'})
