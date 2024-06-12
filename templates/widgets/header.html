@@ -43,8 +43,8 @@
                 <li class="mx-auto">
                   <ul class="main-links">
                     <li class="links-hidden"><a href="{% url 'booster.setting' %}">Profile</a></li>
-                    <li class="links-hidden"><a href="{% url 'booster.orders' %}">Orders</a></li>
-                    <li class="links-hidden"><a href="{% url 'orders.jobs' %}">Jobs</a></li>
+                    <li class="links-hidden"><a href="{% url 'booster.orders' %}">My Orders</a></li>
+                    <li class="links-hidden"><a href="{% url 'orders.jobs' %}">Get Order</a></li>
                     <li>
                       <a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>
                         <span class="me-2 fw-bold">Last Orders</span>
@@ -57,6 +57,15 @@
                         <span style="color: #FFFFFF80" class="fw-bold">{{ request.user.wallet.money|floatformat:2 }}$</span>
                       </a>
                     </li>
+                    <li class="links-hidden">
+                      <a>
+                        <label class="dropdown-item soundclass d-flex justify-content-start align-items-center">
+                          <input class="sync-checkbox" type="checkbox" id="sound-mute-checkbox" {% if request.user.sound_muted %}checked{% endif %}>
+                          <span class="sound-slider round my-auto"></span>
+                          <p class="my-auto mx-1">Sounds</p>
+                        </label>
+                      </a>
+                    </li>
                     <li class="links-hidden"><a href="{% url 'account.logout' %}">Logout</a></li>
                   </ul>
                 </li>
@@ -65,6 +74,15 @@
                     {{ request.user.first_name }} {{ request.user.last_name }}
                   </button>
                   <ul class="dropdown-menu">
+                    <li>
+                      <a>
+                        <label class="dropdown-item soundclass d-flex justify-content-start align-items-center">
+                          <input class="sync-checkbox" type="checkbox" id="sound-mute-checkbox" {% if request.user.sound_muted %}checked{% endif %}>
+                          <span class="sound-slider round my-auto"></span>
+                          <p class="my-auto mx-1">Sounds</p>
+                        </label>
+                      </a>
+                    </li>
                     <li><a class="dropdown-item" href="{% url 'booster.setting' %}">Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'booster.orders' %}">My Orders</a></li>
                     <li><a class="dropdown-item" href="{% url 'orders.jobs' %}">Get Order</a></li>
@@ -81,6 +99,15 @@
                     <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                     <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>
                     <li><a href="#" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
+                    <li class="links-hidden">
+                      <a>
+                        <label class="dropdown-item soundclass d-flex justify-content-start align-items-center">
+                          <input class="sync-checkbox" type="checkbox" id="sound-mute-checkbox">
+                          <span class="sound-slider round my-auto"></span>
+                          <p class="my-auto mx-1">Sounds</p>
+                        </label>
+                      </a>
+                    </li>
                     <li class="links-hidden"><a href="{% url 'account.logout' %}">Log out</a></li>
                   </ul>
                 </li>
@@ -89,6 +116,15 @@
                     {{ request.user.first_name }} {{ request.user.last_name }}
                   </button>
                   <ul class="dropdown-menu">
+                    <li>
+                      <a>
+                        <label class="dropdown-item soundclass d-flex justify-content-start align-items-center">
+                          <input class="sync-checkbox" type="checkbox" id="sound-mute-checkbox">
+                          <span class="sound-slider round my-auto"></span>
+                          <p class="my-auto mx-1">Sounds</p>
+                        </label>
+                      </a>
+                    </li>
                     <li><a class="dropdown-item" href="{% url 'customer.setting' %}">Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'account.logout' %}">Log out</a></li>
                   </ul>
@@ -100,4 +136,39 @@
       </div>
     </div>
   </div>
+  <script>
+    if (!localStorage.getItem('sound')) {
+      localStorage.setItem('sound', true);
+    }
+    const getSoundValue = () => {
+    const sound = localStorage.getItem('sound');
+    // Convert the retrieved value to a boolean
+    return sound === 'true';
+    };
+
+    const soundCheckBoxes = document.querySelectorAll('.sync-checkbox');
+
+    soundCheckBoxes.forEach((checkbox)=>{
+      const sound = getSoundValue()
+      checkbox.checked = sound
+    })
+
+    soundCheckBoxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        if (this.checked) {
+          soundCheckBoxes.forEach(cb => {
+            cb.checked = true;
+          });
+          localStorage.setItem('sound', true);
+          getSoundValue()
+        } else {
+          soundCheckBoxes.forEach(cb => {
+            cb.checked = false;
+          });
+          localStorage.setItem('sound', false);
+          getSoundValue()
+        }
+      });
+    });
+    </script>
   

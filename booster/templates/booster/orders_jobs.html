@@ -224,7 +224,9 @@
     const voiceSound = document.getElementById('notificationSound');
     // run voice sound
     console.log();
-    voiceSound.play();
+    if (getSoundValue()){
+      voiceSound.play();
+    }
 
     let data = JSON.parse(e.data);
     if (data.type === 'order' && Array.isArray(data.order)) {

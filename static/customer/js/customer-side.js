@@ -207,7 +207,9 @@ $('document').ready(function () {
       } else {
         // run voice sound
         console.log();
-        voiceSound.play();
+        if (getSoundValue()){
+          voiceSound.play();
+        }
 
         div.classList.add("booster-chat-message", "booster-message");
       }

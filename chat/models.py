@@ -68,6 +68,8 @@ class Room(models.Model):
                     order_name=order_name,
                     is_for_admins = True,
                 )
+            Message.create_booster_message(room=room, message='Welcome, it`s honor for us to see you in our site', sender=BaseUser.objects.get(id=1))
+            Message.create_booster_message(room=room, message='If you have any questions, do not hesitate to ask', sender=BaseUser.objects.get(id=1))
         return room
     
     @classmethod

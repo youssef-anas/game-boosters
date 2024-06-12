@@ -19,19 +19,22 @@ $('document').ready(function () {
   ordersRadio.each(function () {
     let orderId = $(this).data('order');
     $(this).on('change', function () {
-      ordersDivs.each(function () {
-        let currentOrderId = $(this).data('order');
-        if (currentOrderId == orderId) {
-          $(this).show("slow");
-          let booster_room_name = $(this).data('room');
-          let roomName = $(this).data('slug');
-          chat(booster_room_name, roomName, currentOrderId)
-        } else {
-          $(this).hide("slow");
-        }
-      })
+        ordersDivs.each(function () {
+            let currentOrderId = $(this).data('order');
+            if (currentOrderId == orderId) {
+                $(this).show("slow");
+                let booster_room_name = $(this).data('room');
+                let roomName = $(this).data('slug');
+                chat(booster_room_name, roomName, currentOrderId);
+                
+                // Remove focus from any input fields
+                $(this).find('input').blur();
+            } else {
+                $(this).hide("slow");
+            }
+        })
     })
-  })
+})
 
 
   var rankSelect = $('#reached_rank_wildrift');
@@ -191,7 +194,10 @@ function chat(booster_room_name, roomName, orderId) {
       const voiceSound = document.getElementById('notificationSound');
       // run voice sound
       console.log();
-      voiceSound.play();
+      if (getSoundValue()){
+        voiceSound.play();
+      }
+      
       messageTimeElement.classList.add("message-time", "mb-0", "ms-2");
 
       if (data.message.msg_type == 4) {

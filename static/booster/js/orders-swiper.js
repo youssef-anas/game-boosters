@@ -6,7 +6,7 @@ let swiperCards = new Swiper('.orders-swiper', {
 
   breakpoints: {
     700: {
-      slidesPerView: 1,
+      slidesPerView: 2,
     },
     810: {
       slidesPerView: 2,

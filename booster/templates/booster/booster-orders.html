@@ -15,6 +15,8 @@
 <link rel="stylesheet" href="{% static 'games/css/ranks-colors.css' %}">
 <!-- Toastify -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<!-- popup -->
+<!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"> -->
 
 <style>
   .copy-icon, .toggle-password {
@@ -73,6 +75,22 @@
           }
         }
   
+</style>
+
+<style>
+  .custom-modal {
+    background-color: #433733;
+    color: #ffffff; /* Ensures text is readable against the dark background */
+  }
+  .custom-modal .modal-header, .custom-modal .modal-footer {
+    border-color: #433733; /* Removes border color difference */
+  }
+  .modal-backdrop {
+    z-index: 1040 !important;
+  }
+  .custom-modal {
+    z-index: 1050 !important;
+  }
 </style>
 {% endblock %}
 {% block container %}
@@ -884,10 +902,7 @@
                       </div>
 
                       {% if order.percentage < 80 %}
-                        <form action="{% url 'drop.order' order_id=order.order.order.id %}" method="POST" class="drop-order-form no-disabled-form" data-id="{{order.order.order.id }}">
-                          {% csrf_token %}
-                          <button type="submit" class="btn custom-btn filled">Drop Order</button>
-                        </form>
+                        <button id="{{order.order.order.id }}" type="button" class="drop-order-btn btn custom-btn filled" data-toggle="modal" data-target="#dropOrderModal">Drop Order</button>
                       {% endif %}
                     </div>
       
@@ -904,6 +919,31 @@
   </div>
 
 </div>
+
+
+<!-- Modal Structure -->
+<div class="modal fade" id="dropOrderModal" tabindex="-1" role="dialog" aria-labelledby="dropOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content custom-modal">
+      <div class="modal-header">
+        <h5 class="modal-title" id="dropOrderModalLabel">Confirm Drop Order</h5>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to drop this order?
+        <p class="text-danger small"><span><strong>NOTE: </strong></span>we limit drop order to one every month</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <form id="dropform" action="" method="POST" class="drop-order-form no-disabled-form" data-id="{{order.order.order.id }}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Drop Order</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 {% endblock %}
 {% block script %}
 <script>
@@ -920,8 +960,23 @@
 <script src="{% static 'booster/js/image-size.js' %}"></script>
 <script src="{% static 'booster/js/orders-swiper.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<!-- Bootstrap JS and dependencies (jQuery and Popper.js) -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
+
+    const drop_btns = document.querySelectorAll('.drop-order-btn');
+    const drop_form = document.getElementById('dropform');
+    const drop_url = 'http://127.0.0.1:8000/booster/drop-order/'
+
+    drop_btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          drop_form.action = drop_url + btn.id
+        });
+    });
+
     const copyIcons = document.querySelectorAll('.copy-icon');
 
     copyIcons.forEach(icon => {
