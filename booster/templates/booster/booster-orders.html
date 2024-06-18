@@ -491,7 +491,7 @@
   
                       <div class="form-update">
                         <!-- Here We Change Update Component Depend On Game -->
-                        {% if order.order.order.game.link == 'wildRift' %}
+                        {% if order.order.order.game.pk == 1 %}
                           {% include 'wildRift/order_update.html' %}
   
                         {% elif order.order.order.game.pk == 'valorant' %}
