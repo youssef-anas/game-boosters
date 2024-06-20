@@ -494,41 +494,41 @@
                         {% if order.order.order.game.pk == 1 %}
                           {% include 'wildRift/order_update.html' %}
   
-                        {% elif order.order.order.game.pk == 'valorant' %}
+                        {% elif order.order.order.game.pk == 2 %}
                         
                           {% include 'valorant/order_update.html' with valorant_ranks=valorant_ranks %}
   
-                        {% elif order.order.order.game.link == 'lol' %}
+                        {% elif order.order.order.game.pk == 4 %}
                           {% include 'leagueOfLegends/order_update.html' with lol_ranks=lol_ranks %}
   
                         {% elif order.order.order.game.pk == 3 %}
                           {% include 'pubg/order_update.html' with pubg_ranks=pubg_ranks %}
   
-                        {% elif order.order.order.game.link == 'tft' %}
+                        {% elif order.order.order.game.pk == 5 %}
                           {% include 'tft/order_update.html' with tft_ranks=tft_ranks %}
   
-                        {% elif order.order.order.game.link == 'hearthstone' %}
+                        {% elif order.order.order.game.pk == 7 %}
                           {% include 'hearthstone/order_update.html' with hearthstone_ranks=hearthstone_ranks %}
   
-                        {% elif order.order.order.game.link == 'rocketLeague' %}
+                        {% elif order.order.order.game.pk == 9 %}
                           {% include 'rocketLeague/order_update.html' with rocketLeague_ranks=rocketLeague_ranks %}
                         
-                        {% elif order.order.order.game.link == 'hok' %}
+                        {% elif order.order.order.game.pk == 11 %}
                           {% include 'honorOfKings/order_update.html' with hok_ranks=hok_ranks %} 
   
-                        {% elif order.order.order.game.link == 'wow' %}
+                        {% elif order.order.order.game.pk == 6 %}
                           {% include 'wow/order_update.html' %}
   
-                        {% elif order.order.order.game.link == 'dota2' %}
+                        {% elif order.order.order.game.pk == 10 %}
                           {% include 'dota2/order_update.html' %}
   
-                        {% elif order.order.order.game.link == 'overwatch2' %}
+                        {% elif order.order.order.game.pk == 12 %}
                           {% include 'overwatch2/order_update.html' %}
   
-                        {% elif order.order.order.game.link == 'csgo2' %}
+                        {% elif order.order.order.game.pk == 13 %}
                           {% include 'csgo2/order_update.html' %}
                         
-                        {% elif order.order.order.game.link == 'mobileLegends' %}
+                        {% elif order.order.order.game.pk == 8 %}
                           {% include 'mobileLegends/order_update.html' %}
                           
                         {% endif %}
