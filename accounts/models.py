@@ -124,8 +124,8 @@ class Wallet(models.Model):
         return f'{self.user.username} {action} {self.money}$'
     
 class PromoCode(models.Model):
-    code                = models.CharField(max_length=50, unique=True)
-    description         = models.CharField(null=True, max_length=50)
+    code                = models.CharField(max_length=255, unique=True)
+    description         = models.CharField(null=True, max_length=255)
     discount_amount     = models.FloatField()
     is_active           = models.BooleanField(default=True)
     expiration_date     = models.DateField()
@@ -231,7 +231,7 @@ class BaseOrder(models.Model):
     data_correct = models.BooleanField(default=False, blank=True)
     message = models.CharField(max_length=300, null=True, blank=True)
 
-    payer_id = models.CharField(blank=True, null=True, max_length=50)
+    payer_id = models.CharField(blank=True, null=True, max_length=255)
 
     promo_code = models.ForeignKey(PromoCode, on_delete=models.DO_NOTHING, null= True, blank=True)
 
@@ -363,8 +363,8 @@ class BaseOrder(models.Model):
         return f'{self.customer} have [{self.game}] order - {self.details}'
 
 class Tip_data(models.Model):
-    payer_id            = models.CharField(max_length=50, null=True)
-    invoice             = models.TextField(max_length=50)
+    payer_id            = models.CharField(max_length=255, null=True)
+    invoice             = models.TextField(max_length=255)
 
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
@@ -405,7 +405,7 @@ import secrets
 
 class TokenForPay(models.Model):
     user                = models.OneToOneField(BaseUser, on_delete=models.PROTECT)
-    token               = models.CharField(max_length=50, unique=True)
+    token               = models.CharField(max_length=255, unique=True)
     invoice             = models.CharField(max_length=1000, unique=True, null=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
