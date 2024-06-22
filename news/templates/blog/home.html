@@ -28,21 +28,21 @@
     <section class="row">
         {% for headline in headlines|slice:":3" %}
         <div class="col-12 col-sm-6 col-lg-4 mb-3 mb-lg-0">
-        <div class="card">
-            <img
-            src="{{headline.get_main_image2}}"
-            class="card-img-top rounded-2"
-            alt="..."
-            />
-            <div class="card-body">
-            <p class="card-text">
-                <!-- Riot reveals the new <span class="text-orange">Skarner</span>. -->
-                {{headline.header}}
-            </p>
-            <p class="card-text muted-text">{{headline.created_at.date}}</p>
+            <div class="card">
+                <img
+                src="{{headline.get_main_image2}}"
+                class="card-img-top rounded-2"
+                alt="..."
+                />
+                <div class="card-body">
+                <p class="card-text">
+                    <!-- Riot reveals the new <span class="text-orange">Skarner</span>. -->
+                    {{headline.header}}
+                </p>
+                <p class="card-text muted-text">{{headline.created_at.date}}</p>
+                </div>
             </div>
-        </div>
-        </div>
+            </div>
         {% endfor %}
     </section>
 

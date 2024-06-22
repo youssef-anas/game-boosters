@@ -10,6 +10,10 @@ body {
   color: #ffffff;
 }
 
+main {
+  padding-top: 120px !important;
+}
+
 
 img.logo {
   height: 85px;
@@ -81,6 +85,7 @@ section {
   background-color: rgba(0, 0, 0, 0.7);
   padding: 20px !important;
   border-radius: 0 0 16px 16px;
+  /*width: 100%;*/
 }
 
 .advertisement-vertical .caption p{
@@ -92,6 +97,7 @@ section {
 .advertisement-horizontal {
   min-width: 20%;
   height: fit-content;
+  max-height: 240px;
 }
 
 .advertisement-horizontal .caption{
@@ -114,6 +120,13 @@ section {
 }
 
 
+/*.row > div:first-of-type {*/
+/*    padding-left: 0;*/
+/*}*/
+
+/*.row > div:last-of-type {*/
+/*    padding-right: 0;*/
+/*}*/
 
 
 @media (max-width: 576px) {
