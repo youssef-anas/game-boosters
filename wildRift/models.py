@@ -51,7 +51,7 @@ class WildRiftMark(models.Model):
     mark_6 = models.FloatField(default=0)
 
     def __str__(self):
-        return f"Mark {self.mark_number} for Tiers: {self.tier} in Rank: {self.rank.rank_name}"
+        return f"Mark {self.mark_number} for Rank: {self.rank.rank_name}"
     
 class WildRiftDivisionOrder(models.Model):
     DIVISION_CHOICES = [

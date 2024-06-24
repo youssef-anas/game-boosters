@@ -20,6 +20,8 @@ class DivisionSerializer(serializers.Serializer):
     extend_order            = serializers.IntegerField()
     promo_code              = serializers.CharField()
 
+    double                  = serializers.BooleanField()
+
     def validate(self, attrs):
         self.booster_validate(attrs)
         self.extend_order_validate(attrs)

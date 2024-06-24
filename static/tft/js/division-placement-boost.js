@@ -26,6 +26,7 @@ function changeUI(achivedValue, element, steps, miuns = 0) {
 // Read Values From Json File
 let divisionPrices = [0];
 let marks_price = [[0, 0, 0, 0, 0, 0]];
+let doubleup = 0;
 Promise.all([
   new Promise(function (resolve, reject) {
     $.getJSON('/static/tft/data/divisions_data.json', function (data) {
@@ -115,6 +116,8 @@ Promise.all([
 
       let result_with_mark = sum
 
+      result_with_mark += result_with_mark * doubleup
+
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
       // Apply promo code 
@@ -187,8 +190,13 @@ Promise.all([
         result_with_mark = result - number_of_mark;
       }
   
+      // Apply double up with total_Percentage
+      new_total_percentage = total_Percentage + doubleup
+      console.log(new_total_percentage)
+
+      
       // Apply extra charges to the result
-      result_with_mark += result_with_mark * total_Percentage;
+      result_with_mark += result_with_mark * new_total_percentage;
   
       // Apply promo code 
       result_with_mark -= result_with_mark * (discount_amount / 100 )
@@ -383,4 +391,23 @@ Promise.all([
       getPlacementPrice();
     }
   });
+
+    // Function to check which radio button is selected
+    const radioButtons = document.querySelectorAll('input[name="radio-group-type"]');
+    const double_input = document.getElementById('duoBoosting');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.checked) {
+                if (radio.id == 'double-up-boost') {
+                  doubleup = 1
+                  double_input.value = true
+                } else {
+                  doubleup = 0
+                  double_input.value = false
+                }
+            }
+            getDivisionPrice(); 
+            getPlacementPrice();
+        });
+    });
 });

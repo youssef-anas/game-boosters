@@ -37,7 +37,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   boost_options = []
 
   if duo_boosting:
-    total_percent += 0.65
+    total_percent += 1.0
     boost_options.append('DUO BOOSTING')
     duo_boosting_value = 1
 

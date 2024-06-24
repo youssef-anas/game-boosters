@@ -84,7 +84,7 @@ def view_that_asks_for_money(request):
     # try:
       # Division
     serializer = DivisionSerializer(data=request.POST)
-
+    extend_order = request.POST.get('extend_order', '')
     if serializer.is_valid():
       extend_order_id = serializer.validated_data['extend_order']
       # Division
@@ -113,5 +113,12 @@ def view_that_asks_for_money(request):
     for field, errors in serializer.errors.items():
       for error in errors:
         messages.error(request, f"{error}")
-    return redirect(reverse_lazy('pubg'))
+    
+    scheme = request.scheme
+    host = request.get_host()
+    full_url = f"{scheme}://{host}/pubg?extend={extend_order}"
+
+    print(full_url)      
+
+    return redirect(full_url)
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

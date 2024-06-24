@@ -109,6 +109,8 @@
       <div class="choise mb-3">
         <input type="radio" id="division-boost" name="radio-group-type" checked>
         <label for="division-boost" class="radio-btn" style="width: 147px;">Rank Boost</label>
+        <input type="radio" id="double-up-boost" name="radio-group-type">
+        <label for="double-up-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Double UP</label>
         <input type="radio" id="placements-boost" name="radio-group-type">
         <label for="placements-boost" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Placement</label>
       </div>
@@ -349,14 +351,14 @@
           <!-- Extra Charges -->
           <div class="extra-charges p-xl-4 px-4 py-5">
             <!-- Solo Or Duo -->
-            <div class="switch-solo-duo p-1 my-xl-0 mt-1 mb-2">
+            <div class="switch-solo-duo p-1 my-xl-0 mt-1 mb-2 invisible">
               <div class="solo ">
-                <input type="radio" id="solo-boosting" name="switch-between-solo-duo" value="solo" checked>
+                <input type="radio" id="solo-boosting" name="switch-between-solo-duo" value="solo" checked disabled>
                 <label for="solo-boosting" class="solo-boosting-label"><i class="fa-solid fa-user me-1"></i> Solo</label>
               </div>
 
               <div class="duo">
-                <input type="radio" id="duo-boosting" name="switch-between-solo-duo" value="duo">
+                <input type="radio" id="duo-boosting" name="switch-between-solo-duo" value="duo" disabled>
                 <label for="duo-boosting" class="duo-boosting-label"><i class="fa-solid fa-user-group me-1"></i> Duo</label>
               </div>
 
