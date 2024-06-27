@@ -26,7 +26,7 @@ function changeUI(achivedValue, element, steps, miuns = 0) {
 let divisionPrices = [0];
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/rocketLeague/data/divisions_data.json', function (data) {
+    $.getJSON('/rocketLeague/divisions-data/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });

@@ -14,6 +14,23 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from .utils import get_overwatch2_divisions_data, get_overwatch2_marks_data, get_overwatch2_placements_data
+
+
+
+def get_overwatch2_divisions(request):
+    divisions_data = get_overwatch2_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_overwatch2_marks(request):
+    marks_data = get_overwatch2_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+def get_overwatch2_placements(request):
+    placements_data = get_overwatch2_placements_data()
+    return JsonResponse(placements_data, safe=False)
+
+
 
 def overwatch2GetBoosterByRank(request):
   order_get_rank_value = None

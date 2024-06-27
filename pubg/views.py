@@ -15,7 +15,15 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
-import os
+from pubg.utils import get_divisions_data, get_marks_data
+
+
+def get_divisions_data_view(request):
+    return JsonResponse(get_divisions_data(), safe=False)
+
+def get_marks_data_view(request):
+    return JsonResponse(get_marks_data(), safe=False)
+
 
 
 def pubgGetBoosterByRank(request):
@@ -27,38 +35,6 @@ def pubgGetBoosterByRank(request):
 
     ranks = PubgRank.objects.all().order_by('id')
     divisions = PubgTier.objects.all().order_by('id')
-    marks = PubgMark.objects.all().order_by('id')
-
-    divisions_data = [
-        [division.from_V_to_VI, division.from_VI_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
-        for division in divisions
-    ]
-
-    marks_data = [
-        [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
-        for mark in marks
-    ]
-
-    # Path to staticfiles directory
-    staticfiles_dir = settings.STATIC_ROOT / 'pubg/data'
-
-    # Ensure the directory exists
-    os.makedirs(staticfiles_dir, exist_ok=True)
-
-    try:
-        with open(staticfiles_dir / 'divisions_data.json', 'w') as json_file:
-            json.dump(divisions_data, json_file)
-        print("Successfully wrote divisions_data.json")
-    except Exception as e:
-        print(f"Error writing divisions_data.json: {e}")
-
-    try:
-        with open(staticfiles_dir / 'marks_data.json', 'w') as json_file:
-            json.dump(marks_data, json_file)
-        print("Successfully wrote marks_data.json")
-    except Exception as e:
-        print(f"Error writing marks_data.json: {e}")
-
     divisions_list = list(divisions.values())
     
     # Feedbacks

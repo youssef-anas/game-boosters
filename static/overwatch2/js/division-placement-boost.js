@@ -5,20 +5,20 @@ let marks_price = [[0, 0, 0, 0, 0]];
 let role_price = 0
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/overwatch2/data/divisions_data.json', function (data) {
+    $.getJSON('/overwatch2/divisions-data/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/overwatch2/data/marks_data.json', function (data) {
+    $.getJSON('/overwatch2/marks-data/', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['','bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grand master', 'champion']
+  const divisionRanks = ['Unranked','bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grand master', 'champion']
 
   const divisionNames = ['', 'V', 'IV', 'III', 'II', 'I']
 

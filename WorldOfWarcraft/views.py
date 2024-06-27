@@ -16,6 +16,11 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 
+def get_wow_prices_data_view(request):
+    prices = WorldOfWarcraftRpsPrice.objects.all().first()
+    prices_data = [prices.price_of_2vs2, prices.price_of_3vs3]
+    return JsonResponse(prices_data, safe=False)
+
 
 def wowGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -26,12 +31,6 @@ def wowGetBoosterByRank(request):
 
   prices = WorldOfWarcraftRpsPrice.objects.all().first()
 
-  prices_data = [prices.price_of_2vs2, prices.price_of_3vs3]
-
-  with open('static/wow/data/prices.json', 'w') as json_file:
-    json.dump(prices_data, json_file)
-
-    
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 6)
   

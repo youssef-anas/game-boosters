@@ -5,7 +5,7 @@
 
     <div class="d-flex flex-wrap justify-content-between">
       <div class="select-container mb-3">
-        <select required name="reached_rank" id="reached_rank_wildrift">
+        <select required name="reached_rank" id="reached_rank_wildrift{{order.order.order.id}}">
           <option value=1 data-mark=2 {% if order.order.reached_rank|lower == 'iron' %} selected {% endif %}>iron</option>
   
           <option value=2 data-mark=3 {% if order.order.reached_rank|lower == 'bronze' %} selected {% endif %}>bronze</option>
@@ -25,7 +25,7 @@
       </div>
   
       <div class="select-container mb-3">
-        <select required name="reached_division" id="reached_division_wildrift">
+        <select required name="reached_division" id="reached_division_wildrift{{order.order.order.id}}">
           <option value="1" {% if order.order.reached_division == 1 and order.order.reached_rank|lower != "master" %}selected{% endif %}>IV</option>
           <option value="2" {% if order.order.reached_division == 2 and order.order.reached_rank|lower != "master" %}selected{% endif %}>III</option>
           <option value="3" {% if order.order.reached_division == 3 and order.order.reached_rank|lower != "master" %}selected{% endif %}>II</option>
@@ -34,7 +34,7 @@
       </div>
   
       <div class="select-container mb-3">
-        <select required name="reached_marks" id="reached_marks_wildrift">
+        <select required name="reached_marks" id="reached_marks_wildrift{{order.order.order.id}}">
           <option value="0" {% if order.order.reached_marks == 0 and order.order.reached_rank|lower != "master" %}selected{% endif %}>0 Mark</option>
           <option value="1" {% if order.order.reached_marks == 1 and order.order.reached_rank|lower != "master" %}selected{% endif %}>1 Marks</option>
           <option value="2" {% if order.order.reached_marks == 2 and order.order.reached_rank|lower != "master" %}selected{% endif %}>2 Marks</option>
@@ -52,5 +52,45 @@
   </form>
 </div>
 <script>
-  console.log("WR RANKS UPDATE")
+  document.addEventListener('DOMContentLoaded', function() {
+  const rankSelect = $('#reached_rank_wildrift{{order.order.order.id}}');
+  const divisionSelect = $('#reached_division_wildrift{{order.order.order.id}}');
+  const marksSelect = $('#reached_marks_wildrift{{order.order.order.id}}');
+
+  if(rankSelect && divisionSelect && marksSelect) {
+    const originalDivisionOptions = divisionSelect.html();
+    const originalMarksOptions = marksSelect.html();
+  
+    function updateOptions() {
+      const selectedRank = rankSelect.find(':selected');
+      const markNumber = selectedRank.data('mark');
+  
+      divisionSelect.html(originalDivisionOptions);
+      
+      marksSelect.html(originalMarksOptions);
+  
+      if (parseInt(selectedRank.val()) === 8) {
+        divisionSelect.val(1);
+        divisionSelect.addClass('d-none')
+        marksSelect.addClass('d-none')
+      } else {
+        divisionSelect.removeClass('d-none')
+        marksSelect.removeClass('d-none')
+        marksSelect.find('option').each(function () {
+          if ($(this).val() > markNumber) {
+            $(this).hide();
+          } else {
+            $(this).show();
+          }
+        });
+      }
+
+    }
+  
+    updateOptions();
+  
+    rankSelect.change(updateOptions);
+  }
+    
+  })
 </script>

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from wildRift.utils import get_wildrift_divisions_data, get_wildrift_marks_data
 
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
@@ -73,14 +74,12 @@ def get_order_result_by_rank(data,extend_order_id):
     
 
     # Read data from JSON file
-    with open('static/wildRift/data/divisions_data.json', 'r') as file:
-        division_price = json.load(file)
-        flattened_data = [item for sublist in division_price for item in sublist]
-        flattened_data.insert(0,0)
-    ##
-    with open('static/wildRift/data/marks_data.json', 'r') as file:
-        marks_data = json.load(file)
-        marks_data.insert(0,[0,0,0,0,0,0,0])
+    division_prices = get_wildrift_divisions_data()
+    flattened_data = [item for sublist in division_prices for item in sublist]
+    flattened_data.insert(0, 0)
+
+    marks_data = get_wildrift_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
     ##    
     start_division = ((current_rank-1)*4) + current_division
     end_division = ((desired_rank-1)*4)+ desired_division

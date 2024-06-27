@@ -36,45 +36,6 @@ $('document').ready(function () {
     })
 })
 
-
-  var rankSelect = $('#reached_rank_wildrift');
-  var divisionSelect = $('#reached_division_wildrift');
-  var marksSelect = $('#reached_marks_wildrift');
-
-  if(rankSelect && divisionSelect && marksSelect) {
-    var originalDivisionOptions = divisionSelect.html();
-    var originalMarksOptions = marksSelect.html();
-  
-    function updateOptions() {
-      var selectedRank = rankSelect.find(':selected');
-      var markNumber = selectedRank.data('mark');
-  
-      divisionSelect.html(originalDivisionOptions);
-      
-      marksSelect.html(originalMarksOptions);
-  
-      if (parseInt(selectedRank.val()) === 8) {
-        divisionSelect.val(1);
-        divisionSelect.addClass('d-none')
-        marksSelect.addClass('d-none')
-      } else {
-        divisionSelect.removeClass('d-none')
-        marksSelect.removeClass('d-none')
-        marksSelect.find('option').each(function () {
-          if ($(this).val() > markNumber) {
-            $(this).hide();
-          } else {
-            $(this).show();
-          }
-        });
-      }
-
-    }
-  
-    updateOptions();
-  
-    rankSelect.change(updateOptions);
-  }
 })
 // ----------------------------- Chats -----------------------------
 function chat(booster_room_name, roomName, orderId) {

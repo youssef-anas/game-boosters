@@ -4,17 +4,15 @@ from django.utils import timezone
 from WorldOfWarcraft.models import  BaseOrder
 from accounts.models import PromoCode
 from booster.models import Booster
+from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice
 
 rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
 
 def get_arena_order_result_by_rank(data,extend_order_id):
   # Prices
-  prices = []
-  with open('static/wow/data/prices.json', 'r') as file:
-    prices = json.load(file)
-
-  price_of_2vs2 = prices[0]
-  price_of_3vs3 = prices[1]
+  prices = WorldOfWarcraftRpsPrice.objects.all().first()
+  price_of_2vs2 = prices.price_of_2vs2
+  price_of_3vs3 = prices.price_of_3vs3
 
   # Ranks
   current_rank = data['current_rank']

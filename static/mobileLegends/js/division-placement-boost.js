@@ -16,7 +16,7 @@ Promise.all([
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
+  const divisionRanks = ['Unranked','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
   const divisionNames = ['', 'V', 'IV', 'III', 'II', 'I']
 
@@ -162,7 +162,6 @@ Promise.all([
       const startRank = ((current_rank - 1) * 5) + current_division;
       const endRank = ((desired_rank - 1) * 5) + desired_division - 1;
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
-      console.log(slicedArray)
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result
   
@@ -342,7 +341,6 @@ Promise.all([
 
   // Server Changes
   placement_server_select_element.on("change", function() {
-    console.log($(this).val())
     selectedPlacementServer = $(this).val();
     getPlacementPrice();
   });

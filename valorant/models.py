@@ -47,6 +47,34 @@ class ValorantPlacement(models.Model):
   def get_image_url(self):
     return self.rank_image.url
   
+
+# -----------------------------------------------------------------------------   
+def get_valorant_divisions_data():
+    divisions = ValorantTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_valorant_marks_data():
+    marks = ValorantMark.objects.all().order_by('id')
+    marks_data = [
+        [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+        for mark in marks
+    ]
+    return marks_data
+
+def get_valorant_placements_data():
+    placements = ValorantPlacement.objects.all().order_by('id')
+    placements_data = [
+        placement.price
+        for placement in placements
+    ]
+    return placements_data
+
+# ----------------------------------------------------------------------------- 
+  
 class ValorantDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'I'),
@@ -131,16 +159,13 @@ class ValorantDivisionOrder(models.Model):
     
 
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/valorant/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
-    ##
-    with open('static/valorant/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0])
-    ##   
+    # Read data from utility functions
+    divisions_data = get_valorant_divisions_data()
+    flattened_data = [item for sublist in divisions_data for item in sublist]
+    flattened_data.insert(0, 0)
+
+    marks_data = get_valorant_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0])
           
     try:
       promo_code_amount = self.order.promo_code.discount_amount
