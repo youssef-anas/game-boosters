@@ -5,9 +5,10 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from mobileLegends.utils import get_mobile_legends_placements_data, get_mobile_legends_marks_data, get_mobile_legends_divisions_data
 
 division_names = ['','IV','III','II','I']  
-rank_names = ['','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
+rank_names = ['Unranked','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
 def get_division_order_result_by_rank(data,extend_order_id):
   # Division
@@ -71,18 +72,13 @@ def get_division_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/mobileLegends/data/divisions_data.json', 'r') as file:
-    division_price = json.load(file)
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
-    pass
-  ##
-  with open('static/mobilelegends/data/marks_data.json', 'r') as file:
-    marks_data = json.load(file)
-    # marks_data.insert(0,[0,0,0,0,0,0])
-    pass
-  ##    
+  # Read data using utility functions
+  division_price = get_mobile_legends_divisions_data()
+  flattened_data = [item for sublist in division_price for item in sublist]
+  flattened_data.insert(0, 0)
+
+  marks_data = get_mobile_legends_marks_data()
+  # marks_data.insert(0, [0, 0, 0, 0, 0, 0])
     
   # if current_rank == 1:
   #   if current_division not in [3, 4, 5]:
@@ -223,10 +219,8 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/mobileLegends/data/placements_data.json', 'r') as file:
-    placement_data = json.load(file)
-  ##    
+  # Read data using utility functions
+  placement_data = get_mobile_legends_placements_data()
   
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)

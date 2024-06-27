@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import BaseOrder, Wallet
 from accounts.templatetags.custom_filters import romanize_division
 from django.core.validators import MinValueValidator, MaxValueValidator
-import requests, json
+import requests
 from django.core.exceptions import ValidationError
 from mobileLegends.validators import validate_current_rank_mobile_legends
 
@@ -50,6 +50,28 @@ class MobileLegendsPlacement(models.Model):
   def get_image_url(self):
     return self.rank_image.url
   
+def get_mobile_legends_divisions_data():
+    divisions = MobileLegendsTier.objects.all().order_by('id')
+    return [
+        [division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
+        for division in divisions
+    ]
+
+def get_mobile_legends_marks_data():
+    marks = MobileLegendsMark.objects.all().order_by('id')
+    return [
+        [mark.star_1, mark.star_2, mark.star_3, mark.star_4, mark.star_5]
+        for mark in marks
+    ]
+
+def get_mobile_legends_placements_data():
+    placements = MobileLegendsPlacement.objects.all().order_by('id')
+    return [
+        placement.price
+        for placement in placements
+    ]
+
+
 class MobileLegendsDivisionOrder(models.Model):
   @staticmethod
   def generate_choices(rank_id):
@@ -196,17 +218,14 @@ class MobileLegendsDivisionOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/mobileLegends/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
-      pass
+    
+    division_price = get_mobile_legends_divisions_data()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0, 0)
     ##
-    with open('static/mobilelegends/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
-      pass
+    marks_data = get_mobile_legends_marks_data()
+    marks_data.insert(0,[0,0,0,0,0,0])
+    pass
     ## 
     total_percent = 0
     if self.order.duo_boosting:

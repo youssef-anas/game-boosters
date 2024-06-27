@@ -3,13 +3,13 @@ let divisionPrices = [0];
 let marks_price = [[0, 0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/mobileLegends/data/divisions_data.json', function (data) {
+    $.getJSON('/mobileLegends/divisions-data/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/mobileLegends/data/marks_data.json', function (data) {
+    $.getJSON('/mobileLegends/marks-data/', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });
@@ -154,6 +154,9 @@ Promise.all([
       try {
         mark_index = getSelectedValueForDropList(makrs_on_current_rank_selected)
         number_of_mark = marks_price[current_rank][mark_index];
+        if (!number_of_mark) {
+          number_of_mark = 0
+        }
       } catch (error) {
         
       }
@@ -164,7 +167,8 @@ Promise.all([
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result
-  
+      console.log(slicedArray)
+      
       if (result > 0) {
         result_with_mark = result - number_of_mark;
       }
@@ -173,8 +177,9 @@ Promise.all([
       result_with_mark += result_with_mark * total_Percentage;
       // Apply promo code 
       result_with_mark -= result_with_mark * (discount_amount/100 )
-
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
+
+      console.log(result_with_mark)
 
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
       const currentElement = getSelectedElement(radioButtonsCurrent)
