@@ -16,7 +16,7 @@ Promise.all([
   })
 ]).then(function () {
   // Array For Names 
-  const divisionRanks = ['Unranked','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
+  const divisionRanks = ['unranked','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
   const divisionNames = ['', 'V', 'IV', 'III', 'II', 'I']
 

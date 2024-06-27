@@ -1,40 +1,51 @@
-/* .iron {
+.warrior {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #3C3F3C 0%, #43373300 100%);
+  linear-gradient(180deg, #5E3F2B 0%, #43373300 100%);
 }
-.bronze {
+.elite {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #8E6122 0%, #43373300 100%);
+  linear-gradient(180deg, #456587 0%, #43373300 100%);
 }
-.silver {
+.master {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #7F999E 0%, #43373300 100%);
+  linear-gradient(180deg, #E0D57F 0%, #43373300 100%);
 }
-.gold {
+.grandmaster {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #BE843E 0%, #43373300 100%);
+  linear-gradient(180deg, #636D79 0%, #43373300 100%);
 }
-.platinum {
+.epic {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #609692 0%, #43373300 100%);
+  linear-gradient(180deg, #31927E 0%, #43373300 100%);
 }
-.diamond {
+.legend {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #C279FD 0%, #43373300 100%);
+  linear-gradient(180deg, #724823 0%, #43373300 100%);
 }
-.ascendant {
+.mythic {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #23A461 0%, #43373300 100%);
+  linear-gradient(180deg, #904988 0%, #43373300 100%);
 }
+.honor {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #576492 0%, #43373300 100%);
+}
+.glory {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #A869CD 0%, #43373300 100%);
+}
+
 .immortal {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #410F26 0%, #43373300 100%);
-} */
+  linear-gradient(180deg, #46180E 0%, #43373300 100%);
+}
