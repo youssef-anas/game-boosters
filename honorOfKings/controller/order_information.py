@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from honorOfKings.utils import get_hok_divisions_data, get_hok_marks_data
 
 division_names = ['','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'KING']
@@ -65,15 +66,13 @@ def get_division_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/hok/data/divisions_data.json', 'r') as file:
-    division_price = json.load(file)
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
+  # Read data from utils file
+  division_price = get_hok_divisions_data()
+  flattened_data = [item for sublist in division_price for item in sublist]
+  flattened_data.insert(0,0)
   ##
-  with open('static/hok/data/marks_data.json', 'r') as file:
-    marks_data = json.load(file)
-    marks_data.insert(0,[0,0,0,0])
+  marks_data = get_hok_marks_data()
+  marks_data.insert(0,[0,0,0,0])
   ##    
   start_division = ((current_rank-1) * 5) + current_division
   end_division = ((desired_rank-1) * 5) + desired_division

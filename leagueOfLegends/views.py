@@ -15,6 +15,20 @@ from accounts.models import BaseUser
 from customer.models import Champion
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
+from leagueOfLegends.utils import get_lol_placements_data, get_lol_marks_data, get_lol_divisions_data
+
+def get_lol_divisions_data_view(request):
+    divisions_data = get_lol_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_lol_marks_data_view(request):
+    marks_data = get_lol_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+def get_lol_placements_data_view(request):
+    placements_data = get_lol_placements_data()
+    return JsonResponse(placements_data, safe=False)
+
 
 def leagueOfLegendsGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -41,30 +55,6 @@ def leagueOfLegendsGetBoosterByRank(request):
     ).annotate(
     order_count=Sum(game_pk_condition)
     ).order_by('id')
-
-  divisions_data = [
-    [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
-    for division in divisions
-  ]
-
-  marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
-    for mark in marks
-  ]
-
-  placements_data = [
-    placement.price
-    for placement in placements
-  ]
-
-  with open('static/lol/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/lol/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
-  with open('static/lol/data/placements_data.json', 'w') as json_file:
-    json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
 

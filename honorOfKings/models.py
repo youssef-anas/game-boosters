@@ -34,7 +34,24 @@ class HonorOfKingsMark(models.Model):
 
   def __str__(self):
     return f"{self.rank} -> Star 1: {self.star_1}, Star 2: {self.star_2}, Star 3: {self.star_3}"
-  
+
+def get_hok_divisions_data():
+    divisions = HonorOfKingsTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_hok_marks_data():
+    marks = HonorOfKingsMark.objects.all().order_by('id')
+    marks_data = [
+        [0, mark.star_1, mark.star_2, mark.star_3]
+        for mark in marks
+    ]
+    return marks_data
+
+
 class HonorOfKingsDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'V'),
@@ -120,16 +137,14 @@ class HonorOfKingsDivisionOrder(models.Model):
     
 
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/hok/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    # Read data from utils file
+    division_price = get_hok_divisions_data()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
     ##
-    with open('static/hok/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0])
-    ##   
+    marks_data = get_hok_marks_data()
+    marks_data.insert(0,[0,0,0,0])
+    ##  
           
     try:
       promo_code_amount = self.order.promo_code.discount_amount

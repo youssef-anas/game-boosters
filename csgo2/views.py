@@ -14,6 +14,21 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from csgo2.utils import get_division_prices, get_premier_prices, get_faceit_prices
+
+
+def get_division_prices_view(request):
+  divisions_data = get_division_prices()
+  return JsonResponse(divisions_data, safe=False)
+
+def get_premier_prices_view(request):
+    premier_prices = get_premier_prices()
+    return JsonResponse(premier_prices, safe=False)
+
+def get_faceit_prices_view(request):
+    faceit_data = get_faceit_prices()
+    return JsonResponse(faceit_data, safe=False)
+
 
 def csgo2GetBoosterByRank(request):
   order_get_rank_value = None
@@ -35,28 +50,8 @@ def csgo2GetBoosterByRank(request):
   ranks = Csgo2Rank.objects.all().order_by('id')
   divisions  = Csgo2Tier.objects.all().order_by('id')
 
-  divisions_data = [
-    [division.from_I_to_I_next ]
-    for division in divisions
-  ]
-  
-  with open('static/csgo2/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  premier_row = Csgo2PremierPrice.objects.all().first()
-  premier_prices = [premier_row.price_0_4999, premier_row.price_5000_7999, premier_row.price_8000_11999, premier_row.price_12000_18999, premier_row.price_19000_20999, premier_row.price_21000_24999, premier_row.price_25000_30000]
-  
-  with open('static/csgo2/data/premier_data.json', 'w') as json_file:
-    json.dump(premier_prices, json_file)
-
-  faceit_prices = CsgoFaceitPrice.objects.all().first()
-
-  faceit_data = [
-    0, faceit_prices.from_1_to_2, faceit_prices.from_2_to_3, faceit_prices.from_3_to_4, faceit_prices.from_4_to_5, faceit_prices.from_5_to_6, faceit_prices.from_6_to_7, faceit_prices.from_7_to_8, faceit_prices.from_8_to_9, faceit_prices.from_9_to_10
-  ]
-
-  with open('static/csgo2/data/faceit_data.json', 'w') as json_file:
-    json.dump(faceit_data, json_file)
+  premier_prices = get_premier_prices()
+  faceit_data = get_faceit_prices()
 
   divisions_list = list(divisions.values())
 
@@ -139,7 +134,7 @@ def pay_with_paypal(request):
       
     for field, errors in serializer.errors.items():
       for error in errors:
-        messages.error(request, f"{error}")
+        messages.error(request, f"{field}:{error}")
     return redirect(reverse_lazy('csgo2'))
 
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)

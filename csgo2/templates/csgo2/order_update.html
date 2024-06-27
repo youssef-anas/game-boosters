@@ -1,5 +1,5 @@
 <div class="updata-now">
-  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST">
+  <form action="{% url 'order.update.rating' order_id=order.order.order.id %}" method="POST" class="no-disabled-form">
     {% csrf_token %}
     {% if error %} <p class="error-message message">{{error}}</p> {% endif %}
 
@@ -28,7 +28,7 @@
       </div>
     {% else %}
       <div class="mb-3">
-        <input class="custom-input form-control" type="number" name="reached_division" value={{order.order.reached_division}} placeholder="Reached Premier Rank" aria-label="Reached Premier Rank" min="{{ order.order.current_division }}" step="1" max="30000">
+        <input class="custom-input form-control" type="number" name="reached_division" value={{order.order.reached_division}} placeholder="Reached Premier Rank" aria-label="Reached Premier Rank" min="{{ order.order.current_division }}" step="1" max="{{ order.order.desired_division }}">
       </div>
     {% endif %}
 

@@ -14,8 +14,20 @@ from accounts.models import TokenForPay
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data
 
-# Create your views here.
+
+
+def get_hearthstone_divisions_data_view(request):
+    divisions_data = get_hearthstone_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_hearthstone_marks_data_view(request):
+    marks_data = get_hearthstone_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+
+
 def hearthstoneGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
@@ -24,24 +36,6 @@ def hearthstoneGetBoosterByRank(request):
     order = None
   ranks = HearthstoneRank.objects.all().order_by('id')
   divisions  = HearthstoneTier.objects.all().order_by('id')
-  marks = HearthstoneMark.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_X_to_IX, division.from_IX_to_VIII, division.from_VIII_to_VII, division.from_VII_to_VI, division.from_VI_to_V, division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
-    for division in divisions
-  ]
-
-  marks_data = [
-    [0, mark.marks_3, mark.marks_2, mark.marks_1]
-    for mark in marks
-  ]
-
-  with open('static/hearthstone/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/hearthstone/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
   divisions_list = list(divisions.values())
 
    # Feedbacks

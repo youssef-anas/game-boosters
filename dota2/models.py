@@ -62,7 +62,28 @@ class Dota2Placement(models.Model):
   def get_image_url(self):
     return self.rank_image.url
   
-  
+
+
+def get_division_prices():
+  division_row = Dota2MmrPrice.objects.all().first()
+  division_prices = [
+      division_row.price_0_2000,
+      division_row.price_2000_3000,
+      division_row.price_3000_4000,
+      division_row.price_4000_5000,
+      division_row.price_5000_5500,
+      division_row.price_5500_6000,
+      division_row.price_6000_extra
+  ]
+  return division_prices
+
+def get_placement_prices():
+  placement_rows = Dota2Placement.objects.all().order_by('id')
+  placement_prices = [row.price for row in placement_rows]
+  return placement_prices  
+
+
+
 class Dota2RankBoostOrder(models.Model):
   ROLE_CHOISES = (
     (1, 'Core'),
@@ -93,7 +114,7 @@ class Dota2RankBoostOrder(models.Model):
 
 
   def validate_divition(self):
-    if not (self.current_division > 0 and self.current_division <= 7000):
+    if not (self.current_division >= 0 and self.current_division <= 7000):
       raise ValidationError("Current division must be between 0 and 7000.")
         
   def send_discord_notification(self):
@@ -153,37 +174,35 @@ class Dota2RankBoostOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code},{self.role}"
   
   def get_order_price(self):
-    with open('static/dota2/data/prices.json', 'r') as file:
-      prices = json.load(file)
-      divison_prices = prices['division']
+    divison_prices = get_division_prices()
       
-      divison_prices.insert(0,0)
-      price1 = round(divison_prices[1]*40,1)
-      price2 = round(divison_prices[2]*20,1)
-      price3 = round(divison_prices[3]*20,1)
-      price4 = round(divison_prices[4]*20,1)
-      price5 = round(divison_prices[5]*10,1)
-      price6 = round(divison_prices[6]*10,1)
-      price7 = round(divison_prices[7]*40,1) 
-      full_price_val = [price1, price2, price3, price4, price5, price6, price7]
+    divison_prices.insert(0,0)
+    price1 = round(divison_prices[1]*40,1)
+    price2 = round(divison_prices[2]*20,1)
+    price3 = round(divison_prices[3]*20,1)
+    price4 = round(divison_prices[4]*20,1)
+    price5 = round(divison_prices[5]*10,1)
+    price6 = round(divison_prices[6]*10,1)
+    price7 = round(divison_prices[7]*40,1) 
+    full_price_val = [price1, price2, price3, price4, price5, price6, price7]
 
-      def get_range_current(mmr):
-          MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
-          for idx, max_val in enumerate(MAX_LISTS, start=1):
-              if mmr <= max_val:
-                  val = max_val - mmr
-                  return math.floor(val/50), idx
-          print('out_of_range')
-          return None, None
-          
-      def get_range_desired(mmr):
-          MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
-          for idx, max_val in enumerate(MAX_LISTS, start=1):
-              if mmr <= max_val:
-                  val = mmr-MAX_LISTS[idx-2]
-                  return math.floor(val/50), idx
-          print('out_of_range')
-          return None, None
+    def get_range_current(mmr):
+      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+      for idx, max_val in enumerate(MAX_LISTS, start=1):
+          if mmr <= max_val:
+              val = max_val - mmr
+              return math.floor(val/50), idx
+      print('out_of_range')
+      return None, None
+        
+    def get_range_desired(mmr):
+      MAX_LISTS = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+      for idx, max_val in enumerate(MAX_LISTS, start=1):
+          if mmr <= max_val:
+              val = mmr-MAX_LISTS[idx-2]
+              return math.floor(val/50), idx
+      print('out_of_range')
+      return None, None
 
     try:    
       promo_code_amount = self.order.promo_code.discount_amount
@@ -278,10 +297,7 @@ class Dota2PlacementOrder(models.Model):
     return self.get_details()
   
   def get_order_price(self):
-    with open('static/dota2/data/prices.json', 'r') as file:
-      prices = json.load(file)
-    
-    placement_price = prices['placement']
+    placement_price = get_placement_prices()
 
     try:    
       promo_code_amount = self.order.promo_code.discount_amount

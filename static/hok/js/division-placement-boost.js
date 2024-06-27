@@ -9,13 +9,13 @@ let divisionPrices = [0];
 let marks_price = [[0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/hok/data/divisions_data.json', function (data) {
+    $.getJSON('/hok/divisions-data/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/hok/data/marks_data.json', function (data) {
+    $.getJSON('/hok/marks-data/', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });

@@ -32,6 +32,14 @@ class Csgo2Mark(models.Model):
     def __str__(self):
         return f"Mark for Rank: {self.rank.rank_name}"
     
+def get_division_prices():
+    divisions = Csgo2Tier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_I_to_I_next]
+        for division in divisions
+    ]
+    return divisions_data
+
 class Csgo2DivisionOrder(models.Model):
     order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='csgo2_division_order')
     current_rank = models.ForeignKey(Csgo2Rank, on_delete=models.PROTECT, default=None, related_name='current_rank',blank=True, null=False)
@@ -99,11 +107,10 @@ class Csgo2DivisionOrder(models.Model):
         return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},{True}" # True - Refere To This Is Divison
                  
     def get_order_price(self):
-        # Read data from JSON file
-        with open('static/csgo2/data/divisions_data.json', 'r') as file:
-            division_price = json.load(file)
-            flattened_data = [item for sublist in division_price for item in sublist]
-            flattened_data.insert(0,0)
+        # Read data from utils file
+        division_price = get_division_prices()
+        flattened_data = [item for sublist in division_price for item in sublist]
+        flattened_data.insert(0,0)
         try:    
             promo_code_amount = self.order.promo_code.discount_amount
         except:
@@ -196,7 +203,16 @@ class Csgo2PremierPrice(SingletonModel):
 
     def __str__(self):
         return f'Prices - {self.price_0_4999} - {self.price_5000_7999} - {self.price_8000_11999} - {self.price_12000_18999} - {self.price_19000_20999} - {self.price_21000_24999} - {self.price_25000_30000}'
-    
+
+def get_premier_prices():
+    premier_row = Csgo2PremierPrice.objects.all().first()
+    premier_prices = [
+        premier_row.price_0_4999, premier_row.price_5000_7999, premier_row.price_8000_11999, 
+        premier_row.price_12000_18999, premier_row.price_19000_20999, premier_row.price_21000_24999, 
+        premier_row.price_25000_30000
+    ]
+    return premier_prices
+        
 
 class Csgo2PremierOrder(models.Model):
     order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='csgo2_premier_order')
@@ -248,10 +264,9 @@ class Csgo2PremierOrder(models.Model):
 
     def get_order_price(self):  # TODO want be Edited
         MIN_DESIRED_VALUE = 500
-        # Read data from JSON file
-        with open('static/csgo2/data/premier_data.json', 'r') as file:
-            premier_prices = json.load(file)
-            premier_prices.insert(0,0)
+        # Read data from utils file
+        premier_prices = get_premier_prices()
+        premier_prices.insert(0,0)
 
         price1 = round(premier_prices[1]*10,2)
         price2 = round(premier_prices[2]*6,2)
@@ -358,6 +373,15 @@ class CsgoFaceitPrice(SingletonModel):
     def save(self, *args, **kwargs):
         self.pk = 1
         super().save(*args, **kwargs)
+
+def get_faceit_prices():
+    faceit_prices = CsgoFaceitPrice.objects.all().first()
+    faceit_data = [
+        0, faceit_prices.from_1_to_2, faceit_prices.from_2_to_3, faceit_prices.from_3_to_4, 
+        faceit_prices.from_4_to_5, faceit_prices.from_5_to_6, faceit_prices.from_6_to_7, 
+        faceit_prices.from_7_to_8, faceit_prices.from_8_to_9, faceit_prices.from_9_to_10
+    ]
+    return faceit_data
 
 class CsgoFaceitOrder(models.Model):
     order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='csgo2_faceit_order')

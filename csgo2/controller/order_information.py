@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from accounts.models import PromoCode, BaseOrder
 import math
+from csgo2.utils import get_division_prices, get_premier_prices, get_faceit_prices
 
 User = get_user_model()
 
@@ -83,11 +84,10 @@ def get_division_order_result_by_rank(data, extend_order_id):
             promo_code_id = 0
     
 
-    # Read data from JSON file
-    with open('static/csgo2/data/divisions_data.json', 'r') as file:
-        division_price = json.load(file)
-        flattened_data = [item for sublist in division_price for item in sublist]
-        flattened_data.insert(0,0)
+    # Read data from utils file
+    division_price = get_division_prices()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
     ##
     start_division = ((current_rank-1)*1) + 1
     end_division = ((desired_rank-1)*1)+ 1
@@ -125,10 +125,9 @@ def get_division_order_result_by_rank(data, extend_order_id):
 
 def get_premier_order_result_by_rank(data, extend_order_id):
     print("Data: ", data)
-    # Read data from JSON file
-    with open('static/csgo2/data/premier_data.json', 'r') as file:
-        premier_prices = json.load(file)
-        premier_prices.insert(0,0)
+    # Read data from utils file
+    premier_prices = get_premier_prices()
+    premier_prices.insert(0,0)
 
     price1 = round(premier_prices[1] * 10 , 2)
     price2 = round(premier_prices[2] * 6 , 2)
@@ -327,9 +326,8 @@ def get_faceit_order_result_by_rank(data, extend_order_id = 0):
             promo_code_amount = 0
             promo_code_id = 0
 
-    with open('static/csgo2/data/faceit_data.json', 'r') as file:
-        faceit_prices = json.load(file)
-
+    faceit_prices = get_faceit_prices()
+    
     sublist = faceit_prices[current_level : desired_level]
     total_sum = sum(sublist)
     price = total_sum 

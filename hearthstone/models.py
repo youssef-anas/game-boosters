@@ -40,6 +40,24 @@ class HearthstoneMark(models.Model):
   def __str__(self):
     return f"{self.rank} -> Marks 3: {self.marks_3}, Marks 2 : {self.marks_2}, Marks 1 : {self.marks_1}"
   
+
+def get_hearthstone_divisions_data():
+  divisions = HearthstoneTier.objects.all().order_by('id')
+  divisions_data = [
+      [division.from_X_to_IX, division.from_IX_to_VIII, division.from_VIII_to_VII, division.from_VII_to_VI, division.from_VI_to_V, division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+      for division in divisions
+  ]
+  return divisions_data
+
+def get_hearthstone_marks_data():
+  marks = HearthstoneMark.objects.all().order_by('id')
+  marks_data = [
+      [0, mark.marks_3, mark.marks_2, mark.marks_1]
+      for mark in marks
+  ]
+  return marks_data
+
+
 class HearthstoneDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'X'),
@@ -130,16 +148,15 @@ class HearthstoneDivisionOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
 
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/hearthstone/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    # Read data from utils file
+    division_price = get_hearthstone_divisions_data()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
     ##
-    with open('static/hearthstone/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0])
-    ##   
+    
+    marks_data = get_hearthstone_marks_data()
+    marks_data.insert(0,[0,0,0])
+  ##  
           
     try:
       promo_code_amount = self.order.promo_code.discount_amount
