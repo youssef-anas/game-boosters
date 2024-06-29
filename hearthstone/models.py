@@ -41,6 +41,26 @@ class HearthstoneMark(models.Model):
     return f"{self.rank} -> Marks 3: {self.marks_3}, Marks 2 : {self.marks_2}, Marks 1 : {self.marks_1}"
   
 
+class HearthstoneBattle(models.Model):
+  rank_name = models.CharField(max_length=25)
+  rank_image = models.ImageField(upload_to='hearthstone/images/', blank=True, null=True)
+
+  def __str__(self):
+    return self.rank_name
+    
+  def get_image_url(self):
+    return self.rank_image.url
+  
+class HearthstoneBattlePrice(models.Model):  
+  from_0_to_2000 = models.FloatField(default=0)
+  from_2000_to_4000 = models.FloatField(default=0)
+  from_4000_to_6000 = models.FloatField(default=0)
+  from_6000_to_8000 = models.FloatField(default=0)
+  from_8000_to_10000 = models.FloatField(default=0)
+
+  def __str__(self):
+    return f"Battle prices"
+
 def get_hearthstone_divisions_data():
   divisions = HearthstoneTier.objects.all().order_by('id')
   divisions_data = [
@@ -56,6 +76,18 @@ def get_hearthstone_marks_data():
       for mark in marks
   ]
   return marks_data
+
+def get_hearthstone_battle_prices():
+    price = HearthstoneBattlePrice.objects.all().first()
+    battle_prices_data = [
+        price.from_0_to_2000, 
+        price.from_2000_to_4000,
+        price.from_4000_to_6000,
+        price.from_6000_to_8000,
+        price.from_8000_to_10000
+    ]
+    return battle_prices_data
+
 
 
 class HearthstoneDivisionOrder(models.Model):
@@ -145,7 +177,7 @@ class HearthstoneDivisionOrder(models.Model):
     if self.order.promo_code != None:
       promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
 
-    return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
+    return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},1"
 
   def get_order_price(self):
     # Read data from utils file
@@ -223,3 +255,74 @@ class HearthstoneDivisionOrder(models.Model):
 
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
+
+class HearthStoneBattleOrder(models.Model):
+  order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE)
+  current_rank = models.ForeignKey(HearthstoneBattle, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
+  reached_rank = models.ForeignKey(HearthstoneBattle, on_delete=models.CASCADE, default=None, related_name='reached_rank',blank=True, null=True)
+  desired_rank = models.ForeignKey(HearthstoneBattle, on_delete=models.CASCADE, default=None, related_name='desired_rank',blank=True, null=True)
+  current_division = models.PositiveSmallIntegerField(blank=True, null=True)
+  reached_division = models.PositiveSmallIntegerField(blank=True, null=True)
+  desired_division = models.PositiveSmallIntegerField(blank=True, null=True)
+  current_marks = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
+  reached_marks = models.PositiveSmallIntegerField(blank=True, null=True, default=0)
+  created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
+
+
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+        return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209758608599031858/PtdjMTcZq9dR5lo9uTVX-cJPSPEduMXcUjoiQrMchDHvyHv0oTuZnCIVIcsX6dwqGCy3'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    embed = {
+        "title": "Hearth Stone",
+        "description": (
+            f"**Order ID:** {self.order.name}\n"
+            f" From {str(self.current_rank).upper()} {romanize_division(self.current_division)} Marks {self.current_marks} "
+            f" To {str(self.desired_rank).upper()} {romanize_division(self.desired_division)}\n server {self.order.customer_server}"
+        ),
+        "color": 0x3498db,  # Hex color code for a Discord blue color
+        "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+        "content": "New order has arrived \n",  # Set content to a space if you only want to send an embed
+        "embeds": [embed],
+    }
+
+
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+        print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
+  def save_with_processing(self, *args, **kwargs):
+    self.order.game_id = 7
+    self.order.game_type = 'A'
+    self.order.details = self.get_details()
+    if not self.order.name:
+      self.order.name = f'HS{self.order.id}'
+    self.order.update_actual_price()
+    self.order.save()
+    super().save(*args, **kwargs)
+    self.send_discord_notification()
+    
+  def get_details(self):
+    return f"From {self.current_division} MMR to {self.desired_division} MMR"
+
+  def __str__(self):
+    return self.get_details()
+  
+  def get_rank_value(self, *args, **kwargs):
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+    return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},2"

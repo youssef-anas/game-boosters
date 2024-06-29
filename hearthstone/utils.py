@@ -1,4 +1,4 @@
-from .models import HearthstoneTier, HearthstoneMark
+from .models import HearthstoneTier, HearthstoneMark, HearthstoneBattlePrice
 
 def get_hearthstone_divisions_data():
     divisions = HearthstoneTier.objects.all().order_by('id')
@@ -15,3 +15,14 @@ def get_hearthstone_marks_data():
         for mark in marks
     ]
     return marks_data
+
+def get_hearthstone_battle_prices():
+    price = HearthstoneBattlePrice.objects.all().first()
+    battle_prices_data = [
+        price.from_0_to_2000, 
+        price.from_2000_to_4000,
+        price.from_4000_to_6000,
+        price.from_6000_to_8000,
+        price.from_8000_to_10000
+    ]
+    return battle_prices_data

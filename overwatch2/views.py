@@ -44,32 +44,7 @@ def overwatch2GetBoosterByRank(request):
       return redirect('homepage.index')
   ranks = Overwatch2Rank.objects.all().order_by('id')
   divisions  = Overwatch2Tier.objects.all().order_by('id')
-  marks = Overwatch2Mark.objects.all().order_by('id')
   placements = Overwatch2Placement.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_V_to_IV ,division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
-    for division in divisions
-  ]
-  
-  marks_data = [
-    [mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
-    for mark in marks
-  ]
-  placements_data = [
-    placement.price
-    for placement in placements
-  ]
-
-  with open('static/overwatch2/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/overwatch2/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
-  with open('static/overwatch2/data/placements_data.json', 'w') as json_file:
-    json.dump(placements_data, json_file)
-
   divisions_list = list(divisions.values())
 
   # Feedbacks

@@ -128,7 +128,7 @@ Promise.all([
       $('.current').removeClass().addClass(`current ${current_rank_name}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
-      $('.total-price #price').text(`$${result_with_mark}`)
+      $('.total-price #division-boost-price').text(`$${result_with_mark}`)
 
       // From Value
       $('input[name="current_rank"]').val(current_rank);
@@ -137,7 +137,7 @@ Promise.all([
       $('input[name="desired_rank"]').val(desired_rank);
       $('input[name="desired_division"]').val(desired_division);
       $('input[name="server"]').val(selectedDivsionServer);
-      $('input[name="price"]').val(result_with_mark);
+      $('input[name="division-boost-price"]').val(result_with_mark);
 
       // SET PROMO CODE IN FORM
       $('input[name="promo_code"]').val(extendPromoCode);
@@ -196,21 +196,136 @@ Promise.all([
       $('.current').removeClass().addClass(`current ${current_rank_name}`)
       $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
 
-      $('.total-price #price').text(`$${result_with_mark}`)
+      $('.total-price #division-boost-price').text(`$${result_with_mark}`)
 
       // From Value
-      $('input[name="current_rank"]').val(current_rank);
-      $('input[name="current_division"]').val(current_division);
-      $('input[name="marks"]').val(mark_index);
-      $('input[name="desired_rank"]').val(desired_rank);
-      $('input[name="desired_division"]').val(desired_division);
-      $('input[name="server"]').val(selectedDivsionServer);
-      $('input[name="price"]').val(result_with_mark);
+      $('#division-boost-form input[name="current_rank"]').val(current_rank);
+      $('#division-boost-form input[name="current_division"]').val(current_division);
+      $('#division-boost-form input[name="marks"]').val(mark_index);
+      $('#division-boost-form input[name="desired_rank"]').val(desired_rank);
+      $('#division-boost-form input[name="desired_division"]').val(desired_division);
+      $('#division-boost-form input[name="server"]').val(selectedDivsionServer);
+      $('#division-boost-form input[name="price"]').val(result_with_mark);
     }
   }
 
   // Get Result 
   getResult();
+
+  // get element by class name battlegrounds-servers-select and get value from it selected option
+  
+  selectedBattlegroundsArenaServer = function() {
+    const battleServer = $('.battlegrounds-servers-select').find(":selected").val();
+    $('#battlegrounds-boost-form input[name="server"]').val(battleServer);
+    return battleServer
+  }
+  $('.battlegrounds-servers-select').on('change', function() {
+    selectedBattlegroundsArenaServer()
+  })
+
+  selectedBattlegroundsDivsionServer = function() {
+    const battleServer = $('.division-servers-select').find(":selected").val();
+    $('#division-boost-form input[name="server"]').val(battleServer);
+    return battleServer
+  }
+  $('.division-servers-select').on('change', function() {
+    selectedBattlegroundsDivsionServer()
+  })
+
+
+
+  let currentBattlegroundsValue = 0
+  let desiredBattlegroundsValue = 0
+
+
+
+  const currentRangeInput = document.getElementById('current-battlegrounds-range');
+  const currentRangeDisplay = document.querySelector('.current-battlegrounds-rp h1');
+
+  const desiredRangeInput = document.getElementById('desired-battlegrounds-range');
+  const desiredRangeDisplay = document.querySelector('.desired-battlegrounds-rp h1');
+
+  // Event listener for current range input
+  currentRangeInput.addEventListener('input', (event) => {
+      updateCurrentRangeValue(event.target.value);
+  });
+
+  // Event listener for desired range input
+  desiredRangeInput.addEventListener('input', (event) => {
+      updateDesiredRangeValue(event.target.value);
+  });
+
+
+
+
+MIN_DESIRED_VALUE = 20
+price_of_3vs3 = 5
+
+function getBattlegroundsPrice() {
+  // Price
+  let price = (desiredBattlegroundsValue - currentBattlegroundsValue) * (price_of_3vs3 / MIN_DESIRED_VALUE);
+
+  // Apply extra charges to the result
+  price += price * total_Percentage;
+
+  // Apply promo code 
+  price -= price * (discount_amount/100 )
+
+  price = parseFloat(price.toFixed(2)); 
+
+  // Current
+  $('#current-3vs3 .current-3vs3-rp').html(currentBattlegroundsValue);
+  $('.current').removeClass().addClass(`current gold`);
+  $('.current-selected-mmr').html(`${currentBattlegroundsValue} MMR`)
+
+  // Desired
+  $('#desired-3vs3 .desired-3vs3-rp').html(desiredBattlegroundsValue);
+  $('.desired').removeClass().addClass(`desired gold`);
+  $('.desired-selected-mmr').html(`${desiredBattlegroundsValue} MMR`)
+
+  // Price
+  $('#battlegrounds-boost-price').html(`$${price}`)
+
+  // Form
+  $('#battlegrounds-boost-form input[name="current_mmr"]').val(currentBattlegroundsValue);
+  $('#battlegrounds-boost-form input[name="desired_mmr"]').val(desiredBattlegroundsValue);
+  $('#battlegrounds-boost-form input[name="server"]').val(selectedBattlegroundsArenaServer());
+  $('#battlegrounds-boost-form input[name="price"]').val(price);
+}
+
+
+
+
+
+
+  // Update current range value display
+  const updateCurrentRangeValue = (value) => {
+      currentRangeDisplay.textContent = value;
+      currentBattlegroundsValue = value
+
+      $('#current-battlegrounds .current-battlegrounds-rp').html(currentBattlegroundsValue);
+      getBattlegroundsPrice();
+  };
+
+  // Update desired range value display
+  const updateDesiredRangeValue = (value) => {
+      desiredRangeDisplay.textContent = value;
+      desiredBattlegroundsValue = value
+
+      $('#desired-battlegrounds .desired-battlegrounds-rp').html(desiredBattlegroundsValue);
+      getBattlegroundsPrice();
+  };
+
+
+
+    // Initialize display with default values
+    updateCurrentRangeValue(currentRangeInput.value);
+    updateDesiredRangeValue(desiredRangeInput.value);
+
+
+
+
+
 
   // Current Rank Change
   radioButtonsCurrent.forEach(function (radio, index) {
@@ -251,8 +366,9 @@ Promise.all([
 
   // Mark Changes
   makrs_on_current_rank_selected.addEventListener("change", getResult);
+
   // Server Changes
-  division_server_select_element.addEventListener("change", getResult);
+  // division_server_select_element.addEventListener("change", getResult);
 
   // ----------------------------- Others ---------------------------------
 
@@ -268,6 +384,7 @@ Promise.all([
       }
 
       getResult()
+      getBattlegroundsPrice()
     }) 
   })
 
@@ -283,6 +400,7 @@ Promise.all([
       }
     
       getResult()
+      getBattlegroundsPrice()
     })
   });
  
@@ -292,6 +410,8 @@ Promise.all([
       discount_amount = await fetch_promo(); 
 
       getResult()
+      getBattlegroundsPrice()
+
     }
   });
 
