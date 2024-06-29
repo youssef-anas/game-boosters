@@ -91,7 +91,7 @@
                       </div>
                       <div class="modal-body">
                         
-                        <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3">
+                        <form id="tipBoosterForm" action="{% url 'tip_booster' %}" method="POST" class="text-end mt-3 no-disabled-form">
                           {% csrf_token %}
                           
                           <input type="hidden" name="order_id" value="{{ order.order.id }}">
