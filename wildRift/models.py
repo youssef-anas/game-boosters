@@ -53,6 +53,24 @@ class WildRiftMark(models.Model):
     def __str__(self):
         return f"Mark {self.mark_number} for Rank: {self.rank.rank_name}"
     
+def get_wildrift_divisions_data():
+    divisions = WildRiftTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_IV_to_III] if division.rank.rank_name == 'master' else
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_wildrift_marks_data():
+    marks = WildRiftMark.objects.all().order_by('id')
+    marks_data = [
+        [0, mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5, mark.mark_6]
+        for mark in marks
+    ]
+    return marks_data
+    
+    
 class WildRiftDivisionOrder(models.Model):
     DIVISION_CHOICES = [
         (1, 'IV'),
@@ -162,14 +180,12 @@ class WildRiftDivisionOrder(models.Model):
 
     def get_order_price(self):
         # Read data from JSON file
-        with open('static/wildRift/data/divisions_data.json', 'r') as file:
-            division_price = json.load(file)
-            flattened_data = [item for sublist in division_price for item in sublist]
-            flattened_data.insert(0,0)
-        ##
-        with open('static/wildRift/data/marks_data.json', 'r') as file:
-            marks_data = json.load(file)
-            marks_data.insert(0,[0,0,0,0,0,0,0])
+        division_prices = get_wildrift_divisions_data()
+        flattened_data = [item for sublist in division_prices for item in sublist]
+        flattened_data.insert(0, 0)
+
+        marks_data = get_wildrift_marks_data()
+        marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
         ##   
             
         try:

@@ -14,6 +14,29 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from .utils import (
+    get_rocket_league_divisions_data,
+    get_rocket_league_placements_data,
+    get_rocket_league_seasonals_data,
+    get_rocket_league_tournaments_data
+)
+
+
+def rocket_league_divisions_data_api(request):
+    divisions_data = get_rocket_league_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def rocket_league_placements_data_api(request):
+    placements_data = get_rocket_league_placements_data()
+    return JsonResponse(placements_data, safe=False)
+
+def rocket_league_seasonals_data_api(request):
+    seasonals_data = get_rocket_league_seasonals_data()
+    return JsonResponse(seasonals_data, safe=False)
+
+def rocket_league_tournaments_data_api(request):
+    tournaments_data = get_rocket_league_tournaments_data()
+    return JsonResponse(tournaments_data, safe=False)
 
 
 
@@ -28,38 +51,6 @@ def rocketLeagueGetBoosterByRank(request):
   placements = RocketLeaguePlacement.objects.all().order_by('id')
   seasonals = RocketLeagueSeasonal.objects.all().order_by('id')
   tournaments = RocketLeagueTournament.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
-    for division in divisions
-  ]
-
-  placements_data = [
-    placement.price
-    for placement in placements
-  ]
-
-  seasonals_data = [
-    seasonal.price
-    for seasonal in seasonals
-  ]
-
-  tournaments_data = [
-    seasonal.price
-    for seasonal in tournaments
-  ]
-
-  with open('static/rocketLeague/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/rocketLeague/data/placements_data.json', 'w') as json_file:
-    json.dump(placements_data, json_file)
-
-  with open('static/rocketLeague/data/seasonals_data.json', 'w') as json_file:
-    json.dump(seasonals_data, json_file)
-
-  with open('static/rocketLeague/data/tournaments_data.json', 'w') as json_file:
-    json.dump(tournaments_data, json_file)
 
   divisions_list = list(divisions.values())
 
@@ -147,7 +138,7 @@ def pay_with_paypal(request):
     for field, errors in serializer.errors.items():
       for error in errors:
         messages.error(request, f"{error}")
-    return redirect(reverse_lazy('pubg'))
+    return redirect(reverse_lazy('rocketLeague'))
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 
 # Cryptomus

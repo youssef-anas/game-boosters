@@ -4,6 +4,7 @@ from leagueOfLegends.models import *
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from leagueOfLegends.utils import get_lol_placements_data, get_lol_marks_data, get_lol_divisions_data
 
 
 division_names = ['','IV','III','II','I']  
@@ -73,15 +74,13 @@ def get_division_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/lol/data/divisions_data.json', 'r') as file:
-    division_price = json.load(file)
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
+  # Read data from utils file
+  division_price = get_lol_divisions_data()
+  flattened_data = [item for sublist in division_price for item in sublist]
+  flattened_data.insert(0,0)
   ##
-  with open('static/lol/data/marks_data.json', 'r') as file:
-    marks_data = json.load(file)
-    marks_data.insert(0,[0,0,0,0,0,0])
+  marks_data = get_lol_marks_data()
+  marks_data.insert(0,[0,0,0,0,0,0])
   ##    
   start_division = ((current_rank-1) * 4) + current_division
   end_division = ((desired_rank-1) * 4)+ desired_division
@@ -175,8 +174,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
       promo_code_amount = 0
 
   # Read data from JSON file
-  with open('static/lol/data/placements_data.json', 'r') as file:
-    placement_data = json.load(file)
+  placement_data = get_lol_placements_data()
   ##    
   
   price = placement_data[last_rank] * number_of_match

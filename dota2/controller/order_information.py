@@ -5,6 +5,7 @@ from dota2.models import Dota2MmrPrice, BaseOrder
 from accounts.models import PromoCode
 from booster.models import Booster
 import math
+from dota2.utils import get_division_prices, get_placement_prices
 
 # Ranking System
 # Herald — 0-769 MMR.
@@ -19,12 +20,6 @@ import math
 rank_names = ['UNRANK', 'HERALD', 'GUARDIAN', 'CRUSADER', 'ARCHON', 'LEGEND', 'ANCIENT', 'DIVINE', 'IMMORTAL']
 role_names = ['NoRole', 'Core', 'Support']
 ROLE_PRICES = [0, 0, 0.30]
-prices = None
-
-with open('static/dota2/data/prices.json', 'r') as file:
-  prices = json.load(file)
-  pass
-
 def get_rank_boost_order_result_by_rank(data,extend_order_id):
   MIN_DESIRED_VALUE = 50
   # Division
@@ -32,7 +27,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   #   prices = json.load(file)
   #   pass
 
-  divison_prices = prices['division']
+  divison_prices = get_division_prices()
   divison_prices.insert(0,0)
   price1 = round(divison_prices[1]*40,1)
   price2 = round(divison_prices[2]*20,1)
@@ -174,7 +169,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
 
 def get_palcement_order_result_by_rank(data,extend_order_id):
   # Placement
-  placement_price = prices['placement']
+  placement_price = get_placement_prices()
   
   last_rank = data['last_rank']
   last_division = data['last_division']

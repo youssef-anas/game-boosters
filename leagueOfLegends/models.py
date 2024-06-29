@@ -49,7 +49,31 @@ class LeagueOfLegendsPlacement(models.Model):
   def get_image_url(self):
     if self.rank_image:
       return self.rank_image.url
-  
+
+
+def get_lol_divisions_data():
+    divisions = LeagueOfLegendsTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_lol_marks_data():
+    marks = LeagueOfLegendsMark.objects.all().order_by('id')
+    marks_data = [
+        [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_99, mark.marks_series]
+        for mark in marks
+    ]
+    return marks_data
+
+def get_lol_placements_data():
+    placements = LeagueOfLegendsPlacement.objects.all().order_by('id')
+    placements_data = [placement.price for placement in placements]
+    return placements_data
+
+
+
 class LeagueOfLegendsDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'IV'),
@@ -137,16 +161,14 @@ class LeagueOfLegendsDivisionOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/lol/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    # Read data from utils file
+    division_price = get_lol_divisions_data()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
     ##
-    with open('static/lol/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
-    ##   
+    marks_data = get_lol_marks_data()
+    marks_data.insert(0,[0,0,0,0,0,0])
+    ##  
           
     try:
       promo_code_amount = self.order.promo_code.discount_amount

@@ -44,6 +44,32 @@ class Overwatch2Mark(models.Model):
     def __str__(self):
         return f"Mark for Rank: {self.rank.rank_name}"
     
+
+def get_overwatch2_divisions_data():
+    divisions = Overwatch2Tier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_overwatch2_marks_data():
+    marks = Overwatch2Mark.objects.all().order_by('id')
+    marks_data = [
+        [mark.mark_1, mark.mark_2, mark.mark_3, mark.mark_4, mark.mark_5]
+        for mark in marks
+    ]
+    return marks_data
+
+def get_overwatch2_placements_data():
+    placements = Overwatch2Placement.objects.all().order_by('id')
+    placements_data = [
+        placement.price
+        for placement in placements
+    ]
+    return placements_data
+
+
 class Overwatch2DivisionOrder(models.Model):
     DIVISION_CHOICES = [
         (1, 'V'),
@@ -135,15 +161,13 @@ class Overwatch2DivisionOrder(models.Model):
         return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
     
     def get_order_price(self):
-        # Read data from JSON file
-        with open('static/overwatch2/data/divisions_data.json', 'r') as file:
-            division_price = json.load(file)
-            flattened_data = [item for sublist in division_price for item in sublist]
-            flattened_data.insert(0,0)
+        # Fetch divisions_data using utility function
+        divisions_data = get_overwatch2_divisions_data()
+        flattened_data = [item for sublist in divisions_data for item in sublist]
+        flattened_data.insert(0, 0)
         ##
-        with open('static/overwatch2/data/marks_data.json', 'r') as file:
-            marks_data = json.load(file)
-            marks_data.insert(0,[0,0,0,0,0,0,0])
+        marks_data = get_overwatch2_marks_data()
+        marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
         ##   
         try:    
             promo_code_amount = self.order.promo_code.discount_amount

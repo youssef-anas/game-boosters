@@ -20,6 +20,15 @@
 <link href="{% static 'components/css/information.css'%}" rel="stylesheet" />
 <!-- POP UP STYLE -->
 <link href="{% static 'base/css/popup.css'%}" rel="stylesheet" >
+
+<style>
+  @media (min-width: 720px) {
+  .marks-role {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+</style>
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order_get_rank_value }}"></div>
@@ -157,7 +166,7 @@
             </div>
 
             <!-- Marks -->
-            <div class="d-flex flex-wrap">
+            <div class="marks-role">
               <div class="current-mark-container">
                 <p class="text-white mt-4" style="font-size: 16px;">PROGRESS</p>
                 <div class="select-container">
@@ -172,7 +181,7 @@
               </div>
 
               <!-- Role -->
-              <div class="current-role-container mx-md-3 mx-0">
+              <div class="current-role-container mx-lg-1 mx-sm-1 mx-xs-1">
                 <p class="text-white mt-4" style="font-size: 16px;">ROLE</p>
                 <div class="select-container">
                   <select class="role-select">

@@ -15,60 +15,52 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from pubg.utils import get_divisions_data, get_marks_data
+
+
+def get_divisions_data_view(request):
+    return JsonResponse(get_divisions_data(), safe=False)
+
+def get_marks_data_view(request):
+    return JsonResponse(get_marks_data(), safe=False)
+
 
 
 def pubgGetBoosterByRank(request):
-  extend_order = request.GET.get('extend')
-  try:
-    order_get_rank_value = PubgDivisionOrder.objects.get(order_id=extend_order).get_rank_value()
-  except:
-    order_get_rank_value = None
-  ranks = PubgRank.objects.all().order_by('id')
-  divisions  = PubgTier.objects.all().order_by('id')
-  marks = PubgMark.objects.all().order_by('id')
+    extend_order = request.GET.get('extend')
+    try:
+        order_get_rank_value = PubgDivisionOrder.objects.get(order_id=extend_order).get_rank_value()
+    except PubgDivisionOrder.DoesNotExist:
+        order_get_rank_value = None
 
-  divisions_data = [
-    [division.from_V_to_VI, division.from_VI_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
-    for division in divisions
-  ]
-  
-  marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
-    for mark in marks
-  ]
-
-  with open('static/pubg/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
+    ranks = PubgRank.objects.all().order_by('id')
+    divisions = PubgTier.objects.all().order_by('id')
+    divisions_list = list(divisions.values())
     
-  with open('static/pubg/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
-  divisions_list = list(divisions.values())
-  
-  # Feedbacks
-  feedbacks = OrderRating.objects.filter(order__game_id = 3)
-  game_pk_condition = Case(
-    When(booster_orders__game__pk=3, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
-    default=0,
-    output_field=IntegerField()
-  )
+    # Feedbacks
+    feedbacks = OrderRating.objects.filter(order__game_id = 3)
+    game_pk_condition = Case(
+      When(booster_orders__game__pk=3, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
+      default=0,
+      output_field=IntegerField()
+    )
+      
+    boosters = BaseUser.objects.filter(
+      is_booster = True,
+      booster__is_overwatch2_player=True,
+      booster__can_choose_me=True
+      ).annotate(
+      order_count=Sum(game_pk_condition)
+      ).order_by('id')
     
-  boosters = BaseUser.objects.filter(
-    is_booster = True,
-    booster__is_overwatch2_player=True,
-    booster__can_choose_me=True
-    ).annotate(
-    order_count=Sum(game_pk_condition)
-    ).order_by('id')
-  
-  context = {
-    "ranks": ranks,
-    "divisions": divisions_list,
-    "order_get_rank_value": order_get_rank_value,
-    "feedbacks": feedbacks,
-    "boosters": boosters,
-  }
-  return render(request,'pubg/GetBoosterByRank.html', context)
+    context = {
+      "ranks": ranks,
+      "divisions": divisions_list,
+      "order_get_rank_value": order_get_rank_value,
+      "feedbacks": feedbacks,
+      "boosters": boosters,
+    }
+    return render(request,'pubg/GetBoosterByRank.html', context)
 
 
 # Paypal

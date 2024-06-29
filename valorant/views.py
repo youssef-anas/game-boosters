@@ -15,6 +15,19 @@ from customer.models import Champion
 from accounts.models import BaseUser
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
+from .utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
+
+def valorant_divisions_data(request):
+    divisions_data = get_valorant_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def valorant_marks_data(request):
+    marks_data = get_valorant_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+def valorant_placements_data(request):
+    placements_data = get_valorant_placements_data()
+    return JsonResponse(placements_data, safe=False)
 
 def valorantGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -24,11 +37,9 @@ def valorantGetBoosterByRank(request):
     order = None
   ranks = ValorantRank.objects.all().order_by('id')
   divisions  = ValorantTier.objects.all().order_by('id')
-  marks = ValorantMark.objects.all().order_by('id')
   placements = ValorantPlacement.objects.all().order_by('id')
   champions = Champion.objects.filter(game__id =2).order_by('id')
 
-  # Boosters Information
   # Here I make condition when game_id = 2
   game_pk_condition = Case(
     When(booster_orders__game__pk=2, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
@@ -43,31 +54,6 @@ def valorantGetBoosterByRank(request):
   ).annotate(
     order_count=Sum(game_pk_condition)
   ).order_by('id')
-
-
-  divisions_data = [
-    [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
-    for division in divisions
-  ]
-
-  marks_data = [
-    [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
-    for mark in marks
-  ]
-
-  placements_data = [
-    placement.price
-    for placement in placements
-  ]
-
-  with open('static/valorant/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/valorant/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
-  with open('static/valorant/data/placements_data.json', 'w') as json_file:
-    json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
 

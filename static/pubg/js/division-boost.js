@@ -3,15 +3,19 @@ let divisionPrices = [0];
 let marks_price = [[0, 0, 0, 0, 0, 0]];
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/pubg/data/divisions_data.json', function (data) {
+    $.getJSON('/pubg/get-divisions-data/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
+    }).fail(function() {
+      reject("Error loading divisions data");
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/pubg/data/marks_data.json', function (data) {
+    $.getJSON('/pubg/get-marks-data/', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
+    }).fail(function() {
+      reject("Error loading marks data");
     });
   })
 ]).then(function () {

@@ -4,6 +4,7 @@ import json
 from pubg.models import *
 from django.utils import timezone
 from accounts.models import PromoCode
+from pubg.utils import get_divisions_data, get_marks_data
 
 User = get_user_model()
 
@@ -73,16 +74,15 @@ def get_division_order_result_by_rank(data,extend_order_id):
     boost_options.append('CHOOSE AGENTS')
     select_champion_value = 1
 
-  # Read data from JSON file
-  with open('static/pubg/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+  # Fetch divisions data using utility function
+  divisions_data = get_divisions_data()
+  flattened_data = [item for sublist in divisions_data for item in sublist]
+  flattened_data.insert(0, 0)
 
-  ##    
-  with open('static/pubg/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
+  # Fetch marks data using utility function
+  marks_data = get_marks_data()
+  marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+
       
   start_division = ((current_rank-1) * 5) + current_division
   end_division = ((desired_rank-1) * 5)+ desired_division

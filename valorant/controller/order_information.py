@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from valorant.utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
 
 division_names = ['','I','II','III']  
 rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ASCENDANT', 'IMMORTAL']
@@ -73,16 +74,14 @@ def get_division_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/valorant/data/divisions_data.json', 'r') as file:
-    division_price = json.load(file)
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
-  ##
-  with open('static/valorant/data/marks_data.json', 'r') as file:
-    marks_data = json.load(file)
-    marks_data.insert(0,[0,0,0,0,0,0])
-  ##    
+  # Read data from utility functions
+  divisions_data = get_valorant_divisions_data()
+  flattened_data = [item for sublist in divisions_data for item in sublist]
+  flattened_data.insert(0, 0)
+
+  marks_data = get_valorant_marks_data()
+  marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+
   start_division = ((current_rank-1) * 3) + current_division
   end_division = ((desired_rank-1) * 3)+ desired_division
   marks_price = marks_data[current_rank][marks]
@@ -174,10 +173,8 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/valorant/data/placements_data.json', 'r') as file:
-    placement_data = json.load(file)
-  ##    
+  # Read data from utility function
+  placement_data = get_valorant_placements_data()
   
   price = placement_data[last_rank] * number_of_match
   price += (price * total_percent)

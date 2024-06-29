@@ -21,13 +21,20 @@
 .diamond {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
-  linear-gradient(180deg, #C279FD 0%, #43373300 100%);
+  linear-gradient(180deg, #7F9AA6 0%, #43373300 100%);
 }
 .master {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
   linear-gradient(180deg, #dad862 0%, #43373300 100%);
 }
+
+.grand {
+  background: 
+  linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+  linear-gradient(180deg, #E4A43A 0%, #43373300 100%);
+}
+
 .champion {
   background: 
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),

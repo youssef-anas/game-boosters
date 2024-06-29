@@ -2,7 +2,6 @@
 let dota2Data = $('#dota2Data');
 const MMR_PRICES  = [0].concat(dota2Data.data('divsion'));
 const PLACEMENT_PRICES =  [0].concat(dota2Data.data('placement'));
-console.log('PLACEMENT_PRICES: ',PLACEMENT_PRICES)
 const RANKS_IMAGES = [0].concat(dota2Data.data('images'));
 const ROLE_PRICES = [0, 0, 0.30]
 

@@ -6,7 +6,7 @@ from django.urls import reverse, reverse_lazy
 import json
 from django.conf import settings
 from hearthstone.models import *
-from hearthstone.controller.serializers import DivisionSerializer
+from hearthstone.controller.serializers import DivisionSerializer, BattleSerializer
 from paypal.standard.forms import PayPalPaymentsForm
 from hearthstone.controller.order_information import *
 from booster.models import OrderRating
@@ -14,8 +14,20 @@ from accounts.models import TokenForPay
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data, get_hearthstone_battle_prices
 
-# Create your views here.
+
+
+def get_hearthstone_divisions_data_view(request):
+    divisions_data = get_hearthstone_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_hearthstone_marks_data_view(request):
+    marks_data = get_hearthstone_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+
+
 def hearthstoneGetBoosterByRank(request):
   extend_order = request.GET.get('extend')
   try:
@@ -24,25 +36,9 @@ def hearthstoneGetBoosterByRank(request):
     order = None
   ranks = HearthstoneRank.objects.all().order_by('id')
   divisions  = HearthstoneTier.objects.all().order_by('id')
-  marks = HearthstoneMark.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_X_to_IX, division.from_IX_to_VIII, division.from_VIII_to_VII, division.from_VII_to_VI, division.from_VI_to_V, division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
-    for division in divisions
-  ]
-
-  marks_data = [
-    [0, mark.marks_3, mark.marks_2, mark.marks_1]
-    for mark in marks
-  ]
-
-  with open('static/hearthstone/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/hearthstone/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
   divisions_list = list(divisions.values())
+
+  battle_prices = get_hearthstone_battle_prices()
 
    # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 7)
@@ -66,6 +62,7 @@ def hearthstoneGetBoosterByRank(request):
     "order": order,
     "feedbacks": feedbacks,
     "boosters":boosters,
+    "battle_prices": battle_prices,
   }
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
@@ -82,6 +79,11 @@ def pay_with_paypal(request):
     # Division
     if request.POST.get('game_type') == 'D':
       serializer = DivisionSerializer(data=request.POST)
+    elif request.POST.get('game_type') == 'A':
+        serializer = BattleSerializer(data=request.POST)
+    else:
+      messages.error(request, "Invalid Game Type")
+      return redirect(reverse_lazy('hearthstone'))
 
     if serializer.is_valid():
       extend_order_id = serializer.validated_data['extend_order']
@@ -90,6 +92,10 @@ def pay_with_paypal(request):
         order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
         print('Order Info: ', order_info)
 
+      elif request.POST.get('game_type') == 'A':
+        order_info = get_battle_order_result(serializer.validated_data,extend_order_id)  
+  
+      
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
       
@@ -108,7 +114,7 @@ def pay_with_paypal(request):
       return render(request, "accounts/paypal.html", context,status=200)
     for field, errors in serializer.errors.items():
       for error in errors:
-          messages.error(request, f"{error}")
+          messages.error(request, f"{field}: {error}")
     return redirect(reverse_lazy('hearthstone'))
   return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
 

@@ -137,16 +137,15 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{0},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},{self.is_arena_2vs2}"
   
   def get_order_price(self):
-    with open('static/wow/data/prices.json', 'r') as file:
-      prices = json.load(file)
-
     try:
       promo_code_amount = self.order.promo_code.discount_amount
     except:
       promo_code_amount = 0
 
-    price_of_2vs2 = prices[0]
-    price_of_3vs3 = prices[1]
+    # Prices
+    prices = WorldOfWarcraftRpsPrice.objects.all().first()
+    price_of_2vs2 = prices.price_of_2vs2
+    price_of_3vs3 = prices.price_of_3vs3
 
     MIN_DESIRED_VALUE = 50
 

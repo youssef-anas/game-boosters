@@ -57,6 +57,32 @@ class RocketLeagueTournament(models.Model):
   def get_image_url(self):
     return self.rank_image.url
   
+
+def get_rocket_league_divisions_data():
+    divisions = RocketLeagueDivision.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_I_to_II, division.from_II_to_III, division.from_III_to_I_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_rocket_league_placements_data():
+    placements = RocketLeaguePlacement.objects.all().order_by('id')
+    placements_data = [placement.price for placement in placements]
+    return placements_data
+
+def get_rocket_league_seasonals_data():
+    seasonals = RocketLeagueSeasonal.objects.all().order_by('id')
+    seasonals_data = [seasonal.price for seasonal in seasonals]
+    return seasonals_data
+
+def get_rocket_league_tournaments_data():
+    tournaments = RocketLeagueTournament.objects.all().order_by('id')
+    tournaments_data = [tournament.price for tournament in tournaments]
+    return tournaments_data
+
+
+  
 class RocketLeagueDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'I'),
@@ -145,11 +171,10 @@ class RocketLeagueDivisionOrder(models.Model):
     return f"{self.current_rank.pk},{self.current_division},{self.ranked_type},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
-    # Read data from JSON file
-    with open('static/rocketLeague/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)  
+    # Read data from utils file
+    divisions_data = get_rocket_league_divisions_data()
+    flattened_data = [item for sublist in divisions_data for item in sublist]
+    flattened_data.insert(0, 0)
           
     try:
       promo_code_amount = self.order.promo_code.discount_amount

@@ -199,4 +199,22 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
+
+  const battlegrounds_boost_form = document.getElementById('battlegrounds-boost-form');
+  const battlegrounds_paypal_btn = document.getElementById('battlegrounds-paypal-btn');
+  const battlegrounds_cryptomus_btn = document.getElementById('battlegrounds-cryptomus-btn');
+
+  if(battlegrounds_boost_form) {
+    battlegrounds_paypal_btn.addEventListener('click', function() {
+      const paypalUrl = urls.dataset.paypalUrl;
+      battlegrounds_boost_form.action = paypalUrl;
+      battlegrounds_boost_form.submit();
+    });
+
+    battlegrounds_cryptomus_btn.addEventListener('click', function() {
+      const cryptomusUrl = urls.dataset.cryptomusUrl;
+      battlegrounds_boost_form.action = cryptomusUrl;
+      battlegrounds_boost_form.submit();
+    });
+  }
 });

@@ -14,6 +14,22 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from .utils import get_mobile_legends_divisions_data, get_mobile_legends_marks_data, get_mobile_legends_placements_data
+
+
+
+def get_mobile_legends_divisions_view(request):
+    divisions_data = get_mobile_legends_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_mobile_legends_marks_view(request):
+    marks_data = get_mobile_legends_marks_data()
+    return JsonResponse(marks_data, safe=False)
+
+def get_mobile_legends_placements_view(request):
+    placements_data = get_mobile_legends_placements_data()
+    return JsonResponse(placements_data, safe=False)
+
 
 
 # Create your views here.
@@ -25,32 +41,7 @@ def MobileLegendsGetBoosterByRank(request):
     order_get_rank_value = None
   ranks = MobileLegendsRank.objects.all().order_by('id')
   divisions  = MobileLegendsTier.objects.all().order_by('id')
-  marks = MobileLegendsMark.objects.all().order_by('id')
   placements = MobileLegendsPlacement.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_V_to_IV ,division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
-    for division in divisions
-  ]
-  
-
-  marks_data = [
-    [mark.star_1, mark.star_2, mark.star_3, mark.star_4, mark.star_5]
-    for mark in marks
-  ]
-  placements_data = [
-    placement.price
-    for placement in placements
-  ]
-
-  with open('static/mobileLegends/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/mobileLegends/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
-  with open('static/mobileLegends/data/placements_data.json', 'w') as json_file:
-    json.dump(placements_data, json_file)
 
   divisions_list = list(divisions.values())
   

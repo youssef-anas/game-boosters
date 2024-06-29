@@ -4,6 +4,12 @@ from rocketLeague.models import *
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
+from rocketLeague.utils import (
+    get_rocket_league_divisions_data,
+    get_rocket_league_placements_data,
+    get_rocket_league_seasonals_data,
+    get_rocket_league_tournaments_data
+)
 
 division_names = ['','I','II','III']  
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAMPION', 'GRAND CHAMPION', 'SUPERSONIC LEGEND']
@@ -65,11 +71,10 @@ def get_division_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/rocketLeague/data/divisions_data.json', 'r') as file:
-    division_price = json.load(file)
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
+  # Read data from utils file
+  divisions_data = get_rocket_league_divisions_data()
+  flattened_data = [item for sublist in divisions_data for item in sublist]
+  flattened_data.insert(0, 0)
 
   start_division = ((current_rank-1) * 3) + current_division
   end_division = ((desired_rank-1) * 3)+ desired_division
@@ -155,9 +160,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
       promo_code_amount = 0
 
   # Read data from JSON file
-  with open('static/rocketLeague/data/placements_data.json', 'r') as file:
-    placement_data = json.load(file)
-  ##    
+  placement_data = get_rocket_league_placements_data()
   
   price = placement_data[last_rank - 1] * number_of_match
 
@@ -242,10 +245,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/rocketLeague/data/seasonals_data.json', 'r') as file:
-    seasonals_data = json.load(file)
-  ##    
+  seasonals_data = get_rocket_league_seasonals_data()
   
   price = seasonals_data[current_rank - 1] * number_of_wins
 
@@ -330,10 +330,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
     except PromoCode.DoesNotExist:
       promo_code_amount = 0
 
-  # Read data from JSON file
-  with open('static/rocketLeague/data/tournaments_data.json', 'r') as file:
-    tournaments_data = json.load(file)
-  ##    
+  tournaments_data = get_rocket_league_tournaments_data()
   
   price = tournaments_data[current_league - 1]
 

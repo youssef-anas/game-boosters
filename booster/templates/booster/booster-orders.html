@@ -458,10 +458,14 @@
                       <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
                         <h4 style="font-weight: 7000;">Current Rank</h>
                         {% if order.order.order.game_type == 'D' %}
-                          <img src="{{order.order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
-                        {% elif order.order.order.game_type == 'A' and order.order.order.game_id != 13 %}
-                          <img src="{{order.order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
-                        {% endif %}
+                          <div class="d-flex justify-content-center align-items-center">
+                            <img src="{{order.order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
+                          </div>
+                          {% elif order.order.order.game_type == 'A' and order.order.order.game_id != 13 %}
+                          <div class="d-flex justify-content-center align-items-center">
+                            <img src="{{order.order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
+                          </div>
+                          {% endif %}
       
                         {% if order.order.order.game.link == 'wildRift' or order.order.order.game.link == 'lol' or order.order.order.game.link == 'tft' %}
                           <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division }}</p>

@@ -14,6 +14,18 @@ import json
 from accounts.models import BaseUser
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
+from dota2.utils import get_division_prices, get_placement_prices
+
+
+def division_prices_view(request):
+    division_prices = get_division_prices()
+    return JsonResponse(division_prices, safe=False)
+
+def placement_prices_view(request):
+    placement_prices = get_placement_prices()
+    return JsonResponse(placement_prices, safe=False)
+
+
 
 def dota2GetBoosterByRank(request):
   extend_order = request.GET.get('extend')
@@ -22,20 +34,9 @@ def dota2GetBoosterByRank(request):
   except:
     order = None
 
-  division_row = Dota2MmrPrice.objects.all().first()
-  division_prices = [division_row.price_0_2000, division_row.price_2000_3000, division_row.price_3000_4000, division_row.price_4000_5000, division_row.price_5000_5500, division_row.price_5500_6000, division_row.price_6000_extra]
+  division_prices = get_division_prices()
+  placement_prices = get_placement_prices()
 
-
-  placement_prices = []
-  placement_rows = Dota2Placement.objects.all()
-
-  for row in placement_rows:
-    placement_prices.append(row.price)
-
-  prices_data = {
-    "division": division_prices,
-    "placement": placement_prices,
-  }
   game_pk_condition = Case(
     When(booster_orders__game__pk=10, booster_orders__is_done=True, booster_orders__is_drop=False, then=1),
     default=0,
@@ -52,9 +53,6 @@ def dota2GetBoosterByRank(request):
 
   ranks_images = [rank.rank_image.url for rank in Dota2Rank.objects.all()]
   ranks_images = json.dumps(ranks_images)
-
-  with open('static/dota2/data/prices.json', 'w') as json_file:
-    json.dump(prices_data, json_file)
 
   # Feedbacks
   feedbacks = OrderRating.objects.filter(order__game_id = 10)

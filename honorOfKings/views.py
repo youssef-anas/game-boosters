@@ -14,6 +14,16 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+from honorOfKings.utils import get_hok_divisions_data, get_hok_marks_data
+
+
+def get_hok_divisions_data_view(request):
+    divisions_data = get_hok_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_hok_marks_data_view(request):
+    marks_data = get_hok_marks_data()
+    return JsonResponse(marks_data, safe=False)
 
 
 def honerOfKingeGetBoosterByRank(request):
@@ -24,24 +34,6 @@ def honerOfKingeGetBoosterByRank(request):
     order = None
   ranks = HonorOfKingsRank.objects.all().order_by('id')
   divisions  = HonorOfKingsTier.objects.all().order_by('id')
-  marks = HonorOfKingsMark.objects.all().order_by('id')
-
-  divisions_data = [
-    [division.from_V_to_IV, division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
-    for division in divisions
-  ]
-
-  marks_data = [
-    [0, mark.star_1, mark.star_2, mark.star_3]
-    for mark in marks
-  ]
-
-  with open('static/hok/data/divisions_data.json', 'w') as json_file:
-    json.dump(divisions_data, json_file)
-
-  with open('static/hok/data/marks_data.json', 'w') as json_file:
-    json.dump(marks_data, json_file)
-
   divisions_list = list(divisions.values())
 
   # Feedbacks

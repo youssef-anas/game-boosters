@@ -24,21 +24,21 @@ let premierPrices = [0]
 let faceitPrices = []
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/csgo2/data/divisions_data.json', function (data) {
+    $.getJSON('/csgo2/division-prices/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
 
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/csgo2/data/premier_data.json', function (data) {
+    $.getJSON('/csgo2/premier-prices/', function (data) {
       premierPrices = premierPrices.concat(...data);
       resolve();
     });
   }),
 
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/csgo2/data/faceit_data.json', function (data) {
+    $.getJSON('/csgo2/faceit-prices/', function (data) {
       faceitPrices = data;
       resolve();
     });

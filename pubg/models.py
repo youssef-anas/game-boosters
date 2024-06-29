@@ -2,7 +2,6 @@ from django.db import models
 from accounts.models import BaseOrder
 from accounts.templatetags.custom_filters import five_romanize_division, romanize_division_original
 import requests
-import json
 
 class PubgRank(models.Model):
   rank_name = models.CharField(max_length=25, default='rank name')
@@ -36,6 +35,22 @@ class PubgMark(models.Model):
 
   def __str__(self):
     return f"Marks for {self.rank}"
+  
+def get_divisions_data():
+    divisions = PubgTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_V_to_VI, division.from_VI_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_V_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_marks_data():
+    marks = PubgMark.objects.all().order_by('id')
+    marks_data = [
+        [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+        for mark in marks
+    ]
+    return marks_data  
   
   
 class PubgDivisionOrder(models.Model):
@@ -124,16 +139,15 @@ class PubgDivisionOrder(models.Model):
       return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
-      # Read data from JSON file
-      with open('static/pubg/data/divisions_data.json', 'r') as file:
-          division_price = json.load(file)
-          flattened_data = [item for sublist in division_price for item in sublist]
-          flattened_data.insert(0,0)
-      ##
-      with open('static/pubg/data/marks_data.json', 'r') as file:
-          marks_data = json.load(file)
-          marks_data.insert(0,[0,0,0,0,0,0,0])
-      ##   
+      # Fetch divisions data using utility function
+      divisions_data = get_divisions_data()
+      flattened_data = [item for sublist in divisions_data for item in sublist]
+      flattened_data.insert(0, 0)
+
+      # Fetch marks data using utility function
+      marks_data = get_marks_data()
+      marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+          ##   
       try:
         promo_code_amount = self.order.promo_code.discount_amount
       except:

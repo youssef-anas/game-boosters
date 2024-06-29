@@ -147,13 +147,11 @@ checkboxes.forEach(checkbox => {
       }
     }
     const result = selectedIds.join('');
-    console.log('Selected IDs:', result);
 
     championDataInputs.forEach(input => {
       input.value = result;
     });
 
-    console.log(selectedIds.length)
     if (selectedIds.length != 0) {
       disableButton(false, 'champion')
     } else {
@@ -226,7 +224,6 @@ function disable_alert(message){
 
 document.addEventListener("DOMContentLoaded", function() {
   var alerts = document.querySelectorAll('.alert');
-  console.log(alerts)
   alerts.forEach(function(alert) {
     // Start the loader animation by adding the class
     setTimeout(function() {
