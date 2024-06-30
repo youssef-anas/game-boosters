@@ -25,7 +25,7 @@
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
-
+<div id="battle_prices" data-prices="{{ battle_prices }}"></div>
 <!-- ------------------------------ Booster Select Popup ------------------------------ -->
 <div id="popup-booster-form" class="popup">
   <div class="popup-content">
@@ -267,24 +267,22 @@
                 <div class="battlegrounds-boost d-none">
                   <!-- Current -->
                   <div class="current current-battlegrounds" id="current-battlegrounds">
-        
-                    <div class="d-flex justify-content-between align-item-center">
-        
-                      <div class="d-flex align-item-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="d-flex align-items-center">
                         <div class="current-rp current-battlegrounds-rp me-4">
-                          <h1 class="current-rp current-battlegrounds-rp mb-0"></h1>
+                          <input type="number" id="current-battlegrounds-input" min="0" max="10000" step="1" value="4000" class="number-input"/>
                         </div>
                         <div class="text-white text">
                           <h5>Current MMR Rank</h5>
                           <p>Select your current MMR</p>
                         </div>
                       </div>
-        
+                  
                       <div class="image">
-                        <img src="{% static 'hearthstone/hs-battle.png' %}" alt="Current Rank Image" class="current-battlegrounds-selected-img" class="img-fluid" width="60" height="60">
+                        <img src="{% static 'hearthstone/hs-battle.png' %}" alt="Current Rank Image" class="current-battlegrounds-selected-img img-fluid" width="60" height="60">
                       </div>
                     </div>
-        
+                  
                     <div class="range-container mt-5 pt-xl-0 pt-5">
                       <input type="range" min="0" max="10000" value="4000" step="1" id="current-battlegrounds-range" /> 
                       <div class="current-battlegrounds step-indicator">
@@ -296,7 +294,7 @@
                         <span class="step">10000</span>
                       </div>
                     </div>
-        
+                  
                     <!-- Servers -->
                     <div class="server-container mt-3">
                       <p class="text-white" style="font-size: 16px;">Server</p>
@@ -310,8 +308,7 @@
                         </select>
                       </div>
                     </div>
-        
-                  </div>
+                  </div>                  
         
                   <!-- Desired -->
                   <div class="desired desired-battlegrounds" id="desired-battlegrounds">
@@ -320,7 +317,7 @@
         
                       <div class="d-flex align-item-center">
                         <div class="desired-rp desired-battlegrounds-rp me-4">
-                          <h1 class="desired-rp desired-battlegrounds-rp mb-0"></h1>
+                          <input type="number" id="desired-battlegrounds-input" min="0" max="10000" step="25" value="5000" class="number-input"/>
                         </div>
                         <div class="text-white text">
                           <h5>Desired MMR Rank</h5>

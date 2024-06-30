@@ -163,8 +163,11 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             # WoW - Arena
             elif game_id == 6 and game_type == 'A':
                 order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2)
-            # HEARTHSTONE
+            # HEARTHSTONE - Division
             elif game_id == 7 and game_type == 'D':
+                order = Game.objects.create(**default_fields)
+            # HEARTHSTONE - Battle
+            elif game_id == 7 and game_type == 'A':
                 order = Game.objects.create(**default_fields)
             # Mobile Legends - Division
             elif game_id == 8 and game_type == 'D':
@@ -251,9 +254,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             elif game_id == 6 and game_type == 'A':
                 # TODO not completed yet
                 order = Game.objects.create(**extend_fields, is_arena_2vs2=is_arena_2vs2)
-            # HEARTHSTONE
-            elif game_id == 7:
+            # HEARTHSTONE - Division
+            elif game_id == 7 and game_type == 'D':
                 order = Game.objects.create(**extend_fields)
+            # HEARTHSTONE - Battle
+            elif game_id == 7 and game_type == 'A':
+                order = Game.objects.create(**extend_fields)   
             # Mobile Legends
             elif game_id == 8 and game_type == 'D': 
                 order = Game.objects.create(**extend_fields, select_champion=select_champion)
@@ -307,6 +313,8 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
 
         order.save_with_processing()
         baseOrder.customer_wallet()
+        print(baseOrder.game_type)
+        print(type)
         return order
     
     # except Exception as e:

@@ -3,6 +3,54 @@ const ranksNames = ['unrank', 'bronze', 'silver', 'gold', 'platinum', 'diamond',
 
 const divisionNames = [0,'X','IX','VIII','VII','VI','V','IV','III','II','I']  
 
+const battle_prices_list = JSON.parse(document.getElementById("battle_prices").dataset.prices);
+const full_prices_list = battle_prices_list.map(num => num * 80);
+battle_prices_list.unshift(0);
+
+function getRangeCurrent(amount) {
+  const MAX_LISTS = [0, 1999, 3999, 5999, 7999, 10000];
+  for (let idx = 0; idx < MAX_LISTS.length; idx++) {
+      const max_val = MAX_LISTS[idx];
+      if (amount <= max_val) {
+        const val = max_val - amount;
+        return [parseFloat((val / 25).toFixed(2)), idx];
+      }
+  }
+  console.log('out_of_range');
+  return [null, null];
+}
+
+function getRangeDesired(amount) {
+  const MAX_LISTS = [0, 1999, 3999, 5999, 7999, 10000];
+  for (let idx = 0; idx < MAX_LISTS.length; idx++) {
+      const max_val = MAX_LISTS[idx];
+      if (amount <= max_val) {
+          const val = amount - MAX_LISTS[idx-1];
+          return [parseFloat((val / 25).toFixed(2)), idx];
+      }
+  }
+  console.log('out_of_range');
+  return [null, null];
+}
+
+getClearPrice = (start, end) => {
+  const[startVal, startRange ] = getRangeCurrent(start)
+  const[endVal, endRange ] = getRangeDesired(end)
+
+  if (startRange == endRange) {
+    res = (end - start)/25 * battle_prices_list[startRange]
+    return parseFloat(res.toFixed(2))
+  }else{
+    sum_list = sliceArray(full_prices_list, startRange, endRange-2)
+    diffrance_prices = sum_list.reduce((a, b) => a + b, 0);
+    sum_current = startVal * battle_prices_list[startRange]
+    sum_desired = endVal * battle_prices_list[endRange]
+    return parseFloat((sum_desired + sum_current + diffrance_prices).toFixed(2))
+  }
+}
+
+
+
 // ----------------------------- Division Boost ---------------------------------
 
 // Read Values From Json File
@@ -239,31 +287,26 @@ Promise.all([
 
 
 
+  // For Current Range
   const currentRangeInput = document.getElementById('current-battlegrounds-range');
-  const currentRangeDisplay = document.querySelector('.current-battlegrounds-rp h1');
+  const currentRangeDisplay = document.querySelector('.current-battlegrounds-rp input');
+  const currentRangeNumberInput = document.getElementById('current-battlegrounds-input');
 
+  // For Desired Range
   const desiredRangeInput = document.getElementById('desired-battlegrounds-range');
-  const desiredRangeDisplay = document.querySelector('.desired-battlegrounds-rp h1');
+  const desiredRangeDisplay = document.querySelector('.desired-battlegrounds-rp input');
+  const desiredRangeNumberInput = document.getElementById('desired-battlegrounds-input');
 
-  // Event listener for current range input
-  currentRangeInput.addEventListener('input', (event) => {
-      updateCurrentRangeValue(event.target.value);
-  });
-
-  // Event listener for desired range input
-  desiredRangeInput.addEventListener('input', (event) => {
-      updateDesiredRangeValue(event.target.value);
-  });
-
-
-
-
-MIN_DESIRED_VALUE = 20
-price_of_3vs3 = 5
 
 function getBattlegroundsPrice() {
+  let clear_price = 0
+  const total_points = desiredBattlegroundsValue-currentBattlegroundsValue
+  if (currentBattlegroundsValue && desiredBattlegroundsValue && total_points > 0) {
+    clear_price = getClearPrice(currentBattlegroundsValue, desiredBattlegroundsValue)
+  }
+
   // Price
-  let price = (desiredBattlegroundsValue - currentBattlegroundsValue) * (price_of_3vs3 / MIN_DESIRED_VALUE);
+  let price = clear_price;
 
   // Apply extra charges to the result
   price += price * total_Percentage;
@@ -294,36 +337,74 @@ function getBattlegroundsPrice() {
 }
 
 
-
-
-
-
-  // Update current range value display
-  const updateCurrentRangeValue = (value) => {
-      currentRangeDisplay.textContent = value;
-      currentBattlegroundsValue = value
-
-      $('#current-battlegrounds .current-battlegrounds-rp').html(currentBattlegroundsValue);
+    // function to update the current range value
+    const updateCurrentRangeValue = (value) => {
+      currentRangeDisplay.value = value;
+      currentBattlegroundsValue = value;
+      $('#current-battlegrounds .current-battlegrounds-rp input').val(value);
       getBattlegroundsPrice();
-  };
+    };
 
-  // Update desired range value display
-  const updateDesiredRangeValue = (value) => {
-      desiredRangeDisplay.textContent = value;
-      desiredBattlegroundsValue = value
-
-      $('#desired-battlegrounds .desired-battlegrounds-rp').html(desiredBattlegroundsValue);
+    // function to update the desired range value
+    const updateDesiredRangeValue = (value) => {
+      desiredRangeDisplay.value = value;
+      desiredBattlegroundsValue = value;
+      $('#desired-battlegrounds .desired-battlegrounds-rp input').val(value);
       getBattlegroundsPrice();
-  };
+    };
 
 
+
+    // Event listener for current input Range
+    currentRangeInput.addEventListener('input', (event) => {
+      const value = event.target.value;
+      updateCurrentRangeValue(value);
+      currentRangeNumberInput.value = value;
+    });
+
+    // Event listener for current input number
+    currentRangeNumberInput.addEventListener('input', (event) => {
+      let value = event.target.value;
+      value = value.replace(/^0+/, '');
+      if (value > 10000) value = 10000;
+      if (value < 0) value = 0;
+      if (value === '') {
+        value = '0';
+      }
+      if (value >= 0 && value <= 10000) {
+        updateCurrentRangeValue(value);
+        currentRangeInput.value = value;
+      }
+    });
+
+
+
+
+    // Event listener for desired input range
+    desiredRangeInput.addEventListener('input', (event) => {
+      const value = event.target.value;
+      updateDesiredRangeValue(value);
+      desiredRangeNumberInput.value = value;
+    });
+
+    // Event listener for desired input number
+    desiredRangeNumberInput.addEventListener('input', (event) => {
+      let value = event.target.value;
+      value = value.replace(/^0+/, '');
+      if (value > 10000) value = 10000;
+      if (value < 0) value = 0;
+      if (value === '') {
+        value = '0';
+      }
+      if (value >= 0 && value <= 10000) {
+          updateDesiredRangeValue(value);
+          desiredRangeInput.value = value;
+      }
+    });
 
     // Initialize display with default values
     updateCurrentRangeValue(currentRangeInput.value);
     updateDesiredRangeValue(desiredRangeInput.value);
-
-
-
 
 
 

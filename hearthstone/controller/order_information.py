@@ -13,7 +13,6 @@ division_names = ['','X','IX','VIII','VII','VI','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'LEGEND']
 
 def get_division_order_result_by_rank(data,extend_order_id):
-  print('Data: ', data)
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -92,14 +91,12 @@ def get_division_order_result_by_rank(data,extend_order_id):
   price += (price * total_percent)
   price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
       price = round(price - extend_order_price, 2)
-      print('Price', price)
     except:
       pass
 
@@ -127,7 +124,7 @@ def get_battle_order_result(data, extend_order_id):
     for idx, max_val in enumerate(MAX_LISTS, start=1):
         if amount <= max_val:
             val = max_val - amount
-            return round(val / 500, 2), idx
+            return round(val / 25, 2), idx
     print('out_of_range')
     return None, None
     
@@ -136,7 +133,7 @@ def get_battle_order_result(data, extend_order_id):
       for idx, max_val in enumerate(MAX_LISTS, start=1):
           if amount <= max_val:
               val = amount-MAX_LISTS[idx-2]
-              return round(val / 500, 2), idx
+              return round(val / 25, 2), idx
       print('out_of_range')
       return None, None
 
@@ -204,24 +201,24 @@ def get_battle_order_result(data, extend_order_id):
   # Read data from utils file
   battle_price = get_hearthstone_battle_prices()
 
-  price1 = round(battle_price[1] * 80 , 2)
-  price2 = round(battle_price[2] * 80 , 2)
-  price3 = round(battle_price[3] * 80 , 2)
-  price4 = round(battle_price[4] * 80 , 2)
-  price5 = round(battle_price[5] * 80 , 2)
+  price1 = round(battle_price[0] * 80 , 2)
+  price2 = round(battle_price[1] * 80 , 2)
+  price3 = round(battle_price[2] * 80 , 2)
+  price4 = round(battle_price[3] * 80 , 2)
+  price5 = round(battle_price[4] * 80 , 2)
   full_price_val = [price1, price2, price3, price4, price5]
 
   ##
   curent_mmr_in_c_range, current_range = get_range_current(current_division)
   desired_mmr_in_d_range, derired_range = get_range_desired(desired_division)
-  sliced_prices = full_price_val[current_range : derired_range - 1]
-  sum_current = curent_mmr_in_c_range * battle_price[current_range]
-  sum_desired = desired_mmr_in_d_range * battle_price[derired_range]
+  sliced_prices = full_price_val[current_range : derired_range-1]
+  sum_current = curent_mmr_in_c_range * battle_price[current_range-1]
+  sum_desired = desired_mmr_in_d_range * battle_price[derired_range-1]
   clear_res = sum(sliced_prices)
 
   if current_range == derired_range:
       range_value = math.floor((desired_division - current_division ) / 25)
-      price = round(range_value * battle_price[current_range], 2)
+      price = round(range_value * battle_price[current_range-1], 2)
   else:
       price = round(sum_current + sum_desired + clear_res,2)
 
@@ -230,14 +227,12 @@ def get_battle_order_result(data, extend_order_id):
   price += (price * total_percent)
   price -= price * (promo_code_amount/100)
   price = round(price, 2)
-  print('Price', price)
 
   if extend_order_id > 0:
     try:
       extend_order = BaseOrder.objects.get(id=extend_order_id)
       extend_order_price = extend_order.price
       price = round(price - extend_order_price, 2)
-      print('Price', price)
     except:
       pass
 
@@ -247,10 +242,10 @@ def get_battle_order_result(data, extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'HS-7-D-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-0-{timezone.now()}'
+  invoice = f'HS-7-A-{current_rank}-{current_division}-{marks}-{desired_rank}-{desired_division}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'HEARTHSTONE, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
+  name = f'HEARTHSTONE, BOOSTING FROM  {current_division} MMR TO {desired_division} MMR {boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})

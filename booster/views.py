@@ -263,7 +263,7 @@ def booster_details(request, booster_id):
     for order in completed_orders_query:
         content_type = order.content_type
         if content_type:
-            completed_order = content_type.model_class().objects.get(order_id=order.object_id)
+            completed_order = content_type.model_class().objects.get(order = order)
 
         completed_orders.append(completed_order)
 
@@ -319,7 +319,7 @@ def booster_orders(request):
         content_type = base_order.content_type
         game = []
         if content_type:
-            game = content_type.model_class().objects.get(order_id=base_order.object_id)
+            game = content_type.model_class().objects.get(order=base_order)
             
             update_rating_result = game.get_order_price()
             base_order.money_owed = update_rating_result['booster_price']
@@ -478,13 +478,15 @@ def update_rating(request, order_id):
         base_order = get_object_or_404(BaseOrder,id=order_id, booster=request.user)
         contect_type = base_order.content_type
         if contect_type :
-            game = contect_type.model_class().objects.get(order_id = base_order.object_id)
+            game = contect_type.model_class().objects.get(order = base_order)
         
         reached_division = request.POST.get('reached_division', 1)
         reached_marks = request.POST.get('reached_marks', 0)
         
         if base_order.game.pk == 6:
             reached_rank_id = wow_ranks(reached_division)[1]
+        elif base_order.game.pk == 7:
+            reached_rank_id = 1
         elif base_order.game.pk == 10:
             reached_rank_id = dota2_ranks(reached_division)[1]
         elif base_order.game.pk == 13 and base_order.game_type == 'A':

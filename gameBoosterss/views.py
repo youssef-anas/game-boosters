@@ -15,7 +15,7 @@ def index(request):
   for order in last_orders_query:
     content_type = order.content_type
     if content_type:
-      last_order = content_type.model_class().objects.get(order_id=order.object_id)
+      last_order = content_type.model_class().objects.get(order = order)
 
       last_orders.append(last_order)
 
@@ -36,7 +36,7 @@ def last_orders(request):
   for order in last_orders_query:
     content_type = order.content_type
     if content_type:
-      last_order = content_type.model_class().objects.get(order_id=order.object_id)
+      last_order = content_type.model_class().objects.get(order = order)
 
       last_orders.append(last_order)
 

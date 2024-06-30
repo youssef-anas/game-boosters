@@ -1,8 +1,8 @@
 from django.db import models
-from accounts.models import BaseOrder, Wallet
+from accounts.models import BaseOrder, Wallet, PromoCode
 from accounts.templatetags.custom_filters import ten_romanize_division,romanize_division
 import requests
-import json
+import math
 
 # Create your models here.
 class HearthstoneRank(models.Model):
@@ -326,3 +326,102 @@ class HearthStoneBattleOrder(models.Model):
       promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
 
     return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},2"
+
+
+  def get_order_price(self):
+    def get_range_current(amount):
+      MAX_LISTS = [1999, 3999, 5999, 7999, 10000]
+      for idx, max_val in enumerate(MAX_LISTS, start=1):
+          if amount <= max_val:
+              val = max_val - amount
+              return round(val / 25, 2), idx
+      print('out_of_range')
+      return None, None
+      
+    def get_range_desired(amount):
+        MAX_LISTS = [1999, 3999, 5999, 7999, 10000]
+        for idx, max_val in enumerate(MAX_LISTS, start=1):
+            if amount <= max_val:
+                val = amount-MAX_LISTS[idx-2]
+                return round(val / 25, 2), idx
+        print('out_of_range')
+        return None, None
+
+    total_percent = 0
+
+    if self.order.duo_boosting:
+      total_percent += 0.65
+
+
+    if self.order.select_booster:
+      total_percent += 0.10
+
+
+    if self.order.turbo_boost:
+      total_percent += 0.20
+
+    
+    if self.order.streaming:
+      total_percent += 0.15
+
+
+      
+    try:
+      promo_code_amount = self.order.promo_code.discount_amount
+    except:
+      promo_code_amount = 0
+
+    # Read data from utils file
+    battle_price = get_hearthstone_battle_prices()
+
+    price1 = round(battle_price[0] * 80 , 2)
+    price2 = round(battle_price[1] * 80 , 2)
+    price3 = round(battle_price[2] * 80 , 2)
+    price4 = round(battle_price[3] * 80 , 2)
+    price5 = round(battle_price[4] * 80 , 2)
+    full_price_val = [price1, price2, price3, price4, price5]
+
+    ##
+    curent_mmr_in_c_range, current_range = get_range_current(self.current_division)
+    desired_mmr_in_d_range, derired_range = get_range_desired(self.reached_division)
+    sliced_prices = full_price_val[current_range : derired_range-1]
+    sum_current = curent_mmr_in_c_range * battle_price[current_range-1]
+    sum_desired = desired_mmr_in_d_range * battle_price[derired_range-1]
+    clear_res = sum(sliced_prices)
+
+    if current_range == derired_range:
+        range_value = math.floor((self.reached_division - self.current_division ) / 25)
+        price = round(range_value * battle_price[current_range-1], 2)
+    else:
+        price = round(sum_current + sum_desired + clear_res,2)
+
+    price += (price * total_percent)
+    price -= price * (promo_code_amount/100)
+    price = round(price, 2)
+    custom_price= price
+    
+    ##############################################################
+
+    actual_price = self.order.actual_price
+    main_price = self.order.price
+
+    percent = round(actual_price / (main_price/100))
+
+    print(percent)
+
+    booster_price = custom_price * (percent/100)
+
+    percent_for_view = round((booster_price/actual_price)* 100)
+    if percent_for_view > 100:
+      percent_for_view = 100
+
+    if booster_price > actual_price:
+      booster_price = actual_price
+
+
+    return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+
+
+
+
+

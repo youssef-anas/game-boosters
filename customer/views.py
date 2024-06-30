@@ -60,9 +60,8 @@ def customer_setting(request):
 def payment_sucess_view(request, token):
     # invoice = request.session.get('invoice')
     payer_id = request.GET.get("PayerID")
-    token_object = TokenForPay.objects.get(token=token)
+    token_object = get_object_or_404(TokenForPay, token=token)
     invoice= token_object.invoice
-    token_object.delete()
     invoice_values = invoice.split('-')
     booster_id = int(invoice_values[12])
     try:
@@ -73,6 +72,7 @@ def payment_sucess_view(request, token):
     Room.create_room_with_admins(request.user, order.order.name)
     Room.create_room_with_booster(request.user, booster, order.order.name)
     refresh_order_page()
+    token_object.delete()
     # async_task(update_database_task, order.order.id)
     return redirect(reverse('customer.filldata', kwargs={'order_name': order.order.name}))
     
@@ -93,7 +93,7 @@ def customer_orders(request):
         content_type = base_order.content_type
 
         if content_type:
-            order =  content_type.model_class().objects.get(order_id=base_order.object_id)
+            order =  content_type.model_class().objects.get(order = base_order)
             orders.append(order)
 
     context = {

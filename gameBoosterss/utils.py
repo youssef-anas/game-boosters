@@ -4,7 +4,7 @@ from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 from pubg.models import PubgDivisionOrder
 from leagueOfLegends.models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
 from tft.models import TFTDivisionOrder, TFTPlacementOrder
-from hearthstone.models import HearthstoneDivisionOrder
+from hearthstone.models import HearthstoneDivisionOrder, HearthStoneBattleOrder
 from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
 from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
@@ -91,6 +91,7 @@ def check_wow_type(type) -> Model:
 def check_hearthstone_type(type) -> Model:
     HEARTHSTONE_MODELS = {
         'D': HearthstoneDivisionOrder,
+        'A': HearthStoneBattleOrder,
     }
     Game = HEARTHSTONE_MODELS.get(type, None)
     if not Game:

@@ -396,8 +396,11 @@
                           {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                             <p class="current-info text-capitalize mb-0">{{order.order.current_rank}} {{ order.order.current_division|romanize_division_original }}</p>
       
-                          {% elif order.order.order.game.link == 'hearthstone' %}
+                          {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'D' %}
                             <p class="current-info text-capitalize mb-0">{{order.order.current_rank}} {{ order.order.current_division|ten_romanize_division }}</p>
+
+                          {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'A' %}
+                            <p class="current-info text-capitalize mb-0">{{ order.order.current_division }} MMR</p>
       
                           {% elif order.order.order.game.link == 'hok' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'overwatch2' %}
                             <p class="current-info text-capitalize mb-0">{{order.order.current_rank}} {{ order.order.current_division|five_romanize_division }}</p>
@@ -433,8 +436,11 @@
                           {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                             <p class="desired-info text-capitalize mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|romanize_division_original }}</p>
       
-                          {% elif order.order.order.game.link == 'hearthstone' %}
+                          {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'D' %}
                             <p class="desired-info text-capitalize mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|ten_romanize_division }}</p>
+
+                          {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'A' %}
+                            <p class="desired-info text-capitalize mb-0">{{ order.order.desired_division }} MMR</p>
       
                           {% elif order.order.order.game.link == 'hok' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'overwatch2' %}
                             <p class="desired-info text-capitalize mb-0">{{order.order.desired_rank}} {{ order.order.desired_division|five_romanize_division }}</p>
@@ -456,7 +462,11 @@
                       </div>
       
                       <div class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
-                        <h4 style="font-weight: 7000;">Current Rank</h>
+                        {% if order.order.order.id == 7 and order.order.order.game_type != 'D'  %}
+                          <h4 style="font-weight: 7000;">Current Rank</h>
+                        {% else %}
+                          <h4 style="font-weight: 7000;">Current MMR</h>
+                        {% endif %}
                         {% if order.order.order.game_type == 'D' %}
                           <div class="d-flex justify-content-center align-items-center">
                             <img src="{{order.order.reached_rank.get_image_url}}" alt="Reached Rank Image" class="reached-rank-selected-img checkout-img img-fluid d-block my-3" width="150" height="150">
@@ -473,9 +483,12 @@
                         {% elif order.order.order.game.link == 'valorant' or order.order.order.game.link == 'rocketLeague' %}
                           <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.reached_rank}} {{ order.order.reached_division|romanize_division_original }}</p>
       
-                        {% elif order.order.order.game.link == 'hearthstone' %}
+                        {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'D' %}
                           <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.reached_rank}} {{ order.order.reached_division|ten_romanize_division }}</p>
-      
+                        
+                        {% elif order.order.order.game.link == 'hearthstone' and order.order.order.game_type == 'A' %}  
+                          <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{ order.order.reached_division }} MMR</p>
+                          
                         {% elif order.order.order.game.link == 'hok' or order.order.order.game.link == 'pubg' or order.order.order.game.link == 'overwatch2' %}
                           <p class="current-info text-capitalize mb-0" style="color:#FFFFFF80;">{{order.order.reached_rank}} {{ order.order.reached_division|five_romanize_division }}</p>
       
@@ -511,8 +524,11 @@
                         {% elif order.order.order.game.pk == 5 %}
                           {% include 'tft/order_update.html' with tft_ranks=tft_ranks %}
   
-                        {% elif order.order.order.game.pk == 7 %}
+                        {% elif order.order.order.game.pk == 7 and order.order.order.game_type == 'D' %}
                           {% include 'hearthstone/order_update.html' with hearthstone_ranks=hearthstone_ranks %}
+
+                        {% elif order.order.order.game.pk == 7 and order.order.order.game_type == 'A' %}
+                          {% include 'hearthstone/order_update_mmr.html' with hearthstone_ranks=hearthstone_ranks %}
   
                         {% elif order.order.order.game.pk == 9 %}
                           {% include 'rocketLeague/order_update.html' with rocketLeague_ranks=rocketLeague_ranks %}
