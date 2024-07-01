@@ -1,0 +1,201 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block title %}Mad Boost - Blog {% endblock %}
+    {% block style %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/news.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/main.css' %}" />
+    {% endblock %}
+  {% block container %}
+    <section class="container mt-5">
+      <div class="d-flex flex-column flex-md-row" style="gap: 10%;">
+        <div class="col-lg-8 hero p-0">
+          <h4>
+            {{blog.header}}
+          </h4>
+          <span class="muted-text">{{ blog.created_at.date }}</span>
+          <div class="article-card mt-5">
+            <img src="{{ blog.get_main_image }}" class="img-fluid" alt="Clove" />
+          </div>
+          <!-- {% for sub in sub_headers %}
+          {% if sub.is_top %}
+          <p>
+            {{ sub.sub_header }}
+          </p>
+          {% endif %}
+          {% endfor %} -->
+          <p>
+            <span class="text-orange">Clove</span>, the newest addition to the Valorant roster, emerged onto the
+            scene with a smoldering presence that has left the gaming community
+            in awe. Her reveal shattered expectations and shook the very
+            foundation of conventional wisdom surrounding character design.
+          </p>
+          <p>
+            With a combination of unparalleled agility, strategic prowess, and a
+            dash of unpredictability, Clove has set the curtains on fire,
+            blazing a trail of excitement and controversy in her wake.
+          </p>
+          <p>
+            From her unique abilities to her captivating backstory, every aspect
+            of Clove's persona has sparked intense discussion and debate among
+            players and critics alike.
+          </p>
+          <p>
+            <span class="text-orange">Clove</span>, the newest addition to the Valorant roster, emerged onto the
+            scene with a smoldering presence that has left the gaming community
+            in awe. Her reveal shattered expectations and shook the very
+            foundation of conventional wisdom surrounding character design.
+          </p>
+          <p>
+            With a combination of unparalleled agility, strategic prowess, and a
+            dash of unpredictability, Clove has set the curtains on fire,
+            blazing a trail of excitement and controversy in her wake.
+          </p>
+          <p>
+            From her unique abilities to her captivating backstory, every aspect
+            of Clove's persona has sparked intense discussion and debate among
+            players and critics alike.
+          </p>
+        </div>
+        <div class="card mb-3 advertisement-vertical position-relative mt-0">
+          <img
+            src="{{ blog.get_order_image }}"
+            class="card-img-top"
+            alt="Advertisement"
+          />
+          <div class="card-body text-center position-absolute caption">
+            <p class="card-text sharp-semibold">
+              Get to your desired rank using
+              <span class="text-orange">ISO</span>
+            </p>
+            <a href="{{blog.order_link}}" class="btn btn-orange rounded-pill w-100 sharp-semibold">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="21"
+                viewBox="0 0 17 21"
+                fill="none"
+              >
+                <path
+                  d="M11.0336 8.39078C10.2143 7.91759 9.93283 6.869 10.4057 6.04974C10.8792 5.22959 11.9278 4.94959 12.747 5.42277C13.5657 5.89566 13.8478 6.94366 13.3743 7.76352C12.9014 8.58278 11.8525 8.86366 11.0336 8.39078ZM12.4161 13.861L13.7073 11.6246C16.5882 6.63492 16.2176 2.40233 15.9364 0.850331C15.9065 0.682034 15.8039 0.536553 15.6573 0.450331C15.5097 0.364405 15.3328 0.347516 15.1711 0.403812C13.6733 0.925294 9.77905 2.69715 6.89579 7.69152L5.60423 9.92855L5.03061 9.96826C3.92424 10.0459 2.92809 10.6681 2.37342 11.6293L0.832086 14.2986C0.740827 14.4569 0.74379 14.6533 0.839494 14.8091C0.936383 14.9644 1.1106 15.0539 1.29312 15.0414L3.1509 14.9226C3.67238 14.8897 4.19179 15.0106 4.64453 15.272L5.6309 15.8414L4.88394 17.1351C4.74646 17.373 4.82794 17.677 5.06527 17.8142L5.8552 18.2702C6.09253 18.4071 6.39653 18.3259 6.53401 18.0877L7.28098 16.794L8.26705 17.3635C8.71979 17.6249 9.08542 18.0136 9.31742 18.4838L10.1426 20.1508C10.2229 20.3152 10.3876 20.4213 10.5708 20.4275C10.7536 20.4326 10.9254 20.3366 11.0167 20.1786L12.558 17.5093C13.1121 16.5496 13.1524 15.3751 12.6676 14.3777L12.4161 13.861Z"
+                  fill="white"
+                />
+              </svg>
+              Order Now</a
+            >
+          </div>
+        </div>
+        <div class="card mb-3 d-md-none advertisement-horizontal position-relative">
+          <img
+            src="{{blog.get_order_image2}}"
+            class="card-img-top"
+            alt="Advertisement"
+          />
+          <div class="card-body text-center position-absolute caption">
+            <p class="card-text sharp-semibold">
+              Get to your desired rank using
+              <span class="text-orange">ISO</span>
+            </p>
+            <a href="{{blog.order_link}}" class="btn btn-orange rounded-pill w-100 sharp-semibold">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="21"
+                viewBox="0 0 17 21"
+                fill="none"
+              >
+                <path
+                  d="M11.0336 8.39078C10.2143 7.91759 9.93283 6.869 10.4057 6.04974C10.8792 5.22959 11.9278 4.94959 12.747 5.42277C13.5657 5.89566 13.8478 6.94366 13.3743 7.76352C12.9014 8.58278 11.8525 8.86366 11.0336 8.39078ZM12.4161 13.861L13.7073 11.6246C16.5882 6.63492 16.2176 2.40233 15.9364 0.850331C15.9065 0.682034 15.8039 0.536553 15.6573 0.450331C15.5097 0.364405 15.3328 0.347516 15.1711 0.403812C13.6733 0.925294 9.77905 2.69715 6.89579 7.69152L5.60423 9.92855L5.03061 9.96826C3.92424 10.0459 2.92809 10.6681 2.37342 11.6293L0.832086 14.2986C0.740827 14.4569 0.74379 14.6533 0.839494 14.8091C0.936383 14.9644 1.1106 15.0539 1.29312 15.0414L3.1509 14.9226C3.67238 14.8897 4.19179 15.0106 4.64453 15.272L5.6309 15.8414L4.88394 17.1351C4.74646 17.373 4.82794 17.677 5.06527 17.8142L5.8552 18.2702C6.09253 18.4071 6.39653 18.3259 6.53401 18.0877L7.28098 16.794L8.26705 17.3635C8.71979 17.6249 9.08542 18.0136 9.31742 18.4838L10.1426 20.1508C10.2229 20.3152 10.3876 20.4213 10.5708 20.4275C10.7536 20.4326 10.9254 20.3366 11.0167 20.1786L12.558 17.5093C13.1121 16.5496 13.1524 15.3751 12.6676 14.3777L12.4161 13.861Z"
+                  fill="white"
+                />
+              </svg>
+              Order Now</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div class="row">
+        <div class="hero col-12 col-md-8">
+          <div class="article-card mb-4">
+            <iframe width="720" height="450" src="{{blog.youtube_link}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <!-- {% for sub in sub_headers %}
+          {% if not sub.is_top %}
+          <p>
+            {{ sub.sub_header }}
+          </p>
+          {% endif %}
+          {% endfor %} -->
+          <p>
+            In just a short span of time, she has managed to challenge and
+            reshape the general opinion, establishing herself as a force to be
+            reckoned with in the competitive landscape of Valorant.
+          </p>
+          <p>
+            As players delve deeper into her capabilities and unravel the
+            mysteries of her character, one thing remains certain: Clove's
+            impact on the game is far from over, and her legacy is destined to
+            endure long after the smoke clears.
+          </p>
+          <p>
+            In just a short span of time, she has managed to challenge and
+            reshape the general opinion, establishing herself as a force to be
+            reckoned with in the competitive landscape of Valorant.
+          </p>
+          <p>
+            As players delve deeper into her capabilities and unravel the
+            mysteries of her character, one thing remains certain: Clove's
+            impact on the game is far from over, and her legacy is destined to
+            endure long after the smoke clears.
+          </p>
+        </div>
+        <div class="col-12 col-md-3 offset-md-1">
+          <h4 class="mb-3">Headline Section</h4>
+          <div class="headline-section d-flex flex-wrap">
+            <div class="p-0">
+              <div class="card mb-3">
+                <img src="{% static 'blog/images/Game1.jpg' %}" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <p class="card-text">
+                    Overwatch 2 Reveals How <span class="text-orange">Colosseo</span> Is Changing
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">March 24, 2024</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="p-0">
+              <div class="card mb-3">
+                <img src="{% static 'blog/images/Game2.jpg' %}" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <p class="card-text">Riot reveals the new <span class="text-orange">Skarner</span>.</p>
+                  <p class="card-text">
+                    <small class="text-muted">March 24, 2024</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="p-0">
+              <div class="card mb-3">
+                <img src="{% static 'blog/images/Game3.jpg' %}" class="card-img-top" alt="..." />
+                <div class="card-body">
+                  <p class="card-text">
+                    Riot drops Patch <span class="text-orange">14.7</span> in League of Legends with a huge punch
+                    of changes including the Skarner rework coming early April.
+                  </p>
+                  <p class="card-text">
+                    <small class="text-muted">March 24, 2024</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock %}

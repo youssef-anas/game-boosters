@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.views.generic import CreateView
 from django.views import View
-from news.models import Blog
+from news.models import Blog, SubHeader
 from django.urls import reverse_lazy
 import uuid
 from gameBoosterss.utils import upload_image_to_firebase
@@ -39,6 +39,15 @@ class BlogHomeView(View):
     template_name = 'blog/home.html'  
 
     def get(self, request, *args, **kwargs):
-        headlines = self.model.objects.all()
+        headlines = self.model.objects.all().order_by('id')
         blog = headlines.first()
         return render(request, self.template_name, {'blog': blog, 'headlines': headlines})  
+
+
+
+class BlogDetailsView(View):
+    template_name = 'blog/blog.html'  
+    def get(self, request, id):
+       blog = get_object_or_404(Blog, id=id)
+       sub_headers = SubHeader.objects.filter(blog=blog).order_by('id')
+       return render(request, self.template_name, {'blog': blog, "sub_headers": sub_headers})
