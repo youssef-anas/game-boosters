@@ -50,39 +50,39 @@ class HasBoosterFilter(admin.SimpleListFilter):
         elif self.value() == 'no':
             return queryset.filter(booster__isnull=True)
 
-admin.site.register(BaseOrder)
-# class BaseOrderAdmin(admin.ModelAdmin):
-#     list_display = ['name', 'status','details','booster', 'chat_link','finish_image_url']
-#     list_filter = ['game','is_done',"approved", HasBoosterFilter]
-#     search_fields = ['name', 'customer__username', 'booster__username']
-#     fieldsets = (
-#         ('Admin Info', {'fields': ('name','details','finish_image','approved')}),
-#         ('Order Info', {'fields': ('customer','booster','is_done')}),
-#         ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
-#         ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
-#     )
+class BaseOrderAdmin(admin.ModelAdmin):
+    list_display = ['name', 'status','details','booster', 'chat_link','finish_image_url']
+    list_filter = ['game','is_done',"approved", HasBoosterFilter]
+    search_fields = ['name', 'customer__username', 'booster__username']
+    fieldsets = (
+        ('Admin Info', {'fields': ('name','details','finish_image','approved')}),
+        ('Order Info', {'fields': ('customer','booster','is_done')}),
+        ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
+        ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
+        ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server')}),
+    )
 
 
-#     def finish_image_url(self, obj):
-#         if obj.finish_image:
-#             return format_html('<a href="{}" target="_blank">Finish Img</a>', obj.finish_image.url)
-#         return None
+    def finish_image_url(self, obj):
+        if obj.finish_image:
+            return format_html('<a href="{}" target="_blank">Finish Img</a>', obj.finish_image.url)
+        return None
 
-#     finish_image_url.short_description = 'Image'
-
-
-#     def chat_link(self, obj):
-#         if not obj.is_drop:
-#             chat_url = f'/dashboard/chat/{obj.name}/'
-#             return format_html('<a href="{}" target="_blank">Open Chat</a>', chat_url)
-#         return None
-
-#     chat_link.short_description = 'Chat'
-
-#     # def has_delete_permission(self, request, obj=None):
-#     #     return False
+    finish_image_url.short_description = 'Image'
 
 
+    def chat_link(self, obj):
+        if not obj.is_drop:
+            chat_url = f'/dashboard/chat/{obj.name}/'
+            return format_html('<a href="{}" target="_blank">Open Chat</a>', chat_url)
+        return None
+
+    chat_link.short_description = 'Chat'
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+admin.site.register(BaseOrder, BaseOrderAdmin)
 
 
 class TransactionAdmin(admin.ModelAdmin):

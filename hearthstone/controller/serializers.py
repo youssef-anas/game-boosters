@@ -13,14 +13,16 @@ class DivisionSerializer(serializers.Serializer):
   turbo_boost         = serializers.BooleanField()
   streaming           = serializers.BooleanField()
   price               = serializers.FloatField(min_value=10)
-  choose_booster      = serializers.IntegerField()
   extend_order        = serializers.IntegerField()
+  choose_booster      = serializers.IntegerField()
   promo_code          = serializers.CharField()
   server              = serializers.CharField()
+  pass_extend = False
 
   def validate(self, attrs):
     self.extend_order_validate(attrs)
-    self.booster_validate(attrs)
+    if self.pass_extend == False:
+      self.booster_validate(attrs)
     return attrs
     
   def extend_order_validate(self, attrs):
@@ -28,6 +30,7 @@ class DivisionSerializer(serializers.Serializer):
     if extend_order > 0:
         try:
             BaseOrder.objects.get(id=extend_order, game__id=7, game_type='D')
+            self.pass_extend = True
         except BaseOrder.DoesNotExist:
             raise serializers.ValidationError("This order can't be extended")
 
@@ -64,21 +67,23 @@ class BattleSerializer(serializers.Serializer):
   turbo_boost         = serializers.BooleanField()
   streaming           = serializers.BooleanField()
   price               = serializers.FloatField(min_value=10)
-  choose_booster      = serializers.IntegerField()
   extend_order        = serializers.IntegerField()
+  choose_booster      = serializers.IntegerField()
   promo_code          = serializers.CharField()
   server              = serializers.CharField()
-
+  pass_extend = False
   def validate(self, attrs):
     self.extend_order_validate(attrs)
-    self.booster_validate(attrs)
+    if self.pass_extend == False:
+      self.booster_validate(attrs)
     return attrs
     
   def extend_order_validate(self, attrs):
     extend_order = attrs.get('extend_order', '')
     if extend_order > 0:
         try:
-            BaseOrder.objects.get(id=extend_order, game__id=7, game_type='D')
+            BaseOrder.objects.get(id=extend_order, game__id=7, game_type='A')
+            self.pass_extend = True
         except BaseOrder.DoesNotExist:
             raise serializers.ValidationError("This order can't be extended")
 

@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
     divisionBoostRadio.addEventListener('change', function () {
       if (divisionBoostRadio.checked) {
         divisionBoostAction()
-        console.log('division')
       } else {
         battlegroundsAction()
       }
@@ -44,10 +43,27 @@ document.addEventListener("DOMContentLoaded", function () {
     battlegroundsRadio.addEventListener('change', function () {
       if (battlegroundsRadio.checked) {
         battlegroundsAction()
-        console.log('battlegrounds')
       } else {
         divisionBoostAction()
       }
     });
-  
+
+    if (extend_order){
+
+      if(valuesAsList.at(-1) === '1'){
+        divisionBoostAction()
+        console.log('extend_order for division')
+        //   battlegroundsDiv.forEach(function(element) {
+        //     element.remove();
+        // });
+      }
+      else if(valuesAsList.at(-1) === '2'){
+        battlegroundsAction()
+        console.log('extend_order for battlegrounds')
+      //   divisionBoostDiv.forEach(function(element) {
+      //     element.remove();
+      // });
+      }
+      $('#mode_swiper').remove();
+    }
   });

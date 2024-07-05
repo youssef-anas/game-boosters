@@ -107,7 +107,7 @@
           {% endfor %}
       {% endif %}
 
-      <div class="choise mb-3">
+      <div id="mode_swiper" class="choise mb-3">
         <input type="radio" id="division-boost" name="radio-group-type" checked>
         <label for="division-boost" class="radio-btn" style="width: 147px;">Rank Boost</label>
         <input type="radio" id="battlegrounds-boost" name="radio-group-type">
@@ -492,7 +492,7 @@
                 <input type="hidden" name="price" value="0">
                 
                 <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" value="0" readonly>
-                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
+                <input type="hidden" class="extend_order"  id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
@@ -522,7 +522,7 @@
                 <input type="hidden" name="price" value="0">
                 
                 <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" value="0" readonly>
-                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
+                <input type="hidden" class="extend_order" id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
@@ -558,9 +558,9 @@
 <!-- OUR SCRIPTS -->
 <script src="{% static 'games/js/pay-action.js' %}"></script>
 <script src="{% static 'games/js/main.js' %}"></script>
-<script src="{% static 'hearthstone/js/mode_swiper.js' %}"></script>
 <script src="{% static 'games/js/functions.js' %}"></script> 
 <script src="{% static 'games/js/constance.js' %}"></script> 
+<script src="{% static 'hearthstone/js/mode_swiper.js' %}"></script>
 <script src="{% static 'hearthstone/js/division-placement-boost.js' %}"></script>
 <script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
 {% endblock %}

@@ -33,7 +33,11 @@ def hearthstoneGetBoosterByRank(request):
   try:
     order = HearthstoneDivisionOrder.objects.get(order_id=extend_order)
   except:
-    order = None
+    try:
+      order = HearthStoneBattleOrder.objects.get(order_id=extend_order)
+    except:
+      order = None
+
   ranks = HearthstoneRank.objects.all().order_by('id')
   divisions  = HearthstoneTier.objects.all().order_by('id')
   divisions_list = list(divisions.values())
@@ -98,6 +102,9 @@ def pay_with_paypal(request):
       
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+      
+      # if request.user.is_superuser:
+      #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
       
       paypal_dict = {
         "business": settings.PAYPAL_EMAIL,

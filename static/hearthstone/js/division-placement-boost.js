@@ -7,6 +7,9 @@ const battle_prices_list = JSON.parse(document.getElementById("battle_prices").d
 const full_prices_list = battle_prices_list.map(num => num * 80);
 battle_prices_list.unshift(0);
 
+let currentBattlegroundsValue = 0
+let desiredBattlegroundsValue = 0
+
 function getRangeCurrent(amount) {
   const MAX_LISTS = [0, 1999, 3999, 5999, 7999, 10000];
   for (let idx = 0; idx < MAX_LISTS.length; idx++) {
@@ -74,8 +77,9 @@ Promise.all([
   // Extend
   if (extend_order) {
     let orderID = parseInt(extend_order, 10);
-    document.getElementById('extendOrder').value = orderID; 
-
+    document.querySelectorAll('.extend_order').forEach(function(input){
+      input.value = orderID
+    })
     // Set the checked state for each group of radio buttons using the specified order
     setRadioButtonStateWithDisable(radioButtonsCurrent, valuesToSet[0]-1);
     setRadioButtonStateWithDisable(radioButtonsCurrentDivision, valuesToSet[1]-1);
@@ -179,17 +183,59 @@ Promise.all([
       $('.total-price #division-boost-price').text(`$${result_with_mark}`)
 
       // From Value
-      $('input[name="current_rank"]').val(current_rank);
-      $('input[name="current_division"]').val(current_division);
-      $('input[name="marks"]').val(mark_index);
-      $('input[name="desired_rank"]').val(desired_rank);
-      $('input[name="desired_division"]').val(desired_division);
-      $('input[name="server"]').val(selectedDivsionServer);
-      $('input[name="division-boost-price"]').val(result_with_mark);
-
+      $('#division-boost-form input[name="current_rank"]').val(current_rank);
+      $('#division-boost-form input[name="current_division"]').val(current_division);
+      $('#division-boost-form input[name="marks"]').val(mark_index);
+      $('#division-boost-form input[name="desired_rank"]').val(desired_rank);
+      $('#division-boost-form input[name="desired_division"]').val(desired_division);
+      $('#division-boost-form input[name="server"]').val(selectedDivsionServer);
+      $('#division-boost-form input[name="division-boost-price"]').val(result_with_mark);
       // SET PROMO CODE IN FORM
-      $('input[name="promo_code"]').val(extendPromoCode);
+      $('#division-boost-form input[name="promo_code"]').val(extendPromoCode);
+      $('#division-boost-form input[name="price"]').val(result_with_mark);
+      
     }
+
+    function getBattlegroundsPrice() {
+      let clear_price = 0
+      const total_points = desiredBattlegroundsValue-currentBattlegroundsValue
+      if (currentBattlegroundsValue && desiredBattlegroundsValue && total_points > 0) {
+        clear_price = getClearPrice(currentBattlegroundsValue, desiredBattlegroundsValue)
+      }
+    
+      // Price
+      let price = clear_price;
+    
+      // Apply extra charges to the result
+      price += price * total_Percentage;
+    
+      // Apply promo code 
+      price -= price * (discount_amount/100 )
+    
+      price = parseFloat(price.toFixed(2)); 
+    
+      // Current
+      $('#current-3vs3 .current-3vs3-rp').html(currentBattlegroundsValue);
+      $('.current').removeClass().addClass(`current gold`);
+      $('.current-selected-mmr').html(`${currentBattlegroundsValue} MMR`)
+    
+      // Desired
+      $('#desired-3vs3 .desired-3vs3-rp').html(desiredBattlegroundsValue);
+      $('.desired').removeClass().addClass(`desired gold`);
+      $('.desired-selected-mmr').html(`${desiredBattlegroundsValue} MMR`)
+    
+      // Price
+      $('#battlegrounds-boost-price').html(`$${price}`)
+    
+      // Form
+      $('#battlegrounds-boost-form input[name="current_mmr"]').val(currentBattlegroundsValue);
+      $('#battlegrounds-boost-form input[name="desired_mmr"]').val(desiredBattlegroundsValue);
+      $('#battlegrounds-boost-form input[name="server"]').val(selectedBattlegroundsArenaServer());
+      $('#battlegrounds-boost-form input[name="price"]').val(price);
+    }
+
+
+
   } else {
     // Get Result Function
     function getResult() {
@@ -255,10 +301,46 @@ Promise.all([
       $('#division-boost-form input[name="server"]').val(selectedDivsionServer);
       $('#division-boost-form input[name="price"]').val(result_with_mark);
     }
+
+    function getBattlegroundsPrice() {
+      let clear_price = 0
+      const total_points = desiredBattlegroundsValue-currentBattlegroundsValue
+      if (currentBattlegroundsValue && desiredBattlegroundsValue && total_points > 0) {
+        clear_price = getClearPrice(currentBattlegroundsValue, desiredBattlegroundsValue)
+      }
+    
+      // Price
+      let price = clear_price;
+    
+      // Apply extra charges to the result
+      price += price * total_Percentage;
+    
+      // Apply promo code 
+      price -= price * (discount_amount/100 )
+    
+      price = parseFloat(price.toFixed(2)); 
+    
+      // Current
+      $('#current-3vs3 .current-3vs3-rp').html(currentBattlegroundsValue);
+      $('.current').removeClass().addClass(`current gold`);
+      $('.current-selected-mmr').html(`${currentBattlegroundsValue} MMR`)
+    
+      // Desired
+      $('#desired-3vs3 .desired-3vs3-rp').html(desiredBattlegroundsValue);
+      $('.desired').removeClass().addClass(`desired gold`);
+      $('.desired-selected-mmr').html(`${desiredBattlegroundsValue} MMR`)
+    
+      // Price
+      $('#battlegrounds-boost-price').html(`$${price}`)
+    
+      // Form
+      $('#battlegrounds-boost-form input[name="current_mmr"]').val(currentBattlegroundsValue);
+      $('#battlegrounds-boost-form input[name="desired_mmr"]').val(desiredBattlegroundsValue);
+      $('#battlegrounds-boost-form input[name="server"]').val(selectedBattlegroundsArenaServer());
+      $('#battlegrounds-boost-form input[name="price"]').val(price);
+    }
   }
 
-  // Get Result 
-  getResult();
 
   // get element by class name battlegrounds-servers-select and get value from it selected option
   
@@ -280,13 +362,6 @@ Promise.all([
     selectedBattlegroundsDivsionServer()
   })
 
-
-
-  let currentBattlegroundsValue = 0
-  let desiredBattlegroundsValue = 0
-
-
-
   // For Current Range
   const currentRangeInput = document.getElementById('current-battlegrounds-range');
   const currentRangeDisplay = document.querySelector('.current-battlegrounds-rp input');
@@ -297,48 +372,11 @@ Promise.all([
   const desiredRangeDisplay = document.querySelector('.desired-battlegrounds-rp input');
   const desiredRangeNumberInput = document.getElementById('desired-battlegrounds-input');
 
-
-function getBattlegroundsPrice() {
-  let clear_price = 0
-  const total_points = desiredBattlegroundsValue-currentBattlegroundsValue
-  if (currentBattlegroundsValue && desiredBattlegroundsValue && total_points > 0) {
-    clear_price = getClearPrice(currentBattlegroundsValue, desiredBattlegroundsValue)
-  }
-
-  // Price
-  let price = clear_price;
-
-  // Apply extra charges to the result
-  price += price * total_Percentage;
-
-  // Apply promo code 
-  price -= price * (discount_amount/100 )
-
-  price = parseFloat(price.toFixed(2)); 
-
-  // Current
-  $('#current-3vs3 .current-3vs3-rp').html(currentBattlegroundsValue);
-  $('.current').removeClass().addClass(`current gold`);
-  $('.current-selected-mmr').html(`${currentBattlegroundsValue} MMR`)
-
-  // Desired
-  $('#desired-3vs3 .desired-3vs3-rp').html(desiredBattlegroundsValue);
-  $('.desired').removeClass().addClass(`desired gold`);
-  $('.desired-selected-mmr').html(`${desiredBattlegroundsValue} MMR`)
-
-  // Price
-  $('#battlegrounds-boost-price').html(`$${price}`)
-
-  // Form
-  $('#battlegrounds-boost-form input[name="current_mmr"]').val(currentBattlegroundsValue);
-  $('#battlegrounds-boost-form input[name="desired_mmr"]').val(desiredBattlegroundsValue);
-  $('#battlegrounds-boost-form input[name="server"]').val(selectedBattlegroundsArenaServer());
-  $('#battlegrounds-boost-form input[name="price"]').val(price);
-}
-
-
     // function to update the current range value
     const updateCurrentRangeValue = (value) => {
+      if (extend_order && value != parseInt(valuesAsList.at(4), 10)) {
+        return null
+      }
       currentRangeDisplay.value = value;
       currentBattlegroundsValue = value;
       $('#current-battlegrounds .current-battlegrounds-rp input').val(value);
@@ -350,6 +388,10 @@ function getBattlegroundsPrice() {
       desiredRangeDisplay.value = value;
       desiredBattlegroundsValue = value;
       $('#desired-battlegrounds .desired-battlegrounds-rp input').val(value);
+
+      // make slider move to the desired value
+      desiredRangeInput.value = value;
+      
       getBattlegroundsPrice();
     };
 
@@ -382,7 +424,10 @@ function getBattlegroundsPrice() {
 
     // Event listener for desired input range
     desiredRangeInput.addEventListener('input', (event) => {
-      const value = event.target.value;
+      let value = event.target.value;
+      if (extend_order && value < parseInt(valuesAsList.at(4), 10)) {
+        value = parseInt(valuesAsList.at(4), 10);
+      }
       updateDesiredRangeValue(value);
       desiredRangeNumberInput.value = value;
     });
@@ -390,6 +435,9 @@ function getBattlegroundsPrice() {
     // Event listener for desired input number
     desiredRangeNumberInput.addEventListener('input', (event) => {
       let value = event.target.value;
+      if (extend_order && value < parseInt(valuesAsList.at(4), 10)) {
+        value = parseInt(valuesAsList.at(4), 10);
+      }
       value = value.replace(/^0+/, '');
       if (value > 10000) value = 10000;
       if (value < 0) value = 0;
@@ -401,6 +449,29 @@ function getBattlegroundsPrice() {
           desiredRangeInput.value = value;
       }
     });
+  
+  
+  if (!extend_order){
+      getResult()
+  }
+    
+  if (extend_order){
+    console.log("extend_order", extend_order)
+    if(valuesAsList.at(-1) === '1'){
+      getResult()
+    }
+    else if(valuesAsList.at(-1) === '2'){
+      currentRangeInput.value = parseInt(valuesAsList.at(4), 10);
+      desiredRangeInput.value = parseInt(valuesAsList.at(4), 10);
+
+      // disable  input range and input for current only 
+      currentRangeInput.disabled = true;
+      currentRangeNumberInput.disabled = true;
+    }else{
+      console.log("error")
+    }
+  }
+  
 
     // Initialize display with default values
     updateCurrentRangeValue(currentRangeInput.value);

@@ -92,11 +92,17 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 extend_order_customer_gamename = extend_order.customer_gamename
                 extend_order_customer_password = extend_order.customer_password
                 extend_order_server = extend_order.customer_server
+                extend_order_customer_username = extend_order.customer_username
                 extend_order_data_correct = extend_order.data_correct
                 extend_order_promo_code = extend_order.promo_code
                 extend_order_game_id = extend_order.game.id
 
                 extend_order_game = Game.objects.get(order = extend_order)
+                
+                extend_current_rank = extend_order_game.current_rank
+                extend_current_division = extend_order_game.current_division
+                extend_current_marks = extend_order_game.current_marks
+                
                 extend_order_game_reached_rank = extend_order_game.reached_rank
                 extend_order_game_reached_division = extend_order_game.reached_division
                 extend_order_game_reached_marks = extend_order_game.reached_marks  
@@ -213,12 +219,12 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
 
         elif status == 'Extend':
             print(f"order extended from:  {order_name}")
-            baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = new_order_price, data_correct = extend_order_data_correct,promo_code=extend_order_promo_code, status = "Extend",game_id =extend_order_game_id, actual_price=extend_order_actual_price, game_type= game_type,)
+            baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_username=extend_order_customer_username ,customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = new_order_price, data_correct = extend_order_data_correct,promo_code=extend_order_promo_code, status = "Extend",game_id =extend_order_game_id, actual_price=extend_order_actual_price, game_type= game_type,)
             extend_fields = {
                 'order': baseOrder,
-                'current_rank_id': current_rank,
-                'current_division': current_division,
-                'current_marks': current_marks,
+                'current_rank': extend_current_rank,
+                'current_division': extend_current_division,
+                'current_marks': extend_current_marks,
                 'desired_rank_id': desired_rank,
                 'desired_division': desired_division,
                 'reached_rank': extend_order_game_reached_rank,
