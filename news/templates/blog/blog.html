@@ -3,12 +3,12 @@
 {% block title %}Mad Boost - Blog {% endblock %}
     {% block style %}
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'blog/css/main.css' %}" />
     <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}" />
     <link rel="stylesheet" href="{% static 'blog/css/news.css' %}" />
-    <link rel="stylesheet" href="{% static 'blog/css/main.css' %}" />
     {% endblock %}
   {% block container %}
-    <section class="container mt-5">
+    <section class="container mt-5" style="padding-top: 120px">
       <div class="d-flex flex-column flex-md-row" style="gap: 10%;">
         <div class="col-lg-8 hero p-0">
           <h4>
@@ -105,7 +105,7 @@
       <div class="row">
         <div class="hero col-12 col-md-8">
           <div class="article-card mb-4">
-            <iframe width="720" height="450" src="https://www.youtube.com/embed/mdVGu6Cxtj0?si=Pqn9UiPnU1zc04lh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <iframe style="width: 100%" width="720" height="450" src="https://www.youtube.com/embed/mdVGu6Cxtj0?si=Pqn9UiPnU1zc04lh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
           <!-- {% for sub in sub_headers %}
           {% if not sub.is_top %}
