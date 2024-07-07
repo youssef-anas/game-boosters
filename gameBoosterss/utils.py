@@ -230,7 +230,6 @@ def live_orders():
         else:
             champions = None
 
-        print("ORDER: ",order)
         order_dict = {
             'game_id': order.game.id,
             "id": order.pk,

@@ -18,3 +18,17 @@
   linear-gradient(180deg, #43373300 0%, #433733 45.27%),
   linear-gradient(180deg, #B250DB 0%, #43373300 100%);
 }
+
+.remove-bandel {
+  background: linear-gradient(180deg, rgba(68, 208, 122, 0.49) 0%, rgba(67, 55, 51, 0) 100%);
+}
+
+.current-level-up-div,
+.dungeon-container,
+.desired-level-up-div{
+  background: linear-gradient(180deg, #43373300 0%, #433733 45.27%),
+              linear-gradient(180deg, #917a65 0%, #43373300 100%);
+
+}
+
+

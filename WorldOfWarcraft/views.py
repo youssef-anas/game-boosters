@@ -15,6 +15,7 @@ from accounts.models import TokenForPay
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
+import paypalrestsdk
 
 def get_wow_prices_data_view(request):
     prices = WorldOfWarcraftRpsPrice.objects.all().first()
@@ -62,41 +63,65 @@ def wowGetBoosterByRank(request):
 # Paypal
 @login_required
 def pay_with_paypal(request):
-  if request.method == 'POST' and request.user.is_authenticated:
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+
     if request.user.is_booster:
-      messages.error(request, "You are a booster!, You can't make order.")
-      return redirect(reverse_lazy('wow'))
-    print('request POST:  ', request.POST)
+        messages.error(request, "You are a booster! You can't make an order.")
+        return redirect(reverse_lazy('wow'))
 
-    # Division
     serializer = ArenaSerializer(data=request.POST)
+    if not serializer.is_valid():
+        for field, errors in serializer.errors.items():
+            for error in errors:
+                messages.error(request, f"{error}")
+        return redirect(reverse_lazy('wow'))
 
-    if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
-      # Arena
-      order_info = get_arena_order_result_by_rank(serializer.validated_data,extend_order_id)
+    extend_order_id = serializer.validated_data.get('extend_order')
+    order_info = get_arena_order_result_by_rank(serializer.validated_data, extend_order_id)
 
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+    if not order_info:
+        messages.error(request, "Order information could not be retrieved.")
+        return redirect(reverse_lazy('wow'))
 
-      paypal_dict = {
-          "business": settings.PAYPAL_EMAIL,
-          "amount": order_info['price'],
-          "item_name": order_info['name'],
-          "invoice": order_info['invoice'],
-          "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-      }
-      # Create the instance.
-      form = PayPalPaymentsForm(initial=paypal_dict)
-      context = {"form": form}
-      return render(request, "accounts/paypal.html", context,status=200)
-    for field, errors in serializer.errors.items():
-      for error in errors:
-          messages.error(request, f"{error}")
-    return redirect(reverse_lazy('wow'))
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+    request.session['invoice'] = order_info['invoice']
+    token = TokenForPay.create_token_for_pay(request.user, order_info['invoice'])
+
+    payment = paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+            "cancel_url": request.build_absolute_uri(f"/customer/payment-canceled/{token}/")
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": order_info['name'],
+                    "sku": "item",
+                    "price": order_info['price'],
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": order_info['price'],
+                "currency": "USD"
+            },
+            "description": "Payment for order."
+        }]
+    })
+
+    if payment.create():
+        for link in payment.links:
+            if link.rel == "approval_url":
+                approval_url = str(link.href)
+                return redirect(approval_url)
+    else:
+        messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+        return redirect(reverse_lazy('wow'))
 
 # Cryptomus
 @login_required

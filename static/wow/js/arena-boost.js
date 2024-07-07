@@ -19,6 +19,17 @@ function getRank(rp)  {
   }
 }
 
+percentege = { 
+  duoBoosting: 0.65,
+  selectBooster: 0.10,
+  turboBoost: 0.20,
+  streaming: 0.15,
+  selectChampion: 0.0,
+  selfplay : 0.0,
+  piloted : 0.0
+}
+
+
 prices = $('#WorldOfWarcraftRpsPrice');
 price_of_2vs2 = parseFloat(prices.data('rp2vs2'));
 price_of_3vs3 = parseFloat(prices.data('rp3vs3'));
@@ -333,6 +344,8 @@ if(extend_order) {
 
 }
 
+get2vs2ArenaPrice()
+get3vs3ArenaPrice()
 // ----------------------------- Arena 2vs2 Boost Changes ---------------------------------
 current2vs2Arena.on("input", function (event) {
   current2vs2ArenaValue = Number(event.target.value);

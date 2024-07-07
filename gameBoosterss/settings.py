@@ -256,6 +256,18 @@ PAYPAL_TEST = True
 PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 # SECURE_SSL_REDIRECT = True
 
+# settings.py
+PAYPAL_CLIENT_ID = 'AWriOlHzu6y-ZS_v4m4NA_vHDXHnEIxrCsickcLYqWKHfaU9l3N7he2mdBOsoosSOUZdYE5P8OEZ8h5c'
+PAYPAL_CLIENT_SECRET = 'EFyP_TDyg9yCzyitIltAVhRcfnx6BK3BlfqP7kMO0wljFpi-ppzUdgzh3J_9peN9ib5td2La1ZsZDBJ4'
+PAYPAL_MODE = 'sandbox'
+
+import paypalrestsdk
+# Configure PayPal SDK
+paypalrestsdk.configure({
+    "mode": PAYPAL_MODE,  # sandbox or live
+    "client_id": PAYPAL_CLIENT_ID,
+    "client_secret": PAYPAL_CLIENT_SECRET,
+})
 
 
 Q_CLUSTER = {

@@ -94,7 +94,6 @@ input[type="range"]:focus::-moz-range-thumb {
   font-size: 48px;
   font-weight: 800;
   color: white;
-  min-width: 150px; /* Adjust min-width to fit the content */
   text-align: left; /* Align text to the left */
   outline: none; /* Remove outline */
 }

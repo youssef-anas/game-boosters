@@ -1,0 +1,389 @@
+.exclusive {
+    height: 310px;
+    border-radius: calc(var(--main-radius) * 2);;
+    background-image: url('./../images/raid.png');
+    background-size: cover;
+    background-position: 400px;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  @media (max-width: 1199px) {
+    .exclusive {
+      background-position: 300px;
+    }
+  }
+  @media (max-width: 767px) {
+    .exclusive {
+      height: 253px;
+      background-position-y: -75px;
+      background-position-x: -340px;
+      align-items: flex-end;
+    }
+  }
+  .exclusive::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: calc(var(--main-radius) * 2);
+    background: linear-gradient(90deg, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%);
+  }
+  @media (max-width: 1199px) {
+    .exclusive::after {
+      background: linear-gradient(90deg, #433733 55.03%, rgba(106, 73, 36, 0.5) 75.82%);
+    }
+  }
+  @media (max-width: 767px) {
+    .exclusive::after {
+      /* background: linear-gradient(to top, #433733 52.8%, rgba(106, 73, 36, 0.5) 75.82%); */
+      background: linear-gradient(90deg, #433733 55.03%, rgba(106, 73, 36, 0.5) 75.82%);
+    }
+  }
+  .exclusive .text {
+    position: relative;
+    z-index: 3;
+  }
+  .exclusive .text h2 {
+    font-family: var(--heading-font);
+    font-size: 24px;
+    font-weight: 600;
+  }
+  .exclusive .text a {
+    font-size: 16px;
+  }
+  @media (max-width: 767px) {
+    .exclusive .text h1 {
+      line-height: 1.5;
+      font-size: 24px;
+    }
+    .exclusive .text h2 br {
+      margin-top: 32px;
+    }
+    .exclusive .text a {
+      display: block;
+      width: 100% !important;
+    }
+  }
+
+  /* 
+    banner ----------
+  */
+  .remove-bandel {
+    border-radius: calc(var(--main-radius) * 2);
+    background-color: var(--main-color);
+    min-height: 94px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+  }
+
+ .remove-bandel a:hover {
+  border: 0cap;
+ } 
+.remove-bandel a  {
+  border: 0cap;
+}
+
+.image-border {
+  position: relative;
+  width: 220px;
+  height: 150px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  border-radius: 10px; /* Adjust the border radius as needed */
+  overflow: hidden;
+}
+
+.image-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+  border-radius: 10px; /* Match the container's border radius */
+  z-index: 1; /* Ensure the overlay is above the image but below any other content */
+}
+
+.image-border img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px; /* Match the container's border radius */
+  position: relative;
+  z-index: 0; /* Ensure image is below the overlay */
+}
+
+.centered-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: white;
+  z-index: 2; /* Ensure the text is above the overlay */
+  pointer-events: none; /* Ensure the text does not interfere with other elements */
+  white-space: nowrap; /* Ensure the text stays on one line */
+  text-align: center;
+}
+
+.centered-text h3 {
+  margin: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+}
+
+small{
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.texts-bandel p{
+  font-size: 12px;
+}
+
+.texts-bandel i{
+  font-size: 18px;
+  border-radius: 50%;
+  color: #F26E3E;
+  padding: 0;
+  margin-right: 12px;
+}
+
+
+.bandel-view {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: var(--main-color);
+  margin-bottom: 3rem;
+  min-height: 346px;
+  background: linear-gradient(180deg, #E7C25B 0%, #B48420 52.5%, #5A3505 100%);
+}
+
+.choise label {
+  border: solid 1px white;
+}
+
+
+.difficulty {
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: var(--main-color);
+  min-height: 250px;
+  background: linear-gradient(180deg, #8a6a5e 0%, var(--main-color) 52.5%, var(--main-color) 100%);
+}
+
+.buttons input[type="radio"] {
+  display: none;
+}
+.buttons label {
+  background-color: #2F271F;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+.buttons input[type="radio"]:checked + label {
+  background-color: #fff;
+  color: #000;
+}
+.buttons label:hover {
+  background-color: #666;
+}
+
+/* btns as image */
+.img-btns input[type="radio"] {
+  display: none;
+}
+.img-btns label {
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 16px;
+}
+.img-btns input[type="radio"]:checked + label {
+  color: #000;
+  background-color: #fff;
+}
+.img-btns label:hover {
+  background-color: #666;
+}
+
+
+
+.explore-header h1 {
+  font-family: var(--heading-font);
+  font-size: 48px;
+  font-weight: 600;
+  margin-top: 52px;
+}
+@media (max-width: 1199px) {
+  .explore-header h1 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 767px) {
+  .explore-header h1 {
+    font-size: 21px;
+    line-height: 2;
+  }
+}
+
+
+/* bandel swiper*/
+
+  .bandels h1 {
+    font-family: var(--heading-font);
+    font-size: 48px;
+    font-weight: 600;
+  }
+  @media (max-width: 1199px) {
+    .bandels h1 {
+      font-size: 32px;
+    }
+  }
+  @media (max-width: 767px) {
+    .bandels h1 {
+      font-size: 21px;
+      line-height: 2;
+    }
+  }
+  .bandels .bandel {
+    background-color: var(--main-color);
+    border-radius: calc(var(--main-radius) * 2);
+    height: 230px;
+    overflow: hidden;
+  }
+  @media (max-width: 992px) {
+    .bandels .bandel {
+      height: 290px;
+    }
+  }
+  
+  
+  .bandel-new {
+    background-size: cover;
+    background-position: center;
+    height: 496px;
+    width: 280px;
+    border-radius: calc(var(--main-radius));
+  }
+  
+  .bandel-new::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(360deg, #1E1814 0%, rgba(30, 24, 20, .4) 100%);
+  }
+  
+  .bandel-content {
+    padding-top: 60px;
+    position: absolute;
+    color: white;
+  }
+  .bandel-content a {
+    width: 390px;
+  }
+
+  .select-bandle {
+    position: absolute;
+    color: white;
+    z-index: 1;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    padding-bottom: 30px;
+  }
+  
+  .bandel-content h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+    font-family: var(--heading-font);
+  }
+  
+  .bandel-content h3 {
+    font-size: 24px;
+    line-height: 1.5;
+    /* font-family: var(--heading-font); */
+    font-weight: 700;
+  }
+  
+  
+  .bandel .customer-image img {
+    width: 56px;
+    height: 56px;
+    border-radius: calc(var(--main-radius) * 2);
+  }
+  .bandel .customer-info .rate {
+    padding: 0 9px;
+    border-radius: var(--main-radius);
+    background-color: #14151F;
+  }
+  .bandel .customer-info .rate p span i {
+    color: #F26E3E;
+    font-size: 14px;
+  }
+  /* Swiper Class */
+  .bandels .swiper-button-prev::after,
+  .bandels .swiper-button-next::after {
+    content: '';
+  }
+  .bandels .swiper-button-next,
+  .bandels .swiper-button-prev {
+    width: initial;
+    height: initial;
+    font-size: 1.5rem;
+    color: white;
+    top: initial;
+    margin-top: initial;
+    bottom: 0;
+    z-index: 12;
+    font-weight: lighter;
+  }
+  .bandels .swiper-button-next i,
+  .bandels .swiper-button-prev i {
+    background-color: var(--background-color);
+    padding: 3px;
+  }
+  .bandels .swiper-button-prev {
+    left: calc(50% - 50px);
+  }
+  .bandels .swiper-button-next {
+    right: calc(50% - 50px);
+  }
+  .bandels .swiper-pagination-bullet {
+    background: #D9D9D980;
+    opacity: 1;
+    font-weight: lighter;
+  }
+  .bandels .swiper-pagination-bullet-active {
+    background: #D9D9D9;
+  }
+
+
+.dungeon-container{
+  border-radius: calc(var(--main-radius) * 2);
+  padding: 30px;
+  background-color: var(--main-color);
+  margin-bottom: 3rem;
+  min-height: 246px;
+}

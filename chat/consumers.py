@@ -10,7 +10,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope['url_route']['kwargs']['room_slug']
         self.room_group_name = 'chat_%s' % self.room_name
         self.username = self.scope['user'].username
-        print(self.room_group_name)
         
         await self.channel_layer.group_add(
             self.room_group_name,
@@ -26,7 +25,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
-        print(close_code)
         
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -53,9 +51,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({**event}))
     
     async def change_data(self, event):
-        print(event)
         await self.send(text_data=json.dumps({**event}))
-        print("this code running now")
     
     @sync_to_async
     def save_message(self, message, username, room_name):
@@ -69,7 +65,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user = BaseUser.objects.filter(username=username).first()
         user.is_online = True
         user.save()
-        print(f"{username} online")
 
     @database_sync_to_async
     def set_user_offline(self, username):
@@ -77,4 +72,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
         user.is_online = False
         user.last_online = timezone.now()
         user.save()
-        print(f"{username} offline")
