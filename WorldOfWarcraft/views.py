@@ -49,6 +49,10 @@ def wowGetBoosterByRank(request):
     order_count=Sum(game_pk_condition)
     ).order_by('id')
   
+
+  bosses = WorldOfWarcraftBoss.objects.all()
+  bundles = WorldOfWarcraftBundle.objects.all()
+  
   context = {
     # "ranks": ranks,
     "order": order,
@@ -56,6 +60,8 @@ def wowGetBoosterByRank(request):
     "rp2vs2": prices.price_of_2vs2,
     "rp3vs3": prices.price_of_3vs3,
     "boosters": boosters,
+    "bosses": bosses,
+    "bundles": bundles,
   }
   return render(request,'wow/GetBoosterByRank.html', context)
 

@@ -496,27 +496,3 @@ soloOrDuoBoosting.forEach(function (radio, index) {
   }) 
 })
 
-// Extra Buttons
-extraOptions.forEach(function (checkbox, index) {
-  checkbox.addEventListener('change', function () {
-    if (this.checked) {
-      total_Percentage += percentege[this.value];
-      $(`input#${this.value}`).val(true)
-    } else {
-      total_Percentage -= percentege[this.value];
-      $(`input#${this.value}`).val(false)
-    }
-    get2vs2ArenaPrice()
-    get3vs3ArenaPrice()
-  })
-});
-
-promo_form.addEventListener('submit', async function(event) {
-  event.preventDefault();  
-  if(!extend_order) {
-    discount_amount = await fetch_promo(); 
-
-    get2vs2ArenaPrice(); 
-    get3vs3ArenaPrice();
-  }
-});

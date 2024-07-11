@@ -1,3 +1,18 @@
+label {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  padding: 2px 0px 2px 4px;
+  user-select: none; 
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+label:hover {
+  background-color: #f26e3e49;
+  transform: scale(1.1); 
+}
+
 .exclusive {
     height: 310px;
     border-radius: calc(var(--main-radius) * 2);;
@@ -81,12 +96,26 @@
     padding: 8px;
   }
 
- .remove-bandel a:hover {
+ .remove-bandel button:hover,
+ .remove-bandel button{
   border: 0cap;
  } 
-.remove-bandel a  {
-  border: 0cap;
+
+ .remove-bandel p{
+  margin: auto 0;
+ }
+
+@media (max-width: 767px) {
+  .remove-bandel p{
+    font-size: 10px;
+  }
 }
+@media (max-width: 575px) {
+  .remove-bandel p{
+    font-size: 10px;
+  }
+}
+
 
 .image-border {
   position: relative;
@@ -386,4 +415,140 @@ small{
   background-color: var(--main-color);
   margin-bottom: 3rem;
   min-height: 246px;
+}
+
+/* boss card styling */
+/* Popup content styling */
+
+/* Close button styling */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+/* Container styling */
+.boosters-container {
+  max-height: 400px; /* Adjust based on your requirement */
+  overflow-y: auto;
+}
+
+/* Boss card styling */
+.boss-card {
+  margin: 10px 0;
+}
+
+/* Boss selection styling */
+.boss-slection {
+  position: relative;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  background-color: #282828;
+  padding: 10px;
+  transition: transform 0.3s;
+}
+
+.boss-slection:hover {
+  transform: scale(1.05);
+}
+.boss-image{
+  position: relative;
+  margin-bottom: 10px;
+  width: 150px;
+  height: 80px;
+  margin: 0 auto;
+}
+
+/* Boss image styling */
+.boss-image img {
+  width: 100%;
+  height: 100%;
+  height: auto;
+  border-bottom: 1px solid #444;
+  overflow: hidden;
+}
+
+/* Boss name styling */
+.boss-name {
+  padding: 10px;
+  font-size: 1.2em;
+}
+
+/* Checkbox styling */
+.boss-checkbox {
+  margin-right: 10px;
+}
+
+/* Background overlay styling */
+.boss-slection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.boss-slection:hover::before {
+  opacity: 1;
+}
+
+/* Making sure overlay and content stack correctly */
+.boss-slection img,
+.boss-slection .boss-name {
+  position: relative;
+  z-index: 2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .boss-slection {
+      margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .boss-slection {
+      margin-bottom: 15px;
+  }
+}
+
+
+
+/* boos name responsive  text size */
+
+.boss-name label{
+  font-size: 14px;
+}
+
+@media (max-width: 992px) {
+  .boss-name label{
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .boss-name label{
+    font-size: 10px;
+  }
+} 
+
+@media (max-width: 576px) {
+  .boss-name label{
+    font-size: 8px;
+  }
+}
+
+
+
+.remove-bandel-btn {
+  background-color: transparent;
+  color: #fff;
 }

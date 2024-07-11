@@ -91,39 +91,7 @@
 
     <div class="container">
       <div class="container boosters-container my-4 py-4">
-        <div class="bosses">
-          <!-- {% for booster in boosters %}
-          <div id="{{booster.booster.booster.pk}}" class="booster-card m-1 mb-3 mx-auto rounded" onclick="SetBooster(this)">
-            <div class="p-1 row row-cols-lg-5 row-cols-md-3 row-cols-1 justify-content-lg-start justify-content-center align-items-center">
-              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                <img src="{{booster.get_image_url}}" alt="{{booster.username}}" width="48" height="48" class="rounded">
-                <p class="ms-4 mb-0 booster-username">{{booster.username}}</p>
-              </div>
-              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                <img src="{{booster.booster.achived_rank_wow.get_image_url}}" alt="{{booster.username}}" width="32" height="32" class="rounded">
-                <p class="ms-4 mb-0">{{booster.booster.achived_rank_wow.rank_name}}</p>
-              </div>
-              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                <p class="mb-0">
-                  {% for star in "*****" %}
-                    {% if forloop.counter <= booster.get_average_rating %}
-                      <i class="fa-solid fa-star" style="color: #FFD700;"></i>
-                    {% else %}
-                      <i class="fa-regular fa-star" style="color: #808080;"></i>
-                    {% endif %}
-                  {% endfor %}
-                  <span class="ms-1"></span>{{booster.get_average_rating}}/5
-                </p>
-              </div>
-              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                <p class="mb-0">{{booster.order_count}} Orders</p>
-              </div>
-              <div class="d-flex justify-content-lg-start justify-content-center align-items-center mb-lg-0 mb-3">
-                <a class="mb-0 view-profile" href="{% url 'booster.details' booster_id=booster.booster.booster.pk %}">View Profile</a>
-              </div>
-            </div>
-          </div>  
-          {% endfor %} -->
+        <div class="bosses scrollable overflow-auto">
         </div> 
       </div>
     </div>
@@ -176,21 +144,21 @@
       </div>
     </div>
 
-      <div class="choise mb-3">
-        <input type="radio" id="arena-2vs2" name="radio-group-type" checked>
+      <div id="choise-div" class="choise mb-3">
+        <input type="radio" id="arena-2vs2" name="radio-group-type">
         <label for="arena-2vs2" class="radio-btn" style="width: 147px;">2v2 Arena</label>
 
         <input type="radio" id="arena-3vs3" name="radio-group-type">
         <label for="arena-3vs3" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">3v3 Arena</label>
 
-        <input type="radio" id="raid" name="radio-group-type">
-        <label for="raid" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2 d-none" style="width: 147px;">Raid</label>
+        <input type="radio" id="raid" name="radio-group-type" checked>
+        <label for="raid" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Raid</label>
         
         <input type="radio" id="dungeon" name="radio-group-type">
-        <label for="dungeon" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2 d-none" style="width: 200px;">Mythic+ Dungeon</label>
+        <label for="dungeon" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 200px;">Mythic+ Dungeon</label>
 
         <input type="radio" id="level-up" name="radio-group-type">
-        <label for="level-up" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2 d-none" style="width: 147px;">Level Up</label>
+        <label for="level-up" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Level Up</label>
 
         <!-- <input type="radio" id="PvE-boosting" name="radio-group-type">
         <label for="PvE-boosting" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">PvE Boosting</label> -->
@@ -382,14 +350,14 @@
 
         <div class="raid">
 
-          <div class="remove-bandel d-none mb-5">
+          <div id="remove-bandel-div" class="remove-bandel d-none mb-5">
             <div class="d-flex justify-content-between my-auto">
               <p class="my-auto px-3"><i class="fa-solid fa-check p-1 text-black" style="background-color: #44D07A; border-radius: 50%;"></i> A bundle package has been applied successfully.</p>
-              <a href="#" class="custom-btn filled" style="width: 210px; height: 48px;" >Remove Bundle</a>
+              <button id="main-remove-bandel-btn" class="custom-btn filled" style="width: 210px; height: 48px;" >Remove Bundle</button>
             </div>
           </div>
 
-          <div class="bandel-view d-none">
+          <div id="bandel-view-div" class="bandel-view d-none">
             <h5>Awakened Raids</h5>
             <small>Choose the raid you would like to order</small>
             <div class="image-border">
@@ -411,11 +379,11 @@
             <small>Choose the difficulty level of the raid you would like to order</small>
             <div class="difficulty-buttons mt-5">
               <div class="buttons d-flex justify-content-start">
-                <input type="radio" id="normal" name="difficulty" value="normal">
+                <input type="radio" id="normal" name="difficulty" value="0.3">
                 <label for="normal">Normal</label>
-                <input type="radio" id="heroic" name="difficulty" value="heroic" checked>
+                <input type="radio" id="heroic" name="difficulty" value="0.4" checked>
                 <label for="heroic">Heroic</label>
-                <input type="radio" id="mythic" name="difficulty" value="mythic">
+                <input type="radio" id="mythic" name="difficulty" value="0.5">
                 <label for="mythic">Mythic</label>
               </div>
             </div>
@@ -434,7 +402,7 @@
             </div>
           </div>
 
-          <div class="awakened-raids difficulty mb-5">
+          <div id="awakened-raids-div" class="awakened-raids difficulty mb-5">
             <h3>Awakened Raids</h3>
             <p>Choose the raid you would like to order</p>
             <div class="awakened-buttons mt-5">
@@ -795,7 +763,7 @@
               </div>
 
               <!-- bosses Games -->
-              <div class="bosses py-xl-2 py-3 d-flex justify-content-between align-items-center raid">
+              <div id="bosses-select-div#" class="bosses py-xl-2 py-3 d-flex justify-content-between align-items-center raid# d-none">
                 <div class="info">
                   <p class="mb-0">Bosses <span class="percent ms-1">$</span></p>
                 </div>
@@ -804,7 +772,54 @@
                     <button class="custom-btn filled" id="view-bosses">Select Bosses</button>
                   </div>
               </div>
-              
+
+              <div id="bosses-select-div" class="bosses py-xl-2 py-4 d-flex justify-content-between align-items-center raid">
+                <p class="mb-0" style="font-weight: 800; font-size: 18px;">Select the bosses you want to defeat:</p>
+              </div>
+
+              <div id="bosses-map1" class="bosses-list-with-checkboxes raid">
+                {% for boss in bosses %}
+                {% if boss.map == 1 %}
+                <label for="boss{{boss.id}}" class="d-flex justify-content-between align-items-center">
+                  <div class="info">
+                    <div class="mb-0">{{boss.name}}</div>
+                  </div>
+                  <div class="choose">
+                    <input type="checkbox" id="boss{{boss.id}}" name="bossescheckboxes" value="{{boss.price}}">
+                  </div>
+                </label>
+                {% endif %}
+                {% endfor %}
+              </div>              
+              <div id="bosses-map2" class="bosses-list-with-checkboxes raid">
+                {% for boss in bosses %}
+                {% if boss.map == 1 %}
+                <label for="boss{{boss.id}}" class="d-flex justify-content-between align-items-center">
+                  <div class="info">
+                    <div class="mb-0">{{boss.name}}</div>
+                  </div>
+                  <div class="choose">
+                    <input type="checkbox" id="boss{{boss.id}}" name="bossescheckboxes" value="{{boss.price}}">
+                  </div>
+                </label>
+                {% endif %}
+                {% endfor %}
+              </div>              
+              <div id="bosses-map3" class="bosses-list-with-checkboxes raid">
+                {% for boss in bosses %}
+                {% if boss.map == 1 %}
+                <label for="boss{{boss.id}}" class="d-flex justify-content-between align-items-center">
+                  <div class="info">
+                    <div class="mb-0">{{boss.name}}</div>
+                  </div>
+                  <div class="choose">
+                    <input type="checkbox" id="boss{{boss.id}}" name="bossescheckboxes" value="{{boss.price}}">
+                  </div>
+                </label>
+                {% endif %}
+                {% endfor %}
+              </div>              
+
             </div>
 
             <div class="discount mt-xl-0 mt-3">
@@ -888,101 +903,35 @@
           
             <div class="swiper-wrapper py-5 mb-3" style="cursor: grab; transform: translate3d(0px, 0px, 0px);" id="swiper-wrapper-20b73107db86f3fdc" aria-live="polite">
               <!-- slider section -->
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
+              {% for bundle in bundles %}
+              {% if bundle.mode == 1 %}
+                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{{bundle.get_image_url}}');">
                   <div class="bandel-content">
                     <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Awakened Raids Bundle</h3>
+                    <h2>${{bundle.price}}</h2>
+                    <h3>{{bundle.name}}</h3>
                     <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Great Vault rewards to choose from</p>
+                      {% if bundle.feature_1 %}
+                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>{{bundle.feature_1}}</p>
+                      {% endif %}
+                      {% if bundle.feature_2 %}
+                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>{{bundle.feature_2}}</p>
+                      {% endif %}
+                      {% if bundle.feature_3 %}
+                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>{{bundle.feature_3}}</p>
+                      {% endif %}
+                      {% if bundle.feature_4 %}
+                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>{{bundle.feature_4}}</p>
+                      {% endif %}
                     </div>
                   </div>
                   <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
+                    <button class="custom-btn filled mt-md-4 mt-5 apply-bandel" id="bundle{{bundle.id}}" style="width: 100%; " data-price="{{bundle.price}}">Select Bundle</button>
+                    <button class="custom-btn remove-bandel-btn mt-md-4 mt-5 d-none" id="bundle{{bundle.id}}" style="width: 100%; " >Remove Bundle</button>
                   </div>
                 </div>
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
-                  <div class="bandel-content">
-                    <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Embodiment of Shadowflame</h3>
-                    <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                    </div>
-                  </div>
-                  <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
-                  </div>
-                </div>
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
-                  <div class="bandel-content">
-                    <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Awakened Raids Bundle</h3>
-                    <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Great Vault rewards to choose from</p>
-                    </div>
-                  </div>
-                  <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
-                  </div>
-                </div>
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
-                  <div class="bandel-content">
-                    <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Awakened Raids Bundle</h3>
-                    <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Great Vault rewards to choose from</p>
-                    </div>
-                  </div>
-                  <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
-                  </div>
-                </div>
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
-                  <div class="bandel-content">
-                    <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Awakened Raids Bundle</h3>
-                    <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Great Vault rewards to choose from</p>
-                    </div>
-                  </div>
-                  <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
-                  </div>
-                </div>
-                <div class="swiper-slide bandel-new p-4 swiper-slide-active" role="group" aria-label="1 / 5" style="width: 440px; margin-right: 32px; background-image: url('{% static 'wow/images/raid.png' %}');">
-                  <div class="bandel-content">
-                    <h3>Price</h3>
-                    <h2>$99.99</h2>
-                    <h3>Awakened Raids Bundle</h3>
-                    <div class="texts-bandel my-3">
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Raids on Any Difficulty</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>Chance to get Dragonriding skins</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>A lot of Available Achievements</p>
-                      <p class="my-auto py-2"><i class="fa-solid fa-check"></i>3 Great Vault rewards to choose from</p>
-                    </div>
-                  </div>
-                  <div class="select-bandle d-flex justify-content-center align-items-center">
-                    <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 100%; " >Select Bundle</a>
-                  </div>
-                </div>
+              {% endif %}
+              {% endfor %}
                 <!-- end  sliders -->
             </div>
     
@@ -1068,7 +1017,7 @@
     const targetElement = document.getElementById('explore-bandel');
     const offset = 100; // Offset in pixels
     const elementPosition = targetElement.getBoundingClientRect().top;
-    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    const offsetPosition = elementPosition + window.scrollY - offset;
   
     window.scrollTo({
       top: offsetPosition,

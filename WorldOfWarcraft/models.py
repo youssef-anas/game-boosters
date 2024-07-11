@@ -14,8 +14,10 @@ class WorldOfWarcraftRank(models.Model):
     return self.rank_name
     
   def get_image_url(self):
-    return self.rank_image.url
-    pass
+    if self.rank_image:
+      return self.rank_image.url
+    return None
+    
   
 class SingletonModel(models.Model):
   class Meta:
@@ -193,3 +195,43 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
         booster_price = actual_price
 
     return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
+  
+# new games 
+
+class WorldOfWarcraftBoss(models.Model): 
+  WOW_MAP_CHOICES = (
+    (1, "Vault of the Incarnates"),
+    (2, "Aberrus, the Shadowed Crucible"),
+    (3, "Amirdrassil, the Dream's Hope"),
+  )
+  map = models.PositiveSmallIntegerField(choices=WOW_MAP_CHOICES)
+  name = models.CharField(max_length=100, unique=True)
+  price = models.FloatField(default=0)
+  
+  class Meta:
+    unique_together = ('map', 'name')
+
+  def __str__(self):
+    return self.name
+  
+class WorldOfWarcraftBundle(models.Model):
+  MODE_CHOICES = (
+    (1, "Raid"),
+    (2, "Dungeon"),
+  )
+  name = models.CharField(max_length=40, unique=True)
+  price = models.FloatField(default=0)
+  image = models.ImageField(upload_to='wow/raid/')
+  mode = models.PositiveSmallIntegerField(choices=MODE_CHOICES)
+  feature_1 = models.CharField(max_length=40, null=True, blank=True)
+  feature_2 = models.CharField(max_length=40, null=True, blank=True)
+  feature_3 = models.CharField(max_length=40, null=True, blank=True)
+  feature_4 = models.CharField(max_length=40, null=True, blank=True)
+
+  def get_image_url(self):
+    if self.image:
+      return self.image.url
+    return None
+
+  def __str__(self):
+    return self.name
