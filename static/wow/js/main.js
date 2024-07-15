@@ -52,6 +52,29 @@
 
 
 document.addEventListener("DOMContentLoaded", function () {
+  const mapSelection = document.querySelectorAll('input[type="radio"][name="map"]');
+  const bossesList = document.querySelectorAll('.bosses-list-with-checkboxes')
+
+  const getSelectedMap = () => {
+    let selectedMap = null;
+    mapSelection.forEach((map) => {
+        if (map.checked) {
+            selectedMap = map.value
+        }
+    })
+    return selectedMap
+}
+  const toggleViewBosses = () => {
+    const map = getSelectedMap();
+    bossesList.forEach((bosses) => {
+        if (bosses.id == map) {
+            bosses.classList.remove('d-none')
+        }else{
+            bosses.classList.add('d-none')
+        }
+    })
+  }
+
   const radioModes= document.querySelectorAll('input[type="radio"][name="radio-group-type"]');
   // Convert NodeList to array to use map
   const radioArray = Array.from(radioModes);
@@ -62,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     return radio.id
   }
 
-  chnage_mode = () =>{
+  const chnage_mode = () =>{
     radio_ids.forEach(id => {
       const hideElement = document.querySelectorAll(`.${id}`);
       hideElement.forEach(element => {
@@ -70,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
     })
     const checked_id = get_checked_mode();
-    document.getElementById('arena-form').dataset.type = checked_id;
+    // document.getElementById('arena-form').dataset.type = checked_id;
     const viewElements = document.querySelectorAll(`.${checked_id}`);
       viewElements.forEach(element => {
         element.classList.remove('d-none');
@@ -80,6 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
   radioModes.forEach(radio => {
     radio.addEventListener('change', function () {
       chnage_mode();
+      if (get_checked_mode() == 'raid') {
+        toggleViewBosses();
+      }
     });
   })
 

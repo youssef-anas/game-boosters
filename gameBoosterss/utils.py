@@ -7,7 +7,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder, HearthStoneBattleOrder
 from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
-from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder
+from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder, WorldOfWarcraftRaidSimpleOrder
 from overwatch2.models import Overwatch2DivisionOrder, Overwatch2PlacementOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from dota2.models import Dota2RankBoostOrder, Dota2PlacementOrder
@@ -26,6 +26,68 @@ from django.core.serializers.json import DjangoJSONEncoder
 import random
 import json
 from django.conf import settings
+
+# paypalrestsdk
+import paypalrestsdk
+
+
+def mainPayment(order_info, request, token):
+    return paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+            "cancel_url": request.build_absolute_uri(f"/customer/payment-canceled/{token}/")
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": order_info['name'],
+                    "sku": "item",
+                    "price": order_info['price'],
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": order_info['price'],
+                "currency": "USD"
+            },
+            "description": "Payment for Boosting order."
+        }]
+    })
+
+def tipPayment(tip, request, token):
+    return paypalrestsdk.Payment({
+        "intent": "sale",
+        "payer": {
+            "payment_method": "paypal"
+        },
+        "redirect_urls": {
+            "return_url": request.build_absolute_uri(f"/customer/tip-booster/success/{token}/"),
+            "cancel_url": request.build_absolute_uri(f"/customer/tip-booster/cancel/{token}/")
+        },
+        "transactions": [{
+            "item_list": {
+                "items": [{
+                    "name": "Tip For Booster",
+                    "sku": "item",
+                    "price": tip,
+                    "currency": "USD",
+                    "quantity": 1
+                }]
+            },
+            "amount": {
+                "total": tip,
+                "currency": "USD"
+                    },
+            "description": "Payment for Boosting order."
+            }]
+    })
+
+
 
 
 def check_rl_type(type) -> Model:
@@ -82,6 +144,7 @@ def check_tft_type(type) -> Model:
 def check_wow_type(type) -> Model:
     WOW_MODELS = {
         'A': WorldOfWarcraftArenaBoostOrder,
+        'R': WorldOfWarcraftRaidSimpleOrder,
     }
     Game = WOW_MODELS.get(type, None)
     if not Game:

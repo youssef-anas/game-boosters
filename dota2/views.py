@@ -6,7 +6,6 @@ from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from dota2.models import *
 from dota2.controller.serializers import *
-from paypal.standard.forms import PayPalPaymentsForm
 from dota2.controller.order_information import *
 from accounts.models import TokenForPay
 from booster.models import OrderRating
@@ -15,6 +14,7 @@ from accounts.models import BaseUser
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from dota2.utils import get_division_prices, get_placement_prices
+from gameBoosterss.utils import mainPayment
 
 
 def division_prices_view(request):
@@ -95,19 +95,16 @@ def pay_with_paypal(request):
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
       
-      paypal_dict = {
-        "business": settings.PAYPAL_EMAIL,
-        "amount": order_info['price'],
-        "item_name": order_info['name'],
-        "invoice": order_info['invoice'],
-        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-        "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-      }
-      # Create the instance.
-      form = PayPalPaymentsForm(initial=paypal_dict)
-      context = {"form": form}
-      return render(request, "accounts/paypal.html", context,status=200)
+      payment = mainPayment(order_info, request, token)
+
+      if payment.create():
+          for link in payment.links:
+              if link.rel == "approval_url":
+                  approval_url = str(link.href)
+                  return redirect(approval_url)
+      else:
+          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+          return redirect(reverse_lazy('dota2'))
     
     for field, errors in serializer.errors.items():
       for error in errors:

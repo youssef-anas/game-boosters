@@ -7,7 +7,6 @@ import json
 from django.conf import settings
 from hearthstone.models import *
 from hearthstone.controller.serializers import DivisionSerializer, BattleSerializer
-from paypal.standard.forms import PayPalPaymentsForm
 from hearthstone.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
@@ -15,6 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data, get_hearthstone_battle_prices
+from gameBoosterss.utils import mainPayment
 
 
 
@@ -106,19 +106,17 @@ def pay_with_paypal(request):
       # if request.user.is_superuser:
       #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
       
-      paypal_dict = {
-        "business": settings.PAYPAL_EMAIL,
-        "amount": order_info['price'],
-        "item_name": order_info['name'],
-        "invoice": order_info['invoice'],
-        "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-        "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-        "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-      }
-      # Create the instance.
-      form = PayPalPaymentsForm(initial=paypal_dict)
-      context = {"form": form}
-      return render(request, "accounts/paypal.html", context,status=200)
+      payment = mainPayment(order_info, request, token)
+      
+      if payment.create():
+          for link in payment.links:
+              if link.rel == "approval_url":
+                  approval_url = str(link.href)
+                  return redirect(approval_url)
+      else:
+          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+          return redirect(reverse_lazy('hearthstone'))
+      
     for field, errors in serializer.errors.items():
       for error in errors:
           messages.error(request, f"{field}: {error}")

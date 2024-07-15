@@ -6,7 +6,6 @@ import json
 from django.conf import settings
 from mobileLegends.models import *
 from mobileLegends.controller.serializers import DivisionSerializer, PlacementSerializer
-from paypal.standard.forms import PayPalPaymentsForm
 from mobileLegends.controller.order_information import *
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
@@ -15,6 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_mobile_legends_divisions_data, get_mobile_legends_marks_data, get_mobile_legends_placements_data
+from gameBoosterss.utils import mainPayment
 
 
 
@@ -97,19 +97,16 @@ def view_that_asks_for_money(request):
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
-      paypal_dict = {
-          "business": settings.PAYPAL_EMAIL,
-          "amount": order_info['price'],
-          "item_name": order_info['name'],
-          "invoice": order_info['invoice'],
-          "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-          "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-          "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-      }
-      # Create the instance.
-      form = PayPalPaymentsForm(initial=paypal_dict)
-      context = {"form": form}
-      return render(request, "mobileLegends/paypal.html", context,status=200)
+      payment = mainPayment(order_info, request, token)
+      if payment.create():
+          for link in payment.links:
+              if link.rel == "approval_url":
+                  approval_url = str(link.href)
+                  return redirect(approval_url)
+      else:
+          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+          return redirect(reverse_lazy('mobileLegends'))
+      
     for field, errors in serializer.errors.items():
         for error in errors:
             messages.error(request, f"{error}")

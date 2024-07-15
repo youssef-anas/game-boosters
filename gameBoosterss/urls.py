@@ -35,7 +35,7 @@ urlpatterns = [
     path('hok/', include('honorOfKings.urls')),
     path('games/', include('games.urls')),
     path('chat/', include('chat.urls')),
-    path('paypal/', include("paypal.standard.ipn.urls")),
+    # path('paypal/', include("paypal.standard.ipn.urls")),
     # path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
     # path('token/', oauth2_views.TokenView.as_view(), name="token"),
     # path('accounts/', include('allauth.urls')),

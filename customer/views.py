@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data
 from customer.controllers.order_creator import create_order
 from chat.models import Room, Message
-from gameBoosterss.utils import refresh_order_page, send_change_data_msg, send_available_to_play_mail
+from gameBoosterss.utils import refresh_order_page, send_change_data_msg, send_available_to_play_mail, tipPayment
 # from accounts.tasks import update_database_task
 # from django_q.tasks import async_task
 from django.utils import timezone
@@ -14,7 +14,6 @@ from django.contrib import messages
 from gameBoosterss.utils import get_boosters
 import secrets
 from django.conf import settings
-from paypal.standard.forms import PayPalPaymentsForm
 from customer.controllers.serializers import *
 from django.db.models import Q
 from booster.models import OrderRating
@@ -226,33 +225,29 @@ def tip_booster(request):
         time = str(timezone.now())
         token = secrets.token_hex(14)
         token_with_data = '-'.join([user, tip, order_id, booster, token])
-        token_for_pay, created = TokenForPay.objects.get_or_create(user=request.user, defaults={'token': token_with_data})
-        
-        if not created:
-            token_for_pay.token = token_with_data
-            token_for_pay.save()
+        token_for_pay = TokenForPay.create_token_for_pay(request.user, token_with_data)
     
         if tip and order_id and booster:
             invoice = f'tip-{user}-{tip}-{order_id}-{booster}-{time}'
             request.session['invoice'] = invoice
-            paypal_dict = {
-                "business": settings.PAYPAL_EMAIL,
-                "amount": tip,
-                "item_name": f"tip {booster}",
-                "invoice": invoice,
-                "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-                "return": request.build_absolute_uri(f"/customer/tip-booster/success/{token_with_data}/"),
-                "cancel_return": request.build_absolute_uri(f"/customer/tip-booster/cancel/{token_with_data}/{order_id}"),
-            }
-            # Create the instance.
-            form = PayPalPaymentsForm(initial=paypal_dict)
-            context = {"form": form}
-            return render(request, "accounts/paypal.html", context,status=200)
+
+        payment = tipPayment(tip, request, token_for_pay)
+        if payment.create():
+            for link in payment.links:
+                if link.rel == "approval_url":
+                    approval_url = str(link.href)
+                    return redirect(approval_url)
+        else:
+            messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+            return redirect(reverse_lazy('homepage.index'))
         return JsonResponse({'success': False})
     
-def success_tip(request,token):
-    token_with_data = TokenForPay.get_token(token) 
-    splited_token = token.split('-')
+def success_tip(request, token):
+    token_object = get_object_or_404(TokenForPay, token=token)
+    invoice= token_object.invoice
+
+    
+    splited_token = invoice.split('-')
     username = splited_token[0]
     tip = int(splited_token[1])
     order_id = int(splited_token[2])
@@ -260,12 +255,12 @@ def success_tip(request,token):
     booster = splited_token[3]
     payer_id = request.GET.get("PayerID")
     notice = f'Tip from {username}'
-    invoice = request.session.get('invoice', 'unknown')
-    if request.user == token_with_data.user and request.user.username == username and payer_id:
+
+    if request.user == token_object.user and request.user.username == username and payer_id:
         room = Room.get_specific_room(request.user, order.name)
         msg = f'You Sent a tip of {tip}$, Thank you!'
         Message.create_tip_message(request.user,msg,room)
-        token_with_data.delete()
+        token_object.delete()
         if invoice != 'unknown':
             request.session.pop('invoice')
         tip_data = Tip_data.create_tip(invoice, payer_id)

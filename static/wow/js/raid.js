@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const piloted = document.getElementById('piloted-checkbox');
     const selfplay = document.getElementById('selfplay-checkbox');
     let bandelPrice = 0;
+    let selectedBundel_id = 0;
 
     const closeBoosesForm = () => {
         bosses.style.display = 'none';
@@ -82,19 +83,79 @@ document.addEventListener("DOMContentLoaded", function () {
     const bossesSelectDiv = document.getElementById('bosses-select-div')
     const raidPrice = document.getElementById('raid-price')
     const difficultyRadio = document.querySelectorAll('input[type="radio"][name="difficulty"]');
-
-
+    const mapSelection = document.querySelectorAll('input[type="radio"][name="map"]');
     const bossesList = document.querySelectorAll('.bosses-list-with-checkboxes')
+
+    // forms
+    const raidForm = document.getElementById('raid-simple-form');
+    const raidBundleForm = document.getElementById('raid-bundle-form');
+    
+    // Function to find and check the first checkbox in a container
+    function checkFirstCheckbox(container) {
+        // Find all checkboxes within the container
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        
+        // Iterate through checkboxes to find the first one and check it
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (i === 0) {
+                checkboxes[i].checked = true;
+            }
+        }
+    }
+
+    // Iterate through each bossesList container
+    bossesList.forEach(function(container) {
+        checkFirstCheckbox(container);
+
+        // Add event listener to each checkbox
+        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                getRaidPrice();
+            });
+        });
+
+    });
+
+    const getSelectedMap = () => {
+        let selectedMap = null;
+        mapSelection.forEach((map) => {
+            if (map.checked) {
+                selectedMap = map.value
+            }
+        })
+        return selectedMap
+    }
+
+
+    const toggleViewBosses = () => {
+        const map = getSelectedMap();
+        bossesList.forEach((bosses) => {
+            if (bosses.id == map) {
+                bosses.classList.remove('d-none')
+            }else{
+                bosses.classList.add('d-none')
+            }
+        })
+    }
+    toggleViewBosses();
+
+    mapSelection.forEach((map) => {
+        map.addEventListener('change', function () {
+            toggleViewBosses();
+            getRaidPrice();
+        })
+    })
+
 
     const removeBandelBtnAction = () => {
         removeBandelDiv.classList.add('d-none')
         bandelViewDiv.classList.add('d-none')
         awakenedRaidDiv.classList.remove('d-none')
         bossesSelectDiv.classList.remove('d-none')
-        // TODO get selected map then view only bosses with that map
-        bossesList.forEach((bosses) => {
-            bosses.classList.remove('d-none')
-        })
+        raidBundleForm.classList.add('d-none')
+        raidForm.classList.remove('d-none')
+        toggleViewBosses()
 
         removeBandelsBtns.forEach((removeBtn) => {
             removeBtn.classList.add('d-none')
@@ -111,6 +172,8 @@ document.addEventListener("DOMContentLoaded", function () {
         bandelViewDiv.classList.remove('d-none')
         awakenedRaidDiv.classList.add('d-none')
         bossesSelectDiv.classList.add('d-none')
+        raidBundleForm.classList.remove('d-none')
+        raidForm.classList.add('d-none')
         // TODO get selected map then view only bosses with that map
         bossesList.forEach((bosses) => {
             bosses.classList.add('d-none')
@@ -136,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     applyBandelsBtns.forEach((btn) => {
         btn.addEventListener('click', (event) => {
-
+            selectedBundel_id = btn.id;
             removeBandelsBtns.forEach((removeBtn) => {
                 if (removeBtn.id == btn.id){
                     removeBtn.classList.remove('d-none')
@@ -203,18 +266,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const getRaidPrice = () => {
-        let price = bandelPrice;
-        const difficultyValue = getSelectedDifficulty();
-        const new_total_Percentage = total_Percentage + difficultyValue
+        let raidMainPrice = 0;
+        if (bandelPrice == 0) {
+            const map = getSelectedMap();
+            const checkboxes = document.querySelectorAll(`input[type="checkbox"][name="${map}-bossescheckboxes"]`);
+            const bossesSelected = [];
 
-        // Apply extra charges to the result
-        price += price * new_total_Percentage;
-        // Apply promo code 
-        price -= price * (discount_amount/100 )
-        price = parseFloat(price.toFixed(2)); 
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    const value = parseFloat(checkbox.value);
+                    raidMainPrice += value;
+                    bossesSelected.push(checkbox.id);
+                }
+            })
+            const difficultyValue = getSelectedDifficulty();
+            const new_total_Percentage = total_Percentage + difficultyValue
 
-        const visualPrice = "$" + price
-        raidPrice.innerText = visualPrice
+            // Apply extra charges to the result
+            raidMainPrice += raidMainPrice * new_total_Percentage;
+            // Apply promo code 
+            raidMainPrice -= raidMainPrice * (discount_amount/100 )
+            raidMainPrice = parseFloat(raidMainPrice.toFixed(2)); 
+
+            const visualPrice = "$" + raidMainPrice
+            raidPrice.innerText = visualPrice
+
+
+            // raid simple form 
+            $(raidForm).find('input[name="price"]').val(raidMainPrice);
+            $(raidForm).find('input[name="map"]').val(map);
+            $(raidForm).find('input[name="bosses"]').val(bossesSelected);
+            $(raidForm).find('input[name="difficulty_chosen"]').val(difficultyValue);
+
+        }else{
+            let price = bandelPrice;
+            const difficultyValue = getSelectedDifficulty();
+            const new_total_Percentage = total_Percentage + difficultyValue
+
+            // Apply extra charges to the result
+            price += price * new_total_Percentage;
+            // Apply promo code 
+            price -= price * (discount_amount/100 )
+            price = parseFloat(price.toFixed(2)); 
+
+            const visualPrice = "$" + price
+            raidPrice.innerText = visualPrice
+
+
+            // raid bundle form
+            $(raidBundleForm).find('input[name="price"]').val(price);
+            $(raidBundleForm).find('input[name="bundle_id"]').val(selectedBundel_id);
+            $(raidBundleForm).find('input[name="difficulty_chosen"]').val(difficultyValue);
+        }
+
     }
 
 
@@ -231,7 +335,27 @@ document.addEventListener("DOMContentLoaded", function () {
         return selectedValue;
     }
 
+    const raidServerRadio = document.getElementsByName('raid-server');
+    function getSelectedServer() {
+        let selectedValue;
+        // Loop through the radio buttons to find the checked one
+        for (const radio of raidServerRadio) {
+            if (radio.checked) {
+                selectedValue = radio.value;
+                break;
+            }
+        }
+        $(raidForm).find('input[name="server"]').val(selectedValue);
+        $(raidBundleForm).find('input[name="server"]').val(selectedValue);
+        return selectedValue;
+    }
+    getSelectedServer()
 
+    raidServerRadio.forEach((radio) => {
+        radio.addEventListener('change', function () {
+            getSelectedServer();
+        })
+    })
 
 
     difficultyRadio.forEach((radio) => {
@@ -269,4 +393,6 @@ extraOptions.forEach(function (checkbox, index) {
       getRaidPrice();
     }
   });
+
+  getRaidPrice();
 })

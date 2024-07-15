@@ -7,7 +7,6 @@ import json
 from django.conf import settings
 from valorant.models import *
 from valorant.controller.serializers import DivisionSerializer, PlacementSerializer
-from paypal.standard.forms import PayPalPaymentsForm
 from valorant.controller.order_information import *
 from booster.models import OrderRating
 from accounts.models import TokenForPay
@@ -16,6 +15,7 @@ from accounts.models import BaseUser
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from .utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
+from gameBoosterss.utils import mainPayment
 
 def valorant_divisions_data(request):
     divisions_data = get_valorant_divisions_data()
@@ -97,19 +97,18 @@ def pay_with_paypal(request):
 
         request.session['invoice'] = order_info['invoice']
         token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+        
+        payment = mainPayment(order_info, request, token)
+        if payment.create():
+            for link in payment.links:
+                if link.rel == "approval_url":
+                    approval_url = str(link.href)
+                    return redirect(approval_url)
+        else:
+            messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+            return redirect(reverse_lazy('valorant'))
 
-        paypal_dict = {
-            "business": settings.PAYPAL_EMAIL,
-            "amount": order_info['price'],
-            "item_name": order_info['name'],
-            "invoice": order_info['invoice'],
-            "notify_url": request.build_absolute_uri(reverse('paypal-ipn')),
-            "return": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_return": request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-        }
-        form = PayPalPaymentsForm(initial=paypal_dict)
-        context = {"form": form}
-        return render(request, "accounts/paypal.html", context,status=200)
+      
       # return JsonResponse({'error': serializer.errors}, status=400)
       for field, errors in serializer.errors.items():
         for error in errors:

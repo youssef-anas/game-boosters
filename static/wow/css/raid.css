@@ -1,4 +1,4 @@
-label {
+.bosses-list-with-checkboxes label {
   display: inline-block;
   cursor: pointer;
   font-size: 16px;
@@ -8,9 +8,9 @@ label {
   transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-label:hover {
+.bosses-list-with-checkboxes label:hover {
   background-color: #f26e3e49;
-  transform: scale(1.1); 
+  transform: scale(1.05); 
 }
 
 .exclusive {

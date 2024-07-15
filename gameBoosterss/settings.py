@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
     # Others
-    'paypal.standard.ipn',
+    # 'paypal.standard.ipn',
     'corsheaders',
     'rest_framework',
     'social_django', 

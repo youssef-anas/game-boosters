@@ -194,7 +194,11 @@ class BaseOrder(models.Model):
         ('D', 'Division'),
         ('P', 'Placement'),
         ('A', 'Arena'),      
-        ('F', 'Faceit'),      
+        ('F', 'Faceit'),
+        ('R', 'Raid'),      
+        ('RB', 'Raid Bundle'),
+        ('DU', 'Dungeon'),
+        ('DB', 'Dungeon Bundle'),       
     ]
     name = models.CharField(max_length=30, null = True)
     

@@ -1,21 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
-from django.http import HttpResponse
-from django.urls import reverse, reverse_lazy
+from django.http import JsonResponse, HttpResponse
+from django.urls import reverse_lazy
 from django.conf import settings
 from WorldOfWarcraft.models import *
-from WorldOfWarcraft.controller.serializers import ArenaSerializer
-from paypal.standard.forms import PayPalPaymentsForm
-from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank
+from WorldOfWarcraft.controller.serializers import ArenaSerializer, RaidSimpleSerializer, RaidBundleSerializer
+from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank, get_raid_simple_price_by_bosses
 from booster.models import OrderRating
-import json
-from accounts.models import TokenForPay
-from django.db.models import Avg, Sum, Case, When, Value, IntegerField
-from django.db.models.functions import Coalesce
-from accounts.models import BaseUser
-import paypalrestsdk
+from django.db.models import Sum, Case, When, IntegerField
+from accounts.models import TokenForPay, BaseUser
+from gameBoosterss.utils import mainPayment
 
 def get_wow_prices_data_view(request):
     prices = WorldOfWarcraftRpsPrice.objects.all().first()
@@ -76,49 +71,38 @@ def pay_with_paypal(request):
         messages.error(request, "You are a booster! You can't make an order.")
         return redirect(reverse_lazy('wow'))
 
-    serializer = ArenaSerializer(data=request.POST)
+    if request.POST.get('game_type') == 'R':
+        serializer = RaidSimpleSerializer(data=request.POST)
+    elif request.POST.get('game_type') == 'A':
+        serializer = ArenaSerializer(data=request.POST)
+    elif request.POST.get('game_type') == 'RB':
+        serializer = RaidBundleSerializer(data=request.POST)    
+
     if not serializer.is_valid():
         for field, errors in serializer.errors.items():
             for error in errors:
-                messages.error(request, f"{error}")
+                messages.error(request, f"{field}: {error}")
         return redirect(reverse_lazy('wow'))
-
-    extend_order_id = serializer.validated_data.get('extend_order')
-    order_info = get_arena_order_result_by_rank(serializer.validated_data, extend_order_id)
+    print("serializer valid", serializer.validated_data)
+    # return HttpResponse({
+    #     'success': True,
+    #     "data": serializer.validated_data
+    # })
+    if request.POST.get('game_type') == 'A':
+      extend_order_id = serializer.validated_data.get('extend_order')
+      order_info = get_arena_order_result_by_rank(serializer.validated_data, extend_order_id)
+    elif request.POST.get('game_type') == 'R':
+      order_info = get_raid_simple_price_by_bosses(serializer.validated_data)  
+    elif request.POST.get('game_type') == 'RB':
+      # order_info = get_raid_simple_price_by_bosses(serializer.validated_data)  
+      raise NotImplementedError
 
     if not order_info:
         messages.error(request, "Order information could not be retrieved.")
         return redirect(reverse_lazy('wow'))
-
-    request.session['invoice'] = order_info['invoice']
-    token = TokenForPay.create_token_for_pay(request.user, order_info['invoice'])
-
-    payment = paypalrestsdk.Payment({
-        "intent": "sale",
-        "payer": {
-            "payment_method": "paypal"
-        },
-        "redirect_urls": {
-            "return_url": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_url": request.build_absolute_uri(f"/customer/payment-canceled/{token}/")
-        },
-        "transactions": [{
-            "item_list": {
-                "items": [{
-                    "name": order_info['name'],
-                    "sku": "item",
-                    "price": order_info['price'],
-                    "currency": "USD",
-                    "quantity": 1
-                }]
-            },
-            "amount": {
-                "total": order_info['price'],
-                "currency": "USD"
-            },
-            "description": "Payment for order."
-        }]
-    })
+    
+    token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
+    payment = mainPayment(order_info, request, token)
 
     if payment.create():
         for link in payment.links:

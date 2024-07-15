@@ -10,6 +10,18 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         invoice_values = invoice.split('-')
         game_id = int(invoice_values[1])
         game_type = str(invoice_values[2])
+
+
+        # wow id 6 and game type = R
+        if game_id == 6 and game_type == 'R':
+            map = int(invoice_values[3])
+            bosses_ids = str(invoice_values[3])
+            # convert string to list
+            bosses_ids = list(bosses_ids.split(","))
+
+            difficulty_chosen = float(invoice_values[5])
+            
+
         booster_id = int(invoice_values[12])
         extend_order_id = int(invoice_values[13])
         price = float(invoice_values[15])
@@ -169,6 +181,13 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             # WoW - Arena
             elif game_id == 6 and game_type == 'A':
                 order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2)
+            # WoW - Raid
+            elif game_id == 6 and game_type == 'R':
+                order = Game.objects.create(map=map, difficulty=difficulty_chosen)
+                # add meny to meny bosses ids from bosses_ids
+                if bosses_ids :
+                    order.bosses.add(*bosses_ids)
+
             # HEARTHSTONE - Division
             elif game_id == 7 and game_type == 'D':
                 order = Game.objects.create(**default_fields)

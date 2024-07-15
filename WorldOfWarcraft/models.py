@@ -235,3 +235,17 @@ class WorldOfWarcraftBundle(models.Model):
 
   def __str__(self):
     return self.name
+  
+class WorldOfWarcraftRaidSimpleOrder(models.Model):
+  WOW_MAP_CHOICES = (
+    (1, "Vault of the Incarnates"),
+    (2, "Aberrus, the Shadowed Crucible"),
+    (3, "Amirdrassil, the Dream's Hope"),
+  )
+  order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_raid_simple_order')
+  map = models.PositiveSmallIntegerField(null= True, choices=WOW_MAP_CHOICES, blank=True)
+  difficulty = models.FloatField()
+  bosses = models.ManyToManyField(WorldOfWarcraftBoss, related_name='wow_raid_simple_order_bosses')
+
+  created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
