@@ -249,3 +249,63 @@ class WorldOfWarcraftRaidSimpleOrder(models.Model):
 
   created_at = models.DateTimeField(auto_now_add =True)
   updated_at = models.DateTimeField(auto_now =True)
+
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+      return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209759469806821396/Sw69hAULnlb4XIEIclX_Ag-xCdinblnLcpr01UXtJDM2STpTw2hv8UqyD29qY2H01uXX'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+    embed = {
+      "title": "World Of Warcraft",
+      "description": (
+        f"**Order ID:** {self.order.name}\n"
+        "Test mode "
+      ),
+      "color": 0xFFA500,
+      "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+      "content": "New order has arrived \n",
+      "embeds": [embed],
+    }
+
+    headers = {
+      "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+      print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
+  def save_with_processing(self, *args, **kwargs):
+    # self.validate_division()
+    self.order.game_id = 6
+    self.order.game_type = 'R'
+    self.order.details = self.get_details()
+    if not self.order.name:
+      self.order.name = f'WOW{self.order.id}'
+    self.order.update_actual_price()
+    self.order.save()
+    super().save(*args, **kwargs)
+    self.send_discord_notification()
+
+  def get_details(self):
+    booses_len = self.bosses.count()
+    return f"Defets {booses_len} in {self.map} map"
+    
+  def __str__(self):
+    return self.get_details()
+
+  def get_rank_value(self, *args, **kwargs):
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+    return f"{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},"
+  
+  def get_order_price(self):
+    return {"booster_price": 0, 'percent_for_view': 0, 'main_price': 0, 'percent': 0.24}

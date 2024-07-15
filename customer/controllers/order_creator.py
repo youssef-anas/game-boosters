@@ -183,7 +183,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2)
             # WoW - Raid
             elif game_id == 6 and game_type == 'R':
-                order = Game.objects.create(map=map, difficulty=difficulty_chosen)
+                order = Game.objects.create(order=baseOrder, map=map, difficulty=difficulty_chosen)
                 # add meny to meny bosses ids from bosses_ids
                 if bosses_ids :
                     order.bosses.add(*bosses_ids)
