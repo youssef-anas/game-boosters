@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', function() {
       const form = getParentFormWIthBtnClicked(btn);
       form.action = paypalUrl;
       // Submit the form
-      form.submit();
+      const formData = new FormData(form);
+      getpaymentUrl(formData, paypalUrl)
     })
   })
 
@@ -31,13 +32,63 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', function() {
       // Get the Cryptomus URL from data attribute
       const cryptomusUrl = urls.dataset.cryptomusUrl;
+      const paypalUrl = urls.dataset.paypalUrl;
       // Set the form action
       const form = getParentFormWIthBtnClicked(btn);
-      form.action = cryptomusUrl;
-      // Submit the form
-      form.submit();
+      form.action = paypalUrl;
+      
+      // Create a hidden input field with name 'cryptomus' and value 'true'
+      const cryptomusInput = document.createElement('input');
+      cryptomusInput.type = 'hidden';
+      cryptomusInput.name = 'cryptomus';
+      cryptomusInput.value = 'true';
+
+      // Append the hidden input field to the form
+      form.appendChild(cryptomusInput);
+
+      const formData = new FormData(form);
+      getpaymentUrl(formData, paypalUrl)
     })
   })
+
+
+  const getpaymentUrl = async (formData, URL) => {
+    // Show the loader and disable all buttons
+    document.getElementById('loader').style.display = 'flex';
+    disableAllButtons(true);
+    try {
+      // Send the form data using fetch
+      const response = await fetch(URL, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'Accept': 'application/json'
+          }
+      });
+      // Parse the JSON response
+      const data = await response.json();
+
+        if (data.url) {
+            // Redirect to the provided URL
+            window.location.href = data.url;
+        } else {
+            // Handle the case where 'url' is not in the response
+            console.error('No URL provided in the response.');
+        }
+    } catch (error) {
+        console.error('Error during the fetch request:', error);
+    }finally {
+      // Hide the loader and re-enable all buttons
+      document.getElementById('loader').style.display = 'none';
+      disableAllButtons(false);
+  }
+  }
+
+  function disableAllButtons(disable) {
+    document.querySelectorAll('button').forEach((button) => {
+        button.disabled = disable;
+    });
+  }
 
     // const arenaForm = document.getElementById('arena-form');
     // const arenaPaypalBtn = document.getElementById('arena-paypal-btn');

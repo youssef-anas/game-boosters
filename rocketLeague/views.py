@@ -19,7 +19,7 @@ from .utils import (
     get_rocket_league_seasonals_data,
     get_rocket_league_tournaments_data
 )
-from gameBoosterss.utils import mainPayment
+from gameBoosterss.utils import PaypalPayment, cryptomus_payment
 
 def rocket_league_divisions_data_api(request):
     divisions_data = get_rocket_league_divisions_data()
@@ -121,12 +121,12 @@ def pay_with_paypal(request):
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
-      payment = mainPayment(order_info, request, token)
-      if payment.create():
-          for link in payment.links:
-              if link.rel == "approval_url":
-                  approval_url = str(link.href)
-                  return redirect(approval_url)
+      if request.POST.get('cryptomus', None) != None :
+        payment = cryptomus_payment(order_info, request, token)
+      else:
+        payment = PaypalPayment(order_info, request, token)
+      if payment:
+          return JsonResponse({'url': payment})
       else:
           messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
           return redirect(reverse_lazy('rocketLeague'))

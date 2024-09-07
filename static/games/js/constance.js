@@ -27,7 +27,8 @@ let percentege = {    // Additional Initial Percent
   selectBooster: 0.10,
   turboBoost: 0.20,
   streaming: 0.15,
-  selectChampion: 0.0 
+  selectChampion: 0.0,
+  fullPriority : 0.5,
 }
 
 // buttons

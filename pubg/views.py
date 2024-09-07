@@ -15,7 +15,9 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from pubg.utils import get_divisions_data, get_marks_data
-from gameBoosterss.utils import mainPayment
+from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 
 def get_divisions_data_view(request):
@@ -65,16 +67,13 @@ def pubgGetBoosterByRank(request):
 
 # Paypal
 @login_required
+@api_view(['POST'])
 def view_that_asks_for_money(request):
   if request.method == 'POST':
     if request.user.is_authenticated :
       if request.user.is_booster:
         messages.error(request, "You are a booster!, You can't make order.")
         return redirect(reverse_lazy('pubg'))
-      
-    print('request POST:  ', request.POST)
-    # try:
-      # Division
     serializer = DivisionSerializer(data=request.POST)
     extend_order = request.POST.get('extend_order', '')
     if serializer.is_valid():
@@ -88,15 +87,15 @@ def view_that_asks_for_money(request):
       # if request.user.is_superuser:
       #   # return request.build_absolute_uri(f"/customer/payment-success/{token}/"),
       #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
-      
-      payment = mainPayment(order_info, request, token)
-      if payment.create():
-          for link in payment.links:
-              if link.rel == "approval_url":
-                  approval_url = str(link.href)
-                  return redirect(approval_url)
+
+      if request.POST.get('cryptomus', None) != None :
+        payment = cryptomus_payment(order_info, request, token)
       else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
+        payment = PaypalPayment(order_info, request, token)
+      if payment:
+          return Response({'url': payment})
+      else:
+          messages.error(request, "There was an issue connecting to Payment. Please try again later.")
           return redirect(reverse_lazy('pubg'))
     for field, errors in serializer.errors.items():
       for error in errors:

@@ -96,6 +96,14 @@ input[type="range"]:focus::-moz-range-thumb {
   color: white;
   text-align: left; /* Align text to the left */
   outline: none; /* Remove outline */
+  max-width: 150px;
+}
+
+@media (max-width: 350px) {
+  .number-input {
+    font-size: 36px;
+    max-width: 100px;
+  }
 }
 
 .number-input::-webkit-inner-spin-button,

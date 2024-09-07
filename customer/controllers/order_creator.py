@@ -4,6 +4,7 @@ from gameBoosterss.utils import get_game
 from accounts.models import PromoCode
 from customer.models import Champion
 import random
+import ast
 
 def create_order(invoice, payer_id, customer, status='New', name = None, extra = 1):
     # try :
@@ -15,17 +16,32 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
         # wow id 6 and game type = R
         if game_id == 6 and game_type == 'R':
             map = int(invoice_values[3])
-            bosses_ids = str(invoice_values[3])
-            # convert string to list
-            bosses_ids = list(bosses_ids.split(","))
-
+            bosses_idss = str(invoice_values[4])
+            bosses_ids = ast.literal_eval(bosses_idss)
+            loot_priority = bool(int(invoice_values[22]))
+            boost_method = str(invoice_values[23])
             difficulty_chosen = float(invoice_values[5])
+        if game_id == 6 and game_type == 'RB':
+            bundle = int(invoice_values[3])
+            loot_priority = bool(int(invoice_values[4]))
+            boost_method = str(invoice_values[22])
+        if game_id == 6 and game_type == 'DS':   
+            keystone = int(invoice_values[3]) 
+            keys = int(invoice_values[4])
+
+            map_preferred = str(invoice_values[5])
+            traders = str(invoice_values[6])
+            traders_armor_type = str(invoice_values[7])
+            maps = invoice_values[20]
+
+            timed = bool(int(invoice_values[22]))
+            boost_method = str(invoice_values[23])
             
 
         booster_id = int(invoice_values[12])
         extend_order_id = int(invoice_values[13])
         price = float(invoice_values[15])
-        server = str(invoice_values[14]) ########### TODO make this int and go to invoice and make int
+        server = str(invoice_values[14])
         if game_type == 'D' or game_type == 'A':
             current_rank =  int(invoice_values[3])
             current_division = int(invoice_values[4])
@@ -57,8 +73,13 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
 
         promo_code = int(invoice_values[17])
         role = int(invoice_values[18])
-        ranked_type = int(invoice_values[19])   
-        is_arena_2vs2 = bool(int(invoice_values[20]))
+        ranked_type = int(invoice_values[19]) 
+        if game_id == 6 and game_type == 'A':  
+            is_arena_2vs2 = bool(int(invoice_values[20]))
+            rank1_player = bool(int(invoice_values[22]))
+            tournament_player = bool(int(invoice_values[23]))
+            boost_method = str(invoice_values[24])
+            
 
         champions_selected = str(invoice_values[21])
 
@@ -180,13 +201,24 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 order = Game.objects.create(order=baseOrder,last_rank_id=(last_rank + 1),number_of_match=number_of_match)
             # WoW - Arena
             elif game_id == 6 and game_type == 'A':
-                order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2)
+                order = Game.objects.create(**default_fields, is_arena_2vs2=is_arena_2vs2, rank1_player=rank1_player, tournament_player=tournament_player, boost_method=boost_method )
             # WoW - Raid
             elif game_id == 6 and game_type == 'R':
-                order = Game.objects.create(order=baseOrder, map=map, difficulty=difficulty_chosen)
+                order = Game.objects.create(order=baseOrder, map=map, difficulty=difficulty_chosen, boost_method=boost_method, loot_priority=loot_priority)
                 # add meny to meny bosses ids from bosses_ids
                 if bosses_ids :
-                    order.bosses.add(*bosses_ids)
+                    for boss_id in bosses_ids:
+                        order.bosses.add(boss_id)
+                        
+            elif game_id == 6 and game_type == 'RB':   
+                order = Game.objects.create(order=baseOrder, bundle_id=bundle, boost_method=boost_method, loot_priority=loot_priority)     
+
+            elif game_id == 6 and game_type == 'DS':
+                order = Game.objects.create(order=baseOrder, keystone=keystone, keys=keys, traders=traders, traders_armor_type=traders_armor_type, map_preferred=map_preferred, maps=maps, boost_method=boost_method, timed=timed)    
+            
+            # WoW - Level Up
+            elif game_id == 6 and game_type == 'F':
+                order = Game.objects.create(order=baseOrder, current_level=current_level, desired_level=desired_level)
 
             # HEARTHSTONE - Division
             elif game_id == 7 and game_type == 'D':
@@ -278,7 +310,7 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
             # WoW
             elif game_id == 6 and game_type == 'A':
                 # TODO not completed yet
-                order = Game.objects.create(**extend_fields, is_arena_2vs2=is_arena_2vs2)
+                order = Game.objects.create(**extend_fields, is_arena_2vs2=is_arena_2vs2, rank1_player=rank1_player, tournament_player=tournament_player, boost_method=boost_method )
             # HEARTHSTONE - Division
             elif game_id == 7 and game_type == 'D':
                 order = Game.objects.create(**extend_fields)

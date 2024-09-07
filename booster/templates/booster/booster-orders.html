@@ -73,7 +73,16 @@
               display: inline-flex;
               margin: 10px;
           }
-        }
+  }
+  .raid-info label{
+    color: #FFFFFF80;
+  }
+  .raid-info div:not(:last-of-type){
+    border-bottom: 0.2px solid #1E1814;
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
+       
   
 </style>
 
@@ -375,6 +384,113 @@
                 <div class="col-xl-12 col-lg-6 col-12 pe-xl-0 pe-0 ps-0">
                   <div class="order-info {{order.order.order.game.link}}-{% if order.order.order.game_type == 'D' or order.order.order.game_type == 'A' %}{{order.reached_rank.rank_name}}{% elif order.order.order.game_type == 'P' %}{{order.last_rank.rank_name}}{% elif order.order.order.game_type == 'S' %}{{order.current_rank.rank_name}}{% elif order.order.order.game_type == 'T' %}{{order.current_league.rank_name}}{% elif order.order.order.game_type == 'F' %}{{order.reached_rank.rank_name}}{% endif %}">
                     <h4 style="font-weight: 700;">Progress Tracker</h4>
+                    <!-- RAID SIMPLE -->
+                    {% if order.order.order.game_type == 'R' %}
+                    <div class="raid-info">
+                      <div class="d-flex justify-content-between">
+                        <label>Map:</label>
+                        <p>{{order.order.get_map_display}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Bosses:</label>
+                        <p>{{order.order.bosses.all.count}} Bosses</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Loot Priority:</label>
+                        <p>{{order.order.loot_priority}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Boost Method:</label>
+                        <p>{{order.order.boost_method}}</p>
+                      </div>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn complete-order-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ order.order.order.id }}">
+                      <i class="fa-regular fa-circle-check"></i> Complete Order
+                    </button>
+                    {% endif %}
+
+                    <!-- WOW RAID BUNDLE -->
+                    {% if order.order.order.game_type == 'RB' %}
+                    <div class="raid-info">
+                      <div class="d-flex justify-content-between">
+                        <label>Bundle:</label>
+                        <p>{{order.order.bundle.name}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Loot Priority:</label>
+                        <p>{{order.order.loot_priority}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Boost Method:</label>
+                        <p>{{order.order.boost_method}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Bundle Info:</label>
+                        <p></p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <p>{{order.order.bundle.feature_1}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <p>{{order.order.bundle.feature_2}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <p>{{order.order.bundle.feature_3}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <p>{{order.order.bundle.feature_4}}</p>
+                      </div>
+                    </div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn complete-order-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ order.order.order.id }}">
+                      <i class="fa-regular fa-circle-check"></i> Complete Order
+                    </button>
+                    {% endif %}
+
+                    <!-- WOW DUNGEON BUNDLE -->
+                    {% if order.order.order.game_type == 'DU' %}
+                    <div class="raid-info">
+                      <div class="d-flex justify-content-between">
+                        <label>Keystone:</label>
+                        <p>{{order.order.keystone}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Number Of Keys:</label>
+                        <p>{{order.order.keys}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Loot Traders:</label>
+                        <p>{{order.order.traders}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Armor type:</label>
+                        <p>{{order.order.traders_armor_type}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Timed:</label>
+                        <p>{{order.order.timed}}</p>
+                      </div>
+                      <div class="d-flex justify-content-between">
+                        <label>Boost method:</label>
+                        <p>{{order.order.boost_method}}</p>
+                      </div>
+                      {% if order.order.map_preferred == 'Specific' %}
+                        {% for map_name, map_value in order.order.get_maps_as_key_value.items %}
+                          {% if map_value != 0 %}
+                          <div class="d-flex justify-content-between">
+                            <label>{{map_name}}:</label>
+                            <p>{{map_value}}</p>
+                          </div>
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn complete-order-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{ order.order.order.id }}">
+                      <i class="fa-regular fa-circle-check"></i> Complete Order
+                    </button>
+                    {% endif %}
       
                     <!-- Division -->
                     {% if order.order.order.game_type == 'D' or order.order.order.game_type == 'A' %}

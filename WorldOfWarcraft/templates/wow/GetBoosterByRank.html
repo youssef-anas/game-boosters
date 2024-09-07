@@ -22,10 +22,14 @@
 <link href="{% static 'base/css/popup.css'%}" rel="stylesheet" />
 <!-- Raid STYLE -->
 <link href="{% static 'wow/css/raid.css'%}" rel="stylesheet" />
+<!-- Dungeon STYLE -->
+<link href="{% static 'wow/css/dungeon.css'%}" rel="stylesheet" />
 
 {% endblock %}
 {% block container %}
 <div id="order-container" data-order="{{ order.get_rank_value }}"></div>
+<div id="level-up-price-container" data-price="{{ level_up_price }}"></div>
+<div id="dungeon-prices-container" data-prices="{{ dungeon_prices }}"></div>
 
 <!-- ------------------------------ Booster Select Popup ------------------------------ -->
 <div id="popup-booster-form" class="popup">
@@ -83,26 +87,6 @@
   </div>
 </div>
 
-<!-- ------------------------------ Booster Select Popup ------------------------------ -->
-<div id="popup-bosses-form" class="popup" style="display: none;">
-  <div class="popup-content">
-    <span id="close-booses" class="close" onclick=""><i class="fa-solid fa-xmark"></i></span>
-    <h3 class="p-2 text-center my-4">Select Bosses</h3>
-
-    <div class="container">
-      <div class="container boosters-container my-4 py-4">
-        <div class="bosses scrollable overflow-auto">
-        </div> 
-      </div>
-    </div>
-    <div class="d-flex justify-content-center align-items-center  form-have-select-button">
-      <button id="selectmapbtn" onclick="" class="btn update-btn">Select</button>
-    </div>
-  </div>
-</div>
-
-<!-- ------------------------------ End Popups ------------------------------ -->
-
 <div id="WorldOfWarcraftRpsPrice" data-rp2vs2="{{rp2vs2}}" data-rp3vs3="{{rp3vs3}}"></div>
 <div class="game-container">
 
@@ -128,15 +112,16 @@
         {% endfor %}
     {% endif %}
 
-    <div class="exclusive raid my-5 py-md-0 py-5 d-none">
+    <div class="exclusive raid my-5 py-md-0 d-none">
       <div class="text px-md-5 px-4 w-100">
           <h2>Exclusive Raid Bundles!<br /><br class="d-md-none d-block "/></h2>
           <h6>Get Exclusive Gear and Upgrades.<br /><br class="d-md-none d-block "/></h6>
             <a href="#" class="custom-btn filled mt-md-4 mt-5" style="width: 240px;" id="discover">Discover Bundles!</a>
       </div>
     </div>
-    
-    <div class="exclusive dungeon my-5 py-md-0 py-5 d-none">
+
+    <!-- dungeon  not work for now-->
+    <div class="exclusive my-5 py-md-0 d-none"> 
       <div class="text px-md-5 px-4 w-100">
           <h2>Exclusive Dungeon Bundles!<br /><br class="d-md-none d-block "/></h2>
           <h6>Get Your Ultimate Gear Now.<br /><br class="d-md-none d-block "/></h6>
@@ -145,13 +130,13 @@
     </div>
 
       <div id="choise-div" class="choise mb-3">
-        <input type="radio" id="arena-2vs2" name="radio-group-type">
+        <input type="radio" id="arena-2vs2" name="radio-group-type" checked>
         <label for="arena-2vs2" class="radio-btn" style="width: 147px;">2v2 Arena</label>
 
         <input type="radio" id="arena-3vs3" name="radio-group-type">
         <label for="arena-3vs3" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">3v3 Arena</label>
 
-        <input type="radio" id="raid" name="radio-group-type" checked>
+        <input type="radio" id="raid" name="radio-group-type">
         <label for="raid" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Raid</label>
         
         <input type="radio" id="dungeon" name="radio-group-type">
@@ -160,8 +145,6 @@
         <input type="radio" id="level-up" name="radio-group-type">
         <label for="level-up" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Level Up</label>
 
-        <!-- <input type="radio" id="PvE-boosting" name="radio-group-type">
-        <label for="PvE-boosting" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">PvE Boosting</label> -->
       </div>
 
       <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5" id="OrderNow">
@@ -175,7 +158,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="current-rp current-2vs2-rp me-4">
-                  <h1 class="current-rp current-2vs2-rp mb-0"></h1>
+                  <input type="number" id="current-2v2-input" min="0" max="2400" step="1" value="0" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Current MMR Rank</h5>
@@ -189,7 +172,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="1" id="current-2vs2-arena" /> 
+              <input type="range" id="current-2v2-range" min="0" max="2400" value="0" step="1"/> 
               <div class="current-2vs2 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -207,9 +190,9 @@
             <div class="server-container mt-3">
               <p class="text-white" style="font-size: 16px;">Server</p>
               <div class="select-container">
-                <select class="arena-2vs2-servers-select">
+                <select class="arena-2vs2-servers-select" id="arena-2vs2-servers-select">
                   <option value="------------">------------</option>
-                  <option value="Europe">Europe</option>
+                  <option value="EU">EU</option>
                   <option value="US">US</option>
                 </select>
               </div>
@@ -224,7 +207,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="desired-rp desired-2vs2-rp me-4">
-                  <h1 class="desired-rp desired-2vs2-rp mb-0"></h1>
+                  <input type="number" id="desired-2v2-input" min="0" max="2400" step="25" value="0" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Desired MMR Rank</h5>
@@ -238,7 +221,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="25" id="desired-2vs2-arena" /> 
+              <input type="range" id="desired-2v2-range" min="0" max="2400" value="0" step="25"/> 
               <div class="desired-2vs2 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -254,6 +237,21 @@
 
           </div>
 
+          <div class="difficulty mb-5">
+            <h3>Boost method</h3>
+            <small>Choose the Boost method the raid you would like to order</small>
+            <div class="difficulty-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="self-play-arena2v2" name="boost-method-arena2vs2">
+                <label for="self-play-arena2v2">Self Play</label>
+                <input type="radio" id="piloted-arena2v2" name="boost-method-arena2vs2" checked>
+                <label for="piloted-arena2v2">Piloted</label>
+                <input type="radio" id="remote-control-arena2v2" name="boost-method-arena2vs2">
+                <label for="remote-control-arena2v2">Remote Control + 30%</label>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- ------------------------------ 3vs3 Arena ------------------------------ -->
@@ -265,7 +263,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="current-rp current-3vs3-rp me-4">
-                  <h1 class="current-rp current-3vs3-rp mb-0"></h1>
+                  <input type="number" id="current-3v3-input" min="0" max="2400" step="1" value="0" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Current MMR Rank</h5>
@@ -279,7 +277,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="1" id="current-3vs3-arena" /> 
+              <input type="range" min="0" max="2400" value="0" step="1" id="current-3v3-range" /> 
               <div class="current-3vs3 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -297,9 +295,9 @@
             <div class="server-container mt-3">
               <p class="text-white" style="font-size: 16px;">Server</p>
               <div class="select-container">
-                <select class="arena-3vs3-servers-select">
+                <select class="arena-3vs3-servers-select" id="arena-3vs3-servers-select">
                   <option value="------------">------------</option>
-                  <option value="Europe">Europe</option>
+                  <option value="EU">EU</option>
                   <option value="US">US</option>
                 </select>
               </div>
@@ -314,7 +312,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="desired-rp desired-3vs3-rp me-4">
-                  <h1 class="desired-rp desired-3vs3-rp mb-0"></h1>
+                  <input type="number" id="desired-3v3-input" min="0" max="2400" step="1" value="0" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Desired MMR Rank</h5>
@@ -328,7 +326,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="25" id="desired-3vs3-arena" /> 
+              <input type="range" min="0" max="2400" value="0" step="25" id="desired-3v3-range" /> 
               <div class="desired-3vs3 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -342,6 +340,21 @@
               </div>
             </div>
 
+          </div>
+
+          <div class="difficulty mb-5">
+            <h3>Boost method</h3>
+            <small>Choose the Boost method the raid you would like to order</small>
+            <div class="difficulty-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="self-play-arena3v3" name="boost-method-arena3vs3">
+                <label for="self-play-arena3v3">Self Play</label>
+                <input type="radio" id="piloted-arena3v3" name="boost-method-arena3vs3" checked>
+                <label for="piloted-arena3v3">Piloted</label>
+                <input type="radio" id="remote-control-arena3v3" name="boost-method-arena3vs3">
+                <label for="remote-control-arena3v3">Remote Control + 30%</label>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -363,7 +376,7 @@
             <div class="image-border">
               <img src="{% static 'wow/images/raid-1.png' %}" class="img-fluid" />
               <div class="centered-text">
-                <h3>Amirdrassil, the Dream's Hope</h3>
+                <!-- <h3>Amirdrassil, the Dream's Hope</h3> -->
               </div>
             </div>
             <div class="texts-bandel">
@@ -375,16 +388,31 @@
           </div>
 
           <div class="difficulty mb-5">
+            <h3>Boost method</h3>
+            <small>Choose the Boost method the raid you would like to order</small>
+            <div class="difficulty-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="self-play-raid" name="boost-method-raid">
+                <label for="self-play-raid">Self Play</label>
+                <input type="radio" id="piloted-raid" name="boost-method-raid" checked>
+                <label for="piloted-raid">Piloted</label>
+                <input type="radio" id="remote-control-raid" name="boost-method-raid">
+                <label for="remote-control-raid">Remote Control + 30%</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="difficulty mb-5" id="awakened-raid-difficulty">
             <h3>Raid Difficulty</h3>
             <small>Choose the difficulty level of the raid you would like to order</small>
             <div class="difficulty-buttons mt-5">
               <div class="buttons d-flex justify-content-start">
                 <input type="radio" id="normal" name="difficulty" value="0.3">
-                <label for="normal">Normal</label>
+                <label for="normal">Normal + 30%</label>
                 <input type="radio" id="heroic" name="difficulty" value="0.4" checked>
-                <label for="heroic">Heroic</label>
+                <label for="heroic">Heroic + 40%</label>
                 <input type="radio" id="mythic" name="difficulty" value="0.5">
-                <label for="mythic">Mythic</label>
+                <label for="mythic">Mythic + 50%</label>
               </div>
             </div>
           </div>
@@ -407,7 +435,8 @@
             <p>Choose the raid you would like to order</p>
             <div class="awakened-buttons mt-5">
               <div class="img-btns d-flex justify-content-center row">
-                <div class="col-6 mb-3">
+
+                <div class="col-12 col-lg-6 col-md-12 col-sm-12 mb-3">
                   <input type="radio" id="incarnates" name="map" value="incarnates" checked>
                   <label for="incarnates">
                     <div class="image-border">
@@ -418,7 +447,8 @@
                     </div>
                   </label>
                 </div>
-                <div class="col-6 mb-3">
+
+                <div class="col-12 col-lg-6 col-md-12 col-sm-12 mb-3">
                   <input type="radio" id="crucible" name="map" value="crucible">
                   <label for="crucible">
                     <div class="image-border">
@@ -429,7 +459,8 @@
                     </div>
                   </label>
                 </div>
-                <div class="col-6 mb-3">
+
+                <div class="col-12 col-lg-6 col-md-12 col-sm-12 mb-3">
                   <input type="radio" id="amirdrassil" name="map" value="amirdrassil">
                   <label for="amirdrassil">
                     <div class="image-border">
@@ -440,6 +471,7 @@
                     </div>
                   </label>
                 </div>
+
               </div>
             </div>
           </div>
@@ -455,7 +487,7 @@
             <div class="d-flex justify-content-between align-items-center">
               <div class="d-flex align-items-center">
                 <div class="current-level-up current-level-up-rp me-4">
-                  <input type="number" id="current-level-up-input" min="0" max="70" step="1" value="1" class="number-input"/>
+                  <input type="number" id="current-level-up-input" min="1" max="80" step="1" value="1" class="number-input"/>
                 </div>
                 <div class="text-white text">
                   <h5>Current Level</h5>
@@ -465,7 +497,7 @@
             </div>
           
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="1" max="70" value="1" step="1" id="current-battlegrounds-range" /> 
+              <input type="range" min="1" max="80" value="1" step="1" id="current-level-up-range" /> 
               <div class="current-level-up step-indicator">
                 <span class="step">1</span>
                 <span class="step">10</span>
@@ -475,6 +507,7 @@
                 <span class="step">50</span>
                 <span class="step">60</span>
                 <span class="step">70</span>
+                <span class="step">80</span>
               </div>
             </div>
           
@@ -482,12 +515,10 @@
             <div class="server-container mt-3">
               <p class="text-white" style="font-size: 16px;">Server</p>
               <div class="select-container">
-                <select class="level-up-servers-select" required>
+                <select id="level-up-servers-select" class="level-up-servers-select" required>
                   <option disabled selected hidden value="------------">------------</option>
-                  <option value="Americas">Americas </option>
-                  <option value="Europe">Europe</option>
-                  <option value="Asia">Asia</option>
-                  <option value="China">China</option>
+                  <option value="US">US</option>
+                  <option value="EU">EU</option>
                 </select>
               </div>
             </div>
@@ -500,7 +531,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="desired-level-up desired-level-up-rp me-4">
-                  <input type="number" id="desired-level-up-input" min="1" max="70" step="1" value="25" class="number-input"/>
+                  <input type="number" id="desired-level-up-input" min="1" max="80" step="1" value="25" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Desired Level </h5>
@@ -510,7 +541,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="1" max="70" value="25" step="1" id="desired-battlegrounds-range" /> 
+              <input type="range" min="1" max="80" value="25" step="1" id="desired-level-up-range" /> 
               <div class="desired-level-up step-indicator">
                 <span class="step">1</span>
                 <span class="step">10</span>
@@ -520,20 +551,82 @@
                 <span class="step">50</span>
                 <span class="step">60</span>
                 <span class="step">70</span>
+                <span class="step">80</span>
               </div>
             </div>
 
           </div>
+
+          <div class="difficulty mb-5 d-none">
+            <h3>Boost method</h3>
+            <small>Choose the Boost method the raid you would like to order</small>
+            <div class="difficulty-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="self-play-levelup" name="boost-method-levelup">
+                <label for="self-play-levelup">Self Play</label>
+                <input type="radio" id="piloted-levelup" name="boost-method-levelup" checked>
+                <label for="piloted-levelup">Piloted</label>
+                <input type="radio" id="remote-control-levelup" name="boost-method-levelup">
+                <label for="remote-control-levelup">Remote Control + 30%</label>
+              </div>
+            </div>
+          </div>
+
         </div>
 
         <!-- ----------------------------- Dungeon ------------------------------ -->
         <div class="dungeon">
+
+                    <!-- bundel option for kays number -->
+                    <!-- <div class="bandel-view dungeon-container mb-5 d-none">
+                      <h3>Number of Loot Traders</h3>
+                      <small>Choose the number of loot traders you want to have</small>
+                      <div class="difficulty-buttons mt-5">
+                        <div class="buttons loot-button d-flex justify-content-start row">
+          
+                          <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                            <input type="radio" id="choice1" name="bundel-option" value="Personal Loot" checked>
+                            <label for="choice1">Personal Loot</label>
+                          </div>
+          
+                          <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                            <input type="radio" id="choice2" name="bundel-option" value="1 trader">
+                            <label for="choice2">1 trader | +5%</label>
+                          </div>
+        
+                        </div>
+                      </div>
+                    
+                    </div> -->
+
+                    <!-- bundel option 2 -->
+                    <!-- <div class="bandel-view dungeon-container mb-5 d-none">
+                      <h3>Number of Loot Traders</h3>
+                      <small>Choose the number of loot traders you want to have</small>
+                      <div class="difficulty-buttons mt-5">
+                        <div class="buttons loot-button d-flex justify-content-start row">
+          
+                          <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                            <input type="radio" id="choice1" name="bundel-option" value="Personal Loot" checked>
+                            <label for="choice1">Personal Loot</label>
+                          </div>
+          
+                          <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                            <input type="radio" id="choice2" name="bundel-option" value="1 trader">
+                            <label for="choice2">1 trader | +5%</label>
+                          </div>
+        
+                        </div>
+                      </div>
+                    
+                    </div> -->
+
           <!-- dungeon container -->
           <div class="dungeon-container" id="keystone">
             <div class="d-flex justify-content-between align-item-center">
               <div class="d-flex align-item-center">
                 <div class="keystone-rp me-4">
-                  <input type="number" id="keystone-input" min="1" max="70" step="1" value="1" class="number-input"/>
+                  <input type="number" id="keystone-number-input" min="0" max="70" step="1" value="0" class="number-input"/>
                 </div>
                 <div class="text-white text">
                   <h5>Keystone Level</h5>
@@ -542,9 +635,9 @@
               </div>
             </div>
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="1" max="70" value="1" step="1" id="keystone-range" /> 
+              <input type="range" min="0" max="20" value="0" step="1" id="keystone-range-input" /> 
               <div class="keystone-range step-indicator">
-                <span class="step">1</span>
+                <span class="step">0</span>
                 <span class="step">5</span>
                 <span class="step">10</span>
                 <span class="step">15</span>
@@ -558,7 +651,7 @@
             <div class="d-flex justify-content-between align-item-center">
               <div class="d-flex align-item-center">
                 <div class="keynumbers-rp desired-level-up-rp me-4">
-                  <input type="number" id="keynumbers-input" min="1" max="70" step="1" value="10" class="number-input"/>
+                  <input type="number" id="keynumbers-number-input" min="1" max="20" step="1" value="1" class="number-input"/>
                 </div>
                 <div class="text-white text">
                   <h5>Numbers of the keys</h5>
@@ -567,9 +660,9 @@
               </div>
             </div>
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="1" max="70" value="10" step="1" id="keynumbers-range" /> 
+              <input type="range" min="0" max="20" value="1" step="1" id="keynumbers-range-input" /> 
               <div class="keynumbers-range step-indicator">
-                <span class="step">1</span>
+                <span class="step">0</span>
                 <span class="step">5</span>
                 <span class="step">10</span>
                 <span class="step">15</span>
@@ -578,39 +671,102 @@
             </div>
           </div>
 
+          <div class="difficulty mb-5">
+            <h3>Boost method</h3>
+            <small>Choose the Boost method the raid you would like to order</small>
+            <div class="difficulty-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="self-play-dungeon" name="boost-method-dungeon">
+                <label for="self-play-dungeon">Self Play</label>
+                <input type="radio" id="piloted-dungeon" name="boost-method-dungeon" checked>
+                <label for="piloted-dungeon">Piloted</label>
+                <input type="radio" id="remote-control-dungeon" name="boost-method-dungeon">
+                <label for="remote-control-dungeon">Remote Control + 30%</label>
+              </div>
+            </div>
+          </div>
+
           <!-- difficulty -->
           <div class="loot-traders dungeon-container mb-5">
             <h3>Number of Loot Traders</h3>
-            <small>Choose the difficulty level of the raid you would like to order</small>
+            <small>Choose the number of loot traders you want to have</small>
             <div class="difficulty-buttons mt-5">
-              <div class="buttons d-flex justify-content-start">
+              <div class="buttons loot-button d-flex justify-content-start row">
 
-                <input type="radio" id="personal" name="traders" value="Personal Loot">
-                <label for="personal">Personal Loot</label>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                  <input type="radio" id="personal" name="traders" value="Personal Loot" checked>
+                  <label for="personal">Personal Loot</label>
+                </div>
 
-                <input type="radio" id="trader1" name="traders" value="trader1">
-                <label for="trader1">1 trader | +5%</label>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                  <input type="radio" id="trader1" name="traders" value="1 trader">
+                  <label for="trader1">1 Trader | +15%</label>
+                </div>
 
-                <input type="radio" id="trader2" name="traders" value="trader2" checked>
-                <label for="trader2">2 trader | +10%</label>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                  <input type="radio" id="trader2" name="traders" value="2 trader">
+                  <label for="trader2">2 Trader | +30%</label>
+                </div>
 
-                <input type="radio" id="trader3" name="traders" value="trader3">
-                <label for="trader3">3 trader | +20%</label>
+                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                  <input type="radio" id="trader3" name="traders" value="3 trader">
+                  <label for="trader3">3 Trader | +40%</label>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-6 col-6">
+                  <input type="radio" id="full-Priority" name="traders" value="full-Priority">
+                  <label for="full-Priority">Full Priority | +50%</label>
+                </div>
+
               </div>
             </div>
-            <div class="server-container mt-3">
+            <div class="server-container mt-3 d-none" id="armor-type">
               <p class="text-white" style="font-size: 16px;">Traders Armor Type</p>
               <div class="select-container">
-                <select class="arena-2vs2-servers-select">
-                  <option value="Armor Type">Armor Type</option>
-                  <option value="Europe">Europe</option>
-                  <option value="US">US</option>
+                <select id="armor-type-select" class="arena-2vs2-servers-select">
+                  <option value="null" selected hidden>Armor Type</option>
+                  <option value="Cloth">Cloth</option>
+                  <option value="Leather">Leather</option>
+                  <option value="Mail">Mail</option>
+                  <option value="Plate">Plate</option>
                 </select>
               </div>
             </div>
             
           </div>
 
+          <!-- server -->
+          <div class="server dungeon-container mb-5">
+            <h3>Server</h3>
+            <small>Select the server you play on</small>
+            <div class="server-buttons mt-5">
+              <div class="buttons d-flex justify-content-start">
+                <input type="radio" id="dungeon-EU" name="dungeon-server" value="EU" checked>
+                <label for="dungeon-EU">EU</label>
+                <input type="radio" id="dungeon-US" name="dungeon-server" value="US">
+                <label for="dungeon-US">US</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- dungeon maps -->
+
+          <div class="dungeon-maps-container dungeon-container">
+            <div class="header">
+                <h1>Mythic+ Dungeons</h1>
+                <p>Choose your preferred dungeons</p>
+            </div>
+            <div class="buttons m-3">
+
+              <input type="radio" id="random" name="map-preferred-selector" value="Random" checked>
+              <label for="random">Random</label>
+
+              <input type="radio" id="specific" name="map-preferred-selector" value="Specific">
+              <label for="specific">Specific (+5%)</label>
+            </div>
+            {% include 'widgets/dungeon_maps.html' %}
+        </div>
+        
         </div>
 
         <!-- ------------------------------ Checkout ------------------------------ -->
@@ -675,7 +831,7 @@
           </div>
 
           <!-- Extra Charges -->
-          <div class="extra-charges p-xl-4 px-4 py-5">
+          <div class="extra-charges p-xl-4 px-4">
             <!-- Solo Or Duo -->
             <div class="switch-solo-duo p-1 my-xl-0 mt-1 mb-2 d-none">
               <div class="solo ">
@@ -693,7 +849,7 @@
             <!-- Other Extra Charges -->
             <div class="extra py-xl-2 py-3 mb-5">
               <!-- Selfplay Games -->
-              <div class="selfplay py-xl-2 py-3 d-flex justify-content-between align-items-center">
+              <!-- <div class="selfplay py-xl-2 py-3 d-flex justify-content-between align-items-center">
                 <div class="info">
                   <p class="mb-0">Selfplay <span class="percent ms-1" style="background: #46D17980; color: #43C372">free</span></p>
                 </div>
@@ -704,10 +860,10 @@
                         <span class="slider round"></span>
                     </label>
                   </div>
-              </div>
+              </div> -->
               
               <!-- Piloted Games -->
-              <div class="piloted py-xl-2 py-3 d-flex justify-content-between align-items-center">
+              <!-- <div class="piloted py-xl-2 py-3 d-flex justify-content-between align-items-center">
                 <div class="info">
                   <p class="mb-0">Piloted <span class="percent ms-1" style="background: #46D17980; color: #43C372">free</span></p>
                 </div>
@@ -718,7 +874,7 @@
                         <span class="slider round"></span>
                     </label>
                   </div>
-              </div>
+              </div> -->
 
               <!-- Turbo Boosting -->
               <div class="turbo py-xl-2 py-3 d-flex justify-content-between align-items-center">
@@ -727,8 +883,8 @@
                 </div>
 
                   <div class="choose">
-                    <label class="switch" for="turbo-boosting">
-                      <input type="checkbox" id="turbo-boosting" name="extra-checkbox" value="turboBoost">
+                    <label class="switch" for="turbo_boost">
+                      <input type="checkbox" id="turbo_boost" name="extra-checkbox" value="20">
                         <span class="slider round"></span>
                     </label>
                   </div>
@@ -741,15 +897,15 @@
                 </div>
 
                   <div class="choose">
-                    <label class="switch" for="stream-games">
-                      <input type="checkbox" id="stream-games" name="extra-checkbox" value="streaming">
+                    <label class="switch" for="streaming">
+                      <input type="checkbox" id="streaming" name="extra-checkbox" value="15">
                         <span class="slider round"></span>
                     </label>
                   </div>
               </div>
 
               <!-- Select Booster -->
-              <div class="select-booster py-xl-2 py-3 d-flex justify-content-between align-items-center">
+              <!-- <div class="select-booster py-xl-2 py-3 d-flex justify-content-between align-items-center d-none">
                 <div class="info">
                   <p class="mb-0">Select Booster <span class="percent ms-1">10%</span></p>
                 </div>
@@ -757,6 +913,62 @@
                   <div class="choose">
                     <label class="switch" for="select-booster" onclick="togglePopupBooster()">
                       <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
+                        <span class="slider round"></span>
+                    </label>
+                  </div>
+              </div> -->
+
+              <!-- Tournament-->
+              <div class="tournament_player py-xl-2 py-3 d-flex justify-content-between align-items-center arena-2vs2 arena-3vs3">
+                <div class="info">
+                  <p class="mb-0">Tournament Player <span class="percent ms-1">100%</span></p>
+                </div>
+
+                  <div class="choose">
+                    <label class="switch" for="tournament_player">
+                      <input type="checkbox" id="tournament_player" name="extra-checkbox" value="100">
+                        <span class="slider round"></span>
+                    </label>
+                  </div>
+              </div>
+
+              <!-- Rank1  -->
+              <div class="rank1_player py-xl-2 py-3 d-flex justify-content-between align-items-center arena-2vs2 arena-3vs3">
+                <div class="info">
+                  <p class="mb-0">Rank 1 Player <span class="percent ms-1">40%</span></p>
+                </div>
+
+                  <div class="choose">
+                    <label class="switch" for="rank1_player">
+                      <input type="checkbox" id="rank1_player" name="extra-checkbox" value="40">
+                        <span class="slider round"></span>
+                    </label>
+                  </div>
+              </div>
+
+              <!-- Full priority -->
+              <div class="loot-priority py-xl-2 py-3 d-flex justify-content-between align-items-center raid">
+                <div class="info">
+                  <p class="mb-0">Loot Priority <span class="percent ms-1">50%</span></p>
+                </div>
+
+                  <div class="choose">
+                    <label class="switch" for="loot_priority">
+                      <input type="checkbox" id="loot_priority" name="extra-checkbox" value="50">
+                        <span class="slider round"></span>
+                    </label>
+                  </div>
+              </div>
+
+              <!-- Timed -->
+              <div class="timed py-xl-2 py-3 d-flex justify-content-between align-items-center dungeon">
+                <div class="info">
+                  <p class="mb-0">Timed <span class="percent ms-1">20%</span></p>
+                </div>
+
+                  <div class="choose">
+                    <label class="switch" for="timed">
+                      <input type="checkbox" id="timed" name="extra-checkbox" value="20">
                         <span class="slider round"></span>
                     </label>
                   </div>
@@ -853,27 +1065,24 @@
                   data-paypal-url="{% url 'wow-paypal-redirect' %}"
                   data-cryptomus-url="{% url 'wow-cryptomus-redirect' %}">
               </div>
-              <!-- Division Form -->
-              <form method="post" id="arena-form" data-type="arena2vs2" class="purchaseForm arena-2vs2 arena-3vs3">
+              <!-- arena2vs2 Form -->
+              <form method="post" id="arena-2vs2-form" class="purchaseForm arena-2vs2">
                 {% csrf_token %}
                 <input type="hidden" name="game_id" value="6">
                 <input type="hidden" name="game_type" value="A">
                 <input type="hidden" name="is_arena_2vs2" value=true>
                 <!-- Division -->
-                <input type="hidden" name="current_rank" value="1">
                 <input type="hidden" name="current_RP" value="1">
-                <input type="hidden" name="marks" value="0">
-                <input type="hidden" name="desired_rank" value="1">
                 <input type="hidden" name="desired_RP" value="1">
                 <!-- Extra Fields -->
-                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
-                <input type="hidden" name="select_booster" id="selectBooster" value=false>
-                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="streaming" id="streaming" value=false>
+                <input type="hidden" name="rank1_player" value="false">
+                <input type="hidden" name="tournament_player" value=false>
+                <input type="hidden" name="turbo_boost" value=false>
+                <input type="hidden" name="streaming" value=false>
+                <input type="hidden" name="boost_method" class="boost-method-arena2vs2" value=piloted>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" id="price" value="1">
-                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" value="0" readonly>
                 <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
@@ -884,6 +1093,36 @@
                   <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
                 </div>
               </form>
+
+              <!-- arena3vs3 Form -->
+              <form method="post" id="arena-3vs3-form" class="purchaseForm arena-3vs3">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="6">
+                <input type="hidden" name="game_type" value="A">
+                <input type="hidden" name="is_arena_2vs2" value=false>
+                <!-- Division -->
+                <input type="hidden" name="current_RP" value="1">
+                <input type="hidden" name="desired_RP" value="1">
+                <!-- Extra Fields -->
+                <input type="hidden" name="rank1_player" value="false">
+                <input type="hidden" name="tournament_player" value=false>
+                <input type="hidden" name="turbo_boost" value=false>
+                <input type="hidden" name="streaming"value=false>
+                <input type="hidden" name="boost_method" class="boost-method-arena3vs3" value=piloted>
+                <!-- Other -->
+                <input type="hidden" name="server" id="server" value=false>
+                <input type="hidden" name="price" id="price" value="1">
+                <input type="hidden" id="extendOrder" name="extend_order" value=0 readonly>
+                <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <div class="purchase d-flex justify-content-between align-items-center">
+                  <!-- Paypal -->
+                  <button id="arena-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+
+                  <!-- Cryptomus -->
+                  <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                </div>
+              </form>
+
               <!-- raid Form -->
               <form method="post" id="raid-simple-form" class="purchaseForm raid">
                 {% csrf_token %}
@@ -895,14 +1134,13 @@
                 <input type="hidden" name="bosses" value="0">
                 <input type="hidden" name="difficulty_chosen" value="0">
                 <!-- Extra Fields -->
-                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
-                <input type="hidden" name="select_booster" id="selectBooster" value=false>
+                <input type="hidden" name="boost_method" class="boost-method-raid" value=piloted>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="streaming" id="streaming" value=false>
+                <input type="hidden" name="streaming" id="stream-games" value=false>
+                <input type="hidden" name="loot_priority" value=false>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" id="price" value="0">
-                <input type="hidden" class="choose-booster" id="chooseBoosterInput" name="choose_booster" value="0" readonly>
                 <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
                 <div class="purchase d-flex justify-content-between align-items-center">
                   <!-- Paypal -->
@@ -921,12 +1159,11 @@
 
                 <!-- simple raid -->
                 <input type="hidden" name="bundle_id" value="0">
-                <input type="hidden" name="difficulty_chosen" value="0">
                 <!-- Extra Fields -->
-                <input type="hidden" name="duo_boosting" id="duoBoosting" value=false>
-                <input type="hidden" name="select_booster" id="selectBooster" value=false>
                 <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
-                <input type="hidden" name="streaming" id="streaming" value=false>
+                <input type="hidden" name="streaming" id="stream-games" value=false>
+                <input type="hidden" name="boost_method" class="boost-method-raid-bundle" value=piloted>
+                <input type="hidden" name="loot_priority" value=false>
                 <!-- Other -->
                 <input type="hidden" name="server" id="server" value=false>
                 <input type="hidden" name="price" id="price" value="0">
@@ -940,6 +1177,102 @@
                   <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
                 </div>
               </form>
+
+              <!-- dungeon Form -->
+              <form method="post" id="dungeon-simple-form" class="purchaseForm dungeon">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="6">
+                <input type="hidden" name="game_type" value="DU">
+
+                <!-- simple dungeon -->
+                <input type="hidden" name="keystone" value="0">
+                <input type="hidden" name="keys" value="0">
+                <input type="hidden" name="traders" value="Personal Loot">
+                <input type="hidden" name="traders_armor_type" value>
+
+                <!-- maps -->
+                <input type="hidden" name="map_preferred" value="Random">
+                <input type="hidden" name="algathar_academy" value="0">
+                <input type="hidden" name="azure_vault" value="0">
+                <input type="hidden" name="brackenhide_hollow" value="0">
+                <input type="hidden" name="halls_of_infusion" value="0">
+                <input type="hidden" name="neltharus" value="0">
+                <input type="hidden" name="nokhud_offensive" value="0">
+                <input type="hidden" name="ruby_life_pools" value="0">
+                <input type="hidden" name="uldaman_legacy_of_tyr" value="0">
+
+                <!-- Extra Fields -->
+                <input type="hidden" name="boost_method" class="boost-method-dungeon" value=piloted>
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="streaming" id="stream-games" value=false>
+                <input type="hidden" name="timed" value=false>
+
+                <!-- Other -->
+                <input type="hidden" name="server" id="server" value=false>
+                <input type="hidden" name="price" id="price" value="0">
+                <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <div class="purchase d-flex justify-content-between align-items-center">
+                  <!-- Paypal -->
+                  <button id="arena-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+
+                  <!-- Cryptomus -->
+                  <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                </div>
+              </form>
+
+              <!-- dungeon Form -->
+              <form method="post" id="dungeon-bundle-form" class="purchaseForm d-none">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="6">
+                <input type="hidden" name="game_type" value="DU">
+
+                <!-- bundle dungeon -->
+
+
+                <!-- Extra Fields -->
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="streaming" id="stream-games" value=false>
+                <input type="hidden" name="boost_method" class="boost-method-dungeon-bundle" value=piloted>
+                <!-- Other -->
+                <input type="hidden" name="server" id="server" value=false>
+                <input type="hidden" name="price" id="price" value="0">
+                <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <div class="purchase d-flex justify-content-between align-items-center">
+                  <!-- Paypal -->
+                  <button id="arena-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+
+                  <!-- Cryptomus -->
+                  <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                </div>
+              </form>
+
+              <!-- level up Form -->
+              <form method="post" id="level-up-form" class="purchaseForm level-up">
+                {% csrf_token %}
+                <input type="hidden" name="game_id" value="6">
+                <input type="hidden" name="game_type" value="F">
+
+                <!-- Level Up -->
+                <input type="hidden" name="current_level" value="1">
+                <input type="hidden" name="desired_level" value="25">
+
+                <!-- Extra Fields -->
+                <input type="hidden" name="turbo_boost" id="turboBoost" value=false>
+                <input type="hidden" name="streaming" id="stream-games" value=false>
+                <input type="hidden" name="boost_method" class="boost-method-levelup" value=piloted>
+                <!-- Other -->
+                <input type="hidden" name="server" id="server" value=false>
+                <input type="hidden" name="price" id="price" value="0">
+                <input type="hidden" id="promo_send" name="promo_code" value='null' readonly>
+                <div class="purchase d-flex justify-content-between align-items-center">
+                  <!-- Paypal -->
+                  <button id="arena-paypal-btn" type="button" class="paypal-btn">Pay with <img src="{% static 'games/images/PayPal.svg' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+
+                  <!-- Cryptomus -->
+                  <button id="arena-cryptomus-btn" type="button" class="cryptomus-btn">Pay with  <img src="{% static 'games/images/Crypto.png' %}" class="ms-2"  alt="Cryptomus" width="86.62" height="28.8"/></button>
+                </div>
+              </form>
+
 
             </div>
           </div>
@@ -1036,6 +1369,8 @@
 <script src="{% static 'wow/js/main.js' %}"></script>
 <script src="{% static 'components/js/customer-feedbacks.js'%}"></script>
 <script src="{% static 'wow/js/raid.js'%}"></script>
+<script src="{% static 'wow/js/dungeon.js'%}"></script>
+<script src="{% static 'wow/js/level-up.js'%}"></script>
     <script>
       let swiperbnadels = new Swiper('.bandels-swiper', {
         // loop: true,

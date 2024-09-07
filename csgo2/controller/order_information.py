@@ -350,7 +350,7 @@ def get_faceit_order_result_by_rank(data, extend_order_id = 0):
     else:
         booster_id = 0
 
-    invoice = f'CS-13-F-{current_level}-{0}-{0}-{current_level}-{0}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{0}-{promo_code_id}-0-0-0-0-{timezone.now()}'
+    invoice = f'CS-13-F-{current_level}-{0}-{0}-{desired_level}-{0}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{0}-{promo_code_id}-0-0-0-0-{timezone.now()}'
 
     invoice_with_timestamp = str(invoice)
     

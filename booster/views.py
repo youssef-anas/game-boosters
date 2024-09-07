@@ -14,7 +14,7 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Sum
-from accounts.models import BaseOrder, Transaction, BoosterPercent, BaseUser
+from accounts.models import BaseOrder, Transaction, BoosterPercent, BaseUser, Wallet
 from chat.models import Room, Message
 from django.http import HttpResponseBadRequest
 from rest_framework.pagination import PageNumberPagination
@@ -417,6 +417,7 @@ def upload_finish_image(request):
         order.finish_image = url
         order.is_done = True
         order.save()
+        # update booster wallet
         return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 

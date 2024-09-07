@@ -224,3 +224,94 @@ async function fetch_promo() {
   });
   
 }
+
+const MadBoostInputAndRange = (input_div, range_div, action) => {
+  if (!input_div){
+      console.error(`error in the Number input Not found `);
+  }
+
+  if (!range_div){
+      console.error(`error in the Range input Not found `);
+  }
+
+  const max_value = parseInt(input_div.getAttribute('max'), 10);
+  const min_value = parseInt(input_div.getAttribute('min'), 10);
+
+  const changer = (strValue) => {
+      let value = parseInt(strValue, 10);
+      if (isNaN(value)) {
+          value = min_value;
+      }
+      if  ((value) > max_value){
+          value = max_value;
+      }
+      else if ((value) < min_value) {
+          value = min_value;
+      }
+      input_div.value = value;
+      range_div.value = value;
+      action();
+  };
+
+  input_div.addEventListener('input', ()=> {
+      changer(input_div.value);
+  });
+
+  range_div.addEventListener('input', ()=> {
+      changer(range_div.value);
+  });
+  action();
+}
+
+
+function getFirstTwoWords(name) {
+  const words = name.split('-');
+  return words.length >= 3 ? `${words[0]}-${words[1]}` : words[0];
+}
+
+// wow game set post method
+const setBoostMethod = (method, action) => {
+
+  const method_name = `boost-method-${method}`
+  const boostMetods = document.getElementsByName(method_name);
+  boostMetods.forEach(function (radio) {
+    radio.addEventListener('change', function () {
+      const boost_val = getFirstTwoWords(radio.id);
+      const inputs = document.querySelectorAll(`input[class^="${method_name}"]`);
+      // Set the value for each matching input element
+      inputs.forEach(input => {
+        input.value = boost_val;
+      });
+      action();
+    })
+  }) 
+}
+
+// wow
+// Function to find and check the first checkbox in a container
+function checkFirstCheckbox(container) {
+  // Find all checkboxes within the container
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+  
+  // Iterate through checkboxes to find the first one and check it
+  for (let i = 0; i < checkboxes.length; i++) {
+      if (i === 0) {
+          checkboxes[i].checked = true;
+      }
+  }
+}
+
+// wow
+const getImgPathFromUrl=(backgroundImage)=> {
+  // extract path from backgroundImage
+  const path = backgroundImage.match(/url\((.*)\)/)[1];
+  // replace &quot; with "
+  const newPath = path.replace(/&quot;/g, '"');
+  // replace url(" with ""
+  const newPath2 = newPath.replace(/url\((.*)\)/, '$1');
+  // replace " with ""
+  const newPath3 = newPath2.replace(/"/g, '');
+  // replace ' with ""
+  const newPath4 = newPath3.replace(/'/g, '');
+  return newPath4
+}

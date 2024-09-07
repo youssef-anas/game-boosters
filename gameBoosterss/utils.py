@@ -7,7 +7,7 @@ from tft.models import TFTDivisionOrder, TFTPlacementOrder
 from hearthstone.models import HearthstoneDivisionOrder, HearthStoneBattleOrder
 from rocketLeague.models import RocketLeagueDivisionOrder, RocketLeaguePlacementOrder, RocketLeagueSeasonalOrder, RocketLeagueTournamentOrder
 from mobileLegends.models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
-from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder, WorldOfWarcraftRaidSimpleOrder
+from WorldOfWarcraft.models import WorldOfWarcraftArenaBoostOrder, WorldOfWarcraftRaidSimpleOrder, WorldOfWarcraftRaidBundleOrder, WorldOfWarcraftDungeonSimpleOrder, WowLevelUpOrder
 from overwatch2.models import Overwatch2DivisionOrder, Overwatch2PlacementOrder
 from honorOfKings.models import HonorOfKingsDivisionOrder
 from dota2.models import Dota2RankBoostOrder, Dota2PlacementOrder
@@ -29,10 +29,37 @@ from django.conf import settings
 
 # paypalrestsdk
 import paypalrestsdk
+from cryptomus import Client
 
 
-def mainPayment(order_info, request, token):
-    return paypalrestsdk.Payment({
+def cryptomus_payment(order_info, request, token):
+    data = {
+        'amount': str(order_info['price']),
+        'currency': 'USDT',
+        'to_currency': 'USDT',
+        'network': 'TRON',
+        'order_id': str(token),
+        'url_return': request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
+        'url_success': request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+        # 'url_callback': 'http://127.0.0.1:8000/customer/payment-notify/',
+    }
+    
+    try:
+        payment = Client.payment(settings.PAYMENT_KEY, settings.MERCHANT_UUID)
+        result = payment.create(data)
+        
+        if 'url' in result:
+            return result['url']
+        else:
+            raise KeyError("The 'url' key is missing in the response.")
+    
+    except Exception as e:
+        print(f"Error in cryptomus_payment: {str(e)}")
+        raise
+
+
+def PaypalPayment(order_info, request, token):
+    data =  paypalrestsdk.Payment({
         "intent": "sale",
         "payer": {
             "payment_method": "paypal"
@@ -58,6 +85,11 @@ def mainPayment(order_info, request, token):
             "description": "Payment for Boosting order."
         }]
     })
+    if data.create():
+        for link in data.links:
+            if link.rel == "approval_url":
+                approval_url = str(link.href)
+                return approval_url
 
 def tipPayment(tip, request, token):
     return paypalrestsdk.Payment({
@@ -145,6 +177,9 @@ def check_wow_type(type) -> Model:
     WOW_MODELS = {
         'A': WorldOfWarcraftArenaBoostOrder,
         'R': WorldOfWarcraftRaidSimpleOrder,
+        'RB': WorldOfWarcraftRaidBundleOrder,
+        'DS': WorldOfWarcraftDungeonSimpleOrder,
+        'F' : WowLevelUpOrder, 
     }
     Game = WOW_MODELS.get(type, None)
     if not Game:
@@ -269,7 +304,11 @@ def get_boosters(id: int) -> List[Booster]:
 
 #--------------------------------------------------------------------------
 def live_orders():
-    orders = BaseOrder.objects.filter(booster=None).order_by('-id')
+    orders = (BaseOrder.objects
+        .filter(booster__isnull=True)  # Using __isnull=True for better readability
+        .exclude(game_id=6)  # Exclude orders with game_id=6
+        .order_by('-id')  # Order by 'id' in descending order
+    )
     all_orders_dict = []
     for order in orders:
         if order.captcha:

@@ -3,6 +3,7 @@ from accounts.models import BaseOrder
 import requests
 from django.core.exceptions import ValidationError
 import json
+import ast
 
 class WorldOfWarcraftRank(models.Model):
   rank_name = models.CharField(max_length=25)
@@ -53,14 +54,16 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_division_order')
 
   current_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_current_rank')
-
   reached_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_reached_rank')
-
   desired_rank = models.ForeignKey(WorldOfWarcraftRank, on_delete=models.CASCADE, default=None, related_name='wow_desired_rank')
 
   current_division = models.PositiveSmallIntegerField(default=0)
   reached_division = models.PositiveSmallIntegerField(default=0)
   desired_division = models.PositiveSmallIntegerField(default=25)
+
+  rank1_player = models.BooleanField(default=False)
+  tournament_player = models.BooleanField(default=False)
+  boost_method = models.CharField(max_length=50)
 
   current_marks = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
   reached_marks = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
@@ -247,6 +250,9 @@ class WorldOfWarcraftRaidSimpleOrder(models.Model):
   difficulty = models.FloatField()
   bosses = models.ManyToManyField(WorldOfWarcraftBoss, related_name='wow_raid_simple_order_bosses')
 
+  loot_priority = models.BooleanField()
+  boost_method = models.CharField(max_length=50)
+
   created_at = models.DateTimeField(auto_now_add =True)
   updated_at = models.DateTimeField(auto_now =True)
 
@@ -309,3 +315,184 @@ class WorldOfWarcraftRaidSimpleOrder(models.Model):
   
   def get_order_price(self):
     return {"booster_price": 0, 'percent_for_view': 0, 'main_price': 0, 'percent': 0.24}
+  
+
+class WorldOfWarcraftRaidBundleOrder(models.Model):
+  order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_raid_bundle_order')
+  bundle = models.ForeignKey(WorldOfWarcraftBundle, on_delete=models.CASCADE, related_name='wow_raid_bundle_order_bundles')
+  loot_priority = models.BooleanField()
+  boost_method = models.CharField(max_length=50)
+
+  created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
+
+  def send_discord_notification(self):
+    if self.order.status == 'Extend':
+      return print('Extend Order')
+    discord_webhook_url = 'https://discordapp.com/api/webhooks/1209759469806821396/Sw69hAULnlb4XIEIclX_Ag-xCdinblnLcpr01UXtJDM2STpTw2hv8UqyD29qY2H01uXX'
+    current_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
+
+    embed = {
+      "title": "World Of Warcraft",
+      "description": (
+        f"**Order ID:** {self.order.name}\n"
+        "Test mode "
+      ),
+      "color": 0xFFA500,
+      "footer": {"text": f"{current_time}"}, 
+    }
+    data = {
+      "content": "New order has arrived \n",
+      "embeds": [embed],
+    }
+
+    headers = {
+      "Content-Type": "application/json"
+    }
+
+    response = requests.post(discord_webhook_url, json=data, headers=headers)
+
+    if response.status_code != 204:
+      print(f"Failed to send Discord notification. Status code: {response.status_code}")
+
+
+  def save_with_processing(self, *args, **kwargs):
+    # self.validate_division()
+    self.order.game_id = 6
+    self.order.game_type = 'RB'
+    self.order.details = self.get_details()
+    if not self.order.name:
+      self.order.name = f'WOW{self.order.id}'
+    self.order.update_actual_price()
+    self.order.save()
+    super().save(*args, **kwargs)
+    self.send_discord_notification()
+
+  def get_details(self):
+    return f"{self.bundle.name} "
+    
+  def __str__(self):
+    return self.get_details()
+
+  def get_rank_value(self, *args, **kwargs):
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+    return f"{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},"
+  
+  def get_order_price(self):
+    return {"booster_price": 0, 'percent_for_view': 0, 'main_price': 0, 'percent': 0.24}
+  
+
+class KeystonePrice(models.Model):
+  price = models.FloatField()
+
+  def __str__(self):
+    return f'{self.id} | {self.price}'
+
+class WorldOfWarcraftDungeonSimpleOrder(models.Model):
+  order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_dungeon_simple_order')
+  keystone = models.IntegerField()
+  keys = models.IntegerField()
+
+  traders = models.CharField(max_length=300)
+  traders_armor_type = models.CharField(max_length=300)
+  map_preferred = models.CharField(max_length=300)
+
+  timed = models.BooleanField()
+  boost_method = models.CharField(max_length=300)
+
+  # algathar_academy = models.IntegerField()
+  # azure_vault = models.IntegerField()
+  # brackenhide_hollow = models.IntegerField()
+  # halls_of_infusion = models.IntegerField()
+  # neltharus = models.IntegerField()
+  # nokhud_offensive = models.IntegerField()
+  # ruby_life_pools = models.IntegerField()
+  # uldaman_legacy_of_tyr = models.IntegerField()
+
+  maps = models.CharField(max_length=1000)
+
+  created_at = models.DateTimeField(auto_now_add =True)
+  updated_at = models.DateTimeField(auto_now =True)
+
+  def send_discord_notification(self):
+    pass
+
+  def save_with_processing(self, *args, **kwargs):
+    self.order.game_id = 6
+    self.order.game_type = 'DU'
+    self.order.details = self.get_details()
+    if not self.order.name:
+      self.order.name = f'WOW{self.order.id}'
+    self.order.update_actual_price()
+    self.order.save()
+    super().save(*args, **kwargs)
+    self.send_discord_notification()    
+
+  def get_details(self):
+    return f"{self.keystone} keystone {self.keys} Keys"
+  
+  def __str__(self):
+    return self.get_details()
+
+
+  def get_rank_value(self, *args, **kwargs):
+    promo_code = f'{None},{None}'
+
+    if self.order.promo_code != None:
+      promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
+
+    return f"{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{0},{self.order.customer_server},{promo_code},{0},"
+  
+  def get_order_price(self):
+    return {"booster_price": 0, 'percent_for_view': 0, 'main_price': 0, 'percent': 0.24}
+  
+  def get_maps_as_key_value(self):
+    maps_dict = ast.literal_eval(self.maps)
+    return maps_dict
+
+
+
+
+class WowLevelUpPrice(models.Model):
+  price = models.FloatField(default=10)
+
+  def __str__(self) -> str:
+    return f'Prise for each level: {self.price}'
+
+
+class WowLevelUpOrder(models.Model):
+    order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='wow_level_up_order')
+
+    current_level = models.IntegerField(null = False, blank = True, default = 1)
+    reached_level = models.IntegerField(null = True, blank = True, default = 1)
+    desired_level = models.IntegerField(null = False, blank = True, default = 1)
+
+    created_at = models.DateTimeField(auto_now_add=True)    
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+    def save_with_processing(self, *args, **kwargs):
+        self.order.game_id = 6
+        self.order.game_type = 'F'
+        self.order.details = self.get_details()
+        # 
+        if not self.order.name:
+            self.order.name = f'WOW{self.order.pk}'
+        self.order.update_actual_price()
+        self.order.save()
+        super().save(*args, **kwargs)
+        # self.send_discord_notification() 
+
+    def get_details(self):
+        return f"From {str(self.current_level)} Level To {str(self.desired_level)} Level"
+
+    def __str__(self):
+        return self.get_details()
+    
+    def get_order_price(self):
+        return {"booster_price": 0, 'percent_for_view': 0, 'main_price': 0, 'percent': 0.24}
+    

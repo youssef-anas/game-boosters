@@ -379,3 +379,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI = 'https://www.madboost.gg/social/complet
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'email',
 ]
+
+
+PAYMENT_KEY = 'AgSkbGvlynpSI8O999V3Yoz4G5hz7UeGaL7tonwqHYjdfhnExRaNGahFhp05NSbEmCHjnNG4VeX0ESF9Vf6Ut4fGDpABI1gQIYrgKuLcahhgL8jPyL8t4kqDz1j9XU8w'
+MERCHANT_UUID = 'ccb11a35-db3c-4b4c-b5d7-8de68a266c28'

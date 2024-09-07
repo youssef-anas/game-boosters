@@ -15,7 +15,7 @@
 
 .exclusive {
     height: 310px;
-    border-radius: calc(var(--main-radius) * 2);;
+    border-radius: calc(var(--main-radius) * 2);
     background-image: url('./../images/raid.png');
     background-size: cover;
     background-position: 400px;
@@ -127,6 +127,19 @@
   overflow: hidden;
 }
 
+@media (max-width: 1200px) {
+  .image-border {
+    width: 180px;
+    height: 116px;
+  }
+}
+@media (max-width: 992px) {
+  .image-border {
+    width: 220px;
+    height: 150px;
+  }
+}
+
 .image-border::before {
   content: '';
   position: absolute;
@@ -168,6 +181,17 @@
   margin: 0;
   font-size: 12px; /* Adjust the font size as needed */
 }
+@media (max-width: 1200px) {
+  .centered-text h3 {
+    font-size: 10px;
+  }
+}
+@media (max-width: 992px) {
+  .centered-text h3 {
+    font-size: 10px;
+  }
+}
+
 
 small{
   font-size: 10px;

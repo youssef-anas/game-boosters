@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data, get_hearthstone_battle_prices
-from gameBoosterss.utils import mainPayment
+from gameBoosterss.utils import PaypalPayment, cryptomus_payment
 
 
 
@@ -106,13 +106,12 @@ def pay_with_paypal(request):
       # if request.user.is_superuser:
       #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
       
-      payment = mainPayment(order_info, request, token)
-      
-      if payment.create():
-          for link in payment.links:
-              if link.rel == "approval_url":
-                  approval_url = str(link.href)
-                  return redirect(approval_url)
+      if request.POST.get('cryptomus', None) != None :
+        payment = cryptomus_payment(order_info, request, token)
+      else:
+        payment = PaypalPayment(order_info, request, token)
+      if payment:
+          return JsonResponse({'url': payment})
       else:
           messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
           return redirect(reverse_lazy('hearthstone'))

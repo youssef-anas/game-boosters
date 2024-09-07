@@ -1,65 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const bosses_btn = document.getElementById('view-bosses');
-    const bosses = document.getElementById('popup-bosses-form');
-    const close_bosses = document.getElementById('close-booses');
-    const piloted = document.getElementById('piloted-checkbox');
-    const selfplay = document.getElementById('selfplay-checkbox');
     let bandelPrice = 0;
     let selectedBundel_id = 0;
 
-    const closeBoosesForm = () => {
-        bosses.style.display = 'none';
+    const get_checked_mode = () => {
+        const radio = document.querySelector('input[type="radio"][name="radio-group-type"]:checked');
+        return radio.id
     }
-    const openBoosesForm = () => {
-        bosses.style.display = 'block';
-    }
-    const toggleBoosesForm = () => {
-        if (bosses.style.display === 'none') {
-            openBoosesForm();
-        } else {
-            closeBoosesForm();
-        }
-    }
-
-    bosses_btn.addEventListener('click', function () {
-        toggleBoosesForm();
-    })
-    close_bosses.addEventListener('click', function () {
-        closeBoosesForm();
-    })
-
-    const selfplayandpilotedSwitch = (value) => {
-        if (value === 'selfplay') {
-            if (selfplay.checked) {
-                piloted.checked = false;
-                selfplay.checked = true;
-            }else{
-                piloted.checked = true;
-                selfplay.checked = false;
-            }
-        }
-        else{
-            if (piloted.checked) {
-                selfplay.checked = false;
-                piloted.checked = true;
-            }else{
-                selfplay.checked = true;
-                piloted.checked = false;
-            }
-        }
-    }
-
-    selfplay.addEventListener('change', function () {
-        selfplayandpilotedSwitch(this.value);
-    })
-    piloted.addEventListener('change', function () {
-        selfplayandpilotedSwitch(this.value);
-    })
-
-    // Initialize the checkboxes to ensure one is checked and the other is unchecked
-    selfplayandpilotedSwitch('piloted');
-
-
     const scrollToChoiseDiv = () => {
         const choiseDiv = document.getElementById('choise-div');
         const offset = 30; // Offset in pixels
@@ -72,6 +18,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
+    const total_percentage_value_raid = () => {
+        const extraCheckbox = document.getElementsByName("extra-checkbox");
+        let total_Percentage = 0;
+        extraCheckbox.forEach((checkbox) => {
+          if (checkbox.checked) {
+            if (!["rank1_player", "timed", "tournament_player"].includes(checkbox.id)) {
+              total_Percentage += parseInt(checkbox.value);
+            }
+          }
+        });
+        return total_Percentage / 100;
+      };
+
     // ------------------------
 
     const applyBandelsBtns = document.querySelectorAll('.apply-bandel')
@@ -80,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const bandelViewDiv = document.getElementById('bandel-view-div')
     const mainRemoveBandelBtn = document.getElementById('main-remove-bandel-btn')
     const awakenedRaidDiv = document.getElementById('awakened-raids-div')
+    const awakened_raid_difficulty = document.getElementById('awakened-raid-difficulty')
     const bossesSelectDiv = document.getElementById('bosses-select-div')
     const raidPrice = document.getElementById('raid-price')
     const difficultyRadio = document.querySelectorAll('input[type="radio"][name="difficulty"]');
@@ -89,25 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // forms
     const raidForm = document.getElementById('raid-simple-form');
     const raidBundleForm = document.getElementById('raid-bundle-form');
-    
-    // Function to find and check the first checkbox in a container
-    function checkFirstCheckbox(container) {
-        // Find all checkboxes within the container
-        const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-        
-        // Iterate through checkboxes to find the first one and check it
-        for (let i = 0; i < checkboxes.length; i++) {
-            if (i === 0) {
-                checkboxes[i].checked = true;
-            }
-        }
-    }
 
-    // Iterate through each bossesList container
     bossesList.forEach(function(container) {
         checkFirstCheckbox(container);
-
-        // Add event listener to each checkbox
         const checkboxes = container.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(function(checkbox) {
             checkbox.addEventListener('change', function() {
@@ -127,16 +71,17 @@ document.addEventListener("DOMContentLoaded", function () {
         return selectedMap
     }
 
-
     const toggleViewBosses = () => {
         const map = getSelectedMap();
-        bossesList.forEach((bosses) => {
-            if (bosses.id == map) {
-                bosses.classList.remove('d-none')
-            }else{
-                bosses.classList.add('d-none')
-            }
-        })
+        if (get_checked_mode() === 'raid') {
+            bossesList.forEach((bosses) => {
+                if (bosses.id == map) {
+                    bosses.classList.remove('d-none')
+                }else{
+                    bosses.classList.add('d-none')
+                }
+            })
+        }
     }
     toggleViewBosses();
 
@@ -149,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const removeBandelBtnAction = () => {
+        awakened_raid_difficulty.classList.remove('d-none')
         removeBandelDiv.classList.add('d-none')
         bandelViewDiv.classList.add('d-none')
         awakenedRaidDiv.classList.remove('d-none')
@@ -168,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const applyBandelBtnAction = () => {
+        awakened_raid_difficulty.classList.add('d-none')
         removeBandelDiv.classList.remove('d-none')
         bandelViewDiv.classList.remove('d-none')
         awakenedRaidDiv.classList.add('d-none')
@@ -227,21 +174,6 @@ document.addEventListener("DOMContentLoaded", function () {
             getRaidPrice();
         })
     })
-
-
-    const getImgPathFromUrl=(backgroundImage)=> {
-        // extract path from backgroundImage
-        const path = backgroundImage.match(/url\((.*)\)/)[1];
-        // replace &quot; with "
-        const newPath = path.replace(/&quot;/g, '"');
-        // replace url(" with ""
-        const newPath2 = newPath.replace(/url\((.*)\)/, '$1');
-        // replace " with ""
-        const newPath3 = newPath2.replace(/"/g, '');
-        // replace ' with ""
-        const newPath4 = newPath3.replace(/'/g, '');
-        return newPath4
-    }
     
     const updateBandelView = (bundleName, features, backgroundImage) => {
         const bandelViewDiv = document.getElementById('bandel-view-div');
@@ -266,7 +198,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const getRaidPrice = () => {
+        let boost_metod_value = 0;
         let raidMainPrice = 0;
+        const boost_method = document.getElementsByName(`boost-method-raid`);
+        if (boost_method[2].checked) {
+          boost_metod_value = 0.3;
+        } 
         if (bandelPrice == 0) {
             const map = getSelectedMap();
             const checkboxes = document.querySelectorAll(`input[type="checkbox"][name="${map}-bossescheckboxes"]`);
@@ -280,7 +217,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             })
             const difficultyValue = getSelectedDifficulty();
-            const new_total_Percentage = total_Percentage + difficultyValue
+            const new_total_Percentage = total_percentage_value_raid() + difficultyValue + boost_metod_value;
+
+            console.log(new_total_Percentage)
+            console.log(raidMainPrice)
+            
 
             // Apply extra charges to the result
             raidMainPrice += raidMainPrice * new_total_Percentage;
@@ -300,8 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }else{
             let price = bandelPrice;
-            const difficultyValue = getSelectedDifficulty();
-            const new_total_Percentage = total_Percentage + difficultyValue
+            const new_total_Percentage = total_percentage_value_raid() + boost_metod_value;
 
             // Apply extra charges to the result
             price += price * new_total_Percentage;
@@ -316,12 +256,11 @@ document.addEventListener("DOMContentLoaded", function () {
             // raid bundle form
             $(raidBundleForm).find('input[name="price"]').val(price);
             $(raidBundleForm).find('input[name="bundle_id"]').val(selectedBundel_id);
-            $(raidBundleForm).find('input[name="difficulty_chosen"]').val(difficultyValue);
         }
 
     }
 
-
+    setBoostMethod('raid', getRaidPrice);
 
 
     // function get selected difficulty value
@@ -336,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const raidServerRadio = document.getElementsByName('raid-server');
-    function getSelectedServer() {
+    const getSelectedRaidServer = () => {
         let selectedValue;
         // Loop through the radio buttons to find the checked one
         for (const radio of raidServerRadio) {
@@ -349,11 +288,11 @@ document.addEventListener("DOMContentLoaded", function () {
         $(raidBundleForm).find('input[name="server"]').val(selectedValue);
         return selectedValue;
     }
-    getSelectedServer()
+    getSelectedRaidServer()
 
     raidServerRadio.forEach((radio) => {
         radio.addEventListener('change', function () {
-            getSelectedServer();
+            getSelectedRaidServer();
         })
     })
 
@@ -365,34 +304,34 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
 
+    // Extra Buttons
+    extraOptions.forEach(function (checkbox, index) {
+        checkbox.addEventListener("change", function () {
+            getRaidPrice();
+        });
+    });
 
+    promo_form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!extend_order) {
+            discount_amount = await fetch_promo();
+            getRaidPrice();
+        }
+    });
 
-// Extra Buttons
-extraOptions.forEach(function (checkbox, index) {
-    checkbox.addEventListener('change', function () {
-      if (this.checked) {
-        total_Percentage += percentege[this.value];
-        $(`input#${this.value}`).val(true)
-      } else {
-        total_Percentage -= percentege[this.value];
-        $(`input#${this.value}`).val(false)
-      }
-      get2vs2ArenaPrice();
-      get3vs3ArenaPrice();
-      getRaidPrice();
+    const radioModesBtns= document.querySelectorAll('input[type="radio"][name="radio-group-type"]');
+
+    radioModesBtns.forEach((radio) => {
+        radio.addEventListener('change', function () {
+            if (get_checked_mode() === 'raid') {
+                raidForm.classList.remove('d-none') 
+            }else{
+                removeBandelBtnAction();
+                raidForm.classList.add('d-none')
+                bossesSelectDiv.classList.add('d-none')
+            }
+        })
     })
-  });
-  
-  promo_form.addEventListener('submit', async function(event) {
-    event.preventDefault();  
-    if(!extend_order) {
-      discount_amount = await fetch_promo(); 
-  
-      get2vs2ArenaPrice(); 
-      get3vs3ArenaPrice();
-      getRaidPrice();
-    }
-  });
-
-  getRaidPrice();
-})
+    getRaidPrice();
+    
+});

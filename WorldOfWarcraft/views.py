@@ -5,12 +5,13 @@ from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.conf import settings
 from WorldOfWarcraft.models import *
-from WorldOfWarcraft.controller.serializers import ArenaSerializer, RaidSimpleSerializer, RaidBundleSerializer
-from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank, get_raid_simple_price_by_bosses
+from WorldOfWarcraft.controller.serializers import ArenaSerializer, RaidSimpleSerializer, RaidBundleSerializer, DungeonSimpleSerializer, RaidLevelSerializer
+from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank, get_raid_simple_price_by_bosses, get_raid_bundle_order_info, get_dungeon_order_info, get_level_up_price_form_serilaizer
 from booster.models import OrderRating
 from django.db.models import Sum, Case, When, IntegerField
 from accounts.models import TokenForPay, BaseUser
-from gameBoosterss.utils import mainPayment
+from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from .utils import get_level_up_price, get_keyston_price
 
 def get_wow_prices_data_view(request):
     prices = WorldOfWarcraftRpsPrice.objects.all().first()
@@ -19,6 +20,8 @@ def get_wow_prices_data_view(request):
 
 
 def wowGetBoosterByRank(request):
+  level_up_price = get_level_up_price()
+  dungeon_prices = get_keyston_price()
   extend_order = request.GET.get('extend')
   try:
     order = WorldOfWarcraftArenaBoostOrder.objects.get(order_id=extend_order)
@@ -57,6 +60,8 @@ def wowGetBoosterByRank(request):
     "boosters": boosters,
     "bosses": bosses,
     "bundles": bundles,
+    'level_up_price': level_up_price,
+    'dungeon_prices': dungeon_prices,
   }
   return render(request,'wow/GetBoosterByRank.html', context)
 
@@ -77,38 +82,42 @@ def pay_with_paypal(request):
         serializer = ArenaSerializer(data=request.POST)
     elif request.POST.get('game_type') == 'RB':
         serializer = RaidBundleSerializer(data=request.POST)    
+    elif request.POST.get('game_type') == 'DU':
+        serializer = DungeonSimpleSerializer(data=request.POST)
+    elif request.POST.get('game_type') == 'F':
+        serializer = RaidLevelSerializer(data=request.POST)
 
     if not serializer.is_valid():
         for field, errors in serializer.errors.items():
             for error in errors:
+                print(f"{field}: {error}")
                 messages.error(request, f"{field}: {error}")
         return redirect(reverse_lazy('wow'))
     print("serializer valid", serializer.validated_data)
-    # return HttpResponse({
-    #     'success': True,
-    #     "data": serializer.validated_data
-    # })
+    # return HttpResponse("serializer valid")
     if request.POST.get('game_type') == 'A':
       extend_order_id = serializer.validated_data.get('extend_order')
       order_info = get_arena_order_result_by_rank(serializer.validated_data, extend_order_id)
     elif request.POST.get('game_type') == 'R':
       order_info = get_raid_simple_price_by_bosses(serializer.validated_data)  
     elif request.POST.get('game_type') == 'RB':
-      # order_info = get_raid_simple_price_by_bosses(serializer.validated_data)  
-      raise NotImplementedError
+      order_info = get_raid_bundle_order_info(serializer.validated_data)  
+    elif request.POST.get('game_type') == 'DU':
+      order_info = get_dungeon_order_info(serializer.validated_data)
+    elif request.POST.get('game_type') == 'F':
+      order_info = get_level_up_price_form_serilaizer(serializer.validated_data)
 
     if not order_info:
         messages.error(request, "Order information could not be retrieved.")
         return redirect(reverse_lazy('wow'))
     
     token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-    payment = mainPayment(order_info, request, token)
-
-    if payment.create():
-        for link in payment.links:
-            if link.rel == "approval_url":
-                approval_url = str(link.href)
-                return redirect(approval_url)
+    if request.POST.get('cryptomus', None) != None :
+      payment = cryptomus_payment(order_info, request, token)
+    else:
+      payment = PaypalPayment(order_info, request, token)
+    if payment:
+        return JsonResponse({'url': payment})
     else:
         messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
         return redirect(reverse_lazy('wow'))

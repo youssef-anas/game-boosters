@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_mobile_legends_divisions_data, get_mobile_legends_marks_data, get_mobile_legends_placements_data
-from gameBoosterss.utils import mainPayment
+from gameBoosterss.utils import PaypalPayment, cryptomus_payment
 
 
 
@@ -97,12 +97,12 @@ def view_that_asks_for_money(request):
       request.session['invoice'] = order_info['invoice']
       token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
 
-      payment = mainPayment(order_info, request, token)
-      if payment.create():
-          for link in payment.links:
-              if link.rel == "approval_url":
-                  approval_url = str(link.href)
-                  return redirect(approval_url)
+      if request.POST.get('cryptomus', None) != None :
+        payment = cryptomus_payment(order_info, request, token)
+      else:
+        payment = PaypalPayment(order_info, request, token)
+      if payment:
+          return JsonResponse({'url': payment})
       else:
           messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
           return redirect(reverse_lazy('mobileLegends'))

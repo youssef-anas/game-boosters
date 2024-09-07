@@ -92,10 +92,10 @@ class BaseUser(AbstractUser):
                 return self.booster.profile_image.url
         return None
         
-# @receiver(post_save, sender=BaseUser)
-# def create_wallet(sender, instance, created, **kwargs):
-#     if created and instance.is_booster:
-#         Wallet.objects.create(user=instance)
+@receiver(post_save, sender=BaseUser)
+def create_wallet(sender, instance, created, **kwargs):
+    if created :
+        Wallet.objects.create(user=instance)
 
 
 @receiver(social_account_added)
@@ -210,7 +210,7 @@ class BaseOrder(models.Model):
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
     money_owed = models.FloatField(default=0, blank=True, null=True)
-    invoice = models.CharField(max_length=300)
+    invoice = models.CharField(max_length=2000)
 
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='New', null=True, blank=True)
 
@@ -317,10 +317,23 @@ class BaseOrder(models.Model):
         return data 
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
         self.update_booster_wallet()
+        super().save(*args, **kwargs)
 
     def update_booster_wallet(self):
+        if self.is_done and self.game_type in ['R', 'RB', 'DU', 'DB']:
+            Transaction.objects.create (
+                    user=self.booster,
+                    amount=round(self.actual_price, 2),
+                    order=self,
+                    status='Done',  
+                    type='DEPOSIT',
+                    notice=f'{self.details} - {self.game.name}'
+                )
+            booster_wallet = self.booster.wallet
+            booster_wallet.money += self.actual_price
+            return booster_wallet.save()
+        
         if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed != 0:
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.money_owed
@@ -410,7 +423,7 @@ import secrets
 class TokenForPay(models.Model):
     user                = models.OneToOneField(BaseUser, on_delete=models.PROTECT)
     token               = models.CharField(max_length=255, unique=True)
-    invoice             = models.CharField(max_length=1000, unique=True, null=True)
+    invoice             = models.CharField(max_length=2000, unique=True, null=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 

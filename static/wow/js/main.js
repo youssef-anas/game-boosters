@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const radioArray = Array.from(radioModes);
   const radio_ids = radioArray.map(radio => radio.id);
 
-  get_checked_mode = () =>{
+  const get_checked_mode = () => {
     const radio = document.querySelector('input[type="radio"][name="radio-group-type"]:checked');
     return radio.id
   }
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
       hideElement.forEach(element => {
         element.classList.add('d-none');
       })
-    })
+    }) 
     const checked_id = get_checked_mode();
     // document.getElementById('arena-form').dataset.type = checked_id;
     const viewElements = document.querySelectorAll(`.${checked_id}`);
@@ -106,14 +106,18 @@ document.addEventListener("DOMContentLoaded", function () {
       if (get_checked_mode() == 'raid') {
         toggleViewBosses();
       }
+      else{
+        // const fullPriority = document.getElementById('full-priority');
+        // fullPriority.checked = false
+      }
     });
   })
 
-  const arena2vs2Radio = document.getElementById('arena-2vs2');
-  const arena3vs3Radio = document.getElementById('arena-3vs3');
+  // const arena2vs2Radio = document.getElementById('arena-2vs2');
+  // const arena3vs3Radio = document.getElementById('arena-3vs3');
 
   // make arena2vs2Radio or arena3vs3Radio checked if the extend_order
-  extend_order && (valuesToSetExtra[0] ? arena2vs2Radio.checked = true: arena3vs3Radio.checked = true)
+  // extend_order && (valuesToSetExtra[0] ? arena2vs2Radio.checked = true: arena3vs3Radio.checked = true)
 
   chnage_mode();
 });

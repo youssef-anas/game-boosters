@@ -31,6 +31,14 @@
   .copy-icon:focus {
     outline: none;
   }
+  .raid-info label{
+    color: #FFFFFF80;
+  }
+  .raid-info div:not(:last-of-type){
+    border-bottom: 0.2px solid #1E1814;
+    margin-bottom: 6px;
+    margin-top: 6px;
+  }
 </style>
 {% endblock %}
 {% block container %}
@@ -125,6 +133,103 @@
             <div class="col-xl-12 col-lg-6 col-12 pe-xl-0 pe-lg-3 ps-0 pe-0">
               <div class="order-info {{order.order.game.link}}-{% if order.order.game_type == 'D' or order.order.game_type == 'A' %}{{order.reached_rank.rank_name}}{% elif order.order.game_type == 'P' %}{{order.last_rank.rank_name}}{% elif order.order.game_type == 'S' %}{{order.current_rank.rank_name}}{% elif order.order.game_type == 'T' %}{{order.current_league.rank_name}}{% elif order.order.game_type == 'F' %}{{order.reached_rank.rank_name}}{% endif %}">
                 <h4 style="font-weight: 700;">Progress Tracker</h4>
+                
+                <!-- WOW RAID SIMPLE -->
+                {% if order.order.game_type == 'R' %}
+                <div class="raid-info">
+                  <div class="d-flex justify-content-between">
+                    <label>Map:</label>
+                    <p>{{order.get_map_display}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Bosses:</label>
+                    <p>{{order.bosses.all.count}} Bosses</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Loot Priority:</label>
+                    <p>{{order.loot_priority}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Boost Method:</label>
+                    <p>{{order.boost_method}}</p>
+                  </div>
+                </div>
+                {% endif %}
+
+                <!-- WOW RAID BUNDLE -->
+                {% if order.order.game_type == 'RB' %}
+                <div class="raid-info">
+                  <div class="d-flex justify-content-between">
+                    <label>Bundle:</label>
+                    <p>{{order.bundle.name}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Loot Priority:</label>
+                    <p>{{order.loot_priority}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Boost Method:</label>
+                    <p>{{order.boost_method}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Bundle Info:</label>
+                    <p></p>
+                  </div>
+                  <span></span>
+                  <div class="d-flex justify-content-between">
+                    <p class="mx-2">{{order.bundle.feature_1}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p class="mx-2">{{order.bundle.feature_2}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p class="mx-2">{{order.bundle.feature_3}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <p class="mx-2">{{order.bundle.feature_4}}</p>
+                  </div>
+                </div>
+                {% endif %}
+
+                <!-- WOW DUNGEON BUNDLE -->
+                {% if order.order.game_type == 'DU' %}
+                <div class="raid-info">
+                  <div class="d-flex justify-content-between">
+                    <label>Keystone:</label>
+                    <p>{{order.keystone}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Number Of Keys:</label>
+                    <p>{{order.keys}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Loot Traders:</label>
+                    <p>{{order.traders}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Armor type:</label>
+                    <p>{{order.traders_armor_type}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Timed:</label>
+                    <p>{{order.timed}}</p>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <label>Boost method:</label>
+                    <p>{{order.boost_method}}</p>
+                  </div>
+                  {% if order.map_preferred == 'Specific' %}
+                    {% for map_name, map_value in order.get_maps_as_key_value.items %}
+                      {% if map_value != 0 %}
+                      <div class="d-flex justify-content-between">
+                        <label>{{map_name}}:</label>
+                        <p>{{map_value}}</p>
+                      </div>
+                      {% endif %}
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                {% endif %}
   
                 <!-- Division -->
                 {% if order.order.game_type == 'D' or order.order.game_type == 'A' %}
