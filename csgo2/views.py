@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from csgo2.utils import get_division_prices, get_premier_prices, get_faceit_prices
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 
 def get_division_prices_view(request):
@@ -83,64 +83,9 @@ def csgo2GetBoosterByRank(request):
   }
   return render(request,'csgo2/GetBoosterByRank.html', context)
 
-# Paypal
-@login_required
-def pay_with_paypal(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('overwatch2'))
-
-    # Division
-    if request.POST.get('game_type') == 'D':
-      serializer = DivisionSerializer(data=request.POST)
-    # Premier
-    elif request.POST.get('game_type') == 'A':
-      serializer = PremierSerializer(data=request.POST)
-    # Faceit
-    elif request.POST.get('game_type') == 'F':
-      serializer = FaceitSerializer(data=request.POST)
-
-    if serializer.is_valid():
-      # Division
-      if request.POST.get('game_type') == 'D':
-        extend_order_id = serializer.validated_data['extend_order']
-        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-      # Premier
-      if request.POST.get('game_type') == 'A':
-        extend_order_id = serializer.validated_data['extend_order']
-        order_info = get_premier_order_result_by_rank(serializer.validated_data,extend_order_id)
-      # Faceit
-      elif request.POST.get('game_type') == 'F':
-        order_info = get_faceit_order_result_by_rank(serializer.validated_data)
-
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-      
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('csgo2'))
-      
-    for field, errors in serializer.errors.items():
-      for error in errors:
-        messages.error(request, f"{field}:{error}")
-    return redirect(reverse_lazy('csgo2'))
-
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-# Cryptomus
-@login_required
-def pay_with_cryptomus(request):
-  if request.method == 'POST':
-    context = {
-      "data": request.POST
+class CSGO2PaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+        'A': [PremierSerializer, get_premier_order_result_by_rank],
+        'F': [FaceitSerializer, get_faceit_order_result_by_rank],
     }
-    return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

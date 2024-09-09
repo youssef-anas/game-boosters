@@ -383,3 +383,16 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 PAYMENT_KEY = 'AgSkbGvlynpSI8O999V3Yoz4G5hz7UeGaL7tonwqHYjdfhnExRaNGahFhp05NSbEmCHjnNG4VeX0ESF9Vf6Ut4fGDpABI1gQIYrgKuLcahhgL8jPyL8t4kqDz1j9XU8w'
 MERCHANT_UUID = 'ccb11a35-db3c-4b4c-b5d7-8de68a266c28'
+
+
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'user': '100/day',
+        'anon': '20/hour',
+    }
+}

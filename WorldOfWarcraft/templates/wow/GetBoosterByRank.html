@@ -101,7 +101,7 @@
     <div class="create-order">
 
       <!-- Errors -->
-      {% if messages %}
+      <!-- {% if messages %}
         {% for message in messages %}
         <div class="py-3 mx-auto message-container">
           <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
@@ -110,7 +110,14 @@
           </div>
         </div>
         {% endfor %}
-    {% endif %}
+    {% endif %} -->
+
+    <div class="py-3 mx-auto message-container">
+      <div id="alert-div" class="alert error alert-dismissible mb-0 alert-error d-none" role="alert">
+        <p id="alert-text-info"></p>
+        <div class="loader"></div>
+      </div>
+    </div>
 
     <div class="exclusive raid my-5 py-md-0 d-none">
       <div class="text px-md-5 px-4 w-100">
@@ -138,12 +145,12 @@
 
         <input type="radio" id="raid" name="radio-group-type">
         <label for="raid" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Raid</label>
-        
-        <input type="radio" id="dungeon" name="radio-group-type">
-        <label for="dungeon" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 200px;">Mythic+ Dungeon</label>
 
         <input type="radio" id="level-up" name="radio-group-type">
         <label for="level-up" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 147px;">Level Up</label>
+        
+        <input type="radio" id="dungeon" name="radio-group-type">
+        <label for="dungeon" class="radio-btn ms-md-4 ms-0 mt-md-0 mt-2" style="width: 200px;">Mythic+ Dungeon</label>
 
       </div>
 
@@ -158,7 +165,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="current-rp current-2vs2-rp me-4">
-                  <input type="number" id="current-2v2-input" min="0" max="2400" step="1" value="0" class="number-input"/> 
+                  <input type="number" id="current-2v2-input" min="1" max="2400" step="1" value="1" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Current MMR Rank</h5>
@@ -172,7 +179,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" id="current-2v2-range" min="0" max="2400" value="0" step="1"/> 
+              <input type="range" id="current-2v2-range" min="1" max="2400" value="1" step="1"/> 
               <div class="current-2vs2 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -207,7 +214,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="desired-rp desired-2vs2-rp me-4">
-                  <input type="number" id="desired-2v2-input" min="0" max="2400" step="25" value="0" class="number-input"/> 
+                  <input type="number" id="desired-2v2-input" min="1" max="2400" step="25" value="1" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Desired MMR Rank</h5>
@@ -221,7 +228,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" id="desired-2v2-range" min="0" max="2400" value="0" step="25"/> 
+              <input type="range" id="desired-2v2-range" min="1" max="2400" value="1" step="25"/> 
               <div class="desired-2vs2 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -263,7 +270,7 @@
 
               <div class="d-flex align-item-center">
                 <div class="current-rp current-3vs3-rp me-4">
-                  <input type="number" id="current-3v3-input" min="0" max="2400" step="1" value="0" class="number-input"/> 
+                  <input type="number" id="current-3v3-input" min="1" max="2400" step="1" value="1" class="number-input"/> 
                 </div>
                 <div class="text-white text">
                   <h5>Current MMR Rank</h5>
@@ -277,7 +284,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="1" id="current-3v3-range" /> 
+              <input type="range" min="1" max="2400" value="1" step="1" id="current-3v3-range" /> 
               <div class="current-3vs3 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -326,7 +333,7 @@
             </div>
 
             <div class="range-container mt-5 pt-xl-0 pt-5">
-              <input type="range" min="0" max="2400" value="0" step="25" id="desired-3v3-range" /> 
+              <input type="range" min="1" max="2400" value="1" step="25" id="desired-3v3-range" /> 
               <div class="desired-3vs3 step-indicator">
                 <span class="step">0</span>
                 <span class="step">300</span>
@@ -820,12 +827,31 @@
 
               <!-- raid -->
               <div class="raid to d-flex justify-content-center align-items-center ms-md-3 ms-1">
-                <p class="raid-selected-info text-capitalize mb-0">Embodiment of Shadow Flame Bundle - Heroic - Eu</p>
+                <p class="raid-selected-info text-capitalize mb-0">
+                  <span id="raid-difficulty-info">Heroic</span>
+                  <span id="raid-bundle-info" class="d-none">---</span>
+                  <span> - </span>
+                  <span id="raid-method-info">piloted</span>
+                  <span> - </span>
+                  <span id="raid-server-info">EU</span>
+                </p>
               </div>
 
               <!-- dungeon -->
               <div class="dungeon to d-flex justify-content-center align-items-center ms-md-3 ms-1">
-                <p class="dungeon-selected-info text-capitalize mb-0">Embodiment of Shadow Flame Bundle - Heroic - Eu</p>
+                <p class="dungeon-selected-info text-capitalize mb-0">
+                  <span id="dungeon-keystone-info">0</span>
+                  <span>Keystone</span>
+                  <span> - </span>
+                  <span id="dungeon-keys-info">1</span>
+                  <span>Keys</span>
+                  <span> - </span>
+                  <span id="dungeon-traders-info">Personal Loot</span>
+                  <span> - </span>
+                  <span id="dungeon-method-info">piloted</span>
+                  <span> - </span>
+                  <span id="dungeon-server-info">EU</span>
+                </p>
               </div>
             </div>
           </div>
@@ -1062,8 +1088,7 @@
             <div class="pay-form">
               <!-- URLs -->
               <div id="urls"
-                  data-paypal-url="{% url 'wow-paypal-redirect' %}"
-                  data-cryptomus-url="{% url 'wow-cryptomus-redirect' %}">
+                  data-paypal-url="{% url 'wow-paypal-redirect' %}">
               </div>
               <!-- arena2vs2 Form -->
               <form method="post" id="arena-2vs2-form" class="purchaseForm arena-2vs2">

@@ -1,7 +1,5 @@
 from django.shortcuts import get_object_or_404
 from wildRift.models import *
-import json
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
@@ -10,7 +8,7 @@ from honorOfKings.utils import get_hok_divisions_data, get_hok_marks_data
 division_names = ['','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'KING']
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   print('Data: ', data)
   # Division
   current_rank = data['current_rank']
@@ -26,6 +24,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

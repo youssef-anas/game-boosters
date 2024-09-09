@@ -10,6 +10,5 @@ urlpatterns = [
 
 
   path('', rocketLeagueGetBoosterByRank, name='rocketLeague'),
-  path('paypal/', pay_with_paypal, name='rocketLeague-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='rocketLeague-cryptomus-redirect'),
+  path('payment/', RocketLeaguePaymentAPiView.as_view(), name='rocketLeague-paypal-redirect'),
 ]

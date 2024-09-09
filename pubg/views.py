@@ -1,23 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import render
 from django.http import JsonResponse
-from django.http import HttpResponse
-from django.urls import reverse, reverse_lazy
-import json
-from django.conf import settings
 from pubg.models import *
 from pubg.controller.serializers import DivisionSerializer
 from pubg.controller.order_information import *
-from accounts.models import TokenForPay
-from django.contrib.auth.decorators import login_required
 from booster.models import OrderRating
-from django.db.models import Avg, Sum, Case, When, Value, IntegerField
-from django.db.models.functions import Coalesce
+from django.db.models import Sum, Case, When, IntegerField
 from accounts.models import BaseUser
 from pubg.utils import get_divisions_data, get_marks_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from gameBoosterss.utils import MadBoostPayment
 
 
 def get_divisions_data_view(request):
@@ -66,46 +56,7 @@ def pubgGetBoosterByRank(request):
 
 
 # Paypal
-@login_required
-@api_view(['POST'])
-def view_that_asks_for_money(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('pubg'))
-    serializer = DivisionSerializer(data=request.POST)
-    extend_order = request.POST.get('extend_order', '')
-    if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
-      # Division
-      order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-      # if request.user.is_superuser:
-      #   # return request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-      #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
-
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return Response({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to Payment. Please try again later.")
-          return redirect(reverse_lazy('pubg'))
-    for field, errors in serializer.errors.items():
-      for error in errors:
-        messages.error(request, f"{error}")
-    
-    scheme = request.scheme
-    host = request.get_host()
-    full_url = f"{scheme}://{host}/pubg?extend={extend_order}"
-
-    print(full_url)      
-
-    return redirect(full_url)
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+class PubgPaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+    }

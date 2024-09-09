@@ -10,7 +10,7 @@ from django.db.models import Sum
 
 rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
 
-def get_arena_order_result_by_rank(data,extend_order_id):
+def get_arena_order_result_by_rank(data):
   # Prices
   prices = WorldOfWarcraftRpsPrice.objects.all().first()
   price_of_2vs2 = prices.price_of_2vs2
@@ -35,6 +35,7 @@ def get_arena_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

@@ -12,7 +12,7 @@ division_names = ['','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CROWN', 'ACE', 'ACE_MASTER', 'ACE_DOMENATER', 'CONQUEROR']
 
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   current_rank = data['current_rank']
   current_division = data['current_division']
   marks = data['marks']
@@ -25,6 +25,8 @@ def get_division_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
   select_champion = False
+
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
 

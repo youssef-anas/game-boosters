@@ -20,7 +20,7 @@ from dota2.utils import get_division_prices, get_placement_prices
 rank_names = ['UNRANK', 'HERALD', 'GUARDIAN', 'CRUSADER', 'ARCHON', 'LEGEND', 'ANCIENT', 'DIVINE', 'IMMORTAL']
 role_names = ['NoRole', 'Core', 'Support']
 ROLE_PRICES = [0, 0, 0.30]
-def get_rank_boost_order_result_by_rank(data,extend_order_id):
+def get_rank_boost_order_result_by_rank(data):
   MIN_DESIRED_VALUE = 50
   # Division
   # with open('static/dota2/data/prices.json', 'r') as file:
@@ -74,6 +74,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
   streaming = data['streaming']
   # select_champion = data['select_champion']
   
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -167,7 +168,7 @@ def get_rank_boost_order_result_by_rank(data,extend_order_id):
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_palcement_order_result_by_rank(data):
   # Placement
   placement_price = get_placement_prices()
   
@@ -186,6 +187,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   streaming = data['streaming']
   # select_champion = data['select_champion']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
 

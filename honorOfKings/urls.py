@@ -7,6 +7,5 @@ urlpatterns = [
   path('marks-data/', get_hok_marks_data_view, name='honorOfKings.getMarksData'),    
 
   path('', honerOfKingeGetBoosterByRank, name='hok'),
-  path('paypal/', pay_with_paypal, name='hok-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='hok-cryptomus-redirect'),
+  path('payment/', HOKPaymentAPiView.as_view(), name='hok-paypal-redirect'),
 ]

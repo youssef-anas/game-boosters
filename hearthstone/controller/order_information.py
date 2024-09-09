@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from wildRift.models import *
-import json
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
@@ -12,7 +11,7 @@ import math
 division_names = ['','X','IX','VIII','VII','VI','V','IV','III','II','I']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'LEGEND']
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -27,6 +26,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   streaming = data['streaming']
   # select_champion = data['select_champion']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -116,8 +116,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
 
 
-def get_battle_order_result(data, extend_order_id):
-
+def get_battle_order_result(data):
 
   def get_range_current(amount):
     MAX_LISTS = [1999, 3999, 5999, 7999, 10000]
@@ -152,6 +151,7 @@ def get_battle_order_result(data, extend_order_id):
   streaming = data['streaming']
   # select_champion = data['select_champion']
 
+  extend_order_id = data['extend_order_id']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

@@ -15,7 +15,7 @@ division_names = ['','I','II','III']
 rank_names = ['UNRANK', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'CHAMPION', 'GRAND CHAMPION', 'SUPERSONIC LEGEND']
 
 # ---------------------------- Ranked ----------------------------
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   print('Data: ', data)
   # Division
   current_rank = data['current_rank']
@@ -31,6 +31,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -108,7 +109,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 # ---------------------------- Placement ----------------------------
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_placement_order_result_by_rank(data):
   last_rank = data['last_rank']
   number_of_match = data['number_of_match']
 
@@ -119,6 +120,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = 0
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -194,7 +196,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 # ---------------------------- Seasonal ----------------------------
-def get_seasonal_order_result_by_rank(data,extend_order_id):
+def get_seasonal_order_result_by_rank(data):
   current_rank = data['current_rank']
   number_of_wins = data['number_of_wins']
 
@@ -205,6 +207,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = 0
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -280,7 +283,7 @@ def get_seasonal_order_result_by_rank(data,extend_order_id):
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 # ---------------------------- Tournament ----------------------------
-def get_tournament_order_result_by_rank(data,extend_order_id):
+def get_tournament_order_result_by_rank(data):
   current_league = data['current_league']
 
   total_percent = 0
@@ -290,6 +293,7 @@ def get_tournament_order_result_by_rank(data,extend_order_id):
   turbo_boost = data['turbo_boost']
   streaming = data['streaming']
 
+  extend_order_id = 0
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

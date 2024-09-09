@@ -7,6 +7,5 @@ urlpatterns = [
   path('marks-data/', get_hearthstone_marks_data_view, name='hearthstone.getMarksData'),
 
   path('', hearthstoneGetBoosterByRank, name='hearthstone'),
-  path('paypal/', pay_with_paypal, name='hearthstone-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='hearthstone-cryptomus-redirect'),
+  path('payment/', HearthstonePaymentAPiView.as_view(), name='hearthstone-paypal-redirect'),
 ]

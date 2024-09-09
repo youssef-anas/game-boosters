@@ -9,6 +9,5 @@ urlpatterns = [
 
 
   path('', leagueOfLegendsGetBoosterByRank, name='lol'),
-  path('paypal/', pay_with_paypal, name='lol-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='lol-cryptomus-redirect'),
+  path('payment/', LOLPaymentAPiView.as_view(), name='lol-paypal-redirect'),
 ]

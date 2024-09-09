@@ -10,8 +10,7 @@ from valorant.utils import get_valorant_divisions_data, get_valorant_marks_data,
 division_names = ['','I','II','III']  
 rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'DIAMOND', 'ASCENDANT', 'IMMORTAL']
 
-def get_division_order_result_by_rank(data,extend_order_id):
-  print('Data: ', data)
+def get_division_order_result_by_rank(data):
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -28,6 +27,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_champion = data['select_champion']
   champions_data = data['champion_data']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -114,7 +114,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_placement_order_result_by_rank(data):
   last_rank = data['last_rank']
   number_of_match = data['number_of_match']
 
@@ -127,6 +127,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   select_champion = data['select_champion']
   champions_data = data['champion_data']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

@@ -1,20 +1,14 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.http import JsonResponse
-from django.urls import reverse, reverse_lazy
-import json
-from django.conf import settings
-from overwatch2.models import Overwatch2DivisionOrder, Overwatch2Rank, Overwatch2Mark, Overwatch2Tier, Overwatch2Placement
+from overwatch2.models import Overwatch2DivisionOrder, Overwatch2Rank, Overwatch2Tier, Overwatch2Placement
 from overwatch2.controller.serializers import DivisionSerializer, PlacementSerializer
 from overwatch2.controller.order_information import *
-from accounts.models import TokenForPay, BaseOrder
-from django.contrib.auth.decorators import login_required
+from accounts.models import BaseOrder
 from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
-from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_overwatch2_divisions_data, get_overwatch2_marks_data, get_overwatch2_placements_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 
 
@@ -75,47 +69,9 @@ def overwatch2GetBoosterByRank(request):
   }
   return render(request,'overwatch2/GetBoosterByRank.html', context)
 
-# Paypal
-@login_required
-def view_that_asks_for_money(request):
-  if request.method == 'POST' and request.user.is_authenticated :
-    if request.user.is_booster:
-      messages.error(request, "You are a booster!, You can't make order.")
-      return redirect(reverse_lazy('overwatch2'))
-    
-    # Division
-    if request.POST.get('game_type') == 'D':
-      serializer = DivisionSerializer(data=request.POST)
-    # Placement
-    elif request.POST.get('game_type') == 'P':
-      serializer = PlacementSerializer(data=request.POST)
 
-    if serializer.is_valid():
-      extend_order_id = 0
-      # Division
-      if request.POST.get('game_type') == 'D':
-        extend_order_id = serializer.validated_data['extend_order']
-        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-      # Placement
-      elif request.POST.get('game_type') == 'P':
-        order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
-
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-      
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('overwatch2'))
-
-    for field, errors in serializer.errors.items():
-      for error in errors:
-        messages.error(request, f"{error}")
-    return redirect(reverse_lazy('overwatch2'))
-  
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+class Overwatch2PaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+    }

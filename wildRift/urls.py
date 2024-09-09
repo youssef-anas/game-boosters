@@ -9,7 +9,5 @@ urlpatterns = [
 
 
     path('', wildRiftGetBoosterByRank, name='wildRift'),
-    path('paypal/', pay_with_paypal, name='wildRift-paypal-redirect'),
-    path('cryptomus/', pay_with_cryptomus, name='wildRift-cryptomus-redirect'),
-    # path('test/<int:order_id>/',get_update_order_result, name='testooo')
+    path('payment/', WRPaymentAPiView.as_view(), name='wildRift-paypal-redirect'),
 ]

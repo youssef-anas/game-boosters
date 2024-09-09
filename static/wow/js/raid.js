@@ -46,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const mapSelection = document.querySelectorAll('input[type="radio"][name="map"]');
     const bossesList = document.querySelectorAll('.bosses-list-with-checkboxes')
 
+    const raid_bundle_info = document.getElementById('raid-bundle-info');
+    const raid_difficulty_info = document.getElementById('raid-difficulty-info');
+
     // forms
     const raidForm = document.getElementById('raid-simple-form');
     const raidBundleForm = document.getElementById('raid-bundle-form');
@@ -94,6 +97,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const removeBandelBtnAction = () => {
+        raid_difficulty_info.classList.remove('d-none')
+        raid_bundle_info.classList.add('d-none')
         awakened_raid_difficulty.classList.remove('d-none')
         removeBandelDiv.classList.add('d-none')
         bandelViewDiv.classList.add('d-none')
@@ -114,6 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const applyBandelBtnAction = () => {
+        raid_difficulty_info.classList.add('d-none')
+        raid_bundle_info.classList.remove('d-none')
         awakened_raid_difficulty.classList.add('d-none')
         removeBandelDiv.classList.remove('d-none')
         bandelViewDiv.classList.remove('d-none')
@@ -171,6 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // conver price to float
             bandelPrice = parseFloat(price.replace('$', ''));
             updateBandelView(bundleName, features, backgroundImage);
+            raid_bundle_info.innerText = bundleName;
             getRaidPrice();
         })
     })
@@ -269,18 +277,21 @@ document.addEventListener("DOMContentLoaded", function () {
         difficultyRadio.forEach((radio) => {
             if (radio.checked) {
                 selectedValue = parseFloat(radio.value);
+                raid_difficulty_info.innerHTML = radio.id;
             }
         });
         return selectedValue;
     }
 
     const raidServerRadio = document.getElementsByName('raid-server');
+    const raid_server_info = document.getElementById('raid-server-info');
     const getSelectedRaidServer = () => {
         let selectedValue;
         // Loop through the radio buttons to find the checked one
         for (const radio of raidServerRadio) {
             if (radio.checked) {
                 selectedValue = radio.value;
+                raid_server_info.innerHTML = radio.value;
                 break;
             }
         }

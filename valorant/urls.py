@@ -8,6 +8,5 @@ urlpatterns = [
   path('placements-data/', valorant_placements_data, name='valorant_placements_data'),  
 
   path('', valorantGetBoosterByRank, name='valorant'),
-  path('paypal/', pay_with_paypal, name='valorant-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='valorant-cryptomus-redirect'),
+  path('payment/', ValoPaymentAPiView.as_view() , name='valorant-paypal-redirect'),
 ]

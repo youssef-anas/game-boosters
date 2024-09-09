@@ -1,8 +1,7 @@
 from django.urls import path
-from WorldOfWarcraft.views import *
+from WorldOfWarcraft.views import WowPaymenApiView, wowGetBoosterByRank
 
 urlpatterns = [
   path('', wowGetBoosterByRank, name='wow'),
-  path('paypal/', pay_with_paypal, name='wow-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='wow-cryptomus-redirect'),
+  path('payment/', WowPaymenApiView.as_view(), name='wow-paypal-redirect'),
 ]

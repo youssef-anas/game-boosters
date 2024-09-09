@@ -29,7 +29,7 @@ rank_names = [
     "Global Elite"
 ]
 
-def get_division_order_result_by_rank(data, extend_order_id):
+def get_division_order_result_by_rank(data):
     current_rank = data['current_rank']
     desired_rank = data['desired_rank']
 
@@ -38,6 +38,7 @@ def get_division_order_result_by_rank(data, extend_order_id):
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
 
+    extend_order_id = data['extend_order']
     server = data['server']
     promo_code = data['promo_code']
 
@@ -123,7 +124,7 @@ def get_division_order_result_by_rank(data, extend_order_id):
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_premier_order_result_by_rank(data, extend_order_id):
+def get_premier_order_result_by_rank(data):
     print("Data: ", data)
     # Read data from utils file
     premier_prices = get_premier_prices()
@@ -156,15 +157,6 @@ def get_premier_order_result_by_rank(data, extend_order_id):
         print('out_of_range')
         return None, None
 
-    # def getPrice(amount):
-    #     if amount < 1000: return premier_prices[1]
-    #     if amount < 5000: return premier_prices[2]
-    #     if amount < 10000: return premier_prices[3]
-    #     if amount < 15000: return premier_prices[4]
-    #     if amount < 20000: return premier_prices[5]
-    #     if amount < 25000: return premier_prices[6]
-    #     if amount < 30000: return premier_prices[7]
-    #     if amount >= 30000: return premier_prices[8]
 
     # Ranks
     current_rank = data['current_rank']
@@ -179,6 +171,7 @@ def get_premier_order_result_by_rank(data, extend_order_id):
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
 
+    extend_order_id = data['extend_order']
     server = data['server']
     promo_code = data['promo_code']
 
@@ -270,7 +263,7 @@ def get_premier_order_result_by_rank(data, extend_order_id):
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_faceit_order_result_by_rank(data, extend_order_id = 0):
+def get_faceit_order_result_by_rank(data):
     current_level = data['current_level']
     desired_level = data['desired_level']
 
@@ -279,6 +272,7 @@ def get_faceit_order_result_by_rank(data, extend_order_id = 0):
     turbo_boost = data['turbo_boost']
     streaming = data['streaming']
 
+    extend_order_id = 0
     server = data['server']
     promo_code = data['promo_code']
 

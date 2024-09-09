@@ -10,7 +10,7 @@ from overwatch2.utils import get_overwatch2_divisions_data, get_overwatch2_marks
 division_names = ['','V','IV','III','II','I']
 rank_names = ['','bronze', 'silver', 'gold', 'platinum', 'diamond', 'master', 'grand master', 'champion']
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
     current_rank = data['current_rank']
     current_division = data['current_division']
     marks = data['marks']
@@ -27,6 +27,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
     role_data = data['role']
 
+    extend_order_id = data['extend_order']
     server = data['server']
     promo_code = data['promo_code']
     promo_code_id = 0
@@ -130,7 +131,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_placement_order_result_by_rank(data):
   last_rank = data['last_rank']
   number_of_match = data['number_of_match']
 
@@ -204,7 +205,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'OVW2-12-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role_data}-0-0-0-{timezone.now()}'
+  invoice = f'OVW2-12-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{0}-{server}-{price}-{select_champion_value}-{promo_code_id}-{role_data}-0-0-0-{timezone.now()}'
   
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

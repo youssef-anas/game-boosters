@@ -215,24 +215,3 @@ function SetBooster(clickedCard) {
 
   disableButton(false, 'booster')
 }
-function disable_alert(message){
-  setTimeout(() => {
-    message.classList.add('d-none')
-  }, 5000);
-}
-
-
-document.addEventListener("DOMContentLoaded", function() {
-  var alerts = document.querySelectorAll('.alert');
-  alerts.forEach(function(alert) {
-    // Start the loader animation by adding the class
-    setTimeout(function() {
-      alert.classList.add('loader-active');
-    }, 100); // Slight delay to ensure transition works
-
-    // Hide the alert after the animation is complete
-    setTimeout(function() {
-      alert.style.display = 'none';
-    }, 5100); // Slightly more than the transition time
-  });
-});

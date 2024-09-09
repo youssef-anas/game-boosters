@@ -10,7 +10,7 @@ from leagueOfLegends.utils import get_lol_placements_data, get_lol_marks_data, g
 division_names = ['','IV','III','II','I']  
 rank_names = ['UNRANK', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   print('Data: ', data)
   # Division
   current_rank = data['current_rank']
@@ -28,6 +28,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_champion = data['select_champion']
   champions_data = data['champion_data']
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -114,7 +115,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_placement_order_result_by_rank(data):
   last_rank = data['last_rank']
   number_of_match = data['number_of_match']
 
@@ -181,13 +182,6 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   price += (price * total_percent)
   price -= price * (promo_code_amount/100)
 
-  if extend_order_id > 0:
-    try:
-      extend_order = BaseOrder.objects.get(id=extend_order_id)
-      extend_order_price = extend_order.price
-      price = round(price - extend_order_price, 2)
-    except:
-      pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
@@ -195,7 +189,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'lol-4-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{champions_data}-{timezone.now()}'
+  invoice = f'lol-4-P-{last_rank}-{number_of_match}-?-?-?-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{0}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-{champions_data}-{timezone.now()}'
 
   print('Invoice', invoice)
 

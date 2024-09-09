@@ -15,7 +15,7 @@ from customer.models import Champion
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from leagueOfLegends.utils import get_lol_placements_data, get_lol_marks_data, get_lol_divisions_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 def get_lol_divisions_data_view(request):
     divisions_data = get_lol_divisions_data()
@@ -72,59 +72,8 @@ def leagueOfLegendsGetBoosterByRank(request):
   }
   return render(request,'leagueOfLegends/GetBoosterByRank.html', context)
 
-@login_required
-def pay_with_paypal(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('lol'))
-      
-    print('request POST:  ', request.POST)
-    # Division
-    if request.POST.get('game_type') == 'D':
-      serializer = DivisionSerializer(data=request.POST)
-    # Placement
-    elif request.POST.get('game_type') == 'P':
-      serializer = PlacementSerializer(data=request.POST)
-
-    if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
-      # Division
-      if request.POST.get('game_type') == 'D':
-        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-        print('Order Info: ', order_info)
-      # Placement
-      elif request.POST.get('game_type') == 'P':
-        order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
-
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-      payment = PaypalPayment(order_info, request, token)
-      
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('lol'))
-  
-    for field, errors in serializer.errors.items():
-      for error in errors:
-          messages.error(request, f"{error}")
-      return redirect(reverse_lazy('lol'))
-    
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-@login_required
-def pay_with_cryptomus(request):
-  if request.method == 'POST':
-    context = {
-      "data": request.POST
+class LOLPaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+        'P': [PlacementSerializer, get_placement_order_result_by_rank],
     }
-    return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

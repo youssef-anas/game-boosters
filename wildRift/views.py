@@ -14,7 +14,9 @@ from django.db.models import Count, Sum, Case, When, FloatField, F, Q, Avg, Inte
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_wildrift_divisions_data, get_wildrift_marks_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
+from .controller.order_information import get_order_result_by_rank
+
 
 def get_wildrift_divisions_data_view(request):
     divisions_data = get_wildrift_divisions_data()
@@ -64,43 +66,7 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-@login_required
-def pay_with_paypal(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        if request.user.is_booster:
-            messages.error(request, "You are a booster!, You can't make order.")
-            return redirect(reverse_lazy('wildRift'))
-        
-        serializer = RankSerializer(data=request.POST) 
-        if serializer.is_valid():
-            extend_order_id = serializer.validated_data['extend_order']
-            
-            order_info = get_order_result_by_rank(serializer.validated_data,extend_order_id)
-            request.session['invoice'] = order_info['invoice']
-            token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-            if request.POST.get('cryptomus', None) != None :
-                payment = cryptomus_payment(order_info, request, token)
-            else:
-                payment = PaypalPayment(order_info, request, token)
-            if payment:
-                return JsonResponse({'url': payment})
-            else:
-                messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-                return redirect(reverse_lazy('wildRift'))
-        
-        for field, errors in serializer.errors.items():
-            for error in errors:
-                messages.error(request, f"{error}")
-        return redirect(reverse_lazy('wildRift'))
-    return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-# Cryptomus
-@login_required
-def pay_with_cryptomus(request):
-  if request.method == 'POST':
-    context = {
-      "data": request.POST
+class WRPaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [RankSerializer, get_order_result_by_rank],
     }
-    return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

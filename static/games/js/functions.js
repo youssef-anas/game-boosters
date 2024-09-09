@@ -283,6 +283,11 @@ const setBoostMethod = (method, action) => {
         input.value = boost_val;
       });
       action();
+
+      const method_info = document.getElementById(`${method}-method-info`);
+      if (method_info){
+        method_info.innerHTML = getFirstTwoWords(radio.id);
+      }
     })
   }) 
 }

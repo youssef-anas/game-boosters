@@ -1,20 +1,13 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import render
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.urls import reverse, reverse_lazy
-import json
-from django.conf import settings
 from hearthstone.models import *
 from hearthstone.controller.serializers import DivisionSerializer, BattleSerializer
 from hearthstone.controller.order_information import *
 from booster.models import OrderRating
-from accounts.models import TokenForPay
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
-from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data, get_hearthstone_battle_prices
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 
 
@@ -71,63 +64,8 @@ def hearthstoneGetBoosterByRank(request):
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
 # Paypal
-@login_required
-def pay_with_paypal(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('hearthstone'))
-      
-    print('request POST:  ', request.POST)
-    # Division
-    if request.POST.get('game_type') == 'D':
-      serializer = DivisionSerializer(data=request.POST)
-    elif request.POST.get('game_type') == 'A':
-        serializer = BattleSerializer(data=request.POST)
-    else:
-      messages.error(request, "Invalid Game Type")
-      return redirect(reverse_lazy('hearthstone'))
-
-    if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
-      # Division
-      if request.POST.get('game_type') == 'D':
-        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-        print('Order Info: ', order_info)
-
-      elif request.POST.get('game_type') == 'A':
-        order_info = get_battle_order_result(serializer.validated_data,extend_order_id)  
-  
-      
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-      
-      # if request.user.is_superuser:
-      #   return redirect(request.build_absolute_uri(f"/customer/payment-success/{token}/"))
-      
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('hearthstone'))
-      
-    for field, errors in serializer.errors.items():
-      for error in errors:
-          messages.error(request, f"{field}: {error}")
-    return redirect(reverse_lazy('hearthstone'))
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-# Cryptomus
-@login_required
-def pay_with_cryptomus(request):
-  if request.method == 'POST':
-    context = {
-      "data": request.POST
+class HearthstonePaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+        'A': [BattleSerializer, get_battle_order_result],
     }
-    return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

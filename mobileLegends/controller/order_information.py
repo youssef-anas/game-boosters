@@ -10,7 +10,7 @@ from mobileLegends.utils import get_mobile_legends_placements_data, get_mobile_l
 division_names = ['','IV','III','II','I']  
 rank_names = ['Unranked','warrior', 'elite', 'master', 'grandmaster', 'epic', 'legend', 'mythic', 'mythical honor', 'mythical glory', 'mythical immortal']
 
-def get_division_order_result_by_rank(data,extend_order_id):
+def get_division_order_result_by_rank(data):
   # Division
   current_rank = data['current_rank']
   current_division = data['current_division']
@@ -27,6 +27,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
   select_champion = False
   promo_code_amount = 0
 
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0
@@ -161,7 +162,7 @@ def get_division_order_result_by_rank(data,extend_order_id):
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
-def get_palcement_order_result_by_rank(data,extend_order_id):
+def get_placement_order_result_by_rank(data):
   last_rank = data['last_rank']
   number_of_match = data['number_of_match']
 
@@ -227,13 +228,6 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   price -= price * (promo_code_amount/100)
   price = round(price, 2)
 
-  if extend_order_id > 0:
-    try:
-      extend_order = BaseOrder.objects.get(id=extend_order_id)
-      extend_order_price = extend_order.price
-      price = round(price - extend_order_price, 2)
-    except:
-      pass
 
   booster_id = data['choose_booster']
   if booster_id > 0 :
@@ -241,7 +235,7 @@ def get_palcement_order_result_by_rank(data,extend_order_id):
   else:
     booster_id = 0
 
-  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-0-{timezone.now()}'
+  invoice = f'MOBLEG-8-P-{last_rank}-{number_of_match}-0-0-0-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{0}-{server}-{price}-{select_champion_value}-{promo_code_id}-0-0-0-0-{timezone.now()}'
 
   invoice_with_timestamp = str(invoice)
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""

@@ -8,6 +8,5 @@ urlpatterns = [
 
 
   path('', overwatch2GetBoosterByRank, name='overwatch2'),
-  path('paypal/', view_that_asks_for_money, name='overwatch2-paypal-redirect'),
-  path('cryptomus/', view_that_asks_for_money, name='overwatch2-cryptomus-redirect'),
+  path('payment/', Overwatch2PaymentAPiView.as_view(), name='overwatch2-paypal-redirect'),
 ]

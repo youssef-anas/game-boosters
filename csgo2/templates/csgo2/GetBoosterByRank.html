@@ -94,16 +94,12 @@
     <div class="create-order">
 
       <!-- Errors -->
-      {% if messages %}
-      {% for message in messages %}
-        <div class="py-3 mx-auto message-container">
-          <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
-            {{ message }}
-            <div class="loader"></div>
-          </div>
+      <div class="py-3 mx-auto message-container">
+        <div id="alert-div" class="alert error alert-dismissible mb-0 alert-error d-none" role="alert">
+          <p id="alert-text-info"></p>
+          <div class="loader"></div>
         </div>
-      {% endfor %}
-      {% endif %}
+      </div>
 
 
       <div class="choise mb-3">
@@ -526,8 +522,7 @@
             <div class="pay-form">
               <!-- URLs -->
               <div id="urls"
-                  data-paypal-url="{% url 'csgo2-paypal-redirect' %}"
-                  data-cryptomus-url="{% url 'csgo2-paypal-redirect' %}">
+                  data-paypal-url="{% url 'csgo2-paypal-redirect' %}">
               </div>
               <!-- Division Form -->
               <form method="post" id="division-boost-form" class="division-boost purchaseForm">

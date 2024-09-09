@@ -1,4 +1,3 @@
-
     const dungeonForm = document.getElementById('dungeon-simple-form');
     const dungeonBundleForm = document.getElementById('dungeon-bundle-form');
     const keynumbersNumberInput = document.getElementById('keynumbers-number-input');
@@ -12,6 +11,11 @@
     const armorTypeDiv = document.getElementById('armor-type');
     const dungeonServerRadio = document.getElementsByName('dungeon-server');
     const armorTypeSelect = document.getElementById('armor-type-select');
+
+    const dungeon_keystone_info = document.getElementById('dungeon-keystone-info');
+    const dungeon_keys_info = document.getElementById('dungeon-keys-info');
+    const dungeon_traders_info = document.getElementById('dungeon-traders-info');
+    const dungeon_server_info = document.getElementById('dungeon-server-info');
 
     const dungeon_prices_container = document.getElementById('dungeon-prices-container');
     const keyStonePrice = dungeon_prices_container.dataset.prices;
@@ -112,6 +116,7 @@
         }
         keystoneNumberInput.value = value;
         keystoneRangeInput.value = value;
+        dungeon_keystone_info.innerHTML = value;
         getDungeonSimplePrice();
     };
     // end keystone Range and Number input
@@ -146,6 +151,7 @@
         }
         keynumbersNumberInput.value = value;
         keynumbersRangeInput.value = value;
+        dungeon_keys_info.innerHTML = value;
         getDungeonSimplePrice();
     };
     // end keynumbers Range and Number input
@@ -183,6 +189,7 @@
                 armorTypeDiv.classList.remove('d-none');
             }
             $(dungeonForm).find(`input[name="traders"]`).val(value);
+            dungeon_traders_info.innerHTML = value;
             getDungeonSimplePrice();
         })
     })
@@ -250,6 +257,7 @@
                 break;
             }
         }
+        dungeon_server_info.innerHTML = selectedValue;
         $(dungeonForm).find('input[name="server"]').val(selectedValue);
         $(dungeonBundleForm).find('input[name="server"]').val(selectedValue);
         return selectedValue;

@@ -118,7 +118,7 @@
 }
 
 
-#OrderNow{
+/* #OrderNow{
   position: relative;
   display: flex;
   flex-direction: row;
@@ -131,4 +131,4 @@
   top: 96px;
   height: 100vh; 
   z-index: 2; 
-}
+} */

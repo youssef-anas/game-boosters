@@ -118,7 +118,7 @@
     <div class="container">
         <div class="create-order">
             <!-- Errors -->
-            {% if messages %}
+            <!-- {% if messages %}
                 {% for message in messages %}
                 <div class="py-3 mx-auto message-container">
                     <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
@@ -127,7 +127,14 @@
                     </div>
                 </div>
                 {% endfor %}
-            {% endif %}
+            {% endif %} -->
+
+            <div class="py-3 mx-auto message-container">
+                <div id="alert-div" class="alert error alert-dismissible mb-0 alert-error d-none" role="alert">
+                  <p id="alert-text-info"></p>
+                  <div class="loader"></div>
+                </div>
+            </div>
 
             <div class="choise mb-3">
                 <input type="radio" id="division-boost" name="radio-group-type" checked>
@@ -373,12 +380,12 @@
                         <div class="pay-form">
                             <!-- URLs -->
                             <div id="urls"
-                                data-paypal-url="{% url 'wildRift-paypal-redirect' %}"
-                                data-cryptomus-url="{% url 'wildRift-cryptomus-redirect' %}">
+                                data-paypal-url="{% url 'wildRift-paypal-redirect' %}">
                             </div>
                             <form action="" method="post" id="division-boost-form" class="purchaseForm active">
                                 {% csrf_token %}
                                 <input type="hidden" name="game_id" value="1">
+                                <input type="hidden" name="game_type" value="D">
                                 <input type="hidden" name="current_rank" value="1">
                                 <input type="hidden" name="current_division" value="1">
                                 <input type="hidden" name="marks" value="1">

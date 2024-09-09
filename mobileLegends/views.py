@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_mobile_legends_divisions_data, get_mobile_legends_marks_data, get_mobile_legends_placements_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 
 
@@ -71,44 +71,8 @@ def MobileLegendsGetBoosterByRank(request):
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
-# Paypal
-@login_required
-def view_that_asks_for_money(request):
-  if request.method == 'POST' and request.user.is_authenticated:
-    if request.user.is_booster:
-      messages.error(request, "You are a booster!, You can't make order.")
-      return redirect(reverse_lazy('mobileLegends'))
-    # Division
-    if request.POST.get('game_type') == 'D':
-      serializer = DivisionSerializer(data=request.POST)
-    # Placement
-    elif request.POST.get('game_type') == 'P':
-      serializer = PlacementSerializer(data=request.POST)
-
-    if serializer.is_valid():
-      extend_order_id = 0
-      # Division
-      if request.POST.get('game_type') == 'D':
-        extend_order_id = serializer.validated_data['extend_order']
-        order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-      elif request.POST.get('game_type') == 'P':
-        order_info = get_palcement_order_result_by_rank(serializer.validated_data,extend_order_id)
-
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('mobileLegends'))
-      
-    for field, errors in serializer.errors.items():
-        for error in errors:
-            messages.error(request, f"{error}")
-    return redirect(reverse_lazy('mobileLegends'))
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
+class MobLegPaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
+        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+    }

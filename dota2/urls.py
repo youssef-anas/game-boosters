@@ -6,6 +6,5 @@ urlpatterns = [
   path('placement-prices/', placement_prices_view, name='dota2-placement-prices'),
 
   path('', dota2GetBoosterByRank, name='dota2'),
-  path('paypal/', pay_with_paypal, name='dota2-paypal-redirect'),
-  path('cryptomus/', pay_with_cryptomus, name='dota2-cryptomus-redirect'),
+  path('payment/', DOTA2PaymentAPiView.as_view(), name='dota2-paypal-redirect'),
 ]

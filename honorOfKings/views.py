@@ -1,9 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.http import JsonResponse
-from django.urls import reverse, reverse_lazy
-import json
-from django.conf import settings
+
 from honorOfKings.models import *
 from honorOfKings.controller.serializers import DivisionSerializer
 from honorOfKings.controller.order_information import *
@@ -11,10 +8,9 @@ from booster.models import OrderRating
 from accounts.models import TokenForPay
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
-from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from honorOfKings.utils import get_hok_divisions_data, get_hok_marks_data
-from gameBoosterss.utils import PaypalPayment, cryptomus_payment
+from gameBoosterss.utils import MadBoostPayment
 
 
 def get_hok_divisions_data_view(request):
@@ -61,48 +57,8 @@ def honerOfKingeGetBoosterByRank(request):
   }
   return render(request,'honorOfKings/GetBoosterByRank.html', context)
 
-# Paypal
-@login_required
-def pay_with_paypal(request):
-  if request.method == 'POST':
-    if request.user.is_authenticated :
-      if request.user.is_booster:
-        messages.error(request, "You are a booster!, You can't make order.")
-        return redirect(reverse_lazy('hok'))
-      
-    print('request POST:  ', request.POST)
-    serializer = DivisionSerializer(data=request.POST)
 
-    if serializer.is_valid():
-      extend_order_id = serializer.validated_data['extend_order']
-    
-      order_info = get_division_order_result_by_rank(serializer.validated_data,extend_order_id)
-      request.session['invoice'] = order_info['invoice']
-      token = TokenForPay.create_token_for_pay(request.user,  order_info['invoice'])
-
-      if request.POST.get('cryptomus', None) != None :
-        payment = cryptomus_payment(order_info, request, token)
-      else:
-        payment = PaypalPayment(order_info, request, token)
-      if payment:
-          return JsonResponse({'url': payment})
-      else:
-          messages.error(request, "There was an issue connecting to PayPal. Please try again later.")
-          return redirect(reverse_lazy('overwatch2'))
-    
-    for field, errors in serializer.errors.items():
-      for error in errors:
-          messages.error(request, f"{error}")
-    return redirect(reverse_lazy('hok'))
-
-  return JsonResponse({'error': 'Invalid request method. Use POST.'}, status=400)
-
-# Cryptomus
-@login_required
-def pay_with_cryptomus(request):
-  if request.method == 'POST':
-    context = {
-      "data": request.POST
+class HOKPaymentAPiView(MadBoostPayment):
+    serializer_orderInfo_mapping = {
+        'D': [DivisionSerializer, get_division_order_result_by_rank],
     }
-    return render(request, "accounts/cryptomus.html", context,status=200)
-  return render(request, "accounts/cryptomus.html", context={"data": "There is error"},status=200)

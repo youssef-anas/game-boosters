@@ -96,16 +96,12 @@
     <div class="create-order">
 
       <!-- Errors -->
-      {% if messages %}
-          {% for message in messages %}
-          <div class="py-3 mx-auto message-container">
-            <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
-            {{ message }}
-            <div class="loader"></div>
-            </div>
-          </div>
-          {% endfor %}
-      {% endif %}
+      <div class="py-3 mx-auto message-container">
+        <div id="alert-div" class="alert error alert-dismissible mb-0 alert-error d-none" role="alert">
+          <p id="alert-text-info"></p>
+          <div class="loader"></div>
+        </div>
+      </div>
 
       <div id="mode_swiper" class="choise mb-3">
         <input type="radio" id="division-boost" name="radio-group-type" checked>
@@ -469,8 +465,7 @@
             <div class="pay-form">
               <!-- URLs -->
               <div id="urls"
-                  data-paypal-url="{% url 'hearthstone-paypal-redirect' %}"
-                  data-cryptomus-url="{% url 'hearthstone-cryptomus-redirect' %}">
+                  data-paypal-url="{% url 'hearthstone-paypal-redirect' %}">
               </div>
               <form action="" method="post" id="division-boost-form" class="purchaseForm active division-boost">
                 {% csrf_token %}

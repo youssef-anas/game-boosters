@@ -4,6 +4,34 @@ if(performance.navigation.type == 2){
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  function disable_alert(alert){
+    setTimeout(() => {
+      alert.classList.add('d-none')
+      alert.classList.remove('loader-active');
+    }, 5100);
+  }
+  
+  const run_allerts = (alert) => {
+    // Show the loader
+    alert.classList.remove('d-none');
+    setTimeout(function() {
+      alert.classList.add('loader-active');
+    }, 100);
+  }
+
+  const handleAllerts = (message) => {
+    const alert = document.getElementById('alert-div');
+    const alertText = document.getElementById('alert-text-info');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    alertText.innerHTML = message;
+    run_allerts(alert)
+    disable_alert(alert)
+  }
+
+
+
+
   // const game_id = parseInt(document.querySelector('form.purchaseForm input[name="game_id"]').value);
 
   const urls = document.getElementById('urls');
@@ -67,13 +95,16 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       // Parse the JSON response
       const data = await response.json();
+      // when not authorized redirect to login
+        if (response.status === 401 || response.status === 403 ){
+          window.location.href = '/accounts/login/';
+        }
 
         if (data.url) {
             // Redirect to the provided URL
             window.location.href = data.url;
         } else {
-            // Handle the case where 'url' is not in the response
-            console.error('No URL provided in the response.');
+          handleAllerts(data.message)
         }
     } catch (error) {
         console.error('Error during the fetch request:', error);

@@ -89,16 +89,12 @@
   <div class="container">
     <div class="create-order">
       <!-- Errors -->
-      {% if messages %}
-          {% for message in messages %}
-          <div class="py-3 mx-auto message-container">
-            <div class="alert {{ message.tags }} alert-dismissible mb-0 alert-error" role="alert" >
-            {{ message }}
-            <div class="loader"></div>
-            </div>
-          </div>
-          {% endfor %}
-      {% endif %}
+      <div class="py-3 mx-auto message-container">
+        <div id="alert-div" class="alert error alert-dismissible mb-0 alert-error d-none" role="alert">
+          <p id="alert-text-info"></p>
+          <div class="loader"></div>
+        </div>
+      </div>
 
       <div class="row row-cols-md-2 row-cols-1 justify-content-between gab-5" id="OrderNow">
 
@@ -323,8 +319,7 @@
               <div class="pay-form">
                 <!-- URLs -->
                 <div id="urls"
-                    data-paypal-url="{% url 'hok-paypal-redirect' %}"
-                    data-cryptomus-url="{% url 'hok-cryptomus-redirect' %}">
+                    data-paypal-url="{% url 'hok-paypal-redirect' %}">
                 </div>
                 <form action="" method="post" id="division-boost-form" class="purchaseForm active">
                   {% csrf_token %}

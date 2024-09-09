@@ -10,7 +10,7 @@ from wildRift.utils import get_wildrift_divisions_data, get_wildrift_marks_data
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
 
-def get_order_result_by_rank(data,extend_order_id):
+def get_order_result_by_rank(data):
     current_rank = data['current_rank']
     current_division = data['current_division']
     marks = data['marks']
@@ -26,6 +26,7 @@ def get_order_result_by_rank(data,extend_order_id):
     select_champion = data['select_champion']
     champions_data = data['champion_data']
     
+    extend_order_id = data['extend_order']
     server = data['server']
     promo_code = data['promo_code']
     promo_code_id = 0
