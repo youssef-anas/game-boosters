@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <style>
+        body {
+            background-color: #F5F5F5;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .main-container {
+            background-color: white;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        .logo img {
+            width: auto;
+            height: 86px;
+        }
+        .nav {
+            background-color: #F5F5F5;
+            padding: 10px;
+            text-align: center;
+        }
+        .icons-section {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .icons-section img {
+            width: 24px;
+            height: 24px;
+            margin: 0 5px;
+        }
+        .footer-links {
+            text-align: center;
+            padding: 10px 0;
+        }
+        .footer-links a {
+            color: #F26E3E;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .footer-links .separator {
+            margin: 0 10px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .py-5 {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+        }
+        .py-3 {
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="nav">
+            <div class="logo">
+                <img src="https://www.madboost.gg/static/base/images/logo.png" alt="Logo">
+            </div>
+        </div>
+
+        <div class="header py-5 text-center">
+            <h1 class="py-5">{% block subject %}Default Subject{% endblock %}</h1>
+            <p class="py-3">We can help you bring your business to life online. Empowering you to do what you do, better.</p>
+        </div>
+
+        {% block container %}
+        <p>Default Content</p>
+        {% endblock %}
+
+        <!-- Icons Section (Consider replacing with SVGs or inline images for email compatibility) -->
+        <div class="icons-section">
+            <img src="https://www.madboost.gg/static/base/images/icons/icons8-facebook-60.png" alt="Facebook">
+            <img src="https://www.madboost.gg/static/base/images/icons/icons8-instagram-60.png" alt="Instagram">
+            <img src="https://www.madboost.gg/static/base/images/icons/icons8-youtube-64.png" alt="YouTube">
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-links py-5">
+            <a href="#">Terms of use</a>
+            <span class="separator">|</span>
+            <a href="#">Privacy Policy</a>
+        </div>
+
+        <p class="text-center py-3">
+            If you have any questions, feel free to <a href="mailto:customerservice@madboost.com">contact us</a>.
+        </p>
+        <p class="text-center">&copy; 2024 Your Company. All rights reserved.</p>
+    </div>
+</body>
+</html>
