@@ -604,7 +604,7 @@ class MadBoostPayment(APIView):
         return order_info
 
     def check_amount(self, order_info):
-        if order_info['price'] < 10:
+        if order_info['price'] < 0:
             return Response({"message": "Minimum order amount is $10.00."}, status=status.HTTP_400_BAD_REQUEST)
         return None
 
