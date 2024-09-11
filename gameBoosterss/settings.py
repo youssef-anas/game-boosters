@@ -250,16 +250,19 @@ ALLOWED_HOSTS = [
     ]
 
 
-PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
-# PAYPAL_EMAIL='madboost.payment@gmail.com'
-PAYPAL_TEST = True
-PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
+# PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
+# # PAYPAL_EMAIL='madboost.payment@gmail.com'
+# PAYPAL_TEST = True
+# PAYPAL_VERIFY_URL = 'https://www.sandbox.paypal.com/cgi-bin/webscr'
 # SECURE_SSL_REDIRECT = True
 
 # settings.py
-PAYPAL_CLIENT_ID = 'AWriOlHzu6y-ZS_v4m4NA_vHDXHnEIxrCsickcLYqWKHfaU9l3N7he2mdBOsoosSOUZdYE5P8OEZ8h5c'
-PAYPAL_CLIENT_SECRET = 'EFyP_TDyg9yCzyitIltAVhRcfnx6BK3BlfqP7kMO0wljFpi-ppzUdgzh3J_9peN9ib5td2La1ZsZDBJ4'
-PAYPAL_MODE = 'sandbox'
+# PAYPAL_CLIENT_ID = 'AWriOlHzu6y-ZS_v4m4NA_vHDXHnEIxrCsickcLYqWKHfaU9l3N7he2mdBOsoosSOUZdYE5P8OEZ8h5c'
+# PAYPAL_CLIENT_SECRET = 'EFyP_TDyg9yCzyitIltAVhRcfnx6BK3BlfqP7kMO0wljFpi-ppzUdgzh3J_9peN9ib5td2La1ZsZDBJ4'
+
+PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = os.getenv('PAYPAL_CLIENT_SECRET')
+PAYPAL_MODE = 'live'
 
 import paypalrestsdk
 # Configure PayPal SDK
