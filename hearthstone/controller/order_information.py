@@ -151,7 +151,7 @@ def get_battle_order_result(data):
   streaming = data['streaming']
   # select_champion = data['select_champion']
 
-  extend_order_id = data['extend_order_id']
+  extend_order_id = data['extend_order']
   server = data['server']
   promo_code = data['promo_code']
   promo_code_id = 0

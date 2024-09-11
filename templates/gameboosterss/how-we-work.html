@@ -1,0 +1,626 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load custom_filters %}
+{% block title %}How We Work: Mad Boost{% endblock %}
+{% block style %}
+
+<!-- BASE CSS -->
+<link rel="stylesheet" href="{% static 'accounts/css/base.css' %}">
+<!-- OUR STYLE -->
+<link rel="stylesheet" href="{% static 'base/css/popup.css' %}">
+<link rel="stylesheet" href="{% static 'customer/css/customer_order.css' %}">
+<!-- Ranks Colors -->
+<link rel="stylesheet" href="{% static 'games/css/ranks-colors.css' %}">
+<!-- Toastify -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
+<style>
+    .fas.fa-question-circle {
+        font-size: 30px;
+        color: var(--secondary-color);
+    }
+
+    @media (max-width: 768px) {
+        .hww-image {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    .q-text p {
+        font-size: 16px;
+    }
+
+    .q-div {
+        min-width: 240px;
+    }
+
+    .copy-icon {
+        cursor: pointer;
+        font-size: 1em;
+        margin-left: 10px;
+        padding: 5px;
+        border-radius: 3px;
+        display: inline-block;
+    }
+
+    .copy-icon:hover {
+        color: #F26E3E;
+    }
+
+    .copy-icon:focus {
+        outline: none;
+    }
+
+    .raid-info label {
+        color: #FFFFFF80;
+    }
+
+    .raid-info div:not(:last-of-type) {
+        border-bottom: 0.2px solid #1E1814;
+        margin-bottom: 6px;
+        margin-top: 6px;
+    }
+</style>
+{% endblock %}
+{% block container %}
+<div class="container py-5">
+    <div class="hww-header mt-5 pt-5">
+        <h1 class="text-center py-2">Boosteria's LoR Boosting - Essential FAQs</h1>
+        <hr/>
+    </div>
+    <!-- POPULAR QUESTIONS -->
+    <div class="hww-popular-questions container my-5">
+        <div class="row">
+            <div class="row col-sm-12 col-md-9">
+
+                <div class="q-div col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-div col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-div col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="q-div col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-12 col-md-3">
+                <img class="hww-image" src="{% static 'how-we-work/images/fisrt-img.webp' %}">
+            </div>
+        </div>
+    </div>
+
+    <!-- COMMON QUESTIONS -->
+    <div class="hww-common-questions container my-5">
+        <div class="row">
+            <div class="row col-sm-12 col-md-9 order-lg-2">
+                <div class="col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"><i class="fas fa-question-circle"></i></div>
+                        <div class="q-text col-10">
+                            <h5 class="mb-0">What is LoR boosting?</h5>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-start">
+                        <div class="q-icon col-2"></div>
+                        <div class="q-text col-10 my-2">
+                            <p>After purchasing, you'll be guided to our site for a quick account registration on our
+                                platform. You'll then need to give your Legends of Runeterra login details. Your order
+                                will be placed in our system, where our professional boosters can pick it up and start
+                                boosting. This whole procedure generally takes less than five minutes.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-sm-12 col-md-3 order-lg-1">
+                <img class="hww-image" src="{% static 'how-we-work/images/sec-img.webp' %}">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECOND HEADER -->
+
+    <div class="second-section">
+        <div class="hww-header mt-5 pt-5">
+            <h1 class="text-center py-2">Experience Wild Rift Boosting at Boosteria - Interactive Demo</h1>
+            <hr/>
+        </div>
+        <div class="customer-info-div">
+            <div class="customer-contant">
+                <div class="overlay">
+                    <div class="container order-information">
+                        <div
+                            class="action-for-booster d-flex flex-wrap justify-content-between align-items-center mx-md-3 mx-0">
+                            <div class="booster-info d-flex flex-wrap align-items-center">
+                                <div class="image">
+                                    <img src="https://storage.googleapis.com/mad-boost.appspot.com/booster/images/2/849acf3b-0aec-4469-855b-3e61f621fb23.webp"
+                                        class="profile-image" alt="Booster Photo" />
+                                </div>
+
+                                <div class="text ms-md-4 ms-0 p-4">
+                                    <h3>Booster</h3>
+                                    <p class="status status-online"><span class="online"></span>Online</p>
+                                </div>
+                            </div>
+
+                            <div class="actions d-flex flex-wrap align-items-center gap-md-4 gap-2">
+
+                                <div class="avalible-to-play">
+                                    <button id="order-id" class="btn available-btn">Available to Play</button>
+                                </div>
+
+                                <div class="extend-order">
+                                    <a class="btn">Extend Order</a>
+                                </div>
+
+                                <div class="tip">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn open-modal" data-bs-toggle="modal"
+                                        data-bs-target="#tipBooster">
+                                        Tip
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade custom-modal" id="tipBooster" tabindex="-1"
+                                        aria-labelledby="tipBoosterLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="tipBoosterLabel">Tip Booster</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"><i
+                                                            class="fa-solid fa-xmark fs-3"></i></button>
+                                                </div>
+                                                <div class="modal-body">
+
+                                                    <form id="tipBoosterForm" class="text-end mt-3 no-disabled-form">
+                                                        <div class="input-group mb-3">
+                                                            <input type="number" required name="tip"
+                                                                class="form-control custom-input" placeholder="Tip"
+                                                                aria-label="Tip">
+                                                        </div>
+                                                        <div class="d-flex flex-wrap justify-content-end">
+                                                            <button id='submitTipButton' type="button"
+                                                                class="paypal-btn">Pay with <img
+                                                                    src="{% static 'games/images/PayPal.svg' %}"
+                                                                    class="ms-2" alt="PayPal" width="86.62"
+                                                                    height="28.8" /></button>
+                                                        </div>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="order-info-and-chat row justify-content-between mt-5">
+
+                            <div class="order-info-container row col-xl-4 col-12 order-xl-0 order-1 mt-xl-0 mt-4">
+                                <div class="col-xl-12 col-lg-6 col-12 pe-xl-0 pe-lg-3 ps-0 pe-0">
+                                    <div class="order-info">
+                                        <h4 style="font-weight: 700;">Progress Tracker</h4>
+
+                                        <!-- Division -->
+                                        <div
+                                            class="from-to d-flex justify-content-center align-items-center mt-xl-3 mt-4 p-2">
+                                            <div
+                                                class="from d-flex justify-content-center align-items-center me-md-3 me-1">
+                                                <img src="https://storage.googleapis.com/mad-boost.appspot.com/wildRift/images/gold.webp"
+                                                    alt="Current Rank Image"
+                                                    class="current-rank-selected-img me-md-2 me-0 img-fluid" width="40"
+                                                    height="40">
+                                                <p class="current-info text-capitalize mb-0">gold II</p>
+                                            </div>
+
+                                            <i class="fa-solid fa-chevron-right fs-4"
+                                                style="color: var(--secondary-color);"></i>
+
+                                            <div
+                                                class="to d-flex justify-content-center align-items-center ms-md-3 ms-1">
+                                                <img src="https://storage.googleapis.com/mad-boost.appspot.com/wildRift/images/diamond.webp"
+                                                    alt="Desired Rank Image"
+                                                    class="desired-rank-selected-img me-md-2 me-0 img-fluid" width="40"
+                                                    height="40">
+                                                <p class="desired-info text-capitalize mb-0">diamond III</p>
+                                            </div>
+                                        </div>
+
+                                        <div
+                                            class="reached-info my-4 d-flex text-center flex-column justify-content-center align-items-center">
+                                            <h4 style="font-weight: 700;">Current Rank</h>
+                                                <div class="d-block my-3 ">
+                                                    <img src="https://storage.googleapis.com/mad-boost.appspot.com/wildRift/images/emerald.webp"
+                                                        alt="Reached Rank Image"
+                                                        class="reached-rank-selected-img checkout-img img-fluid"
+                                                        width="150" height="150">
+                                                    <p class="current-info text-capitalize mb-0"
+                                                        style="color:#FFFFFF80;">emerald I</p>
+                                                </div>
+                                        </div>
+
+                                        <button class="btn pause custom-btn filled"><i
+                                                class="fa-solid fa-pause me-1"></i> Pause</button>
+
+                                        <p class="text-center mt-3 mb-0"
+                                            style="color: #FFFFFF80; font-weight: 300; font-size: 8px !important"><i
+                                                class="fa-solid fa-circle-info me-1"></i>Click on this button if you
+                                            want to pause the order/booster.</p>
+                                    </div>
+                                </div>
+                                <div class=" col-xl-12 col-lg-6 col-12 pe-xl-0 pe-0 ps-0">
+                                    <div class="account-details">
+                                        <h4 style="font-weight: 700;">Account Details</h4>
+
+                                        <form action="" class="details pt-2" id="details">
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="userId">Order ID:</label>
+                                                <div>
+                                                    <span>WR1220</span>
+                                                    <i class="fas fa-copy copy-icon"></i>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="gameName">In Game Name:</label>
+                                                <span id="gameNameText">Jony</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="server">Server:</label>
+                                                <span id="serverText">Europe West</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="username">Username:</label>
+                                                <span id="usernameText">darkmaster#1768</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <label for="password">Password:</label>
+                                                <span id="passwordText">********</span>
+                                            </div>
+
+                                            <button type="button" class="btn mt-4" id="saveDetailsBtn">Edit
+                                                </button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-container col-xl-8 col-12 order-xl-1 order-0">
+                                <div class="chat-header py-4 px-md-5 px-2">
+
+                                    <div class="switch-chat p-2">
+
+                                        <div class="booster">
+                                            <input type="radio" id="chat-booster-option"
+                                                name="switch-between-booster-admin" value="booster chat" checked>
+                                            <label for="chat-booster-option" class="chat-booster-option-label">Chat with
+                                                the booster</label>
+                                        </div>
+
+                                        <div class="admin">
+                                            <input type="radio" id="chat-admin-option"
+                                                name="switch-between-booster-admin" value="admin chat">
+                                            <label for="chat-admin-option" class="chat-admin-option-label"><i
+                                                    class="fa-solid fa-user me-1"></i> Chat with the manager</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="booster-info d-flex flex-wrap align-items-center pt-4">
+                                        <div class="image">
+                                            <img src="https://storage.googleapis.com/mad-boost.appspot.com/booster/images/2/849acf3b-0aec-4469-855b-3e61f621fb23.webp"
+                                                class="profile-image" alt="Booster Photo" />
+                                        </div>
+
+                                        <div class="text ms-md-4 ms-0 p-4">
+                                            <h3>Booster</h3>
+                                            <p class="status status-online"><span class="online"></span>Online</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Chat Booster Container -->
+                                <div id="chat-booster-container" class="chat-booster-container py-4 px-md-5 px-2">
+                                    <!-- Messages -->
+                                    <div class="chat-messages">
+                                        <div id="booster-messages-container" class="booster-messages-container">
+
+
+                                            <div class="booster-chatbox there-is-messages" id="booster-chatbox">
+
+
+                                                <p class="day-date">Today</p>
+
+
+                                                <div class="booster-chat-message  booster-message "
+                                                    style="background-color: transparent !important;">
+
+
+                                                    <div class="image me-3">
+
+                                                        <img src="https://storage.googleapis.com/mad-boost.appspot.com/booster/images/2/849acf3b-0aec-4469-855b-3e61f621fb23.webp"
+                                                            alt="" width="40" height="40">
+
+                                                    </div>
+
+                                                    <p class="message mb-0">Hi, I'm your booster. It's a pleasure to
+                                                        work together, and I will start your order in 15 minutes or
+                                                        less.</p>
+
+                                                    <p class="message-time mb-0 ms-2"> 3:39 AM </p>
+
+
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <!-- Form -->
+                                    <div class="chat-from">
+                                        <form id='booster-chat-form'>
+                                            <div class="message-send-container">
+                                                <input class="form-control message-input"
+                                                    placeholder="Type your message.." id="booster-message-input"
+                                                    type="text" required>
+                                                <button class="btn sent-btn" id="booster-message-submit" type="button"
+                                                    value="Send">Send</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div id="chat-admin-container" class="chat-admin-container py-4 px-5  d-none">
+                                    <!-- Messages -->
+                                    <div class="chat-messages">
+
+                                        <div id="admin-messages-container" class="admin-messages-container">
+
+
+                                            <div class="admin-chatbox there-is-messages" id="admin-chatbox">
+
+
+                                                <p class="mb-0 day-date">Today</p>
+
+
+                                                <div class="admin-chat-message  admin-message ">
+
+                                                    <div class="image me-3">
+
+                                                        <img src="/static/base/images/no_profile_image.png"
+                                                            alt="no profile image" width="40" height="40">
+
+                                                    </div>
+
+                                                    <p class="message mb-0">Welcome, it`s honor for us to see you in our
+                                                        site <a href=""
+                                                            class="read-more-btn d-none"><span>...</span>Read more</a>
+                                                    </p>
+
+                                                    <p class="message-time mb-0 ms-2"> 3:39 AM </p>
+
+                                                </div>
+
+                                                <div class="admin-chat-message  admin-message ">
+
+                                                    <div class="image me-3">
+
+                                                        <img src="/static/base/images/no_profile_image.png"
+                                                            alt="no profile image" width="40" height="40">
+
+                                                    </div>
+
+                                                    <p class="message mb-0">If you have any questions, do not hesitate
+                                                        to ask <a href=""
+                                                            class="read-more-btn d-none"><span>...</span>Read more</a>
+                                                    </p>
+
+                                                    <p class="message-time mb-0 ms-2"> 3:39 AM </p>
+
+                                                </div>
+
+                                                <div class="admin-chat-message  user-message ">
+
+
+                                                    <p class="message-time mb-0 me-2"> 3:39 AM </p>
+
+                                                    <p class="message mb-0">hi</p>
+
+
+                                                </div>
+
+                                                <div class="admin-chat-message  admin-message ">
+
+                                                    <div class="image me-3">
+
+                                                        <img src="/static/base/images/no_profile_image.png"
+                                                            alt="no profile image" width="40" height="40">
+
+                                                    </div>
+
+                                                    <p class="message mb-0">hello sir how can i help you today ? <a
+                                                            href="" class="read-more-btn d-none"><span>...</span>Read
+                                                            more</a></p>
+
+                                                    <p class="message-time mb-0 ms-2"> 3:40 AM </p>
+
+                                                </div>
+
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Form -->
+                                    <div class="chat-from">
+                                        <form id="booster-chat-form">
+
+                                            <div class="message-send-container">
+                                                <input class="form-control message-input"
+                                                    placeholder="Type your message.." id="admin-message-input"
+                                                    type="text" required="">
+                                                <button class="btn sent-btn" id="admin-message-submit" type="button"
+                                                    value="Send">Send</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const switch_btns = document.getElementsByName('switch-between-booster-admin');
+        const chatboosterContainer = document.getElementById('chat-booster-container');
+        const chatAdminContainer = document.getElementById('chat-admin-container');
+        switch_btns.forEach(switch_btn => {
+            switch_btn.addEventListener('click', function () {
+                chatboosterContainer.classList.toggle('d-none');
+                chatAdminContainer.classList.toggle('d-none');
+            })
+        })
+    });
+</script>
+
+{% endblock %}

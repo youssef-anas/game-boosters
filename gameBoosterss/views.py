@@ -111,3 +111,6 @@ def facebook_data_deletion_handler(request):
 
 class StoreView(TemplateView):
     template_name = 'store.html'
+
+class HowWeWorkView(TemplateView):
+    template_name = 'gameboosterss/how-we-work.html'    

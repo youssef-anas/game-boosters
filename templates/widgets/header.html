@@ -29,7 +29,7 @@
                   <li><a href="{% url 'store' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a></li>
                   <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                   <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>
-                  <li><a href="#" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
+                  <li><a href="{% url 'how-we-work' %}" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
                 </ul>
               </li>
               <li>
@@ -98,7 +98,7 @@
                     <li><a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active"{% endif %}>My orders</a></li>
                     <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                     <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>
-                    <li><a href="#" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
+                    <li><a href="{% url 'how-we-work' %}" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
                     <li class="links-hidden">
                       <a>
                         <label class="dropdown-item soundclass d-flex justify-content-start align-items-center">
