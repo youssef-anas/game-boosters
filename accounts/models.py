@@ -421,9 +421,13 @@ class Transaction(models.Model):
 import secrets
 
 class TokenForPay(models.Model):
-    user                = models.OneToOneField(BaseUser, on_delete=models.PROTECT)
+    user                = models.ForeignKey(BaseUser, on_delete=models.CASCADE)
     token               = models.CharField(max_length=255, unique=True)
     invoice             = models.CharField(max_length=2000, unique=True, null=True)
+    game_info           = models.TextField(max_length=2000)
+    is_paid             = models.BooleanField(default=False)
+
+    content_type        = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
@@ -446,8 +450,6 @@ class TokenForPay(models.Model):
             return None    
         
     @classmethod
-    def create_token_for_pay(cls, user, invoice):
+    def create_token_for_pay(cls, user, game_info, model):
         token = secrets.token_hex(14)
-        TokenForPay.objects.filter(user=user).delete()
-        TokenForPay.objects.create(user=user, token=token, invoice=invoice)
-        return token
+        return TokenForPay.objects.create(user=user, token=token, game_info=game_info, content_type=ContentType.objects.get_for_model(model))

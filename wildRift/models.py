@@ -151,10 +151,7 @@ class WildRiftDivisionOrder(models.Model):
             print(f"Failed to send Discord notification. Status code: {response.status_code}")
 
     def save_with_processing(self, *args, **kwargs):
-        self.order.game_id = 1
-        self.order.game_type = 'D'
         self.order.details = self.get_details()
-        # 
         if not self.order.name:
             self.order.name = f'WR{self.order.id}'
         self.order.update_actual_price()

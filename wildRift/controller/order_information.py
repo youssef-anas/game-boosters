@@ -1,11 +1,9 @@
 from django.shortcuts import get_object_or_404
-from wildRift.models import *
-import json
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from accounts.models import PromoCode
 from booster.models import Booster
 from wildRift.utils import get_wildrift_divisions_data, get_wildrift_marks_data
+from accounts.models import BaseOrder
 
 division_names = ['','IV','III','II','I']  
 rank_names = ['', 'IRON', 'BRONZE', 'SILVER', 'GOLD', 'PLATINUM', 'EMERALD', 'DIAMOND', 'MASTER']
@@ -112,5 +110,19 @@ def get_order_result_by_rank(data):
     invoice_with_timestamp = str(invoice)
     boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
     name = f'WILD RIFT, BOOSTING FROM {rank_names[current_rank]} {division_names[current_division]} MARKS {marks} TO {rank_names[desired_rank]} {division_names[desired_division]}{boost_string}'
-
+    print(current_rank, current_division, desired_rank, desired_division, marks)
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ChampionOrder, ExtendOrder
+from gameBoosterss.order_info.games import DivisionGameOrderInfo
+
+
+
+class WildRiftDivisionOrderInfo(BaseOrderInfo, ChampionOrder, ExtendOrder, DivisionGameOrderInfo):
+    division_prices_data = get_wildrift_divisions_data()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = get_wildrift_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
+    division_number = 4
+

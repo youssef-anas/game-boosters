@@ -19,6 +19,7 @@ from django.db.models import Q
 from booster.models import OrderRating
 from games.models import Game
 from customer.models import CustomOrder
+import ast, random
 
 @login_required
 def customer_setting(request):
@@ -57,23 +58,45 @@ def customer_setting(request):
 
 @login_required
 def payment_sucess_view(request, token):
-    # invoice = request.session.get('invoice')
-    payer_id = request.GET.get("PayerID")
+    payer_id = request.GET.get("PayerID", None)
     token_object = get_object_or_404(TokenForPay, token=token)
-    invoice= token_object.invoice
-    invoice_values = invoice.split('-')
-    booster_id = int(invoice_values[12])
+    # invoice= token_object.invoice
+    # invoice_values = invoice.split('-')
+    # booster_id = int(invoice_values[12])
+
+    order_info = ast.literal_eval(token_object.game_info)
+
+    booster_id = order_info['base_order']['booster_id']
+    GameType = token_object.content_type.model_class()
+
+    game_order_info = order_info['game_order']
+
+    champions = game_order_info.pop('champions', None)
+
+    base_order = BaseOrder.objects.create(**order_info['base_order'], invoice='invoice', payer_id=payer_id, customer=request.user, status='New',content_type=token_object.content_type)
+    game_order = GameType.objects.create(**game_order_info, order=base_order)
+    if champions:
+        game_order.champions.set(champions)
+
+    base_order.object_id = game_order.pk
+    base_order.captcha_id =  random.randint(1, 2000)
+    game_order.save_with_processing()
+
+
+    # order = GameType.objects.get(order_id=token_object.order_id)
+    
     try:
         booster = BaseUser.objects.get(id=booster_id, is_booster=True)
     except BaseUser.DoesNotExist:
         booster = None
-    order = create_order(invoice, payer_id, request.user)
-    Room.create_room_with_admins(request.user, order.order.name)
-    Room.create_room_with_booster(request.user, booster, order.order.name)
+    # order = create_order(invoice, payer_id, request.user)
+    
+    Room.create_room_with_admins(request.user, game_order.order.name)
+    Room.create_room_with_booster(request.user, booster, game_order.order.name)
     refresh_order_page()
-    token_object.delete()
+    # token_object.delete()
     # async_task(update_database_task, order.order.id)
-    return redirect(reverse('customer.filldata', kwargs={'order_name': order.order.name}))
+    return redirect(reverse('customer.filldata', kwargs={'order_name': game_order.order.name}))
     
 
 def customer_orders(request):

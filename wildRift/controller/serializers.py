@@ -3,6 +3,9 @@ from accounts.models import BaseOrder
 from customer.models import Champion
 from booster.models import Booster
 from wildRift.validators import validate_marks_for_rank, validate_master_division
+from .order_information import WildRiftDivisionOrderInfo
+from wildRift.models import WildRiftDivisionOrder
+
 
 class RankSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=7)
@@ -21,7 +24,7 @@ class RankSerializer(serializers.Serializer):
     streaming = serializers.BooleanField()
     select_champion = serializers.BooleanField()
 
-    price = serializers.FloatField(min_value=10)
+    price = serializers.FloatField(min_value=0)
 
     choose_booster = serializers.IntegerField()
     champion_data = serializers.CharField(allow_blank=True)
@@ -29,6 +32,13 @@ class RankSerializer(serializers.Serializer):
     extend_order = serializers.IntegerField()
 
     promo_code = serializers.CharField()
+
+
+    # Order Info
+    game_id = serializers.IntegerField(default=1)
+    game_type = serializers.CharField(default='D')
+    game_order_info = WildRiftDivisionOrderInfo
+    order_model = WildRiftDivisionOrder
 
     def validate(self, attrs):
         current_rank_id = attrs.get('current_rank')
@@ -72,15 +82,15 @@ class RankSerializer(serializers.Serializer):
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
         if data['select_champion'] == False:
-            data['champion_data'] = 0
+            data['champion_data'] = []
         return data                
 
     
     def champion_validate(self, attrs):
             champion_data = attrs.get('champion_data', None)
             select_champion = attrs.get('select_champion', None)
+            numbers_list = []
             if champion_data and champion_data != 'null' and select_champion:
-                numbers_list = None
                 try:
                     numbers_list = [int(num) for num in champion_data.split("ch") if num]
                 except ValueError:
@@ -92,74 +102,8 @@ class RankSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 1)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Wild Rift.")
-
-    def validate_server(self, value):
-        valid_servers = [
-            "North America", "Europe West", "Brazil", "Oceania",
-            "Japan", "Russia", "Middle East", "Asia Pacific"
-        ]
-        if value not in valid_servers:
-            raise serializers.ValidationError("Invalid server selection")
-        return value
-                
-
-
-class PlacementSerializer(serializers.Serializer):
-    Previous_Season_Rank = serializers.IntegerField()
-    games_count = serializers.IntegerField()
-    promo_code = serializers.CharField()
-
-    server = serializers.CharField(max_length=300)
-
-    duo_boosting = serializers.BooleanField()
-    select_booster = serializers.BooleanField()
-    turbo_boost = serializers.BooleanField()
-    streaming = serializers.BooleanField()
-    select_champion = serializers.BooleanField()
-
-    price = serializers.FloatField(min_value=10)
-    choose_booster = serializers.IntegerField()
-    champion_data = serializers.CharField(allow_blank=True)
-
-    def validate(self, attrs):
-        self.booster_validate(attrs)
-        self.champion_validate(attrs)
-        return attrs
-            
-    def booster_validate(self, attrs):
-        choose_booster = attrs.get('choose_booster', None)
-        select_booster = attrs.get('select_booster', None)
-        if select_booster:
-            try :
-                Booster.objects.get(booster_id = choose_booster, is_wr_player= True, can_choose_me= True)
-            except Booster.DoesNotExist:
-                raise serializers.ValidationError("Please select valid booster")    
-            
-    def to_internal_value(self, data):
-        data = super().to_internal_value(data)
-        if data['select_booster'] == False  :
-            data['choose_booster'] = 0
-        if data['select_champion'] == False:
-            data['champion_data'] = 0
-        return data                
-
-    
-    def champion_validate(self, attrs):
-            champion_data = attrs.get('champion_data', None)
-            select_champion = attrs.get('select_champion', None)
-            if champion_data and champion_data != 'null' and select_champion:
-                numbers_list = None
-                try:
-                    numbers_list = [int(num) for num in champion_data.split("ch") if num]
-                except ValueError:
-                    raise serializers.ValidationError("Error in champions")
-                if len(numbers_list) > 3:
-                    raise serializers.ValidationError("You can choose max 3 champions.")
-                for id in numbers_list:
-                    try:
-                        Champion.objects.get(id=id, game__id = 1)
-                    except Champion.DoesNotExist:
-                        raise serializers.ValidationError("This champion is not belong to Wild Rift.")
+            attrs['champion_data'] = numbers_list        
+            return attrs
 
     def validate_server(self, value):
         valid_servers = [

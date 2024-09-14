@@ -79,10 +79,10 @@ class BaseOrderAdmin(admin.ModelAdmin):
 
     chat_link.short_description = 'Chat'
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
-admin.site.register(BaseOrder, BaseOrderAdmin)
+admin.site.register(BaseOrder)
 
 
 class TransactionAdmin(admin.ModelAdmin):
@@ -99,7 +99,7 @@ class TransactionAdmin(admin.ModelAdmin):
 # admin.site.register(Room, NoDeleteEditAdmin)
 # admin.site.register(Message, NoDeleteEditAdmin)
 # admin.site.register(Captcha, NoDeleteEditAdmin)
-admin.site.register(TokenForPay, NoDeleteEditAdmin)
+admin.site.register(TokenForPay)
 admin.site.register(LogEntry, NoDeleteEditAdmin)
 admin.site.register(Wallet, NoDeleteEditAdmin)
 admin.site.register(Transaction, TransactionAdmin)
