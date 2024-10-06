@@ -268,3 +268,49 @@ def get_palcement_order_result_by_rank(data):
   name = f'DOTA2, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}  ROLE: {role_names[role]}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+from gameBoosterss.order_info.orders import BaseOrderInfo,ExtendOrder
+from gameBoosterss.order_info.arena_v2 import Arena_V2_GameOrderInfo
+from gameBoosterss.order_info.placement import PlacementGameOrderInfo
+
+class Dota2_AOI(BaseOrderInfo, ExtendOrder, Arena_V2_GameOrderInfo):
+  arena_prices = get_division_prices()
+  price1 = round(arena_prices[0]*40,1)
+  price2 = round(arena_prices[1]*20,1)
+  price3 = round(arena_prices[2]*20,1)
+  price4 = round(arena_prices[3]*20,1)
+  price5 = round(arena_prices[4]*10,1)
+  price6 = round(arena_prices[5]*10,1)
+  price7 = round(arena_prices[6]*40,1) 
+  full_price_val = [price1, price2, price3, price4, price5, price6, price7]
+  points_range = [2000, 3000, 4000, 5000, 5500, 6000, 8000]
+  points_value = 50
+  floor = True
+
+  def get_game_info(self):
+    super().get_game_info()
+    self.game_order.update({'role': self.data['role']})
+
+
+  def get_game_info_extended(self):
+    super().get_game_info_extended()
+    self.game_order.update({'role': self.extend_game.role})
+
+  def get_totla_percent_price(self):
+    super().get_totla_percent_price()
+    if self.data['role'] == 2:
+      self.total_percent += 30
+
+class Dota2_POI(BaseOrderInfo, ExtendOrder, PlacementGameOrderInfo): 
+  placement_data = get_placement_prices()
+  
+  def get_game_info(self):
+    super().get_game_info()
+    self.game_order.update({'role': self.data['role']})
+
+  def get_totla_percent_price(self):
+    super().get_totla_percent_price()
+    if self.data['role'] == 2:
+      self.total_percent += 30
+
+  

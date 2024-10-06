@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from .order_information import OverWatch_DOI, OverWatch_POI
+from ..models import Overwatch2DivisionOrder, Overwatch2PlacementOrder
 
 class DivisionSerializer(serializers.Serializer):
     current_rank        = serializers.IntegerField(min_value=1, max_value=8)
@@ -22,9 +24,19 @@ class DivisionSerializer(serializers.Serializer):
     server              = serializers.CharField()
     role                = serializers.IntegerField()
 
+    # Order Info
+    game_id = serializers.HiddenField(default=12)
+    game_type = serializers.HiddenField(default='D')
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    game_order_info = OverWatch_DOI
+    order_model = Overwatch2DivisionOrder
+
     def validate(self, attrs):
-        self.extend_order_validate(attrs)
-        self.booster_validate(attrs)
+        pass_validate = False
+        pass_validate =  self.extend_order_validate(attrs)
+        if not pass_validate:
+            self.booster_validate(attrs)
+            self.validate_server_overwatch(attrs.get('server'))
         return attrs
         
     def extend_order_validate(self, attrs):
@@ -32,6 +44,7 @@ class DivisionSerializer(serializers.Serializer):
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=12, game_type='D')
+                return True
             except BaseOrder.DoesNotExist:
                 raise serializers.ValidationError("This order can't be extended")
             
@@ -56,7 +69,7 @@ class DivisionSerializer(serializers.Serializer):
             data['choose_booster'] = 0
         return data   
 
-    def validate_server(self, value):
+    def validate_server_overwatch(self, value):
         valid_servers = [
             "North America", "Europe", "Brazil", "Asia Pacific"
         ]
@@ -79,6 +92,13 @@ class PlacementSerializer(serializers.Serializer):
     promo_code          = serializers.CharField()
     server              = serializers.CharField()
     # role                = serializers.IntegerField()
+
+    # Order Info
+    game_id = serializers.HiddenField(default=12)
+    game_type = serializers.HiddenField(default='P')
+    game_order_info = OverWatch_POI
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    order_model = Overwatch2PlacementOrder
 
     def validate(self, attrs):
         self.booster_validate(attrs)

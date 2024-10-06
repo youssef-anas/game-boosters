@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from csgo2.utils import get_division_prices, get_premier_prices, get_faceit_prices
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 def get_division_prices_view(request):
@@ -83,9 +83,9 @@ def csgo2GetBoosterByRank(request):
   }
   return render(request,'csgo2/GetBoosterByRank.html', context)
 
-class CSGO2PaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'A': [PremierSerializer, get_premier_order_result_by_rank],
-        'F': [FaceitSerializer, get_faceit_order_result_by_rank],
+class CSGO2PaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'A': PremierSerializer,
+        'F': FaceitSerializer,
     }

@@ -254,49 +254,75 @@ dropContainers.forEach(dropContainer => {
 
 
 const customer_ids = document.querySelectorAll('.customer-ids');
-customer_ids.forEach(function(element) {
-  const customerId = element.dataset.customerId;
-  const headStatusElements = document.querySelectorAll(`.head-state${customerId}-id`)
-  const statusElements = document.querySelectorAll(`.state${customerId}-id`)
-  function fetchData() {
-    fetch(`/chat/status/${customerId}/`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        const message = data.status
-
-        if (data.status == 'Online') {
-          headStatusElements.forEach(function(headStatusElement) {
-            headStatusElement.innerHTML = `
-              <span class="online"></span> ${message}
-            `;
-          });
-          statusElements.forEach(function(statusElement) {
-            statusElement.innerHTML = `
-              <span class="online"></span> ${message}
-            `;
-          });
-        } else {
-          headStatusElements.forEach(function(headStatusElement) {
-            headStatusElement.innerHTML = `
-              <span class="offline"></span> Offline
-            `;
-          });
-          statusElements.forEach(function(statusElement) {
-            statusElement.innerHTML = `
-              <span class="offline"></span> Last seen ${message}
-            `;
-          });
-        }
-      })
-      .catch(error => {
-        console.warn('Error fetching data:', error);
-      });
+let ids = [];
+for (let id of customer_ids) {
+  if (!ids.includes(id.dataset.customerId)){
+    ids.push(id.dataset.customerId);
   }
-  fetchData()
-  setInterval(fetchData, 50000);
-});
+}
+console.log(ids)
+
+const getHeadStatus = (customerId) => {
+  return document.querySelectorAll(`.head-state${customerId}-id`);
+}
+const getStatus = (customerId) => {
+  return document.querySelectorAll(`.state${customerId}-id`);
+}
+
+// Sleep function to create a delay (1 second in this case)
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Function to fetch and update user status
+async function getUserStatus() {
+  for (let id of ids) {
+    const headStatusElements = getHeadStatus(id);
+    const statusElements = getStatus(id); // Corrected to call getStatus
+
+    try {
+      const response = await fetch(`/chat/status/${id}/`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      const message = data.status;
+
+      if (data.status === 'Online') {
+        headStatusElements.forEach(function (headStatusElement) {
+          headStatusElement.innerHTML = `
+            <span class="online"></span> ${message}
+          `;
+        });
+        statusElements.forEach(function (statusElement) {
+          statusElement.innerHTML = `
+            <span class="online"></span> ${message}
+          `;
+        });
+      } else {
+        headStatusElements.forEach(function (headStatusElement) {
+          headStatusElement.innerHTML = `
+            <span class="offline"></span> Offline
+          `;
+        });
+        statusElements.forEach(function (statusElement) {
+          statusElement.innerHTML = `
+            <span class="offline"></span> Last seen ${message}
+          `;
+        });
+      }
+    } catch (error) {
+      console.warn('Error fetching data:', error);
+    }
+
+    // Sleep for 1 second between requests
+    await sleep(1000);
+  }
+}
+
+// Initial call to getUserStatus
+getUserStatus();
+
+// Set interval to call getUserStatus every 50 seconds
+setInterval(getUserStatus, 50000);

@@ -40,13 +40,13 @@ from rest_framework.views import APIView
 
 def cryptomus_payment(order_info, request, token):
     data = {
-        'amount': str(order_info['price']),
+        'amount': str(order_info['extra_order']['price']),
         'currency': 'USDT',
         'to_currency': 'USDT',
         'network': 'TRON',
-        'order_id': str(token),
-        'url_return': request.build_absolute_uri(f"/customer/payment-canceled/{token}/"),
-        'url_success': request.build_absolute_uri(f"/customer/payment-success/{token}/"),
+        'order_id': str(token.id),
+        'url_return': request.build_absolute_uri(f"/customer/payment-canceled/{token.token}/"),
+        'url_success': request.build_absolute_uri(f"/customer/payment-success/{token.token}/"),
         # 'url_callback': 'http://127.0.0.1:8000/customer/payment-notify/',
     }
     
@@ -61,7 +61,7 @@ def cryptomus_payment(order_info, request, token):
     
     except Exception as e:
         print(f"Error in cryptomus_payment: {str(e)}")
-        raise
+        raise 
 
 
 def paypal_payment(order_info, request, token):
@@ -71,21 +71,21 @@ def paypal_payment(order_info, request, token):
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": request.build_absolute_uri(f"/customer/payment-success/{token}/"),
-            "cancel_url": request.build_absolute_uri(f"/customer/payment-canceled/{token}/")
+            "return_url": request.build_absolute_uri(f"/customer/payment-success/{token.token}/"),
+            "cancel_url": request.build_absolute_uri(f"/customer/payment-canceled/{token.token}/")
         },
         "transactions": [{
             "item_list": {
                 "items": [{
-                    "name": order_info['name'],
+                    "name": 'Boosting Order',
                     "sku": "item",
-                    "price": order_info['price'],
+                    "price": order_info['extra_order']['price'],
                     "currency": "USD",
                     "quantity": 1
                 }]
             },
             "amount": {
-                "total": order_info['price'],
+                "total": order_info['extra_order']['price'],
                 "currency": "USD"
             },
             "description": "Payment for Boosting order."
@@ -627,3 +627,67 @@ class MadBoostPayment(APIView):
             return cryptomus_payment(order_info, request, token)
         else:
             return paypal_payment(order_info, request, token)
+        
+
+class NewMadBoostPayment(APIView):
+    permission_classes = [IsNotBooster]
+    serializer_mapping = None
+    throttle_classes = [UserRateThrottle] 
+
+    def __init__(self, **kwargs):
+      super().__init__(**kwargs)
+      if not self.serializer_mapping:
+          raise ValueError("serializer_mapping must not be None")
+
+    def post(self, request, *args, **kwargs):
+        serializer_class = self.get_serializer_class(request.data.get('game_type'))
+
+        if not serializer_class:
+            return Response({"message": "Invalid game type."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        serializer = serializer_class(data=request.data)
+        if not serializer.is_valid():
+            field, error_message = next(iter(serializer.errors.items()))
+            return Response({'message': f"{field}: {error_message[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+
+        order_info = self.extract_order_info(serializer_class, serializer.validated_data)
+        if isinstance(order_info, Response):
+            return order_info
+
+        amount_error = self.check_amount(order_info['extra_order']['price'])
+        if amount_error:
+            return amount_error
+
+        return self.perform_payment(order_info, request, serializer_class)
+
+    def extract_order_info(self, serializer_class, data):
+        order_getter = serializer_class.game_order_info
+        order_info_class = order_getter(data)
+        order_info = order_info_class.get_order_info()
+        if not order_info:
+            return Response({"message": "Order information could not be retrieved."}, status=status.HTTP_400_BAD_REQUEST)
+        return order_info
+
+    def check_amount(self, price):
+        if price < 10:
+            return Response({"message": "Minimum order amount is $10.00."}, status=status.HTTP_400_BAD_REQUEST)
+        return None
+
+    def get_serializer_class(self, game_type):
+        return self.serializer_mapping.get(game_type)
+    
+    def perform_payment(self, order_info, request, serializer_class):
+        model = serializer_class.order_model
+        token = TokenForPay.create_token_for_pay(request.user, order_info, model)
+        payment_url = self.create_payment(order_info, request, token)
+        if payment_url:
+            return Response({'url': payment_url})
+        else:
+            return Response({"message": "There was an issue connecting to the payment provider."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def create_payment(self, order_info, request, token):
+        if request.data.get('cryptomus') != 'false':
+
+            return cryptomus_payment(order_info, request, token)
+        else:
+            return paypal_payment(order_info, request, token)        

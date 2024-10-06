@@ -1,8 +1,10 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
-from ..utils import get_rank_from_rp, extract_bundle_id
+from ..utils import get_rank_from_rp, extract_bundle_id, extract_bosses_ids, get_map_id
 from WorldOfWarcraft.models import WorldOfWarcraftBundle
+from .order_information import WOW_AOI, WOW_LOI, WOW_RSOI, WOW_RBOI, WOW_DSOI
+from ..models import WorldOfWarcraftArenaBoostOrder, WorldOfWarcraftRaidSimpleOrder, WorldOfWarcraftRaidBundleOrder, WowLevelUpOrder, WorldOfWarcraftDungeonSimpleOrder, WorldOfWarcraftBoss
 
 class ArenaSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=4, allow_null=True, required=False)
@@ -22,6 +24,13 @@ class ArenaSerializer(serializers.Serializer):
     price = serializers.FloatField(min_value=10)
     extend_order = serializers.IntegerField()
     promo_code = serializers.CharField()
+
+    # Order Info
+    game_id = serializers.HiddenField(default=6)
+    game_type = serializers.HiddenField(default='A')
+    game_order_info = WOW_AOI
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    order_model = WorldOfWarcraftArenaBoostOrder
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)
@@ -72,12 +81,43 @@ class RaidSimpleSerializer(serializers.Serializer):
     server = serializers.CharField(max_length=300)
     price = serializers.FloatField(min_value=10)
     promo_code = serializers.CharField()
+
+    # Order Info
+    game_id = serializers.IntegerField(min_value=6, max_value=6)
+    game_type = serializers.ChoiceField(choices = [('R', 'R')])
+    game_order_info = WOW_RSOI
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    order_model = WorldOfWarcraftRaidSimpleOrder
+
+    def validate(self, attrs):
+        self.validate_bosses_with_map(attrs)
+        return attrs
     
     def validate_server(self, value):
         valid_servers = ["EU", "US"]
         if value not in valid_servers:
             raise serializers.ValidationError("Invalid server selection")
         return value
+    def validate_bosses_with_map(self, attrs):
+        map_name = attrs.get('map', None)
+        map = get_map_id(map_name)
+
+        bosses_ids = attrs.get('bosses', None)
+        bosses = extract_bosses_ids(bosses_ids)
+        if not map or not bosses:
+            raise serializers.ValidationError("Invalid Map or Bosses")
+        if len(bosses) == 0:
+            raise serializers.ValidationError("Invalid Bosses")
+        for boss in bosses:
+            try:
+                WorldOfWarcraftBoss.objects.get(id=boss, map=map)
+            except WorldOfWarcraftBoss.DoesNotExist:
+                raise serializers.ValidationError("Invalid Bosses")
+        attrs['bosses'] = bosses   
+        attrs['map'] = map 
+        return attrs
+        
+
 
 
 class RaidBundleSerializer(serializers.Serializer):
@@ -92,17 +132,29 @@ class RaidBundleSerializer(serializers.Serializer):
     price = serializers.FloatField(min_value=10)
     promo_code = serializers.CharField()
 
+    # Order Info
+    game_id = serializers.IntegerField(min_value=6, max_value=6)
+    game_type = serializers.ChoiceField(choices = [('RB', 'RB')])
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    game_order_info = WOW_RBOI
+    order_model = WorldOfWarcraftRaidBundleOrder
+
+    def validate(self, attrs):
+        self.validate_bundle_value(attrs)
+        return attrs
+
     def validate_server(self, value):
         valid_servers = ["EU", "US"]
         if value not in valid_servers:
             raise serializers.ValidationError("Invalid server selection")
         return value
     
-    def validate_bundle_id(self, value):
+    def validate_bundle_value(self, attrs):
         try:
-            bundle_id = extract_bundle_id(value)
+            bundle_id = extract_bundle_id(attrs['bundle_id'])
             WorldOfWarcraftBundle.objects.get(id=bundle_id, mode=1)
-            return bundle_id
+            attrs['bundle_id'] = bundle_id
+            return attrs
         except WorldOfWarcraftBundle.DoesNotExist:
             raise serializers.ValidationError("Invalid Raid bundle")
             
@@ -157,6 +209,13 @@ class DungeonSimpleSerializer(serializers.Serializer):
     server = serializers.CharField(max_length=300)
     price = serializers.FloatField(min_value=10)
     promo_code = serializers.CharField()
+
+    # Order Info
+    game_id = serializers.IntegerField(min_value=6, max_value=6)
+    game_type = serializers.ChoiceField(choices = [('DU', 'DU')])
+    game_order_info = WOW_DSOI
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    order_model = WorldOfWarcraftDungeonSimpleOrder
     
     def validate_server(self, value):
         valid_servers = ["EU", "US"]
@@ -169,9 +228,6 @@ class DungeonSimpleSerializer(serializers.Serializer):
 
 
 class RaidLevelSerializer(serializers.Serializer):
-    game_id = serializers.IntegerField(min_value=6, max_value=6)
-    game_type = serializers.ChoiceField(choices = [('F', 'F')])
-
     current_level = serializers.IntegerField(min_value=1, max_value=80)
     desired_level = serializers.IntegerField(min_value=1, max_value=80)
 
@@ -181,3 +237,19 @@ class RaidLevelSerializer(serializers.Serializer):
     server = serializers.ChoiceField(choices = [('EU', 'EU'), ('US', 'US')])
     price = serializers.FloatField(min_value=10)
     promo_code = serializers.CharField()
+
+
+    # Order Info
+    game_id = serializers.IntegerField(min_value=6, max_value=6)
+    game_type = serializers.ChoiceField(choices = [('F', 'F')])
+    game_order_info = WOW_LOI
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+    order_model = WowLevelUpOrder
+
+    def validate_server(self, value):
+        valid_servers = ["EU", "US"]
+        if value not in valid_servers:
+            raise serializers.ValidationError("Invalid server selection")
+        return value
+
+

@@ -1,13 +1,12 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from pubg.models import *
+from pubg.models import PubgDivisionOrder, PubgRank, PubgTier
 from pubg.controller.serializers import DivisionSerializer
-from pubg.controller.order_information import *
 from booster.models import OrderRating
 from django.db.models import Sum, Case, When, IntegerField
 from accounts.models import BaseUser
 from pubg.utils import get_divisions_data, get_marks_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 def get_divisions_data_view(request):
@@ -55,8 +54,7 @@ def pubgGetBoosterByRank(request):
     return render(request,'pubg/GetBoosterByRank.html', context)
 
 
-# Paypal
-class PubgPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
+class PubgPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
     }

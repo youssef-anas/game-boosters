@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from accounts.models import BaseUser
 from honorOfKings.utils import get_hok_divisions_data, get_hok_marks_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 def get_hok_divisions_data_view(request):
@@ -58,7 +58,7 @@ def honerOfKingeGetBoosterByRank(request):
   return render(request,'honorOfKings/GetBoosterByRank.html', context)
 
 
-class HOKPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
+class HOKPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
     }

@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from ..models import MobileLegendsDivisionOrder, MobileLegendsPlacementOrder
+from .order_information import MOBLEG_DOI, MOBLEG_POI
 
 class DivisionSerializer(serializers.Serializer):
     current_rank        = serializers.IntegerField(min_value=1, max_value=9)
@@ -17,6 +19,13 @@ class DivisionSerializer(serializers.Serializer):
     extend_order        = serializers.IntegerField()
     promo_code          = serializers.CharField()
     server              = serializers.CharField()
+
+    # Order Info
+    game_id = serializers.HiddenField(default=8)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = MOBLEG_DOI
+    order_model = MobileLegendsDivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)
@@ -64,6 +73,13 @@ class PlacementSerializer(serializers.Serializer):
     streaming           = serializers.BooleanField()
     server              = serializers.CharField()
     choose_booster      = serializers.IntegerField()
+
+    # Order Info
+    game_id = serializers.HiddenField(default=8)
+    game_type = serializers.HiddenField(default='P')
+    game_order_info = MOBLEG_POI
+    order_model = MobileLegendsPlacementOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.booster_validate(attrs)

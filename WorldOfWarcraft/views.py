@@ -2,12 +2,11 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, WorldOfWarcraftArenaBoostOrder, WorldOfWarcraftBoss, WorldOfWarcraftBundle
 from WorldOfWarcraft.controller.serializers import ArenaSerializer, RaidSimpleSerializer, RaidBundleSerializer, DungeonSimpleSerializer, RaidLevelSerializer
-from WorldOfWarcraft.controller.order_information import get_arena_order_result_by_rank, get_raid_simple_price_by_bosses, get_raid_bundle_order_info, get_dungeon_order_info, get_level_up_price_form_serilaizer
 from booster.models import OrderRating
 from django.db.models import Sum, Case, When, IntegerField
 from accounts.models import BaseUser
 from .utils import get_level_up_price, get_keyston_price
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 def get_wow_prices_data_view(request):
     prices = WorldOfWarcraftRpsPrice.objects.all().first()
@@ -60,11 +59,11 @@ def wowGetBoosterByRank(request):
   }
   return render(request,'wow/GetBoosterByRank.html', context)
 
-class WowPaymenApiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'R': [RaidSimpleSerializer, get_raid_simple_price_by_bosses],
-        'A': [ArenaSerializer, get_arena_order_result_by_rank],
-        'RB': [RaidBundleSerializer, get_raid_bundle_order_info],
-        'DU': [DungeonSimpleSerializer, get_dungeon_order_info],
-        'F': [RaidLevelSerializer, get_level_up_price_form_serilaizer],
+class WowPaymenApiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'R': RaidSimpleSerializer,
+        'A': ArenaSerializer,
+        'RB': RaidBundleSerializer,
+        'DU': DungeonSimpleSerializer,
+        'F': RaidLevelSerializer,
     }

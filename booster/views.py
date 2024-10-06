@@ -27,6 +27,7 @@ from gameBoosterss.utils import upload_image_to_firebase, get_booster_game_ids, 
 import uuid
 from gameBoosterss.permissions import IsBooster
 from django.views.generic import View
+import copy
 
 
 # def register_booster_view(request):
@@ -58,7 +59,6 @@ def booster_setting(request):
             if profile_form.is_valid():
                 if request.FILES:
                     img= request.FILES.get('profile_image', None)
-                    print(img)
                     ext = img.name.split('.')[-1]
                     img.file.seek(0)
 
@@ -67,7 +67,6 @@ def booster_setting(request):
 
                     booster = Booster.objects.get(booster = request.user)
                     booster.profile_image = url
-                    print(booster.profile_image)
                     booster.save()
                     booster.booster.save()
                 profile_form.save()
@@ -135,7 +134,6 @@ class ClaimOrderView(View):
                 order.booster = request.user
                 order.save()
             except Exception as e:
-                print(f"Error updating order: {e}")
                 return HttpResponseBadRequest(f"Error updating order{e}")
         else:
             messages.error(request, "You aren't playing this game!")
@@ -177,7 +175,6 @@ def boosters(request):
     try:
         game_id = int(game_id)
     except (TypeError, ValueError):
-        print(f"Invalid game_id: {game_id}")
         game_id = 1  # Default game_id if none provided or invalid
 
     game_pk_condition = Case(
@@ -425,61 +422,59 @@ def upload_finish_image(request):
 @login_required
 def drop_order(request, order_id):
     if request.method == 'POST':
-        base_order = get_object_or_404(BaseOrder ,id =order_id, booster= request.user)
-        content_type = base_order.content_type
-        if content_type:
-
-            order = content_type.model_class().objects.get(order_id=base_order.object_id)
-            base_order.is_drop = True
-            base_order.is_done = True
-            invoice = order.order.invoice.split('-')
-
-
-            invoice[3]= str(order.reached_rank.id) 
-            invoice[4]= str(order.reached_division)
-            invoice[5]= str(order.reached_marks)
-
-            customer_price = order.get_order_price()
-            invoice[15]= str(customer_price['main_price'])
-            percent = customer_price['percent']
-
-
-            new_invoice = '-'.join(invoice)
-            
-            payer_id = order.order.payer_id
-            customer = order.order.customer
-            
-            new_order = create_order(new_invoice, payer_id, customer, 'Continue', order.order.name, extra = percent)
-            new_order.order.customer_gamename = order.order.customer_gamename
-            new_order.order.customer_password = order.order.customer_password
-            new_order.order.customer_server = order.order.customer_server
-            new_order.order.booster = None
-            new_order.order.save()
-            order.order.save()
-            order.save()
-            base_order.save()
-
-            room = Room.get_specific_room(customer=order.order.customer, order_name=order.order.name)
-
-            drop_message = 'Your order has been dropped.\nPlease wait for another booster to accept your order.'
-            Message.objects.create(content=drop_message, user_id= 1, room=room, msg_type=1)
-
-
-            send_refresh_msg(request.user.username , base_order.customer.username, base_order.name)
-
-            refresh_order_page()
+        old_order = get_object_or_404(BaseOrder ,id =order_id, booster= request.user)
+        if old_order.is_done:
             return redirect(reverse_lazy('booster.orders'))
-        # except:
-        #     return JsonResponse({'Drop Success': False})
+        
+        old_game = old_order.related_order
+
+
+        customer_price = old_game.get_order_price()
+        new_price= customer_price['main_price']
+        percent = customer_price['percent']
+        actual_price = round(new_price * (percent / 100),2)
+
+        new_order = copy.deepcopy(old_order)
+        new_order.pk = None
+        new_order.save()
+
+        new_game = copy.deepcopy(old_game)
+        new_game.pk = None
+        new_game.current_rank_id = old_game.reached_rank.id
+        new_game.current_division = old_game.reached_division
+        new_game.current_marks = old_game.reached_marks
+        new_game.order = new_order
+        new_game.save()
+
+        new_order.object_id = new_game.pk
+        new_order.details = new_game.__str__()
+        new_order.booster = None
+        new_order.price = new_price
+        new_order.money_owed = 0
+        new_order.status = 'Droped'
+        new_order.actual_price = actual_price
+        new_order.save()
+
+        old_order.is_drop = True
+        old_order.is_done = True
+        old_order.status = 'Droped'
+        old_order.save()
+
+        room = Room.get_specific_room(customer=old_order.customer, order_name=old_order.name)
+        drop_message = 'Your order has been dropped.\nPlease wait for another booster to accept your order.'
+        Message.objects.create(content=drop_message, user_id= 1, room=room, msg_type=1)
+        send_refresh_msg(request.user.username , old_order.customer.username, old_order.name)
+        refresh_order_page()
+
+        new_game.send_discord_notification()
+        return redirect(reverse_lazy('booster.orders'))
     return JsonResponse({'success': False})
 
 @login_required
 def update_rating(request, order_id):
     if request.method == 'POST':
         base_order = get_object_or_404(BaseOrder,id=order_id, booster=request.user)
-        contect_type = base_order.content_type
-        if contect_type :
-            game = contect_type.model_class().objects.get(order = base_order)
+        game = base_order.related_order
         
         reached_division = request.POST.get('reached_division', 1)
         reached_marks = request.POST.get('reached_marks', 0)

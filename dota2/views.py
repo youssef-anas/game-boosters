@@ -14,7 +14,7 @@ from accounts.models import BaseUser
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from dota2.utils import get_division_prices, get_placement_prices
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 def division_prices_view(request):
@@ -69,8 +69,8 @@ def dota2GetBoosterByRank(request):
   return render(request,'dota2/GetBoosterByRank.html', context)
 
 
-class DOTA2PaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'A': [RankBoostSerializer, get_rank_boost_order_result_by_rank],
-        'P': [PlacementSerializer, get_palcement_order_result_by_rank],
+class DOTA2PaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'A': RankBoostSerializer,
+        'P': PlacementSerializer,
     }

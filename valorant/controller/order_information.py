@@ -1,9 +1,6 @@
 from django.shortcuts import get_object_or_404
-from wildRift.models import *
-import json
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from accounts.models import PromoCode
+from accounts.models import PromoCode, BaseOrder
 from booster.models import Booster
 from valorant.utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
 
@@ -203,3 +200,26 @@ def get_placement_order_result_by_rank(data):
   name = f'VALORANT, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+
+
+
+
+
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ChampionOrder, ExtendOrder
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
+from gameBoosterss.order_info.placement import PlacementGameOrderInfo
+
+
+
+class ValorantDOI(BaseOrderInfo, ChampionOrder, ExtendOrder, DivisionGameOrderInfo):
+    division_prices_data = get_valorant_divisions_data()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = get_valorant_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+    division_number = 3
+
+class VlorantPOI(BaseOrderInfo, ChampionOrder, PlacementGameOrderInfo):
+  placement_data = get_valorant_placements_data()

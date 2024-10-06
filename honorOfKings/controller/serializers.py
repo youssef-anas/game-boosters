@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from ..models import HonorOfKingsDivisionOrder
+from .order_information import HOK_DOI
 
 class DivisionSerializer(serializers.Serializer):
   current_rank        = serializers.IntegerField(min_value=1, max_value=6)
@@ -17,6 +19,13 @@ class DivisionSerializer(serializers.Serializer):
   choose_booster      = serializers.IntegerField()
   extend_order        = serializers.IntegerField()
   promo_code          = serializers.CharField()
+
+  # Order Info
+  game_id = serializers.HiddenField(default=11)
+  game_type = serializers.HiddenField(default='D')
+  game_order_info = HOK_DOI
+  order_model = HonorOfKingsDivisionOrder
+  cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
   def validate(self, attrs):
     self.extend_order_validate(attrs)

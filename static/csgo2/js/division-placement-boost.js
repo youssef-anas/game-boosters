@@ -219,6 +219,7 @@ Promise.all([
         const current_rank = valuesToSet[0];
         const current_division = valuesToSet[1];
         const mark_index = valuesToSet[2];
+        console.log(current_rank)
         
         const current_rank_name = divisionRanks[current_rank];
         const desired_rank_name = divisionRanks[desired_rank];
@@ -227,7 +228,7 @@ Promise.all([
         division_server_select_element.value = server
         
         const startRank = ((valuesToSet[3] - 1) * 1) + 1; // 1 = current division
-        const endRank = ((desired_rank - 1) * 1) + desired_division-1;
+        const endRank = ((desired_rank - 1) * 1) ;
         const slicedArr = sliceArray(divisionPrices, startRank, endRank);
         
         const sum = slicedArr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -252,6 +253,7 @@ Promise.all([
         $('.division-boost .desired-rank-selected-img').attr('src', $(desiredElement).data('img'))
   
         $('.division-boost .desired-selected-info').html(`${desired_rank_name}`)
+        $('.division-boost .current-selected-info').html(`${current_rank_name}`)
   
         $('.current').removeClass().addClass(`current ${current_rank_name}`)
         $('.desired').removeClass().addClass(`desired ${desired_rank_name}`)
@@ -367,7 +369,7 @@ Promise.all([
       const desired_rank_name = divisionRanks[desired_rank];
 
       const startRank = ((current_rank - 1) * 1) + 1;
-      const endRank = ((desired_rank - 1) * 1) + 1 - 1;
+      const endRank = ((desired_rank - 1) * 1);
       const slicedArray = sliceArray(divisionPrices, startRank, endRank);
       let result = slicedArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
       let result_with_mark = result

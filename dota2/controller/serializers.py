@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from ..models import Dota2PlacementOrder, Dota2RankBoostOrder
+from .order_information import Dota2_AOI, Dota2_POI
+
+
 class RankBoostSerializer(serializers.Serializer):
 
     current_rank        = serializers.IntegerField(min_value=1, max_value=8)
@@ -17,6 +21,15 @@ class RankBoostSerializer(serializers.Serializer):
     choose_booster      = serializers.IntegerField()
     extend_order        = serializers.IntegerField()
     promo_code          = serializers.CharField()
+
+    marks = serializers.HiddenField(default=0)
+
+    # Order Info
+    game_id = serializers.HiddenField(default=10)
+    game_type = serializers.HiddenField(default='A')
+    game_order_info = Dota2_AOI
+    order_model = Dota2RankBoostOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)
@@ -68,6 +81,13 @@ class PlacementSerializer(serializers.Serializer):
     choose_booster      = serializers.IntegerField()
     extend_order        = serializers.IntegerField()
     promo_code          = serializers.CharField()
+
+    # Order Info
+    game_id = serializers.HiddenField(default=10)
+    game_type = serializers.HiddenField(default='P')
+    game_order_info = Dota2_POI
+    order_model = Dota2PlacementOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)

@@ -59,7 +59,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
         ('Order Info', {'fields': ('customer','booster','is_done')}),
         ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
         ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
-        ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server')}),
+        ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server', 'customer_password')}),
     )
 
 
@@ -79,8 +79,8 @@ class BaseOrderAdmin(admin.ModelAdmin):
 
     chat_link.short_description = 'Chat'
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
 admin.site.register(BaseOrder, BaseOrderAdmin)
 
@@ -99,7 +99,7 @@ class TransactionAdmin(admin.ModelAdmin):
 # admin.site.register(Room, NoDeleteEditAdmin)
 # admin.site.register(Message, NoDeleteEditAdmin)
 # admin.site.register(Captcha, NoDeleteEditAdmin)
-admin.site.register(TokenForPay, NoDeleteEditAdmin)
+admin.site.register(TokenForPay)
 admin.site.register(LogEntry, NoDeleteEditAdmin)
 admin.site.register(Wallet, NoDeleteEditAdmin)
 admin.site.register(Transaction, TransactionAdmin)

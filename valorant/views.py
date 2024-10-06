@@ -9,9 +9,7 @@ from customer.models import Champion
 from accounts.models import BaseUser
 from django.db.models import Sum, Case, When, IntegerField
 from .utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
-from gameBoosterss.utils import MadBoostPayment
-
-from .controller.order_information import get_division_order_result_by_rank, get_placement_order_result_by_rank
+from gameBoosterss.utils import MadBoostPayment, NewMadBoostPayment
 
 def valorant_divisions_data(request):
     divisions_data = get_valorant_divisions_data()
@@ -68,8 +66,14 @@ def valorantGetBoosterByRank(request):
   return render(request,'valorant/GetBoosterByRank.html', context)
 
 
-class ValoPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+# class ValoPaymentAPiView(MadBoostPayment):
+#     serializer_orderInfo_mapping = {
+#         'D': [DivisionSerializer, get_division_order_result_by_rank],
+#         'P': [PlacementSerializer, get_placement_order_result_by_rank],
+#     }
+
+class ValoPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer,
     }

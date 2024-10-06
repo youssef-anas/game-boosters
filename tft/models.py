@@ -47,6 +47,32 @@ class TFTPlacement(models.Model):
   def get_image_url(self):
     return self.rank_image.url
   
+
+def get_tft_divisions_data():
+    divisions = TFTTier.objects.all().order_by('id')
+    divisions_data = [
+        [division.from_IV_to_III, division.from_III_to_II, division.from_II_to_I, division.from_I_to_IV_next]
+        for division in divisions
+    ]
+    return divisions_data
+
+def get_tft_marks_data():
+    marks = TFTMark.objects.all().order_by('id')
+    marks_data = [
+        [mark.marks_0_20, mark.marks_21_40, mark.marks_41_60, mark.marks_61_80, mark.marks_81_100]
+        for mark in marks
+    ]
+    return marks_data
+
+def get_tft_placements_data():
+    placements = TFTPlacement.objects.all().order_by('id')
+    placements_data = [
+        placement.price
+        for placement in placements
+    ]
+    return placements_data
+  
+  
 class TFTDivisionOrder(models.Model):
   DIVISION_CHOICES = [
     (1, 'IV'),
@@ -130,14 +156,12 @@ class TFTDivisionOrder(models.Model):
   
   def get_order_price(self):
     # Read data from JSON file
-    with open('static/tft/data/divisions_data.json', 'r') as file:
-      division_price = json.load(file)
-      flattened_data = [item for sublist in division_price for item in sublist]
-      flattened_data.insert(0,0)
+    division_price = get_tft_divisions_data()
+    flattened_data = [item for sublist in division_price for item in sublist]
+    flattened_data.insert(0,0)
     ##
-    with open('static/tft/data/marks_data.json', 'r') as file:
-      marks_data = json.load(file)
-      marks_data.insert(0,[0,0,0,0,0,0])
+    marks_data = get_tft_marks_data()
+    marks_data.insert(0,[0,0,0,0,0,0])
     ##   
           
     try:

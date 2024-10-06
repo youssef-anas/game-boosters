@@ -14,7 +14,7 @@ from django.db.models import Count, Sum, Case, When, FloatField, F, Q, Avg, Inte
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_wildrift_divisions_data, get_wildrift_marks_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 from .controller.order_information import get_order_result_by_rank
 
 
@@ -66,7 +66,7 @@ def wildRiftGetBoosterByRank(request):
     }
     return render(request,'wildRift/GetBoosterByRank.html', context)
 
-class WRPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [RankSerializer, get_order_result_by_rank],
+class WRPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': RankSerializer,
     }

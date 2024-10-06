@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from booster.models import Booster
 from accounts.models import BaseOrder
+from ..models import HearthstoneDivisionOrder, HearthStoneBattleOrder
+from .order_information import HS_DOI, HS_AOI
 
 class DivisionSerializer(serializers.Serializer):
   current_rank        = serializers.IntegerField(min_value=1, max_value=5)
@@ -18,6 +20,13 @@ class DivisionSerializer(serializers.Serializer):
   promo_code          = serializers.CharField()
   server              = serializers.CharField()
   pass_extend = False
+
+  # Order Info
+  game_id = serializers.HiddenField(default=7)
+  game_type = serializers.HiddenField(default='D')
+  game_order_info = HS_DOI
+  order_model = HearthstoneDivisionOrder
+  cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
   def validate(self, attrs):
     self.extend_order_validate(attrs)
@@ -72,6 +81,21 @@ class BattleSerializer(serializers.Serializer):
   promo_code          = serializers.CharField()
   server              = serializers.CharField()
   pass_extend = False
+
+
+  # defaults
+  current_rank = serializers.HiddenField(default=1)
+  desired_rank = serializers.HiddenField(default=1)
+  marks = serializers.HiddenField(default=0)
+
+
+  # Order Info
+  game_id = serializers.HiddenField(default=7)
+  game_type = serializers.HiddenField(default='A')
+  game_order_info = HS_AOI
+  order_model = HearthStoneBattleOrder
+  cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+
   def validate(self, attrs):
     self.extend_order_validate(attrs)
     if self.pass_extend == False:

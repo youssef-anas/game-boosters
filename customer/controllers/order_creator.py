@@ -145,10 +145,9 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 actual_price = extend_order.actual_price
                 main_price = extend_order.price
                 percent = round(actual_price / (main_price/100))
-                print('percent is :: \n\n\n\n\n\n\n\n\n',percent,'\n')
 
                 new_order_price = price + extend_order_price
-                extend_order_actual_price = new_order_price* (percent/100)
+                extend_order_actual_price = new_order_price * (percent/100)
                 
                 if game_id == 12 or game_id == 10 :
                     extend_order_role = extend_order_game.role
@@ -269,7 +268,6 @@ def create_order(invoice, payer_id, customer, status='New', name = None, extra =
                 print(f'error in game id idk why ? game id:{game_id} game type:{game_type}')    
 
         elif status == 'Extend':
-            print(f"order extended from:  {order_name}")
             baseOrder = BaseOrder.objects.create(invoice=invoice, booster=extend_order_booster,duo_boosting=duo_boosting, select_booster=select_booster, turbo_boost=turbo_boost,streaming=streaming, customer=extend_order_customer,payer_id=payer_id, customer_gamename=extend_order_customer_gamename, customer_username=extend_order_customer_username ,customer_password=extend_order_customer_password, customer_server=extend_order_server,name = order_name, money_owed =extend_order_money_owed, price = new_order_price, data_correct = extend_order_data_correct,promo_code=extend_order_promo_code, status = "Extend",game_id =extend_order_game_id, actual_price=extend_order_actual_price, game_type= game_type,)
             extend_fields = {
                 'order': baseOrder,

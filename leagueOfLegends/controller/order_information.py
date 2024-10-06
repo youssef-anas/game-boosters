@@ -198,3 +198,21 @@ def get_placement_order_result_by_rank(data):
   name = f'LOL, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ChampionOrder, ExtendOrder
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
+from gameBoosterss.order_info.placement import PlacementGameOrderInfo
+
+
+
+class LOL_DOI(BaseOrderInfo, ChampionOrder, ExtendOrder, DivisionGameOrderInfo):
+    division_prices_data = get_lol_divisions_data()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = get_lol_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
+    division_number = 4
+
+class LOL_POI(BaseOrderInfo, ChampionOrder, PlacementGameOrderInfo):
+  placement_data = get_lol_placements_data()

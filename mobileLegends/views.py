@@ -14,7 +14,7 @@ from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from accounts.models import BaseUser
 from .utils import get_mobile_legends_divisions_data, get_mobile_legends_marks_data, get_mobile_legends_placements_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 
@@ -71,8 +71,8 @@ def MobileLegendsGetBoosterByRank(request):
   }
   return render(request,'mobileLegends/GetBoosterByRank.html', context)
 
-class MobLegPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+class MobLegPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer
     }

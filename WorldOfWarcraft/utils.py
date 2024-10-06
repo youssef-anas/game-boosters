@@ -1,6 +1,8 @@
 from WorldOfWarcraft.models import KeystonePrice, WowLevelUpPrice
 
 def extract_bosses_ids(boss_string):
+    if not boss_string:
+        return []
     bosses = boss_string.split(',')
     ids = [int(boss[4:]) for boss in bosses]
     return ids
@@ -34,3 +36,15 @@ def get_rank_from_rp(rp):
 
     if rp < 1600: 
       return 1
+    
+def get_map_id (map_name):
+    if map_name == 'incarnates':
+        map = 1
+
+    if map_name == 'crucible':
+        map = 2
+
+    if map_name == 'amirdrassil':
+        map = 3  
+
+    return map    
