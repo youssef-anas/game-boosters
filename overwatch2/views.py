@@ -8,7 +8,7 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from accounts.models import BaseUser
 from .utils import get_overwatch2_divisions_data, get_overwatch2_marks_data, get_overwatch2_placements_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 
@@ -70,8 +70,8 @@ def overwatch2GetBoosterByRank(request):
   return render(request,'overwatch2/GetBoosterByRank.html', context)
 
 
-class Overwatch2PaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+class Overwatch2PaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer,
     }

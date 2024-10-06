@@ -13,7 +13,7 @@ from .utils import (
     get_rocket_league_seasonals_data,
     get_rocket_league_tournaments_data
 )
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 def rocket_league_divisions_data_api(request):
     divisions_data = get_rocket_league_divisions_data()
@@ -76,10 +76,10 @@ def rocketLeagueGetBoosterByRank(request):
   return render(request,'rocketLeague/GetBoosterByRank.html', context)
 
 # Paypal
-class RocketLeaguePaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
-        'S': [SeasonalSerializer, get_seasonal_order_result_by_rank],
-        'T': [TournamentSerializer, get_tournament_order_result_by_rank],
+class RocketLeaguePaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer,
+        'S': SeasonalSerializer,
+        'T': TournamentSerializer,
     }

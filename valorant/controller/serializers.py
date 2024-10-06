@@ -2,6 +2,8 @@ from rest_framework import serializers
 from accounts.models import BaseOrder
 from customer.models import Champion
 from booster.models import Booster
+from .order_information import ValorantDOI, VlorantPOI
+from valorant.models import ValorantDivisionOrder, ValorantPlacementOrder
 
 class DivisionSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=8)
@@ -22,6 +24,13 @@ class DivisionSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     extend_order = serializers.IntegerField()
     promo_code = serializers.CharField(allow_blank=True)
+
+    # Order Info
+    game_id = serializers.HiddenField(default=2)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = ValorantDOI
+    order_model = ValorantDivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)
@@ -60,8 +69,8 @@ class DivisionSerializer(serializers.Serializer):
     def champion_validate(self, attrs):
             champion_data = attrs.get('champion_data', None)
             select_champion = attrs.get('select_champion', None)
+            numbers_list = []
             if champion_data and champion_data != 'null' and select_champion:
-                numbers_list = None
                 try:
                     numbers_list = [int(num) for num in champion_data.split("ch") if num]
                 except ValueError:
@@ -73,6 +82,8 @@ class DivisionSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 2)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Valorent.")
+            attrs['champion_data'] = numbers_list        
+            return attrs    
                     
     def validate_server(self, value):
         valid_servers = ["North America", "Europe", "Asia Pacific"]
@@ -97,6 +108,13 @@ class PlacementSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     champion_data = serializers.CharField(allow_blank=True)
     promo_code = serializers.CharField()
+
+        # Order Info
+    game_id = serializers.HiddenField(default=2)
+    game_type = serializers.HiddenField(default='P')
+    game_order_info = VlorantPOI
+    order_model = ValorantPlacementOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)
@@ -134,6 +152,7 @@ class PlacementSerializer(serializers.Serializer):
     def champion_validate(self, attrs):
             champion_data = attrs.get('champion_data', None)
             select_champion = attrs.get('select_champion', None)
+            numbers_list = []
             if champion_data and champion_data != 'null' and select_champion:
                 numbers_list = None
                 try:
@@ -147,6 +166,8 @@ class PlacementSerializer(serializers.Serializer):
                         Champion.objects.get(id=id, game__id = 2)
                     except Champion.DoesNotExist:
                         raise serializers.ValidationError("This champion is not belong to Valorent.")
+            attrs['champion_data'] = numbers_list        
+            return attrs        
 
     def validate_server(self, value):
         valid_servers = ["North America", "Europe", "Asia Pacific"]

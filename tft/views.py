@@ -1,11 +1,20 @@
 from django.shortcuts import render
 from tft.models import *
 from tft.controller.serializers import DivisionSerializer, PlacementSerializer
-from tft.controller.order_information import get_division_order_result_by_rank, get_placement_order_result_by_rank
 from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from accounts.models import BaseUser
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
+from django.http import JsonResponse
+from .utils import get_tft_divisions_data, get_tft_marks_data
+
+def get_tft_divisions_data_view(request):
+    divisions_data = get_tft_divisions_data()
+    return JsonResponse(divisions_data, safe=False)
+
+def get_tft_marks_data_view(request):
+    marks_data = get_tft_marks_data()
+    return JsonResponse(marks_data, safe=False)
 
 
 def tftGetBoosterByRank(request):
@@ -47,8 +56,9 @@ def tftGetBoosterByRank(request):
   }
   return render(request,'tft/GetBoosterByRank.html', context)
 
-class TFTPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+
+class TFTPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer,
     }

@@ -35,12 +35,14 @@ class RankSerializer(serializers.Serializer):
 
 
     # Order Info
-    game_id = serializers.IntegerField(default=1)
-    game_type = serializers.CharField(default='D')
+    game_id = serializers.HiddenField(default=1)
+    game_type = serializers.HiddenField(default='D')
     game_order_info = WildRiftDivisionOrderInfo
     order_model = WildRiftDivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
+        pass_validate = False
         current_rank_id = attrs.get('current_rank')
         current_marks = attrs.get('marks')
         desired_rank_id = attrs.get('desired_rank')
@@ -54,9 +56,10 @@ class RankSerializer(serializers.Serializer):
             desired_division = attrs.get('desired_division')
             validate_master_division(desired_division)
 
-        self.extend_order_validate(attrs)
-        self.booster_validate(attrs)
-        self.champion_validate(attrs)
+        pass_validate = self.extend_order_validate(attrs)
+        if not pass_validate:
+            self.booster_validate(attrs)
+            self.champion_validate(attrs)
         return attrs
     
     def extend_order_validate(self, attrs):
@@ -64,6 +67,7 @@ class RankSerializer(serializers.Serializer):
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=1, game_type='D')
+                return True
             except BaseOrder.DoesNotExist:
                 raise serializers.ValidationError("This order can't be extended")
   

@@ -144,16 +144,15 @@ WSGI_APPLICATION = 'gameBoosterss.wsgi.application'
 
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('NAME'),
-        "USER": os.getenv('USER'),
-        "PASSWORD": os.getenv('PASSWORD'),
-        "HOST": os.getenv('HOST'),
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dd1fclieooidrk',                      # Database name
+        'USER': 'u9bh05456995h7',                       # Database user
+        'PASSWORD': 'p3a2894dec3b52d008a9a1b24ec19a3a289a975f87a8ebb6f7dd08b0c4625c64f',   # Database password
+        'HOST': 'c2dr1dq7r4d57i.cluster-czz5s0kz4scl.eu-west-1.rds.amazonaws.com',        # Database host
+        'PORT': '5432',                                 # Database port
     }
 }
-
 
 
 # Password validation

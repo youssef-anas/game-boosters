@@ -10,15 +10,15 @@ Are you available?
         <p>You have a new request to check if you are available to play.</p>
         <p><strong>Order Details:</strong></p>
         <ul>
-            <li><strong>Order ID:</strong> {{ order.name }}</li>
-            <li><strong>Game:</strong> {{ order.game.name }}</li>
+            <li><strong>Order ID:</strong> WR411</li>
+            <li><strong>Game:</strong> Wild Rift</li>
             <li><strong>Requested Time:</strong> {{ requested_time }}</li>
         </ul>
         <p>Please let us know if you are available by clicking the button below:</p>
         {% if madboost_user.is_booster %}
-        <a href="{{ client_url }}/booster/orders/" class="button">Confirm Availability</a>
+        <a href="" class="button">Confirm Availability</a>
         {% else %}
-        <a href="{{ client_url }}/customer/customer_orders/{{ order.name }}/" class="button">Confirm Availability</a>
+        <a href="" class="button">Confirm Availability</a>
         {% endif %}
         <p>Thank you!</p>
     </div>

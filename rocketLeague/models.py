@@ -96,7 +96,7 @@ class RocketLeagueDivisionOrder(models.Model):
   ]
   order = models.OneToOneField(BaseOrder, on_delete=models.CASCADE, primary_key=True, default=None, related_name='rocketLeague_division_order')
 
-  ranked_type = models.IntegerField(choices=RANKED_TYPE,blank=True, null=True)
+  ranked_type = models.IntegerField(choices=RANKED_TYPE)
 
   current_rank = models.ForeignKey(RocketLeagueRank, on_delete=models.CASCADE, default=None, related_name='current_rank',blank=True, null=True)
 
@@ -222,7 +222,6 @@ class RocketLeagueDivisionOrder(models.Model):
 
     percent = round(actual_price / (main_price/100))
 
-    print(percent)
 
     booster_price = custom_price * (percent/100)
 

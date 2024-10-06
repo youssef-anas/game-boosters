@@ -7,7 +7,7 @@ from booster.models import OrderRating
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from accounts.models import BaseUser
 from hearthstone.utils import get_hearthstone_divisions_data, get_hearthstone_marks_data, get_hearthstone_battle_prices
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 
 
@@ -63,9 +63,9 @@ def hearthstoneGetBoosterByRank(request):
   }
   return render(request,'hearthstone/GetBoosterByRank.html', context)
 
-# Paypal
-class HearthstonePaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'A': [BattleSerializer, get_battle_order_result],
+
+class HearthstonePaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'A': BattleSerializer,
     }

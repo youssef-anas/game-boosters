@@ -7,20 +7,54 @@ class ChampionOrder:
 
 
 class ExtendOrder:
-    extend_order_price = 0
-
     def get_extend_order_info(self):
-        # if self.data['extend_order'] > 0:
-            try :
-                _extended_order = BaseOrder.objects.get(id=self.data['extend_order'])
-                self.extend_order_price = _extended_order.price
-            except BaseOrder.DoesNotExist:
-                _extended_order = None
-            self.extra_order.update({'extend_order': self.data['extend_order']})    
+        try :
+            _extend_order = BaseOrder.objects.get(id=self.data['extend_order'])
+            self.extend_order_price = _extend_order.price
+            self.extend_order = self.data['extend_order']  
+
+            extend_fields = [
+                'customer_gamename', 'customer_password', 'customer_username',
+                'data_correct', 'money_owed', 'name'
+            ] 
+            extend_data = [
+                'duo_boosting', 'select_booster', 'turbo_boost', 'streaming'
+            ]
+
+            # for new order when create
+            for field in extend_fields:
+                self.base_order.update({field: getattr(_extend_order, field)})
+            self.base_order.update({'customer_id': _extend_order.customer.id})
+            self.base_order.update({'status': 'Extend'})
+    
+            # for other part of classes use
+            # and other part will pass the value
+            for field in extend_data:
+                self.data.update({field: getattr(_extend_order, field)})
+            self.data.update({'promo_code': _extend_order.promo_code.code}) if _extend_order.promo_code else None
+            self.data.update({'choose_booster': _extend_order.booster.id}) if _extend_order.booster else None
+            self.data.update({'server': _extend_order.customer_server})
+
+        except BaseOrder.DoesNotExist:
+            self.extend_order_price = 0
+        self.extend_order = self.data['extend_order']    
+        self.extra_order.update({'extend_order': self.extend_order})   
+
             
 class BaseOrderInfo:
+    extend_order_price = 0
     base_order = {}
     extra_order = {}
+
+    def apply_extra_price(self, price):
+        price += (price * self.total_percent/100)
+        price -= price * (self.promo_code_amount/100)
+        print('data', self.data.get('cryptomus'))
+        if self.data.get('cryptomus'):
+
+            price -= price * (5/100)
+        price = round(price, 2)
+        return price
 
     def get_percent_price(self):
         return {
@@ -45,13 +79,13 @@ class BaseOrderInfo:
         self.base_order.update({'game_type': self.data['game_type']})
 
 
-        self.get_totla_percent_price()
-        self.get_promo_code_info()
-        self.get_booster()
         if hasattr(self, 'get_extend_order_info'):
             self.get_extend_order_info()
         if hasattr(self, 'get_champion_info'):
             self.get_champion_info()    
+        self.get_totla_percent_price()
+        self.get_promo_code_info()
+        self.get_booster()
 
 
     def get_totla_percent_price(self):
@@ -68,8 +102,8 @@ class BaseOrderInfo:
         self.boost_options = _boost_options
     
     def get_booster(self):
-        if self.data['choose_booster'] > 0:
-            booster_id = self.data['choose_booster']
-        else:
-            booster_id = None
+        booster_id = None
+        if 'choose_booster' in self.data:
+            if self.data['choose_booster'] > 0:
+                booster_id = self.data['choose_booster']
         self.base_order.update({'booster_id': booster_id})    

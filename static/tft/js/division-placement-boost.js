@@ -29,13 +29,13 @@ let marks_price = [[0, 0, 0, 0, 0, 0]];
 let doubleup = 0;
 Promise.all([
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/tft/data/divisions_data.json', function (data) {
+    $.getJSON('/tft/division/', function (data) {
       divisionPrices = divisionPrices.concat(...data);
       resolve();
     });
   }),
   new Promise(function (resolve, reject) {
-    $.getJSON('/static/tft/data/marks_data.json', function (data) {
+    $.getJSON('/tft/marks/', function (data) {
       marks_price = marks_price.concat(data.slice(0));
       resolve();
     });

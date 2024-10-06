@@ -2,6 +2,8 @@ from rest_framework import serializers
 from accounts.models import BaseOrder
 from customer.models import Champion
 from booster.models import Booster
+from ..models import LeagueOfLegendsDivisionOrder, LeagueOfLegendsPlacementOrder
+from .order_information import LOL_DOI, LOL_POI
 
 class DivisionSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=7)
@@ -26,10 +28,19 @@ class DivisionSerializer(serializers.Serializer):
 
     promo_code = serializers.CharField()
 
+    # Order Info
+    game_id = serializers.HiddenField(default=4)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = LOL_DOI
+    order_model = LeagueOfLegendsDivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+
     def validate(self, attrs):
-        self.extend_order_validate(attrs)
-        self.booster_validate(attrs)
-        self.champion_validate(attrs)
+        pass_validate = False
+        pass_validate =  self.extend_order_validate(attrs)
+        if not pass_validate:
+            self.booster_validate(attrs)
+            self.champion_validate(attrs)
         return attrs
     
     def extend_order_validate(self, attrs):
@@ -37,6 +48,7 @@ class DivisionSerializer(serializers.Serializer):
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=4 , game_type='D')
+                return True
             except BaseOrder.DoesNotExist:
                 raise serializers.ValidationError("This order can't be extended")
   
@@ -105,6 +117,14 @@ class PlacementSerializer(serializers.Serializer):
 
     promo_code = serializers.CharField()
     champion_data = serializers.CharField(allow_blank=True)
+
+
+    # Order Info
+    game_id = serializers.HiddenField(default=4)
+    game_type = serializers.HiddenField(default='P')
+    game_order_info = LOL_POI
+    order_model = LeagueOfLegendsPlacementOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
 
     def validate(self, attrs):

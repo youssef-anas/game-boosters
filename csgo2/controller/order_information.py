@@ -352,3 +352,37 @@ def get_faceit_order_result_by_rank(data):
     name = f'CS Go2, BOOSTING FROM {current_level} FACEIT Level TO {desired_level} FACEIT Level {boost_string}'
 
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ExtendOrder
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
+from gameBoosterss.order_info.arena_v2 import Arena_V2_GameOrderInfo 
+from gameBoosterss.order_info.levelup import LevelupGameOrderInfo
+
+
+class Csgo2_DOI(BaseOrderInfo, DivisionGameOrderInfo, ExtendOrder):
+    division_prices_data = get_division_prices()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+    division_number = 1
+
+    
+class Csgo2_AOI(BaseOrderInfo, Arena_V2_GameOrderInfo, ExtendOrder):
+    arena_prices = get_premier_prices()
+    # arena_prices.insert(0,0)
+
+    price1 = round(arena_prices[0] * 10 , 2)
+    price2 = round(arena_prices[1] * 6 , 2)
+    price3 = round(arena_prices[2] * 8 , 2)
+    price4 = round(arena_prices[3] * 14 , 2)
+    price5 = round(arena_prices[4] * 4 , 2)
+    price6 = round(arena_prices[5] * 8 , 2)
+    price7 = round(arena_prices[6] * 10.002 , 2) 
+    full_price_val = [price1, price2, price3, price4, price5, price6, price7]
+
+    points_value = 500
+    points_range = [4999, 7999, 11999, 18999, 20999, 24999, 30000]
+
+class Csgo2_FOI(BaseOrderInfo, LevelupGameOrderInfo):
+    faceit_prices = get_faceit_prices()

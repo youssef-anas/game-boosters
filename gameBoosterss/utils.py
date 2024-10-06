@@ -40,7 +40,7 @@ from rest_framework.views import APIView
 
 def cryptomus_payment(order_info, request, token):
     data = {
-        'amount': str(order_info['base_order']['price']),
+        'amount': str(order_info['extra_order']['price']),
         'currency': 'USDT',
         'to_currency': 'USDT',
         'network': 'TRON',
@@ -61,7 +61,7 @@ def cryptomus_payment(order_info, request, token):
     
     except Exception as e:
         print(f"Error in cryptomus_payment: {str(e)}")
-        raise
+        raise 
 
 
 def paypal_payment(order_info, request, token):
@@ -79,13 +79,13 @@ def paypal_payment(order_info, request, token):
                 "items": [{
                     "name": 'Boosting Order',
                     "sku": "item",
-                    "price": order_info['base_order']['price'],
+                    "price": order_info['extra_order']['price'],
                     "currency": "USD",
                     "quantity": 1
                 }]
             },
             "amount": {
-                "total": order_info['base_order']['price'],
+                "total": order_info['extra_order']['price'],
                 "currency": "USD"
             },
             "description": "Payment for Boosting order."
@@ -654,7 +654,7 @@ class NewMadBoostPayment(APIView):
         if isinstance(order_info, Response):
             return order_info
 
-        amount_error = self.check_amount(order_info['base_order']['price'])
+        amount_error = self.check_amount(order_info['extra_order']['price'])
         if amount_error:
             return amount_error
 
@@ -686,7 +686,8 @@ class NewMadBoostPayment(APIView):
             return Response({"message": "There was an issue connecting to the payment provider."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def create_payment(self, order_info, request, token):
-        if request.data.get('cryptomus'):
+        if request.data.get('cryptomus') != 'false':
+
             return cryptomus_payment(order_info, request, token)
         else:
             return paypal_payment(order_info, request, token)        

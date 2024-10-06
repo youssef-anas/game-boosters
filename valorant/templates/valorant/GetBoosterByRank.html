@@ -423,7 +423,7 @@
                 </div>
 
                   <div class="choose">
-                    <label class="switch" for="select-booster" onclick="togglePopupBooster()">
+                    <label class="switch" for="select-booster" {% if not order_get_rank_value %} onclick='togglePopupBooster()' {% endif %}>
                       <input type="checkbox" id="select-booster" name="extra-checkbox" value="selectBooster">
                         <span class="slider round"></span>
                     </label>

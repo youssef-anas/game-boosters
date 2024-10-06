@@ -73,10 +73,20 @@ def payment_sucess_view(request, token):
 
     champions = game_order_info.pop('champions', None)
 
-    base_order = BaseOrder.objects.create(**order_info['base_order'], invoice='invoice', payer_id=payer_id, customer=request.user, status='New',content_type=token_object.content_type)
+    bosses = game_order_info.pop('bosses', None)
+
+    status = 'New'
+    if order_info['base_order'].get('status', None):
+        status = order_info['base_order']['status']
+        order_info['base_order'].pop('status', None)
+
+    base_order = BaseOrder.objects.create(**order_info['base_order'], invoice='invoice', payer_id=payer_id, customer=request.user, status=status, content_type=token_object.content_type)
     game_order = GameType.objects.create(**game_order_info, order=base_order)
+    
     if champions:
         game_order.champions.set(champions)
+    if bosses:
+        game_order.bosses.set(bosses)    
 
     base_order.object_id = game_order.pk
     base_order.captcha_id =  random.randint(1, 2000)

@@ -211,4 +211,34 @@ def get_placement_order_result_by_rank(data):
   boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
   name = f'OVW2, BOOSTING OF {number_of_match} Start With {rank_names[last_rank]}{boost_string}'
 
-  return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+  return({'name':name,'price':price,'invoice':invoice_with_timestamp})\
+  
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ExtendOrder
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
+from gameBoosterss.order_info.placement import PlacementGameOrderInfo
+
+class OverWatch_DOI(BaseOrderInfo, ExtendOrder, DivisionGameOrderInfo):
+    division_prices_data = get_overwatch2_divisions_data()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = get_overwatch2_marks_data()
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+    division_number = 5
+
+    def get_totla_percent_price(self):
+      super().get_totla_percent_price()
+      if self.data['role'] == 3:
+        self.total_percent += 12
+
+    def get_game_info(self):
+      super().get_game_info()
+      self.game_order.update({'role': self.data['role']})
+
+    def get_game_info_extended(self):
+      super().get_game_info_extended()
+      self.game_order.update({'role': self.extend_game.role})      
+      self.data.update({'role': self.extend_game.role})
+
+class OverWatch_POI(BaseOrderInfo, PlacementGameOrderInfo):
+  placement_data = get_overwatch2_placements_data()      

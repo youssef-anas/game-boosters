@@ -114,7 +114,7 @@ def get_order_result_by_rank(data):
     return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 from gameBoosterss.order_info.orders import BaseOrderInfo, ChampionOrder, ExtendOrder
-from gameBoosterss.order_info.games import DivisionGameOrderInfo
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
 
 
 

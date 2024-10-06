@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from ..models import TFTDivisionOrder, TFTPlacementOrder
+from .order_information import TFT_DOI, TFT_POI
 
 class DivisionSerializer(serializers.Serializer):
     current_rank            = serializers.IntegerField(min_value=1, max_value=7)
@@ -20,7 +22,12 @@ class DivisionSerializer(serializers.Serializer):
     extend_order            = serializers.IntegerField()
     promo_code              = serializers.CharField()
 
-    double                  = serializers.BooleanField()
+    # Order Info
+    game_id = serializers.HiddenField(default=5)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = TFT_DOI
+    order_model = TFTDivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.booster_validate(attrs)
@@ -74,6 +81,14 @@ class PlacementSerializer(serializers.Serializer):
     price                   = serializers.FloatField(min_value=10)
     choose_booster          = serializers.IntegerField()
     promo_code              = serializers.CharField()
+
+
+    # Order Info
+    game_id = serializers.HiddenField(default=5)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = TFT_POI
+    order_model = TFTPlacementOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.booster_validate(attrs)

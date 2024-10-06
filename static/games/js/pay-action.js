@@ -51,6 +51,17 @@ document.addEventListener('DOMContentLoaded', function() {
       const form = getParentFormWIthBtnClicked(btn);
       form.action = paypalUrl;
       // Submit the form
+
+      // Create a hidden input field with name 'cryptomus' and value 'true'      
+      let cryptomusInput = form.querySelector('input[name="cryptomus"]');
+      if (!cryptomusInput) {
+          cryptomusInput = document.createElement('input');
+        }
+      cryptomusInput.type = 'hidden';
+      cryptomusInput.name = 'cryptomus';
+      cryptomusInput.value = 'false';
+      form.appendChild(cryptomusInput);
+        
       const formData = new FormData(form);
       getpaymentUrl(formData, paypalUrl)
     })
@@ -65,11 +76,15 @@ document.addEventListener('DOMContentLoaded', function() {
       const form = getParentFormWIthBtnClicked(btn);
       form.action = paypalUrl;
       
-      // Create a hidden input field with name 'cryptomus' and value 'true'
-      const cryptomusInput = document.createElement('input');
+      // Create a hidden input field with name 'cryptomus' and value 'true'      
+      let cryptomusInput = form.querySelector('input[name="cryptomus"]');
+      if (!cryptomusInput) {
+          cryptomusInput = document.createElement('input');
+        }
       cryptomusInput.type = 'hidden';
       cryptomusInput.name = 'cryptomus';
       cryptomusInput.value = 'true';
+      form.appendChild(cryptomusInput); 
 
       // Append the hidden input field to the form
       form.appendChild(cryptomusInput);

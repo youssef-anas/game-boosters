@@ -366,3 +366,76 @@ def get_tournament_order_result_by_rank(data):
   name = f'RL, BOOSTING OF {0} Start With {rank_names[current_league]}{boost_string}'
 
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
+
+from gameBoosterss.order_info.orders import BaseOrderInfo, ExtendOrder
+from gameBoosterss.order_info.division import DivisionGameOrderInfo
+from gameBoosterss.order_info.placement import PlacementGameOrderInfo
+
+
+
+class RL_DOI(BaseOrderInfo, ExtendOrder, DivisionGameOrderInfo):
+    division_prices_data = get_rocket_league_divisions_data()
+    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices.insert(0, 0)
+    marks_data = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
+    marks_data.insert(0, [0, 0, 0, 0, 0, 0])
+    division_number = 3
+
+    def get_game_info(self):
+      super().get_game_info()
+      self.game_order.update({'ranked_type': self.data['ranked_type']})
+    
+    def get_game_info_extended(self):
+      super().get_game_info_extended()
+      self.game_order.update({'ranked_type': self.extend_game.ranked_type})
+
+
+class RL_POI(BaseOrderInfo, PlacementGameOrderInfo):
+  placement_data = get_rocket_league_placements_data()
+
+  def get_game_info(self):
+    game_info_params = ['last_rank', 'number_of_match',]  
+    # create a variable for each parameter
+    for param in game_info_params:
+        self.__setattr__(param, self.data[param])
+    print(self.last_rank)
+    self.game_order.update({'last_rank_id': self.last_rank})
+    self.game_order.update({'number_of_match': self.number_of_match})
+
+  def get_price(self):
+    price = self.placement_data[self.last_rank-1] * self.number_of_match
+    price = self.apply_extra_price(price)
+    self.base_order.update({'price': price})
+    self.extra_order.update({'price': price})
+    return price
+  
+
+class RL_SOI(BaseOrderInfo, PlacementGameOrderInfo):
+  placement_data = get_rocket_league_seasonals_data()
+
+  def get_game_info(self):
+    self.last_rank = self.data['current_rank']
+    self.number_of_match = self.data['number_of_wins']
+    self.game_order.update({'current_rank_id': self.last_rank})
+    self.game_order.update({'number_of_wins': self.number_of_match})
+
+  def get_price(self):
+    price = self.placement_data[self.last_rank - 1] * self.number_of_match
+    price = self.apply_extra_price(price)
+    self.base_order.update({'price': price})
+    self.extra_order.update({'price': price})
+    return price
+
+class RL_TOI(BaseOrderInfo, PlacementGameOrderInfo):
+  placement_data = get_rocket_league_tournaments_data()
+
+  def get_game_info(self):
+    self.current_league = self.data['current_league']
+    self.game_order.update({'current_league_id': self.current_league})
+
+  def get_price(self):
+    price = self.placement_data[self.current_league - 1]
+    price = self.apply_extra_price(price)
+    self.base_order.update({'price': price})
+    self.extra_order.update({'price': price})
+    return price

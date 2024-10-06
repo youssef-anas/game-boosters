@@ -59,7 +59,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
         ('Order Info', {'fields': ('customer','booster','is_done')}),
         ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
         ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
-        ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server')}),
+        ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server', 'customer_password')}),
     )
 
 
@@ -82,7 +82,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
     # def has_delete_permission(self, request, obj=None):
     #     return False
 
-admin.site.register(BaseOrder)
+admin.site.register(BaseOrder, BaseOrderAdmin)
 
 
 class TransactionAdmin(admin.ModelAdmin):

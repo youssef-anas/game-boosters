@@ -4,6 +4,7 @@ from games.models import Game
 from accounts.models import BaseOrder
 import json
 from django.views.generic import TemplateView
+from django.views import View
 
 def index(request):
 
@@ -113,4 +114,23 @@ class StoreView(TemplateView):
     template_name = 'store.html'
 
 class HowWeWorkView(TemplateView):
-    template_name = 'gameboosterss/how-we-work.html'    
+    template_name = 'gameboosterss/how-we-work.html'   
+
+
+from django.utils import timezone
+from django.views.generic import View
+from gameBoosterss.smtp import MadboostEmailSender     
+
+class SendMailTest(View):
+    def get(self, request):
+      email = MadboostEmailSender(
+          subject='You Have new Order',
+          email=['shethr999@gmail.com'],
+          template_name='mails/available_mail_form.html',
+          context={'order_name': 'WR122','booster': 'shehab', 'requested_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S')},
+      )
+      email.send_mail()
+      return HttpResponse('Mail Sent')
+        
+   
+   

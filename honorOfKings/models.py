@@ -198,7 +198,6 @@ class HonorOfKingsDivisionOrder(models.Model):
 
     percent = round(actual_price / (main_price/100))
 
-    print(percent)
 
     booster_price = custom_price * (percent/100)
 

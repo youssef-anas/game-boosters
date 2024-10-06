@@ -200,7 +200,6 @@ class PubgDivisionOrder(models.Model):
 
       booster_price = round(custom_price * (percent/100), 2)
       percent_for_view = round((booster_price/actual_price)* 100)
-      print('percent', percent)
 
       if percent_for_view > 100:
           percent_for_view = 100

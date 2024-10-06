@@ -15,7 +15,7 @@ from customer.models import Champion
 from django.db.models import Avg, Sum, Case, When, Value, IntegerField
 from django.db.models.functions import Coalesce
 from leagueOfLegends.utils import get_lol_placements_data, get_lol_marks_data, get_lol_divisions_data
-from gameBoosterss.utils import MadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 def get_lol_divisions_data_view(request):
     divisions_data = get_lol_divisions_data()
@@ -72,8 +72,8 @@ def leagueOfLegendsGetBoosterByRank(request):
   }
   return render(request,'leagueOfLegends/GetBoosterByRank.html', context)
 
-class LOLPaymentAPiView(MadBoostPayment):
-    serializer_orderInfo_mapping = {
-        'D': [DivisionSerializer, get_division_order_result_by_rank],
-        'P': [PlacementSerializer, get_placement_order_result_by_rank],
+class LOLPaymentAPiView(NewMadBoostPayment):
+    serializer_mapping = {
+        'D': DivisionSerializer,
+        'P': PlacementSerializer,
     }

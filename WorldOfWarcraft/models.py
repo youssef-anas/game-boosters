@@ -59,7 +59,7 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
 
   current_division = models.PositiveSmallIntegerField(default=0)
   reached_division = models.PositiveSmallIntegerField(default=0)
-  desired_division = models.PositiveSmallIntegerField(default=25)
+  desired_division = models.PositiveSmallIntegerField(default=0)
 
   rank1_player = models.BooleanField(default=False)
   tournament_player = models.BooleanField(default=False)

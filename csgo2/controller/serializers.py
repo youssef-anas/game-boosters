@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from accounts.models import BaseOrder
 from booster.models import Booster
+from .order_information import Csgo2_DOI, Csgo2_AOI, Csgo2_FOI
+from ..models import CsgoFaceitOrder, Csgo2PremierOrder, Csgo2DivisionOrder
 
 class DivisionSerializer(serializers.Serializer):
     current_rank = serializers.IntegerField(min_value=1, max_value=17)
@@ -16,9 +18,27 @@ class DivisionSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     extend_order = serializers.IntegerField()
 
+    # 
+    current_division = serializers.HiddenField(default=1)
+    desired_division = serializers.HiddenField(default=1)
+    marks = serializers.HiddenField(default=0)
+
+    # Order Info
+    game_id = serializers.HiddenField(default=13)
+    game_type = serializers.HiddenField(default='D')
+    game_order_info = Csgo2_DOI
+    order_model = Csgo2DivisionOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+
+    
+    
+
     def validate(self, attrs):
-        self.extend_order_validate(attrs)
-        self.booster_validate(attrs)
+        pass_validate = False
+
+        pass_validate = self.extend_order_validate(attrs)
+        if not pass_validate:
+            self.booster_validate(attrs)
         return attrs
     
     def extend_order_validate(self, attrs):
@@ -26,6 +46,7 @@ class DivisionSerializer(serializers.Serializer):
         if extend_order > 0:
             try:
                 BaseOrder.objects.get(id=extend_order, game__id=13, game_type='D')
+                return True
             except BaseOrder.DoesNotExist:
                 raise serializers.ValidationError("This order can't be extended")
   
@@ -60,6 +81,14 @@ class FaceitSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     promo_code = serializers.CharField()
 
+    # Order Info
+    game_id = serializers.HiddenField(default=13)
+    game_type = serializers.HiddenField(default='A')
+    game_order_info = Csgo2_FOI
+    order_model = CsgoFaceitOrder
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
+
+
 
     def validate(self, attrs):
         self.booster_validate(attrs)
@@ -78,7 +107,9 @@ class FaceitSerializer(serializers.Serializer):
         data = super().to_internal_value(data)
         if data['select_booster'] == False  :
             data['choose_booster'] = 0
-        return data       
+        return data      
+
+
     
 class PremierSerializer(serializers.Serializer):
 
@@ -100,6 +131,16 @@ class PremierSerializer(serializers.Serializer):
     choose_booster = serializers.IntegerField()
     promo_code = serializers.CharField()
     extend_order = serializers.IntegerField()
+
+    # 
+    marks = serializers.HiddenField(default=0)
+
+    # Order Info
+    game_id = serializers.HiddenField(default=13)
+    game_type = serializers.HiddenField(default='A')
+    game_order_info = Csgo2_AOI
+    order_model = Csgo2PremierOrder 
+    cryptomus = serializers.BooleanField(default=False, required=False, allow_null=True,)
 
     def validate(self, attrs):
         self.extend_order_validate(attrs)

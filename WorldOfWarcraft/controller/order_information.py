@@ -8,119 +8,6 @@ from WorldOfWarcraft.models import WorldOfWarcraftRpsPrice, WorldOfWarcraftBoss,
 from WorldOfWarcraft.utils import extract_bosses_ids, extract_bundle_id, get_keyston_price, get_level_up_price
 from django.db.models import Sum
 
-rank_names = ['UNRANK', '0-1599', '1600-1799', '1800-2099', '2100-2500']
-
-def get_arena_order_result_by_rank(data):
-  # Prices
-  prices = WorldOfWarcraftRpsPrice.objects.all().first()
-  price_of_2vs2 = prices.price_of_2vs2
-  price_of_3vs3 = prices.price_of_3vs3
-
-  # Ranks
-  current_rank = data['current_rank']
-  desired_rank = data['desired_rank']
-
-  # Division
-  current_RP = data['current_RP']
-  desired_RP = data['desired_RP']
-
-  # Is 2vs2
-  is_arena_2vs2 = data['is_arena_2vs2']
-
-  total_percent = 0
-
-  rank1_player = data['rank1_player']
-  tournament_player = data['tournament_player']
-  boost_method = data['boost_method']
-  turbo_boost = data['turbo_boost']
-  streaming = data['streaming']
-
-  extend_order_id = data['extend_order']
-  server = data['server']
-  promo_code = data['promo_code']
-  promo_code_id = 0
-
-  duo_boosting_value = 0
-  select_booster_value = 0
-  turbo_boost_value = 0
-  streaming_value = 0
-
-  rank1_player_value = 0
-  tournament_player_value = 0
-
-  is_arena_2vs2_value= 0
-
-  promo_code_amount = 0
-
-  boost_options = []
-
-  if rank1_player:
-    total_percent += 0.40
-    boost_options.append('RANK 1 BOOSTING')
-    rank1_player_value = 1
-
-  if tournament_player:
-    total_percent += 1.00
-    boost_options.append('TOURNAMENT BOOSTING')
-    tournament_player_value = 1  
-
-  if boost_method == 'remote-control':
-    total_percent += 0.30  
-
-  if turbo_boost:
-    total_percent += 0.20
-    boost_options.append('TURBO BOOSTING')
-    turbo_boost_value = 1
-  
-  if streaming:
-    total_percent += 0.15
-    boost_options.append('STREAMING')
-    streaming_value = 1
-
-  if is_arena_2vs2:
-    is_arena_2vs2_value = 1
-
-  if promo_code != 'null':   
-    try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code)
-      promo_code_amount = promo_code_obj.discount_amount
-      promo_code_id = promo_code_obj.pk
-    except PromoCode.DoesNotExist:
-      promo_code_amount = 0
-      
-  if is_arena_2vs2:
-    price = (desired_RP - current_RP) * (price_of_2vs2 / 50)
-  else: 
-    price = (desired_RP - current_RP) * (price_of_3vs3 / 50)
-
-  price += (price * total_percent)
-  price -= price * (promo_code_amount/100)
-  price = round(price, 2)
-
-  if extend_order_id > 0:
-    try:
-      extend_order = BaseOrder.objects.get(id=extend_order_id)
-      extend_order_price = extend_order.price
-      price = round((price - extend_order_price), 2)
-    except:
-      pass
-
-  booster_id = 0
-  if booster_id > 0 :
-    get_object_or_404(Booster, booster_id=booster_id, booster__is_booster=True, is_wow_player=True)
-  else:
-    booster_id = 0
-
-  invoice = f'WOW-6-A-{current_rank}-{current_RP}-0-{desired_rank}-{desired_RP}-{duo_boosting_value}-{select_booster_value}-{turbo_boost_value}-{streaming_value}-{booster_id}-{extend_order_id}-{server}-{price}-0-{promo_code_id}-0-0-{is_arena_2vs2_value}-0-{rank1_player_value}-{tournament_player_value}-{boost_method}-{timezone.now()}'
-
-  invoice_with_timestamp = str(invoice)
-  boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'WOW, BOOSTING FROM {rank_names[current_rank]} {current_RP} TO {rank_names[desired_rank]} {desired_RP}{boost_string}'
-
-  return({'name':name,'price':price,'invoice':invoice_with_timestamp})
-
-
-
 def get_raid_simple_price_by_bosses(data):
   map_name = data['map']
   bosses = data['bosses']
@@ -433,63 +320,84 @@ def get_dungeon_order_info(data):
   return({'name':name,'price':price,'invoice':invoice_with_timestamp})
 
 
-def get_level_up_price_form_serilaizer(data):
+from gameBoosterss.order_info.levelup import LevelupGameOrderInfo
+from gameBoosterss.order_info.arena import ArenaGameOrderInfo
+from gameBoosterss.order_info.orders import BaseOrderInfo, ExtendOrder
+from gameBoosterss.order_info.wow import RaidSimpleGameOrderInfo, RaidBundleGameOrderInfo, DungeonSimpleGameOrderInfo
 
-  current_level = data['current_level']
-  desired_level = data['desired_level']
-
-  promo_code = data['promo_code']
-  streaming = data['streaming']
-  turbo_boost = data['turbo_boost']
-  server = data['server']
-
-  level_price = get_level_up_price()
-
-
-  number_of_level = desired_level - current_level
-  Full_level_prices = number_of_level * level_price
-
-
-  total_percent = 0
-
-  promo_code_amount = 0
-
-  boost_options = []
-
-  streaming_value = 0
-  turbo_boost_value = 0
-  promo_code_id = 0
-
-  if turbo_boost:
-    total_percent += 0.20
-    boost_options.append('TURBO BOOSTING')
-    turbo_boost_value = 1
+class WOW_AOI(BaseOrderInfo, ExtendOrder, ArenaGameOrderInfo):
+  points_value = 50
   
-  if streaming:
-    total_percent += 0.15
-    boost_options.append('STREAMING')
-    streaming_value = 1
+  def get_percent_price(self):
+    return {
+        'turbo_boost': 20,
+        'streaming': 15,
+    }
+
+  def get_arena_price_price(self):
+    prices = WorldOfWarcraftRpsPrice.objects.all().first()
+    self.game_order.update({'is_arena_2vs2': self.data['is_arena_2vs2']})
+    if self.data['is_arena_2vs2'] == True:
+      return prices.price_of_2vs2
+    else:
+      return prices.price_of_3vs3
+    
+  def get_totla_percent_price(self):
+    super().get_totla_percent_price()
+    extra_percent_price = {
+      'rank1_player': 40,
+      'tournament_player': 100,
+      }
+    for key, value in extra_percent_price.items():
+      if self.data[key]:
+        self.total_percent += value
+        self.game_order[key] = self.data[key]
+    if self.data['boost_method'] == 'remote-control':  
+      self.total_percent += 30
+    self.game_order.update({'boost_method': self.data['boost_method']})
+
+class WOW_LOI (BaseOrderInfo, LevelupGameOrderInfo):
+  faceit_prices = get_level_up_price()
+
+  def get_percent_price(self):
+    return {
+        'turbo_boost': 20,
+        'streaming': 15,
+    }
+
+  def get_totla_percent_price(self):
+    super().get_totla_percent_price()
+    # if self.data['boost_method'] == 'remote-control':  
+    #   self.total_percent += 30
+    # self.game_order.update({'boost_method': self.data['boost_method']})
+
+  def get_price(self):
+    level_number = self.desired_level - self.current_level 
+    price = level_number * self.faceit_prices
+    price = self.apply_extra_price(price)
+    price_for_payment = round(price - self.extend_order_price, 2)
+    self.base_order.update({'price': price})
+    self.extra_order.update({'price': price_for_payment})
+    return price  
 
 
-  if promo_code != 'null':   
-    try:
-      promo_code_obj = PromoCode.objects.get(code=promo_code)
-      promo_code_amount = promo_code_obj.discount_amount
-      promo_code_id = promo_code_obj.pk
-    except PromoCode.DoesNotExist:
-      promo_code_amount = 0
+class WOW_RSOI(BaseOrderInfo, RaidSimpleGameOrderInfo):
+  def get_percent_price(self):
+    return {
+        'turbo_boost': 20,
+        'streaming': 15,
+    }
+
+class WOW_RBOI(BaseOrderInfo, RaidBundleGameOrderInfo):  
+  def get_percent_price(self):
+    return {
+        'turbo_boost': 20,
+        'streaming': 15,
+    }
   
-  price = Full_level_prices
-  price += (price * total_percent)
-  price -= price * (promo_code_amount/100)
-  price = round(price, 2)
-  
-  invoice = f'WOW-6-F-{current_level}-{0}-{0}-{desired_level}-{0}-{0}-{0}-{turbo_boost_value}-{streaming_value}-{0}-{0}-{server}-{price}-{0}-{promo_code_id}-0-0-0-0-{timezone.now()}'
-
-  invoice_with_timestamp = str(invoice)
-  
-  boost_string = " WITH " + " AND ".join(boost_options) if boost_options else ""
-  name = f'WOW, BOOSTING FROM {current_level} Level TO {desired_level} Level {boost_string}'
-
-  return({'name':name,'price':price,'invoice':invoice_with_timestamp})
-
+class WOW_DSOI(BaseOrderInfo, DungeonSimpleGameOrderInfo):  
+  def get_percent_price(self):
+    return {
+        'turbo_boost': 20,
+        'streaming': 15,
+    }
