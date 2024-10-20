@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import reverse
 from booster.models import OrderRating, Booster, WorkWithUs, Photo, BoosterPortfolio, CreateBooster, Language, BoosterRank
+from accounts.models import Wallet
 from django.utils.safestring import mark_safe
 from django.forms import ModelForm, ValidationError
 from gameBoosterss.utils import upload_image_to_firebase
@@ -10,6 +11,7 @@ from gameBoosterss.utils import booster_added_message
 from faker import Faker
 from django.shortcuts import redirect
 from accounts.admin import NoDeleteAdmin, NoDeleteEditAdmin
+from django.utils.html import format_html
 
 faker = Faker()
 
@@ -19,6 +21,12 @@ admin.site.register(OrderRating, NoDeleteAdmin)
 
 class BoosterPortfolioAdmin(admin.ModelAdmin):
     list_filter = ('approved',)
+    list_display = ('booster', 'open_img_link', 'approved')
+
+    def open_img_link(self, obj):
+        print(obj.get_image_url)
+        return format_html(f'<a href="{obj.get_image_url()}" target="_blank">View Image</a>')
+    open_img_link.short_description = 'Image'
 admin.site.register(BoosterPortfolio, BoosterPortfolioAdmin)
 
 class BoosterRankAdmin(admin.ModelAdmin):
@@ -65,9 +73,30 @@ class BoosterAdminForm(ModelForm):
             instance.save()
         return instance
     
+class HasMoneyFilter(admin.SimpleListFilter):
+    title = 'Has Money'  # The label that appears for the filter
+    parameter_name = 'has_money'  # The URL parameter name for the filter
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', 'Yes'),
+            ('no', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(booster__wallet__money__gt=0)  # Assuming 'booster' is related to 'Wallet'
+        if self.value() == 'no':
+            return queryset.filter(booster__wallet__money__lte=0)
+        return queryset    
+    
 @admin.register(Booster)
 class YourModelAdmin(admin.ModelAdmin):
     form = BoosterAdminForm
+    list_display = ['booster_username', 'games_list', 'money']
+    list_filter = [HasMoneyFilter, 'games']
+    search_fields = ['booster__username']
+
     def has_delete_permission(self, request, obj=None):
         return False
     
@@ -77,6 +106,27 @@ class YourModelAdmin(admin.ModelAdmin):
         ('played Games', {'fields': ('is_wr_player', 'is_valo_player', 'is_pubg_player','is_lol_player','is_tft_player','is_wow_player', 'is_hearthstone_player', 'is_mobleg_player', 'is_rl_player', 'is_dota2_player', 'is_hok_player', 'is_overwatch2_player', 'is_csgo2_player')}),
         ('Ranks', {'fields': ('achived_rank_wr', 'achived_rank_valo', 'achived_rank_pubg', 'achived_rank_lol', 'achived_rank_tft', 'achived_rank_wow', 'achived_rank_hearthstone', 'achived_rank_mobleg', 'achived_rank_rl', 'achived_rank_dota2', 'achived_rank_hok', 'achived_rank_overwatch2', 'achived_rank_csgo2')}),
     )
+    def booster_username(self, obj):
+        return obj.booster.username
+    booster_username.short_description = 'Name'
+
+    def games_list(self, obj):
+        return ", ".join([game.link for game in obj.games.all()])  # Assuming `games` is a many-to-many field
+    games_list.short_description = 'Games'
+
+    def money(self, obj):
+        wallet, created = Wallet.objects.get_or_create(user=obj.booster)
+        transaction_url = reverse('admin:accounts_transaction_add')
+        return format_html(
+            '<a href="{}?user={}&amount={}" target="_blank">{}</a>',
+            transaction_url,
+            obj.booster.id,  # Pass the booster ID as a GET parameter to pre-select the user
+            wallet.money,  # Pass the amount as a GET parameter to pre-fill the transaction amount
+            round(wallet.money, 2)  # Display the rounded money amount as the clickable text
+        )
+    money.short_description = 'Money'
+
+    
 
 class CreateBoosterForm(ModelForm):
     class Meta:

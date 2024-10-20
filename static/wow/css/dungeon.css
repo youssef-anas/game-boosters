@@ -132,3 +132,26 @@
   height: 100vh; 
   z-index: 2; 
 } */
+
+#choise-div {
+    display: flex;
+    gap: 10px; /* Adjust gap between the elements */
+    overflow-x: auto; /* Enable horizontal scrolling */
+    max-width: 100%; /* Ensure it doesn't go beyond the screen size */
+    padding: 10px; /* Add some padding */
+    scroll-behavior: smooth; /* Smooth scrolling effect */
+  }
+  
+  #choise-div::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for better UI */
+  }
+  
+  .radio-btn {
+    white-space: nowrap; /* Prevent line breaks */
+  }
+  
+  @media (max-width: 768px) {
+    #choise-div {
+      width: 150%; /* Set the width to be wider than the screen */
+    }
+  }
