@@ -28,7 +28,8 @@ import uuid
 from gameBoosterss.permissions import IsBooster
 from django.views.generic import View
 import copy
-
+from django.utils import timezone
+from datetime import timedelta
 
 # def register_booster_view(request):
 #     form = Registeration_Booster()
@@ -422,6 +423,21 @@ def upload_finish_image(request):
 @login_required
 def drop_order(request, order_id):
     if request.method == 'POST':
+        # Get the current month and year
+        current_month = timezone.now().month
+        current_year = timezone.now().year
+
+        # Filter BaseOrder by the same month and year
+        booster_dropped_orders = BaseOrder.objects.filter(
+            is_drop = True ,
+            created_at__year=current_year,   # Filter by the current year
+            created_at__month=current_month,  # Filter by the current month
+            booster=request.user
+        )
+        if booster_dropped_orders.exists() :
+            return HttpResponse('You Alredy Riched Max Limit of this Month')
+
+        
         old_order = get_object_or_404(BaseOrder ,id =order_id, booster= request.user)
         if old_order.is_done:
             return redirect(reverse_lazy('booster.orders'))
@@ -453,11 +469,15 @@ def drop_order(request, order_id):
         new_order.money_owed = 0
         new_order.status = 'Droped'
         new_order.actual_price = actual_price
+        new_order.created_at = timezone.now()
+        new_order.updated_at = timezone.now()
         new_order.save()
 
         old_order.is_drop = True
         old_order.is_done = True
         old_order.status = 'Droped'
+        old_order.created_at = timezone.now()
+        old_order.updated_at = timezone.now()
         old_order.save()
 
         room = Room.get_specific_room(customer=old_order.customer, order_name=old_order.name)

@@ -50,6 +50,9 @@ def last_orders(request):
 def privacy_policy(request):
   return render(request, 'gameboosterss/privacy-policy.html')
 
+def terms_service(request):
+  return render(request, 'gameboosterss/terms-service.html')
+
 def custom_handler400(request, exception):
   return render(request, 'erorr_handler/400.html', status=400)
 

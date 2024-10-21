@@ -53,9 +53,10 @@ class HasBoosterFilter(admin.SimpleListFilter):
 class BaseOrderAdmin(admin.ModelAdmin):
     list_display = ['name', 'status','details','booster', 'chat_link','finish_image_url']
     list_filter = ['game','is_done',"approved", HasBoosterFilter]
+    readonly_fields = ['created_at']  
     search_fields = ['name', 'customer__username', 'booster__username']
     fieldsets = (
-        ('Admin Info', {'fields': ('name','details','finish_image','approved')}),
+        ('Admin Info', {'fields': ('name','details','finish_image','approved', 'created_at')}),
         ('Order Info', {'fields': ('customer','booster','is_done')}),
         ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
         ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
