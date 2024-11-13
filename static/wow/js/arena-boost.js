@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
     price += price * new_total_Percentage;
 
     // Apply promo code
-    price -= price * (discount_amount / 100);
+    price = setPromoAmount(price, discount_amount)
 
     price = parseFloat(price.toFixed(2));
     setArenaData(price, currentValue, desiredValue, name);

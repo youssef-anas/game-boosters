@@ -219,11 +219,10 @@ class Overwatch2DivisionOrder(models.Model):
         custom_price = total_sum - marks_price + marks_price_reached
         
         custom_price += (custom_price * total_percent)
-        custom_price -= custom_price * (promo_code_amount/100)
         ##############################################################
 
         actual_price = self.order.actual_price
-        main_price = self.order.price
+        main_price = self.order.real_order_price
 
         percent = round(actual_price / (main_price/100))
 
@@ -315,7 +314,7 @@ class Overwatch2PlacementOrder(models.Model):
     custom_price = self.order.money_owed
 
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price/100))
 

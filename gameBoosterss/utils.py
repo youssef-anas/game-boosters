@@ -566,69 +566,6 @@ def send_mail_bootser_choose(order_name, booster):
 
 
 
-class MadBoostPayment(APIView):
-    permission_classes = [IsNotBooster]
-    serializer_orderInfo_mapping = None
-    throttle_classes = [UserRateThrottle] 
-
-    def __init__(self, **kwargs):
-      super().__init__(**kwargs)
-      if not self.serializer_orderInfo_mapping:
-          raise ValueError("serializer_orderInfo_mapping must not be None")
-
-    def post(self, request, *args, **kwargs):
-        serializer_class, order_info_getter = self.get_serializer_and_info(request.data.get('game_type'))
-
-        if not serializer_class:
-            return Response({"error": "Invalid game type."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        serializer = serializer_class(data=request.data)
-        if not serializer.is_valid():
-            field, error_message = next(iter(serializer.errors.items()))
-            return Response({'message': f"{field}: {error_message[0]}"}, status=status.HTTP_400_BAD_REQUEST)
-
-        order_info = self.extract_order_info(order_info_getter, serializer.validated_data)
-        if isinstance(order_info, Response):
-            return order_info
-
-        amount_error = self.check_amount(order_info)
-        if amount_error:
-            return amount_error
-
-        return self.perform_payment(order_info, request)
-
-    def extract_order_info(self, getter, data):
-        order_info = getter(data)
-        if not order_info:
-            return Response({"message": "Order information could not be retrieved."}, status=status.HTTP_400_BAD_REQUEST)
-        return order_info
-
-    def check_amount(self, order_info):
-        if order_info['price'] < 0:
-            return Response({"message": "Minimum order amount is $10.00."}, status=status.HTTP_400_BAD_REQUEST)
-        return None
-
-    def get_serializer_and_info(self, game_type):
-        result = self.serializer_orderInfo_mapping.get(game_type)
-        if not result:
-            return None, None
-        return result[0], result[1]
-    
-    def perform_payment(self, order_info, request):
-        token = TokenForPay.create_token_for_pay(request.user, order_info['invoice'])
-        payment_url = self.create_payment(order_info, request, token)
-        if payment_url:
-            return Response({'url': payment_url})
-        else:
-            return Response({"message": "There was an issue connecting to the payment provider."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    def create_payment(self, order_info, request, token):
-        if request.data.get('cryptomus'):
-            return cryptomus_payment(order_info, request, token)
-        else:
-            return paypal_payment(order_info, request, token)
-        
-
 class NewMadBoostPayment(APIView):
     permission_classes = [IsNotBooster]
     serializer_mapping = None

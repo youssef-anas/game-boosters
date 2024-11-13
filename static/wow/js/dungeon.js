@@ -232,7 +232,7 @@
         let result = KayesWithKaysPrice + (KayesWithKaysPrice * new_percentage)
 
         // Apply promo code
-        result -= result * (discount_amount / 100);
+        result = setPromoAmount(result, discount_amount)
 
         result = parseFloat(result.toFixed(2));
             

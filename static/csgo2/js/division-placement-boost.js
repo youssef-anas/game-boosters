@@ -241,7 +241,7 @@ Promise.all([
         // Apply extra charges to the result
         result_with_mark += result_with_mark * total_Percentage_with_role_result;
         // Apply promo code 
-        result_with_mark -= result_with_mark * (discountAmount/100 )
+        result_with_mark = setPromoAmount(result_with_mark, discountAmount)
         
         result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
   
@@ -327,7 +327,7 @@ Promise.all([
         price += price * total_Percentage;
       
         // Apply promo code 
-        price -= price * (discountAmount / 100 )
+        price = setPromoAmount(price, discountAmount)
       
         price = parseFloat(price.toFixed(2));
 
@@ -380,7 +380,7 @@ Promise.all([
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage_with_role_result;
       // Apply promo code 
-      result_with_mark -= result_with_mark * (discount_amount/100 )
+      result_with_mark = setPromoAmount(result_with_mark, discount_amount)
 
       result_with_mark = parseFloat(result_with_mark.toFixed(2)); 
 
@@ -438,7 +438,7 @@ Promise.all([
       price += price * total_Percentage;
     
       // Apply promo code 
-      price -= price * (discount_amount / 100 )
+      price = setPromoAmount(price, discount_amount)
     
       price = parseFloat(price.toFixed(2));
 
@@ -573,7 +573,7 @@ Promise.all([
     price += price * total_Percentage;
 
     // Apply promo code 
-    price -= price * (discount_amount / 100)
+    price = setPromoAmount(price, discount_amount)
 
     price = parseFloat(price.toFixed(2));
 

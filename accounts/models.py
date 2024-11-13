@@ -127,33 +127,20 @@ class PromoCode(models.Model):
     code                = models.CharField(max_length=255, unique=True)
     description         = models.CharField(null=True, max_length=255)
     discount_amount     = models.FloatField()
-    is_active           = models.BooleanField(default=True)
     expiration_date     = models.DateField()
-    max_uses            = models.PositiveIntegerField(default=1)
-    times_used          = models.PositiveIntegerField(default=0)
+
+    is_percent          = models.BooleanField(default=False)              
+    is_active           = models.BooleanField(default=True)
 
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        if self.max_uses == 0:
-            permanent = 'Permanent'
-            times_left = ''
+        if self.is_percent:
+            percent = 'Percent'
         else:
-            permanent = self.max_uses - self.times_used
-            times_left = ' Times Left'
-        
-        return f'{self.code } | {permanent} {times_left}'
-
-    def can_be_used(self):
-        return self.is_active and (self.max_uses == 0 or self.times_used < self.max_uses)
-
-    def use_code(self):
-        if self.can_be_used():
-            self.times_used += 1
-            self.save()
-            return True
-        return False
+            percent = 'For User'
+        return f'{self.code } | {percent}'
     
 class BoosterPercent(models.Model):
     booster_percent1 = models.IntegerField(default=22)
@@ -209,6 +196,7 @@ class BaseOrder(models.Model):
 
     price = models.FloatField(default=0, blank=True, null=True)
     actual_price = models.FloatField(default=0, blank=True, null=True)
+    real_order_price = models.FloatField() 
     money_owed = models.FloatField(default=0, blank=True, null=True)
     invoice = models.CharField(max_length=2000)
 
@@ -278,7 +266,7 @@ class BaseOrder(models.Model):
         percent5 = booster_percent.booster_percent5
 
         if self.turbo_boost:
-            self.actual_price = round(self.price * (percent5 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent5 / 100), 2)
             self.save()
             return {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
         
@@ -288,29 +276,29 @@ class BaseOrder(models.Model):
         time_difference = (current_time - self.created_at).total_seconds() if self.created_at else None
 
         if time_difference is None:
-            self.actual_price = round(self.price * (percent1 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent1 / 100), 2)
         elif time_difference <= 60:
-            self.actual_price = round(self.price * (percent1 / 100), 2)
-            next_price = round(self.price * (percent2 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent1 / 100), 2)
+            next_price = round(self.real_order_price * (percent2 / 100), 2)
             extra = round(next_price - self.actual_price, 2)
             data = {'time': int(60 - time_difference), 'price': self.actual_price, 'progress': 1, 'extra': extra}
         elif time_difference <= 180:
-            self.actual_price = round(self.price * (percent2 / 100), 2)
-            next_price = round(self.price * (percent3 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent2 / 100), 2)
+            next_price = round(self.real_order_price * (percent3 / 100), 2)
             extra = round(next_price - self.actual_price, 2)
             data = {'time': int(180 - time_difference), 'price': self.actual_price, 'progress': 2, 'extra': extra}
         elif time_difference <= 900:
-            self.actual_price = round(self.price * (percent3 / 100), 2)
-            next_price = round(self.price * (percent4 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent3 / 100), 2)
+            next_price = round(self.real_order_price * (percent4 / 100), 2)
             extra = round(next_price - self.actual_price, 2)
             data = {'time': int(900 - time_difference), 'price': self.actual_price, 'progress': 3, 'extra': extra}
         elif time_difference <= 1800:
-            self.actual_price = round(self.price * (percent4 / 100), 2)
-            next_price = round(self.price * (percent5 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent4 / 100), 2)
+            next_price = round(self.real_order_price * (percent5 / 100), 2)
             extra = round(next_price - self.actual_price, 2)
             data = {'time': int(1800 - time_difference), 'price': self.actual_price, 'progress': 4, 'extra': extra}
         else:
-            self.actual_price = round(self.price * (percent5 / 100), 2)
+            self.actual_price = round(self.real_order_price * (percent5 / 100), 2)
             data = {'time': -1, 'price': self.actual_price, 'progress': 5, 'extra': 0}
 
         self.save()
@@ -358,23 +346,14 @@ class BaseOrder(models.Model):
                 )
 
     def customer_wallet(self):        
-        if self.status == 'Droped' or self.status == 'Extend' or self.status == 'Continue':
-            print("Order status is 'Drop' or 'Extend', exiting customer_wallet function")
-            return None
-        
-        if self.customer and self.price > 0:
-            customer_wallet = self.customer.wallet
-            customer_wallet.money += self.price
-            customer_wallet.save()
-            print(f"Customer wallet updated. New balance: {customer_wallet.money}")
-            Transaction.objects.create (
-                user=self.customer,
-                amount=round(self.price, 2),
-                order=self,
-                status='New',  
-                type='WITHDRAWAL',
-                notice=f'{self.details} - {self.game.name}'
-            )
+        Transaction.objects.create (
+            user=self.customer,
+            amount=round(self.price, 2),
+            order=self,
+            status='New',  
+            type='WITHDRAWAL',
+            notice=f'{self.details} - {self.game.name}'
+        )
 
     def __str__(self):
         return f'{self.customer} have [{self.game}] order - {self.details}'

@@ -58,7 +58,7 @@ class BaseOrderAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Admin Info', {'fields': ('name','details','finish_image','approved', 'created_at')}),
         ('Order Info', {'fields': ('customer','booster','is_done')}),
-        ('Order Price', {'fields': ('price', 'actual_price','money_owed')}),
+        ('Order Price', {'fields': ('price', 'actual_price','money_owed','real_order_price')}),
         ('Extra Options', {'fields': ('duo_boosting', 'select_booster','turbo_boost','streaming','promo_code', 'captcha')}),
         ('Customer_info', {'fields': ('customer_gamename', 'customer_username','customer_server', 'customer_password')}),
     )

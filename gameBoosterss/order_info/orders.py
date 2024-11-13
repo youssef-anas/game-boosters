@@ -11,7 +11,8 @@ class ExtendOrder:
         try :
             _extend_order = BaseOrder.objects.get(id=self.data['extend_order'])
             self.extend_order_price = _extend_order.price
-            self.extend_order = self.data['extend_order']  
+            self.extend_real_order_price = _extend_order.real_order_price
+            self.extend_order = _extend_order
 
             extend_fields = [
                 'customer_gamename', 'customer_password', 'customer_username',
@@ -37,24 +38,32 @@ class ExtendOrder:
 
         except BaseOrder.DoesNotExist:
             self.extend_order_price = 0
-        self.extend_order = self.data['extend_order']    
-        self.extra_order.update({'extend_order': self.extend_order})   
+            self.extend_real_order_price = 0
+        self.extra_order.update({'extend_order': self.data['extend_order']})   
 
             
 class BaseOrderInfo:
     extend_order_price = 0
+    real_order_price = 0
     base_order = {}
     extra_order = {}
 
     def apply_extra_price(self, price):
         price += (price * self.total_percent/100)
-        price -= price * (self.promo_code_amount/100)
-        print('data', self.data.get('cryptomus'))
-        if self.data.get('cryptomus'):
+        
+        self.real_order_price = price
 
+        if self.extend_order_price <= 0 :
+
+            if self.promo_code_amount < 1 and self.promo_code_amount > 0:
+                price -= price * (self.promo_code_amount)    
+            elif self.promo_code_amount > 1:
+                price -= self.promo_code_amount
+
+        if self.data.get('cryptomus'):
             price -= price * (5/100)
-        price = round(price, 2)
-        return price
+
+        return round(price, 2)
 
     def get_percent_price(self):
         return {
@@ -67,7 +76,11 @@ class BaseOrderInfo:
     def get_promo_code_info(self):
         try:
             promo_code_obj = PromoCode.objects.get(code=self.data['promo_code'])
-            self.promo_code_amount = promo_code_obj.discount_amount
+            if promo_code_obj.is_active:
+                if promo_code_obj.is_percent:
+                    self.promo_code_amount = promo_code_obj.discount_amount / 100
+                else:
+                    self.promo_code_amount = promo_code_obj.discount_amount
             self.base_order.update({'promo_code_id': promo_code_obj.pk})
         except PromoCode.DoesNotExist:
             self.promo_code_amount = 0
@@ -76,13 +89,7 @@ class BaseOrderInfo:
 
         self.base_order.update({'customer_server': self.data['server']})
         self.base_order.update({'game_id': self.data['game_id']})
-        self.base_order.update({'game_type': self.data['game_type']})
-
-
-        if hasattr(self, 'get_extend_order_info'):
-            self.get_extend_order_info()
-        if hasattr(self, 'get_champion_info'):
-            self.get_champion_info()    
+        self.base_order.update({'game_type': self.data['game_type']}) 
         self.get_totla_percent_price()
         self.get_promo_code_info()
         self.get_booster()

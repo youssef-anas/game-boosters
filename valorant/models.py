@@ -210,12 +210,11 @@ class ValorantDivisionOrder(models.Model):
     custom_price = total_sum - marks_price + marks_price_reached
     
     custom_price += (custom_price * total_percent)
-    custom_price -= custom_price * (promo_code_amount/100)
 
     ##############################################################
 
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price/100))
 
@@ -260,7 +259,7 @@ class ValorantPlacementOrder(models.Model):
     custom_price = self.order.money_owed
 
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price/100))
 
@@ -269,57 +268,3 @@ class ValorantPlacementOrder(models.Model):
     percent_for_view = round((booster_price/actual_price)* 100)
 
     return {"booster_price": booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}
-  
-  
-  # def get_order_price(self):
-  #   # Read data from JSON file
-  #   with open('static/valorant/data/placements_data.json', 'r') as file:
-  #     placement_data = json.load(file)
-    
-          
-  #   promo_code_amount = self.order.promo_code
-  #   if not promo_code_amount:
-  #     promo_code_amount = 0
-
-  #   last_rank = self.last_rank.pk
-  #   number_of_match = self.number_of_match
-
-  #   total_percent = 0
-
-  #   if self.order.duo_boosting:
-  #     total_percent += 0.65
-
-  #   if self.order.select_booster:
-  #     total_percent += 0.10
-
-  #   if self.order.turbo_boost:
-  #     total_percent += 0.20
-
-  #   if self.order.streaming:
-  #     total_percent += 0.15
-    
-
-  #   custom_price = placement_data[last_rank - 1] * number_of_match
-    
-  #   custom_price += (custom_price * total_percent)
-
-  #   custom_price -= custom_price * (promo_code_amount/100)
-
-  #   ##############################################################
-
-  #   actual_price = self.order.actual_price
-  #   main_price = self.order.price
-
-  #   percent = round(actual_price / (main_price/100))
-
-  #   booster_price = custom_price * (percent/100)
-
-  #   percent_for_view = round((booster_price/actual_price)* 100)
-  #   if percent_for_view > 100:
-  #     percent_for_view = 100
-
-  #   if booster_price > actual_price:
-  #     booster_price = actual_price
-
-
-  #   return {"booster_price":booster_price, 'percent_for_view':percent_for_view, 'main_price': main_price-custom_price, 'percent':percent}

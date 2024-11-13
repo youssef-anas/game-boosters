@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         price = numberOfLevels * level_price;
         priceWithPercentage = (price * total_Percentage) + price;
         // Apply promo code
-        priceWithPercentage -= priceWithPercentage * (discount_amount / 100);
+        priceWithPercentage = setPromoAmount(priceWithPercentage, discount_amount)
 
         Fullprice = parseFloat(priceWithPercentage.toFixed(2));
 

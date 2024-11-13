@@ -227,14 +227,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const difficultyValue = getSelectedDifficulty();
             const new_total_Percentage = total_percentage_value_raid() + difficultyValue + boost_metod_value;
 
-            console.log(new_total_Percentage)
-            console.log(raidMainPrice)
             
 
             // Apply extra charges to the result
             raidMainPrice += raidMainPrice * new_total_Percentage;
             // Apply promo code 
-            raidMainPrice -= raidMainPrice * (discount_amount/100 )
+            raidMainPrice = setPromoAmount(raidMainPrice, discount_amount)
             raidMainPrice = parseFloat(raidMainPrice.toFixed(2)); 
 
             const visualPrice = "$" + raidMainPrice

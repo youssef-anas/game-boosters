@@ -199,7 +199,12 @@ async function fetch_promo() {
             promoDetails.removeClass('error-message');
             applyFormInput.value = 'Apply';
             applyFormInput.disabled = false;
-            resolve(data.discount_amount); // Resolve the promise with data when the request is successful
+            if (data.is_percent){
+              resolve(data.discount_amount / 100);
+            }else{
+              resolve(data.discount_amount);
+            }
+
           },
           error: function(xhr, textStatus, errorThrown) {
             promoDetails.css('visibility', 'visible');
@@ -222,7 +227,17 @@ async function fetch_promo() {
       resolve(0); // Resolve the promise with null if there's no discount code
     }
   });
-  
+}
+
+
+const setPromoAmount = (price, amount)=> {
+  if (amount > 0 && amount < 1){
+    return price -= price * amount
+  }else if (amount > 1){
+    return price - amount
+  }else{
+    return price
+  }
 }
 
 const MadBoostInputAndRange = (input_div, range_div, action) => {

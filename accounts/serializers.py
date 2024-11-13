@@ -4,4 +4,4 @@ from accounts.models import PromoCode
 class PromoCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = PromoCode
-        fields = ['code', 'description', 'discount_amount', 'is_active']
+        fields = ['code', 'description', 'discount_amount', 'is_active', 'is_percent']

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, HttpResponse
 from django.utils import timezone
 from django.contrib.auth import login
-from accounts.models import BaseUser, PromoCode
+from accounts.models import BaseUser, PromoCode, BaseOrder
 from django.contrib import messages
 from rest_framework.views import APIView
 from rest_framework.response import Response

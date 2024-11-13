@@ -9,7 +9,7 @@ from customer.models import Champion
 from accounts.models import BaseUser
 from django.db.models import Sum, Case, When, IntegerField
 from .utils import get_valorant_divisions_data, get_valorant_marks_data, get_valorant_placements_data
-from gameBoosterss.utils import MadBoostPayment, NewMadBoostPayment
+from gameBoosterss.utils import NewMadBoostPayment
 
 def valorant_divisions_data(request):
     divisions_data = get_valorant_divisions_data()

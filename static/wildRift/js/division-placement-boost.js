@@ -102,7 +102,7 @@ Promise.all([
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
       // Apply promo code 
-      result_with_mark -= result_with_mark * (discountAmount/100 )
+      result_with_mark = setPromoAmount(result_with_mark, discountAmount)
 
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
 
@@ -177,8 +177,8 @@ Promise.all([
       // Apply extra charges to the result
       result_with_mark += result_with_mark * total_Percentage;
       // Apply promo code 
-      result_with_mark -= result_with_mark * (discount_amount/100 )
-
+      result_with_mark = setPromoAmount(result_with_mark, discount_amount)
+      
       result_with_mark = parseFloat(result_with_mark.toFixed(2));
 
       // Look Here:- We Change Everything Should Change Depend On Current & Desired Element
@@ -332,7 +332,6 @@ Promise.all([
     event.preventDefault();
     if(!extend_order) {
       discount_amount = await fetch_promo(); 
-
       getResult();
     }
   });

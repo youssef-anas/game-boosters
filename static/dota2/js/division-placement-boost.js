@@ -226,7 +226,7 @@ if(extend_order) {
     price += price * total_Percentage_with_role_result;
   
     // Apply promo code 
-    price -= price * (discountAmount / 100 )
+    price = setPromoAmount(price, discountAmount)
   
     price = parseFloat(price.toFixed(2));
   
@@ -296,7 +296,7 @@ if(extend_order) {
     price += price * total_Percentage_with_role_result;
   
     // Apply promo code 
-    price -= price * (discount_amount / 100 )
+    price = setPromoAmount(price, discount_amount)
   
     price = parseFloat(price.toFixed(2));
   
@@ -427,7 +427,7 @@ const getPlacementPrice = () => {
   price += price * total_Percentage_with_role_result;
 
   // Apply promo code 
-  price -= price * (discount_amount / 100 )
+  price = setPromoAmount(price, discount_amount)
 
   price = parseFloat(price.toFixed(2));
 

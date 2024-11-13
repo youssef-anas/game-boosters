@@ -246,7 +246,7 @@ class Dota2RankBoostOrder(models.Model):
     custom_price -= custom_price * (promo_code_amount / 100)
 
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price / 100))
     booster_price = round(custom_price * (percent / 100), 2)
@@ -325,12 +325,11 @@ class Dota2PlacementOrder(models.Model):
 
     custom_price += (custom_price * total_Percentage_with_role_result)
 
-    custom_price -= custom_price * (promo_code_amount/100)
 
     custom_price = round(custom_price, 2)
     
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price / 100))
 

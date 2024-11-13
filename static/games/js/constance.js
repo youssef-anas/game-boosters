@@ -12,8 +12,9 @@ const list2 = valuesAsList.slice(5, 10);  // values of extended order as {duo_bo
 
 const list3 = valuesAsList.slice(14, valuesAsList.length + 1) || "There is no extra fields" // values of extended order as {is_Arena_2x2}
 const server = valuesAsList[10]
-const extendPromoCode = valuesAsList[11] != 'None' ? valuesAsList[11] : 'null'
-const discountAmount = valuesAsList[12] != 'None' ? parseFloat(valuesAsList[12]) : 0
+// const extendPromoCode = valuesAsList[11] != 'None' ? valuesAsList[11] : 'null'
+var discountAmount = 0;
+
 const roleValue = parseInt(valuesAsList[13]) || 0
 
 const valuesToSet = list1.map(function(item) {

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
-from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data
+from accounts.models import BaseOrder, BaseUser, BaseOrder, TokenForPay, Transaction, Tip_data, Wallet
 from customer.controllers.order_creator import create_order
 from chat.models import Room, Message
 from gameBoosterss.utils import refresh_order_page, send_change_data_msg, send_available_to_play_mail, tipPayment
@@ -93,7 +93,28 @@ def payment_sucess_view(request, token):
     game_order.save_with_processing()
 
 
-    # order = GameType.objects.get(order_id=token_object.order_id)
+    if hasattr(order_info['extra_order'], 'extend_order'):
+        extend_order_id = order_info['extra_order']['extend_order']
+        try :
+            extend_order = BaseOrder.objects.get(id = extend_order_id)
+            extend_order.is_done = True
+            extend_order.save()
+        except:
+            pass
+    
+    Transaction.objects.create (
+        user= request.user,
+        amount=order_info['extra_order']['price'],
+        order=base_order,
+        status=status,  
+        type='WITHDRAWAL',
+        notice=f'{base_order.details} - {base_order.name}'
+    )
+    wallet , created = Wallet.objects.get_or_create(user = request.user)
+    wallet.money += float(order_info['extra_order']['price'])
+    wallet.save()
+
+
     
     try:
         booster = BaseUser.objects.get(id=booster_id, is_booster=True)

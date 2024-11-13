@@ -181,10 +181,9 @@ class WorldOfWarcraftArenaBoostOrder(models.Model):
     
     custom_price += (custom_price * total_percent)
 
-    custom_price -= custom_price * (promo_code_amount/100)
 
     actual_price = self.order.actual_price
-    main_price = self.order.price
+    main_price = self.order.real_order_price
 
     percent = round(actual_price / (main_price / 100))
 
