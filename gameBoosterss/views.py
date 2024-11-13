@@ -2,9 +2,7 @@ from django.shortcuts import render
 from booster.models import OrderRating
 from games.models import Game
 from accounts.models import BaseOrder
-import json
-from django.views.generic import TemplateView
-from django.views import View
+from django.views.generic import TemplateView, View
 
 def index(request):
 
@@ -120,19 +118,24 @@ class HowWeWorkView(TemplateView):
     template_name = 'gameboosterss/how-we-work.html'   
 
 
-from django.utils import timezone
-from django.views.generic import View
-from gameBoosterss.smtp import MadboostEmailSender     
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+
+def send_message_mail():
+    subject = 'New Message Arraive'
+    users_list = ['shethr999@gmail.com']
+    html_content = render_to_string('layouts/base_mail.html', {})
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
+    email.attach_alternative(html_content, "text/html")
+    email.send(fail_silently=False)
+    return True
 
 class SendMailTest(View):
     def get(self, request):
-      email = MadboostEmailSender(
-          subject='You Have new Order',
-          email=['shethr999@gmail.com'],
-          template_name='mails/available_mail_form.html',
-          context={'order_name': 'WR122','booster': 'shehab', 'requested_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S')},
-      )
-      email.send_mail()
+      send_message_mail()
       return HttpResponse('Mail Sent')
         
    
