@@ -4,14 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        .btn-mail {
+            display: inline-block;
+            background-color: #f26e3e; /* Orange background */
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-align: center;
+            font-size: 16px;
+            margin: 4px 2px;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn-mail:hover {
+            background-color: #d85e33; /* Slightly darker orange for hover */
+            transform: translateY(-2px); /* Slight elevation */
+        }
+
+            .btn-mail:active {
+            background-color: #bf502b; /* Even darker orange when clicked */
+            transform: translateY(0);
+        }
+
         body {
             background-color: #f5f5f0;
             margin: 0;
             padding: 0;
             font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333; /* Ensures consistent text color */
         }
         .main-container {
-            background-color: #e5d6c5;
+            background-color: #f8f8f3;
             width: 100%;
             max-width: 600px;
             margin: 40px auto;
@@ -74,12 +100,25 @@
             font-size: 14px;
             margin: 10px 0;
         }
+        /* Style all text elements explicitly */
+        h1, h2, h3, h4, h5, h6, p, a {
+            color: inherit;
+            text-decoration: none; /* Remove underline from links by default */
+        }
+
+        /* Prevent links from appearing differently when visited */
+        a {
+            color: #f26e3e; /* Same color as the button or your preferred color */
+        }
+        a:visited {
+            color: #f26e3e; /* Keep the same color as unvisited links */
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
         <div class="logo text-center">
-            <img src="https://www.madboost.gg/static/base/images/icons/logo-trans-orange.png" alt="Logo">
+            <img src="https://www.madboost.gg/static/base/images/icons/logo-mail.png" alt="Logo">
         </div>
         
         <div class="header">
@@ -87,8 +126,12 @@
         </div>
         
         <div class="content">
+            {% block container %}
+
             <p>We can help you bring your business to life online. Empowering you to do what you do, better.</p>
             <p>Default Content</p>
+
+            {% endblock %}
         </div>
 
         <div class="icons-section">

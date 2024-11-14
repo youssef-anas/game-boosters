@@ -1,11 +1,10 @@
 {% extends 'layouts/base_mail.html' %}
 
 {% block subject %}
-Are you available?
+Are you available to play?
 {% endblock %}
 
 {% block container %}
-    <div class="email-body">
         <p>Hello {{ madboost_user.username }},</p>
         <p>You have a new request to check if you are available to play.</p>
         <p><strong>Order Details:</strong></p>
@@ -16,10 +15,10 @@ Are you available?
         </ul>
         <p>Please let us know if you are available by clicking the button below:</p>
         {% if madboost_user.is_booster %}
-        <a href="" class="button">Confirm Availability</a>
+        <a href="{{client_url}}/booster/orders/" class="btn-mail">Confirm Availability</a>
         {% else %}
-        <a href="" class="button">Confirm Availability</a>
+        <a href="{{client_url}}" class="btn-mail">Confirm Availability</a>
         {% endif %}
         <p>Thank you!</p>
-    </div>
 {% endblock %}
+
