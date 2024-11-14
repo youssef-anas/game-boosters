@@ -234,7 +234,6 @@ EMAIL_HOST_USER =os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
-AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ALLOWED_HOSTS = [
     '8881-197-32-66-233.ngrok-free.app'
@@ -400,3 +399,35 @@ REST_FRAMEWORK = {
         'anon': '20/hour',
     }
 }
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "MadBoost Admin",
+    "site_header": "MadBoost Admin",
+    "login_logo": "favicon.ico",
+    "show_sidebar": True,
+    "site_icon": "favicon.ico",
+    "site_logo": "favicon.ico",
+    "welcome_sign": "Welcome to the MadBoost Admin",
+
+    # "navigation_expanded": True,
+    "hide_apps": ['auth'],
+    "hide_models": ['accounts.TokenForPay', 'accounts.Tip_data'],
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "accounts.Wallet": "fa-solid fa-wallet",
+        "accounts.BaseUser": "fa-solid fa-users",
+        "accounts.Transaction": "fas fa-money-bill-wave",
+        "accounts.BaseOrder": "fas fa-shopping-cart",
+    },
+    
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-chevron-right",
+    "related_modal_active": True,
+    "use_google_fonts_cdn": True,
+    "changeform_format": "vertical_tabs",
+    
+    # "show_ui_builder": True,
+}
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

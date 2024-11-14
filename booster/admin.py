@@ -12,7 +12,7 @@ from faker import Faker
 from django.shortcuts import redirect
 from accounts.admin import NoDeleteAdmin, NoDeleteEditAdmin
 from django.utils.html import format_html
-
+from django.db.models import Q
 faker = Faker()
 
 
@@ -128,32 +128,65 @@ class YourModelAdmin(admin.ModelAdmin):
 
     
 
-class CreateBoosterForm(ModelForm):
+class CreateBoosterForm(forms.ModelForm):
     class Meta:
         model = CreateBooster
         fields = '__all__'
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if BaseUser.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username already exists.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if BaseUser.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email already exists.")
+        return email
+    
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # Example extra validation: Ensure at least one game type is selected
+        game_fields = [
+            'is_wr_player', 'is_valo_player', 'is_pubg_player', 'is_lol_player',
+            'is_tft_player', 'is_wow_player', 'is_hearthstone_player', 
+            'is_mobleg_player', 'is_rl_player', 'is_dota2_player', 
+            'is_hok_player', 'is_overwatch2_player', 'is_csgo2_player'
+        ]
+        if not any(cleaned_data.get(field) for field in game_fields):
+            raise forms.ValidationError("At least one game type must be selected.")
+
+        # Additional custom validations can be added here
+
+        return cleaned_data
+
     def save(self, commit=True):
-        user = None
-        booster = None
+        # Continue with the save logic without additional checks here
+        fake_password = faker.password(length=12)
+        email = self.cleaned_data.pop('email')
+        username = self.cleaned_data.pop('username')
+        instance = super().save(commit=False)
+
         try:
-            fake_password = faker.password(length=12) 
-            email = self.cleaned_data.pop('email')
-            username = self.cleaned_data.pop('username') 
-            instance = super().save(commit=False)
             user = BaseUser.objects.create_user(username=username, email=email, password=fake_password, is_booster=True)
             user.set_password(fake_password)
+            user.save()
+
             booster = Booster.objects.create(booster=user, **self.cleaned_data)
+
             if commit:
-                instance.delete()  
-            booster_added_message(email, fake_password, username)        
-            return user  
+                instance.delete()
+
+            booster_added_message(email, fake_password, username)
+            return booster
+
         except Exception as e:
-            if user:
-                user.delete()
-            if booster:
-                booster.delete()
-            raise forms.ValidationError("An error occurred while processing the form. Please try again later.")
+            # Handle unexpected errors gracefully
+            self.add_error(None, f"An unexpected error occurred: {e}")
+            return None
+
 
 @admin.register(CreateBooster)
 class CreateBoosterAdmin(admin.ModelAdmin):

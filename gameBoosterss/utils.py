@@ -378,7 +378,7 @@ def send_activation_code(user) -> int:
     users_list = [user.email]
     secret_key = generate_random_5_digit_number()
 
-    html_content = render_to_string('accounts/activate_email_form.html', {'secret_key': secret_key, 'user':user})
+    html_content = render_to_string('mails/activate_email_form.html', {'secret_key': secret_key, 'user':user})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content,  settings.EMAIL_HOST_USER, users_list)
@@ -395,7 +395,7 @@ def reset_password(user) -> int:
     users_list = [user.email]
     secret_key = generate_random_5_digit_number()
 
-    html_content = render_to_string('accounts/password_reset/reset_password_form.html', {'secret_key': secret_key, 'user': user})
+    html_content = render_to_string('mails/reset_password_form.html', {'secret_key': secret_key, 'user': user})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content,  settings.EMAIL_HOST_USER, users_list)
@@ -409,7 +409,7 @@ def reset_password(user) -> int:
 def booster_added_message(email, password,username):
     subject = 'Your application for madboost.gg has been approved'
     users_list = [email]
-    html_content = render_to_string('booster/approved_form.html', {'password': password,'username':username})
+    html_content = render_to_string('mails/approved_form.html', {'password': password,'username':username})
     text_content = strip_tags(html_content)
 
     email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)

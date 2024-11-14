@@ -436,7 +436,6 @@ class AvailableToPlayMail(APIView):
         host = request.get_host()
         order = get_object_or_404(BaseOrder, Q(pk=id) & (Q(customer=user) | Q(booster=user)))
         client_url = f"{request.scheme}://{host}"
-        print(client_url)
         send_available_to_play_mail(user, order, client_url)
 
         # Update the cache with the current request time

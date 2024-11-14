@@ -1,0 +1,15 @@
+{% extends 'layouts/base_mail.html' %}
+
+{% block subject %}
+Verify your email address{% endblock %}
+
+{% block container %}
+<p>Hello {{ user.username }},</p>
+    
+<p>Thanks for verifying your {{ user.email }} account!</p>
+
+<p><strong>Your code is:</strong> {{ secret_key }}</p>
+
+<p>Madboost.gg</p>
+<p>The MadBoost Team</p>
+{% endblock %}

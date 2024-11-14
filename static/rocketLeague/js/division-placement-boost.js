@@ -403,7 +403,7 @@ Promise.all([
     price = price + (price * total_Percentage)
 
     // Apply promo code 
-    prcie = setPromoAmount(prcie, discount_amount)
+    price = setPromoAmount(price, discount_amount)
 
     price = parseFloat(price.toFixed(2))
 

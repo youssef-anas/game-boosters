@@ -60,3 +60,9 @@ handler400 = 'gameBoosterss.views.custom_handler400'
 handler403 = 'gameBoosterss.views.custom_handler403'
 handler404 = 'gameBoosterss.views.custom_handler404'
 handler500 = 'gameBoosterss.views.custom_handler500'
+
+
+# Customizing the default Django admin site titles
+admin.site.site_header = "Madboost Admin"  # Sets the text on the top of the admin site
+admin.site.site_title = "Madboost Admin"   # Sets the text shown on the browser tab
+admin.site.index_title = "Admin"  

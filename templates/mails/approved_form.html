@@ -1,0 +1,19 @@
+{% extends 'layouts/base_mail.html' %}
+
+{% block subject %}
+You've been chosen at madboost.gg.
+{% endblock %}
+
+{% block container %}
+    <p>Hi booster, Your application for madboost.gg has been approved. To complete your registration and set your account to active, click the URL below and log in to the site. </p>
+    <p>Your Data Is:</p>
+    <p><strong>username:</strong> {{ username }}</p>
+    <p><strong>Password:</strong> {{ password }}</p>
+    <p>For security reasons, please change your password after logging in.</p>
+
+    <a class="btn-mail" href="https://www.madboost.gg/">Confirm</a>
+
+    <p>
+        Contact us on Discord by adding (user name) to get a notification when you get an order, and there you will find our support team to help you with your orders and any other issues related to the platform.
+    </p>
+{% endblock %}

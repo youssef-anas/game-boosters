@@ -80,8 +80,8 @@ class BaseOrderAdmin(admin.ModelAdmin):
 
     chat_link.short_description = 'Chat'
 
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 admin.site.register(BaseOrder, BaseOrderAdmin)
 
