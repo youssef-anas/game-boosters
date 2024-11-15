@@ -3,9 +3,9 @@ from booster.models import OrderRating
 from games.models import Game
 from accounts.models import BaseOrder
 from django.views.generic import TemplateView, View
+from django.contrib.admin.models import LogEntry
 
 def index(request):
-
   games = Game.objects.all().order_by('id')
 
   last_orders_query = BaseOrder.objects.filter(is_done=True, is_drop=False).order_by('id')
@@ -116,27 +116,3 @@ class StoreView(TemplateView):
 
 class HowWeWorkView(TemplateView):
     template_name = 'gameboosterss/how-we-work.html'   
-
-
-from django.core.mail import EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
-
-def send_message_mail():
-    subject = 'New Message Arraive'
-    users_list = ['shethr999@gmail.com']
-    html_content = render_to_string('layouts/base_mail.html', {})
-    text_content = strip_tags(html_content)
-
-    email = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, users_list)
-    email.attach_alternative(html_content, "text/html")
-    email.send(fail_silently=False)
-    return True
-
-class SendMailTest(View):
-    def get(self, request):
-      send_message_mail()
-      return HttpResponse('Mail Sent')
-        
-   
-   

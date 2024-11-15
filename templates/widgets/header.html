@@ -26,7 +26,7 @@
               <li class="mx-auto">
                 <ul class="main-links">
                   <li><a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a></li>
-                  <li><a href="{% url 'store' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a></li>
+                  <li><a href="{% url 'blog_home' %}" {% if request.path == '/blog/' %}class="active"{% endif %}>Blog</a></li>
                   <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                   <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>
                   <li><a href="{% url 'how-we-work' %}" {% if request.path == '/how-we-work/' %}class="active"{% endif %}>How we work</a></li>
@@ -94,7 +94,7 @@
                   <ul class="main-links">
                     <li class="links-hidden"><a href="{% url 'customer.setting' %}">Profile</a></li>
                     <li><a href="{% url 'games.games' %}" {% if request.path == '/games/' %}class="active"{% endif %}>Games</a></li>
-                    <li><a href="{% url 'store' %}" {% if request.path == '/store/' %}class="active"{% endif %}>Store</a></li>
+                    <li><a href="{% url 'blog_home' %}" {% if request.path == '/blog/' %}class="active"{% endif %}>Blog</a></li>
                     <li><a href="{% url 'customer.orders' %}" {% if request.path == '/customer/customer_orders/' %}class="active"{% endif %}>My orders</a></li>
                     <li><a href="{% url 'last.orders' %}" {% if request.path == '/last_orders/' %}class="active"{% endif %}>Last orders</a></li>
                     <li><a href="{% url 'booster.boosters' %}" {% if request.path == '/booster/boosters/' %}class="active"{% endif %}>Boosters</a></li>

@@ -5,6 +5,8 @@ from news.models import Blog, SubHeader
 from django.urls import reverse_lazy
 import uuid
 from gameBoosterss.utils import upload_image_to_firebase
+
+
 class CreateBlogView(CreateView):
     model = Blog
     template_name = 'blog/create_blog.html'
@@ -49,5 +51,6 @@ class BlogDetailsView(View):
     template_name = 'blog/blog.html'  
     def get(self, request, id):
        blog = get_object_or_404(Blog, id=id)
+       headlines = Blog.objects.all().order_by('id')
        sub_headers = SubHeader.objects.filter(blog=blog).order_by('id')
-       return render(request, self.template_name, {'blog': blog, "sub_headers": sub_headers})
+       return render(request, self.template_name, {'blog': blog, "sub_headers": sub_headers, 'headlines':headlines})

@@ -6,9 +6,14 @@
     <link rel="stylesheet" href="{% static 'blog/css/main.css' %}" />
     <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}" />
     <link rel="stylesheet" href="{% static 'blog/css/news.css' %}" />
+    <style>
+      .nav {
+        position:relative;
+      }
+    </style>
     {% endblock %}
   {% block container %}
-    <section class="container mt-5" style="padding-top: 120px">
+    <section class="container mt-5">
       <div class="d-flex flex-column flex-md-row" style="gap: 10%;">
         <div class="col-lg-8 hero p-0">
           <h4>
@@ -18,14 +23,14 @@
           <div class="article-card mt-5">
             <img src="{{ blog.get_main_image }}" class="img-fluid" alt="Clove" />
           </div>
-          <!-- {% for sub in sub_headers %}
+          {% for sub in sub_headers %}
           {% if sub.is_top %}
           <p>
             {{ sub.sub_header }}
           </p>
           {% endif %}
-          {% endfor %} -->
-          <p>
+          {% endfor %}
+          <!-- <p>
             <span class="text-orange">Clove</span>, the newest addition to the Valorant roster, emerged onto the
             scene with a smoldering presence that has left the gaming community
             in awe. Her reveal shattered expectations and shook the very
@@ -40,7 +45,7 @@
             From her unique abilities to her captivating backstory, every aspect
             of Clove's persona has sparked intense discussion and debate among
             players and critics alike.
-          </p>
+          </p> -->
         </div>
         <div class="card mb-3 advertisement-vertical position-relative mt-0">
           <img
@@ -107,14 +112,14 @@
           <div class="article-card mb-4">
             <iframe style="width: 100%" width="720" height="450" src="https://www.youtube.com/embed/mdVGu6Cxtj0?si=Pqn9UiPnU1zc04lh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
-          <!-- {% for sub in sub_headers %}
+          {% for sub in sub_headers %}
           {% if not sub.is_top %}
           <p>
             {{ sub.sub_header }}
           </p>
           {% endif %}
-          {% endfor %} -->
-          <p>
+          {% endfor %}
+          <!-- <p>
             In just a short span of time, she has managed to challenge and
             reshape the general opinion, establishing herself as a force to be
             reckoned with in the competitive landscape of Valorant.
@@ -124,49 +129,36 @@
             mysteries of her character, one thing remains certain: Clove's
             impact on the game is far from over, and her legacy is destined to
             endure long after the smoke clears.
-          </p>
+          </p> -->
         </div>
         <div class="col-12 col-md-3 offset-md-1">
           <h4 class="mb-3">Headline Section</h4>
           <div class="headline-section d-flex flex-wrap">
-            <div class="p-0">
-              <div class="card mb-3">
-                <img src="{% static 'blog/images/Game1.jpg' %}" class="card-img-top" alt="..." />
-                <div class="card-body">
-                  <p class="card-text">
-                    Overwatch 2 Reveals How <span class="text-orange">Colosseo</span> Is Changing
-                  </p>
-                  <p class="card-text">
-                    <small class="text-muted">March 24, 2024</small>
-                  </p>
+
+            {% for headline in headlines|slice:":3" %}
+            <!-- <a href="{% url 'blog_details_view' headline.id %}" class="col-12 col-sm-6 col-lg-4 mb-3" style="text-decoration: none; color: inherit;"> -->
+              <a href="{% url 'blog_details_view' headline.id %}" class="d-block p-0" style="text-decoration: none; color: inherit;">
+                <div class="card mb-3">
+                    <img src="{{ headline.get_main_image2 }}" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                        <p class="card-text">
+                            {{ headline.header }}
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">{{ headline.created_at.date }}</small>
+                        </p>
+                    </div>
                 </div>
-              </div>
-            </div>
-            <div class="p-0">
-              <div class="card mb-3">
-                <img src="{% static 'blog/images/Game2.jpg' %}" class="card-img-top" alt="..." />
-                <div class="card-body">
-                  <p class="card-text">Riot reveals the new <span class="text-orange">Skarner</span>.</p>
-                  <p class="card-text">
-                    <small class="text-muted">March 24, 2024</small>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="p-0">
-              <div class="card mb-3">
-                <img src="{% static 'blog/images/Game3.jpg' %}" class="card-img-top" alt="..." />
-                <div class="card-body">
-                  <p class="card-text">
-                    Riot drops Patch <span class="text-orange">14.7</span> in League of Legends with a huge punch
-                    of changes including the Skarner rework coming early April.
-                  </p>
-                  <p class="card-text">
-                    <small class="text-muted">March 24, 2024</small>
-                  </p>
-                </div>
-              </div>
-            </div>
+            </a>
+            
+            <!-- </a> -->
+
+            {% endfor %}
+
+
+
+
+
           </div>
         </div>
       </div>

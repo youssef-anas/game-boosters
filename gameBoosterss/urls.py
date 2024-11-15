@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from gameBoosterss.views import index, last_orders, privacy_policy, terms_service, download_media_zip, social_auth_exception_handler, facebook_data_deletion_handler, StoreView, HowWeWorkView, SendMailTest
+from gameBoosterss.views import index, last_orders, privacy_policy, terms_service, download_media_zip, social_auth_exception_handler, facebook_data_deletion_handler, StoreView, HowWeWorkView
 from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 from django.contrib.auth import views as auth_views
@@ -47,9 +47,6 @@ urlpatterns = [
 
     path('blog/', include('news.urls')),
     path('how-we-work/', HowWeWorkView.as_view(), name='how-we-work'),
-
-    path('test-mail/', SendMailTest.as_view(), name='test-mail'),
-
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
