@@ -19,7 +19,7 @@ AUTH_USER_MODEL = 'accounts.BaseUser'
 
 ASGI_APPLICATION = 'gameBoosterss.asgi.application'
 
-
+# redis 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
@@ -245,7 +245,7 @@ ALLOWED_HOSTS = [
     'madboost.gg',
     'gameboost-test-f25426e2eac4.herokuapp.com',
     'www.gameboost-test-f25426e2eac4.herokuapp.com',
-    '*'
+    '*' # remove in deplay mode
     ]
 
 
@@ -383,9 +383,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'email',
 ]
 
-
-PAYMENT_KEY = 'AgSkbGvlynpSI8O999V3Yoz4G5hz7UeGaL7tonwqHYjdfhnExRaNGahFhp05NSbEmCHjnNG4VeX0ESF9Vf6Ut4fGDpABI1gQIYrgKuLcahhgL8jPyL8t4kqDz1j9XU8w'
-MERCHANT_UUID = 'ccb11a35-db3c-4b4c-b5d7-8de68a266c28'
+# env file 
+PAYMENT_KEY = os.getenv('PAYMENT_KEY')
+MERCHANT_UUID = os.getenv('MERCHANT_UUID')
 
 
 # settings.py
