@@ -1,0 +1,503 @@
+
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}MadBoost Admin Dashboard{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+#revenue-chart {
+    height: 300px !important;
+    width: 100% !important;
+    max-height: 300px !important;
+    min-height: 300px !important;
+}
+.dashboard-container {
+    padding: 20px;
+}
+.dashboard-widget {
+    background: #2c3e50;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: white;
+}
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.widget-title {
+    color: #00ff88;
+    margin: 0;
+}
+.widget-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #00ff88;
+}
+.widget-change {
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+#revenue-breakdown-chart {
+    height: 200px !important;
+    width: 100% !important;
+}
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <h1><i class="fas fa-gamepad"></i> MadBoost Gaming Dashboard</h1>
+        <div class="dashboard-actions">
+            <button class="btn btn-primary" onclick="refreshDashboard()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-success" onclick="exportData()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Quick Links to Sections -->
+    <div class="row" style="margin-bottom:16px;">
+        <div class="col-md-12">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Quick Links</h3>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:booster_accounts' %}">Boosters</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:client_accounts' %}">Clients</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:manager_accounts' %}">Managers</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:transactions' %}">Transactions</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:chat_monitor' %}">Chat monitor</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:pricing' %}">Pricing</a>
+                    <a class="btn btn-info" href="{% url 'admin_dashboard:promo_codes' %}">Promo codes</a>
+                    <a class="btn btn-warning" href="{% url 'realtime:realtime_test' %}" target="_blank">🔄 Test Realtime Sync</a>
+                    <a class="btn btn-warning" href="{% url 'notifications:test_notifications' %}" target="_blank">🔔 Test Notifications</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="dashboard-widget" id="revenue-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Total Revenue</h3>
+                    <i class="widget-icon fas fa-coins"></i>
+                </div>
+                <div class="widget-value">${{ total_revenue|floatformat:2 }}</div>
+                <div class="widget-change">
+                    <span class="text-success">+{{ month_revenue|floatformat:2 }} this month</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-widget" id="order-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Active Orders</h3>
+                    <i class="widget-icon fas fa-gamepad"></i>
+                </div>
+                <div class="widget-value">{{ pending_orders }}</div>
+                <div class="widget-change">
+                    <span class="text-info">{{ completed_orders }} completed</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-widget" id="booster-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Active Boosters</h3>
+                    <i class="widget-icon fas fa-trophy"></i>
+                </div>
+                <div class="widget-value">{{ active_boosters }}</div>
+                <div class="widget-change">
+                    <span class="text-warning">{{ total_boosters }} total</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="dashboard-widget" id="client-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Total Clients</h3>
+                    <i class="widget-icon fas fa-users"></i>
+                </div>
+                <div class="widget-value">{{ total_clients }}</div>
+                <div class="widget-change">
+                    <span class="text-success">+{{ total_clients|add:"-100" }} new</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Chart Row -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Revenue Analytics</h3>
+                    <div class="widget-controls">
+                        <select class="form-control form-control-sm" id="revenue-period">
+                            <option value="7">Last 7 Days</option>
+                            <option value="30" selected>Last 30 Days</option>
+                            <option value="90">Last 90 Days</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenue-chart"></canvas>
+                    <!-- Fallback table if chart fails -->
+                    <div id="revenue-table" style="display: none; color: white;">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Revenue</th>
+                                    <th>Bar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Jan</td><td>$12</td><td><div style="background: #00ff88; height: 20px; width: 12px;"></div></td></tr>
+                                <tr><td>Feb</td><td>$19</td><td><div style="background: #00ff88; height: 20px; width: 19px;"></div></td></tr>
+                                <tr><td>Mar</td><td>$15</td><td><div style="background: #00ff88; height: 20px; width: 15px;"></div></td></tr>
+                                <tr><td>Apr</td><td>$25</td><td><div style="background: #00ff88; height: 20px; width: 25px;"></div></td></tr>
+                                <tr><td>May</td><td>$22</td><td><div style="background: #00ff88; height: 20px; width: 22px;"></div></td></tr>
+                                <tr><td>Jun</td><td>$30</td><td><div style="background: #00ff88; height: 20px; width: 30px;"></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Revenue Breakdown</h3>
+                    <i class="widget-icon fas fa-chart-pie"></i>
+                </div>
+                <div class="chart-container" style="height: 200px;">
+                    <canvas id="revenue-breakdown-chart"></canvas>
+                    <!-- Fallback list if chart fails -->
+                    <div id="breakdown-list" style="display: none; color: white;">
+                        <ul style="list-style: none; padding: 0;">
+                            <li style="margin: 10px 0;"><span style="background: #00ff88; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>CS:GO - 35%</li>
+                            <li style="margin: 10px 0;"><span style="background: #ff0080; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>Dota 2 - 25%</li>
+                            <li style="margin: 10px 0;"><span style="background: #0080ff; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>LoL - 20%</li>
+                            <li style="margin: 10px 0;"><span style="background: #ff8000; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>Valorant - 15%</li>
+                            <li style="margin: 10px 0;"><span style="background: #8000ff; width: 20px; height: 20px; display: inline-block; margin-right: 10px;"></span>Other - 5%</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Row -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Recent Orders</h3>
+                    <a href="{% url 'admin_dashboard:accounts' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="recent-activity">
+                    {% for order in recent_orders %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">{{ order.customer.username }} - {{ order.game.name }}</div>
+                            <div class="activity-subtitle">{{ order.game_type }} - ${{ order.price }}</div>
+                            <div class="activity-time">{{ order.created_at|timesince }} ago</div>
+                        </div>
+                        <div class="activity-status">
+                            <span class="badge badge-{{ order.status|lower }}">{{ order.status }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-activity">
+                        <i class="fas fa-inbox"></i>
+                        <p>No recent orders</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Recent Transactions</h3>
+                    <a href="{% url 'admin_dashboard:transactions' %}" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="recent-activity">
+                    {% for transaction in recent_transactions %}
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">{{ transaction.user.username }}</div>
+                            <div class="activity-subtitle">${{ transaction.amount }} - {{ transaction.type }}</div>
+                            <div class="activity-time">{{ transaction.date|timesince }} ago</div>
+                        </div>
+                        <div class="activity-status">
+                            <span class="badge badge-{{ transaction.status|lower }}">{{ transaction.status }}</span>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="no-activity">
+                        <i class="fas fa-inbox"></i>
+                        <p>No recent transactions</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Activity Row -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dashboard-widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">Live Activity Monitor</h3>
+                    <div class="live-indicator">
+                        <span class="pulse"></span>
+                        <span class="live-text">LIVE</span>
+                    </div>
+                </div>
+                <div class="live-activity-grid">
+                    <div class="live-stat">
+                        <div class="stat-number">{{ active_chats }}</div>
+                        <div class="stat-label">Active Chats</div>
+                    </div>
+                    <div class="live-stat">
+                        <div class="stat-number">{{ pending_orders }}</div>
+                        <div class="stat-label">Pending Orders</div>
+                    </div>
+                    <div class="live-stat">
+                        <div class="stat-number">{{ active_boosters }}</div>
+                        <div class="stat-label">Online Boosters</div>
+                    </div>
+                    <div class="live-stat">
+                        <div class="stat-number">{{ total_clients }}</div>
+                        <div class="stat-label">Total Clients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Actions</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="quick-actions-grid">
+                    <div class="action-item" onclick="navigateTo('accounts')">
+                        <i class="fas fa-users"></i>
+                        <span>Manage Accounts</span>
+                    </div>
+                    <div class="action-item" onclick="navigateTo('transactions')">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>View Transactions</span>
+                    </div>
+                    <div class="action-item" onclick="navigateTo('chat_monitor')">
+                        <i class="fas fa-comments"></i>
+                        <span>Monitor Chat</span>
+                    </div>
+                    <div class="action-item" onclick="navigateTo('pricing')">
+                        <i class="fas fa-tags"></i>
+                        <span>Manage Pricing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+// Dashboard-specific JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, Chart.js available:', typeof Chart !== 'undefined');
+    console.log('Chart version:', Chart ? Chart.version : 'Not loaded');
+    
+    // Wait a bit more to ensure everything is ready
+    setTimeout(function() {
+        initializeDashboardCharts();
+        startRealTimeUpdates();
+    }, 500);
+});
+
+function initializeDashboardCharts() {
+    console.log('Initializing dashboard charts...');
+    
+    // Try to create charts, fallback to tables if they fail
+    let chartSuccess = false;
+    
+    // Check if Chart.js is loaded
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js is not loaded! Using fallback tables.');
+        showFallbackTables();
+        return;
+    }
+    
+    // Try Revenue Chart
+    const revenueCtx = document.getElementById('revenue-chart');
+    if (revenueCtx) {
+        try {
+            // Simple chart configuration
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [12, 19, 15, 25, 22, 30],
+                        backgroundColor: '#00ff88'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { }
+                    }
+                }
+            });
+            console.log('Revenue chart created successfully');
+            chartSuccess = true;
+        } catch (error) {
+            console.error('Error creating revenue chart:', error);
+        }
+    }
+    
+    // Try Breakdown Chart
+    const breakdownCtx = document.getElementById('revenue-breakdown-chart');
+    if (breakdownCtx) {
+        try {
+            const breakdownChart = new Chart(breakdownCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['CS:GO', 'Dota 2', 'LoL', 'Valorant', 'Other'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: ['#00ff88', '#ff0080', '#0080ff', '#ff8000', '#8000ff']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+            console.log('Breakdown chart created successfully');
+        } catch (error) {
+            console.error('Error creating breakdown chart:', error);
+        }
+    }
+    
+    // If charts failed, show fallback tables after 2 seconds
+    if (!chartSuccess) {
+        setTimeout(showFallbackTables, 2000);
+    }
+}
+
+function showFallbackTables() {
+    console.log('Showing fallback tables...');
+    const revenueTable = document.getElementById('revenue-table');
+    const breakdownList = document.getElementById('breakdown-list');
+    
+    if (revenueTable) {
+        revenueTable.style.display = 'block';
+        document.getElementById('revenue-chart').style.display = 'none';
+    }
+    
+    if (breakdownList) {
+        breakdownList.style.display = 'block';
+        document.getElementById('revenue-breakdown-chart').style.display = 'none';
+    }
+}
+
+function startRealTimeUpdates() {
+    // Update dashboard every 30 seconds
+    setInterval(function() {
+        updateDashboardStats();
+    }, 30000);
+}
+
+function updateDashboardStats() {
+    // Disable API updates for now since endpoint doesn't exist
+    console.log('Dashboard stats update disabled - API endpoint not implemented');
+}
+
+function updateLiveStats(data) {
+    // Update order count
+    const orderWidget = document.getElementById('order-widget');
+    if (orderWidget) {
+        const valueElement = orderWidget.querySelector('.widget-value');
+        if (valueElement) {
+            valueElement.textContent = data.new_orders;
+        }
+    }
+}
+
+function refreshDashboard() {
+    location.reload();
+}
+
+function exportData() {
+    // Implement export functionality
+    showNotification('Export feature coming soon!', 'info');
+}
+
+function navigateTo(route) {
+    window.location.href = `/admin/dashboard/${route}/`;
+}
+
+// Show notification
+function showNotification(message, type) {
+    if (window.MadBoostAdmin && window.MadBoostAdmin.showNotification) {
+        window.MadBoostAdmin.showNotification(message, type);
+    } else {
+        alert(message);
+    }
+}
+</script>
+{% endblock %} 

@@ -3,6 +3,7 @@ from accounts.models import BaseUser
 from gameBoosterss.utils import send_mail_bootser_choose
 # from gameBoosterss.smtp import MadboostEmailSender
 from django.utils import timezone
+import logging
 
 class Room(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -24,7 +25,8 @@ class Room(models.Model):
     
     @classmethod
     def get_specific_room(cls,customer,order_name):
-        slug = f'roomFor-{customer}-{order_name}'
+        slug_base = f'roomFor-{customer}-{order_name}'
+        slug = slug_base[:100] if len(slug_base) > 100 else slug_base
         try :
             room = cls.objects.get(slug=slug)
         except cls.DoesNotExist:
@@ -33,7 +35,8 @@ class Room(models.Model):
     
     @classmethod
     def get_specific_admins_room(cls,customer,order_name):
-        slug=f'roomFor-{customer}-admins-{order_name}'
+        slug_base = f'roomFor-{customer}-admins-{order_name}'
+        slug = slug_base[:100] if len(slug_base) > 100 else slug_base
         try :
             room = cls.objects.get(slug=slug)
         except cls.DoesNotExist:
@@ -44,17 +47,30 @@ class Room(models.Model):
     def create_room_with_booster(cls,customer,booster,order_name):
         room = cls.get_specific_room(customer,order_name)
         if not room :
+            # Truncate order_name to fit in max_length=50
+            truncated_order_name = order_name[:50] if len(order_name) > 50 else order_name
+            # Create name with truncation to fit max_length=50
+            name_base = f'{customer}-{truncated_order_name}'
+            room_name = name_base[:50] if len(name_base) > 50 else name_base
+            # Create slug with truncation to fit max_length=100
+            slug_base = f'roomFor-{customer}-{order_name}'
+            room_slug = slug_base[:100] if len(slug_base) > 100 else slug_base
             room = cls.objects.create(
-                    name=f'{customer}-{order_name}',
-                    slug=f'roomFor-{customer}-{order_name}',
+                    name=room_name,
+                    slug=room_slug,
                     customer=customer,
                     booster=booster,
-                    order_name=order_name,
+                    order_name=truncated_order_name,
                     is_for_admins = False,
                 )
             if booster :
                 Message.create_booster_message(room=room, message="Hi, I'm your booster. It's a pleasure to work together, and I will start your order in 15 minutes or less.", sender=booster)
-                send_mail_bootser_choose(order_name, booster)
+                try:
+                    send_mail_bootser_choose(order_name, booster)
+                except Exception as e:
+                    # Log email error but don't fail room creation
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"Failed to send booster email for order {order_name}: {e}")
 
             else:
                 Message.create_booster_message(room=room, message='One of our booster will join chat soon...', sender=BaseUser.objects.get(id=1))
@@ -64,12 +80,21 @@ class Room(models.Model):
     def create_room_with_admins(cls,customer,order_name):
         room = cls.get_specific_admins_room(customer,order_name)
         if not room :
+            # Truncate order_name to fit in max_length=50
+            truncated_order_name = order_name[:50] if len(order_name) > 50 else order_name
+            # Create name with truncation to fit max_length=50
+            # "admins-" is 7 chars, so we need to leave room for customer string and order_name
+            name_base = f'{customer}-admins-{truncated_order_name}'
+            room_name = name_base[:50] if len(name_base) > 50 else name_base
+            # Create slug with truncation to fit max_length=100
+            slug_base = f'roomFor-{customer}-admins-{order_name}'
+            room_slug = slug_base[:100] if len(slug_base) > 100 else slug_base
             room = cls.objects.create(
-                    name=f'{customer}-admins-{order_name}',
-                    slug=f'roomFor-{customer}-admins-{order_name}',
+                    name=room_name,
+                    slug=room_slug,
                     customer=customer,
                     booster=None,
-                    order_name=order_name,
+                    order_name=truncated_order_name,
                     is_for_admins = True,
                 )
             Message.create_booster_message(room=room, message='Welcome, it`s honor for us to see you in our site', sender=BaseUser.objects.get(id=1))

@@ -1,0 +1,318 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Pricing Management - MadBoost Admin{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+// Test if basic JavaScript works
+console.log('=== PRICING PAGE SCRIPT LOADING - VERSION 2.0 ===');
+</script>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="pricing-container" style="padding: 20px; font-family: Arial, sans-serif; background: #f8f9fa; min-height: 100vh;">
+    <h1 style="color: #333; margin-bottom: 30px;">🎮 Pricing Management</h1>
+    
+    <!-- Game Selection -->
+    <div style="margin-bottom: 30px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <label style="font-weight: bold; color: #333; margin-right: 15px;">Select Game:</label>
+        <select id="game-selector" onchange="loadGamePricing()" style="padding: 12px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; background: white; color: #333;">
+            <option value="">Choose a game...</option>
+            <option value="csgo2">CS:GO 2</option>
+            <option value="dota2">Dota 2</option>
+            <option value="lol">League of Legends</option>
+            <option value="valorant">Valorant</option>
+            <option value="overwatch2">Overwatch 2</option>
+            <option value="pubg">PUBG</option>
+            <option value="rocketLeague">Rocket League</option>
+            <option value="hearthstone">Hearthstone</option>
+            <option value="wow">World of Warcraft</option>
+            <option value="tft">Teamfight Tactics</option>
+            <option value="mobileLegends">Mobile Legends</option>
+            <option value="honorOfKings">Honor of Kings</option>
+            <option value="wildRift">Wild Rift</option>
+        </select>
+    </div>
+
+    <!-- Pricing Table Container -->
+    <div id="pricing-table-container">
+        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <p style="color: #666; font-style: italic; font-size: 18px;">Please select a game to view and edit pricing</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Test if script is loading
+console.log('=== SCRIPT STARTED LOADING ===');
+
+// Get CSRF token
+function getCSRFToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]');
+    return token ? token.value : '';
+}
+
+// Use the showNotification function from madboost-admin.js
+
+// Load game pricing
+function loadGamePricing() {
+    const game = document.getElementById('game-selector').value;
+    console.log('Loading pricing for game:', game);
+    
+    if (!game) {
+        document.getElementById('pricing-table-container').innerHTML = '<p style="color: #666; font-style: italic;">Please select a game to view and edit pricing</p>';
+        return;
+    }
+    
+    // Show loading
+    document.getElementById('pricing-table-container').innerHTML = '<p>Loading pricing data...</p>';
+    
+    // Fetch pricing data
+    fetch(`/admin/dashboard/api/pricing/${game}/`)
+        .then(response => {
+            console.log('API response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Pricing data received:', data);
+            displayPricingTable(data.services);
+        })
+        .catch(error => {
+            console.error('Error loading pricing:', error);
+            document.getElementById('pricing-table-container').innerHTML = '<p style="color: red;">Error loading pricing data: ' + error.message + '</p>';
+        });
+}
+
+// Display pricing table
+function displayPricingTable(services) {
+    if (!services || services.length === 0) {
+        document.getElementById('pricing-table-container').innerHTML = '<p>No services found</p>';
+        return;
+    }
+    
+    let tableHTML = `
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                <thead>
+                    <tr style="background: #007bff; color: white;">
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: left; font-weight: bold;">Service</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: left; font-weight: bold;">Current Price</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: left; font-weight: bold;">New Price</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: left; font-weight: bold;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+    
+    services.forEach(service => {
+        tableHTML += `
+            <tr style="background: white;">
+                <td style="padding: 15px; border: 1px solid #ddd; color: #333;">
+                    <strong style="color: #333;">${service.name}</strong><br>
+                    <small style="color: #666;">${service.description}</small>
+                </td>
+                <td style="padding: 15px; border: 1px solid #ddd; color: #333;">
+                    <span class="current-price-${service.id}" style="color: #333; font-weight: bold;">$${service.current_price}</span>
+                </td>
+                <td style="padding: 15px; border: 1px solid #ddd;">
+                    <input type="number" id="price-${service.id}" value="${service.current_price}" 
+                           step="0.01" min="0" style="width: 120px; padding: 10px; border: 2px solid #ddd; border-radius: 4px; color: #333; font-size: 14px;">
+                </td>
+                <td style="padding: 15px; border: 1px solid #ddd;">
+                    <button onclick="savePrice(${service.id})" 
+                            style="background: #28a745; color: white; padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px; font-weight: bold;">
+                        💾 Save
+                    </button>
+                    <button onclick="resetPrice(${service.id})" 
+                            style="background: #6c757d; color: white; padding: 10px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                        ↺ Reset
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableHTML += `
+                </tbody>
+            </table>
+            <div style="margin-top: 20px;">
+                <button onclick="saveAllPrices()" 
+                        style="background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                    💾 Save All Changes
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('pricing-table-container').innerHTML = tableHTML;
+}
+
+// Save individual price
+function savePrice(serviceId) {
+    console.log('=== SAVE BUTTON CLICKED ===');
+    console.log('Service ID:', serviceId);
+    
+    const priceInput = document.getElementById(`price-${serviceId}`);
+    if (!priceInput) {
+        console.error('Price input not found for service:', serviceId);
+        alert('❌ Error: Price input not found');
+        return;
+    }
+    
+    const newPrice = parseFloat(priceInput.value);
+    console.log('New price:', newPrice);
+    
+    if (isNaN(newPrice) || newPrice < 0) {
+        alert('❌ Please enter a valid price');
+        return;
+    }
+    
+    const csrfToken = getCSRFToken();
+    console.log('CSRF Token:', csrfToken ? 'Found' : 'Not found');
+    console.log('Sending data:', {service_id: serviceId, new_price: newPrice});
+    
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '⏳ Saving...';
+    button.disabled = true;
+    button.style.background = '#ffc107';
+    
+    const gameKey = document.getElementById('game-selector').value;
+    const requestData = {service_id: serviceId, new_price: newPrice, game_key: gameKey};
+    console.log('Request data:', requestData);
+    
+    fetch('/admin/dashboard/api/update-price/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify(requestData)
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        if (data.success) {
+            alert(`✅ Price saved successfully! Service ${serviceId} updated to $${newPrice.toFixed(2)}`);
+            // Update current price display
+            const currentPriceElement = document.querySelector(`.current-price-${serviceId}`);
+            if (currentPriceElement) {
+                currentPriceElement.textContent = `$${newPrice.toFixed(2)}`;
+            }
+        } else {
+            alert('❌ Error saving price: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Save error:', error);
+        alert('❌ Error saving price: ' + error.message);
+    })
+    .finally(() => {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+        button.style.background = '#28a745';
+    });
+}
+
+// Reset price
+function resetPrice(serviceId) {
+    const currentPriceElement = document.querySelector(`.current-price-${serviceId}`);
+    const priceInput = document.getElementById(`price-${serviceId}`);
+    
+    if (currentPriceElement && priceInput) {
+        const currentPrice = currentPriceElement.textContent.replace('$', '');
+        priceInput.value = currentPrice;
+        showNotification('↺ Price reset to original value', 'info');
+    }
+}
+
+// Save all prices
+function saveAllPrices() {
+    console.log('Saving all prices');
+    
+    const gameKey = document.getElementById('game-selector').value;
+    const services = document.querySelectorAll('input[id^="price-"]');
+    const changes = [];
+    
+    services.forEach(input => {
+        const serviceId = input.id.replace('price-', '');
+        const newPrice = parseFloat(input.value);
+        const currentPriceElement = document.querySelector(`.current-price-${serviceId}`);
+        
+        if (currentPriceElement) {
+            const currentPrice = parseFloat(currentPriceElement.textContent.replace('$', ''));
+            if (!isNaN(newPrice) && newPrice >= 0 && newPrice !== currentPrice) {
+                changes.push({service_id: parseInt(serviceId), new_price: newPrice});
+            }
+        }
+    });
+    
+    if (changes.length === 0) {
+        alert('ℹ️ No changes to save');
+        return;
+    }
+    
+    console.log('Changes to save:', changes);
+    
+    const csrfToken = getCSRFToken();
+    
+    // Show loading state
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '⏳ Saving All...';
+    button.disabled = true;
+    
+    fetch('/admin/dashboard/api/bulk-update-prices/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({game_key: gameKey, prices: changes})
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Bulk save response:', data);
+        if (data.success) {
+            alert(`✅ Bulk save completed! ${data.updated_count} prices updated successfully!`);
+            // Reload the pricing table to show updated values
+            loadGamePricing();
+        } else {
+            alert('❌ Error saving prices: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Bulk save error:', error);
+        alert('❌ Error saving prices: ' + error.message);
+    })
+    .finally(() => {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+    });
+}
+
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('✅ Pricing page loaded successfully');
+    console.log('CSRF Token available:', getCSRFToken() ? 'YES' : 'NO');
+    console.log('All functions loaded:', {
+        savePrice: typeof savePrice,
+        showNotification: typeof showNotification,
+        getCSRFToken: typeof getCSRFToken
+    });
+});
+</script>
+{% endblock %}

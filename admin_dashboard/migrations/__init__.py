@@ -1,0 +1,1 @@
+# Django migrations for admin_dashboard app 

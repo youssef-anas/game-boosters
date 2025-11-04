@@ -61,6 +61,10 @@ class Booster(models.Model):
     discord_id = models.CharField(max_length=100, default="", blank=True, null=True)
     email_verified_at = models.DateTimeField(null=True,blank=True)
 
+    # Missing text fields that exist in DB schema
+    choosen_chat_message = models.CharField(max_length=200, default="Hello! I'm ready to start your boost.")
+    start_chat_message = models.CharField(max_length=200, blank=True, null=True, default="")
+
     is_wr_player = models.BooleanField(default=False)
     achived_rank_wr = models.ForeignKey(BoosterRank, on_delete=models.SET_NULL, null=True, blank=True, related_name='wr_rank', limit_choices_to={'game__pk': 1})
 

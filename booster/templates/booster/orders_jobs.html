@@ -326,7 +326,7 @@
                           <form action="${order.url}" method="post">
                             {% csrf_token %}
                               <div class='d-flex justify-content-center'>
-                                  <img class='my-1 captchaImage' src='${url + '/' + order.captcha}' width="120" height="50"  style="border-radius: 32px;" />
+                                  ${order.captcha ? `<img class='my-1 captchaImage' src='${order.captcha}' width="120" height="50"  style="border-radius: 32px;" />` : `<span class='text-warning'>No captcha</span>`}
                               </div>
                               <div>
                                   <input class='my-2 form-control custom-input captchaInput' type="text" name="captcha_input" placeholder="Captcha" required/>
@@ -350,23 +350,24 @@
             const submitButton = form.querySelector(".submitButton");
             const captchaImage = form.querySelector(".captchaImage");
 
-            // Extract the captcha value from the image src before .png
-            const captchaValue = captchaImage.src.split("/").pop().split(".")[0];
-
-            // Function to check if the input value matches the captcha value
-            function validateCaptcha() {
-              const inputValue = captchaInput.value.trim();
-              if (inputValue === captchaValue) {
-                submitButton.disabled = false;
-              } else {
-                submitButton.disabled = true;
-              }
+            if (!captchaImage) {
+              // If there is no captcha image, allow submit directly
+              submitButton.disabled = false;
+              return;
             }
 
-            // Add event listener to input field to trigger validation
-            captchaInput.addEventListener("input", function (event) {
-              const inputValue = event.target.value.trim();
-              validateCaptcha()
+            // Extract the captcha value from the image src before extension
+            const src = captchaImage.src || '';
+            const filename = src.split('/').pop();
+            const captchaValue = filename.split('.')[0];
+
+            function validateCaptcha() {
+              const inputValue = (captchaInput.value || '').trim();
+              submitButton.disabled = inputValue !== captchaValue;
+            }
+
+            captchaInput.addEventListener("input", function () {
+              validateCaptcha();
             });
           });
 

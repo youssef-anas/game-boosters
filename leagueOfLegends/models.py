@@ -158,7 +158,7 @@ class LeagueOfLegendsDivisionOrder(models.Model):
     if self.order.promo_code != None:
       promo_code = f'{self.order.promo_code.code},{self.order.promo_code.discount_amount}'
 
-    return f"{self.current_rank.pk},{self.current_division},{self.current_marks},{self.desired_rank.pk},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
+    return f"{self.current_rank.pk if self.current_rank else None},{self.current_division},{self.current_marks},{self.desired_rank.pk if self.desired_rank else None},{self.desired_division},{self.order.duo_boosting},{self.order.select_booster},{self.order.turbo_boost},{self.order.streaming},{self.select_champion},{self.order.customer_server},{promo_code}"
   
   def get_order_price(self):
     # Read data from utils file
@@ -175,8 +175,8 @@ class LeagueOfLegendsDivisionOrder(models.Model):
     except:
       promo_code_amount = 0
 
-    current_rank = self.current_rank.pk
-    reached_rank = self.reached_rank.pk
+    current_rank = self.current_rank.pk if self.current_rank else None
+    reached_rank = self.reached_rank.pk if self.reached_rank else None
 
     current_division = self.current_division
     reached_division = self.reached_division
@@ -198,6 +198,20 @@ class LeagueOfLegendsDivisionOrder(models.Model):
     if self.order.streaming:
       total_percent += 0.15
 
+    # Handle None values with defaults
+    if current_rank is None:
+        current_rank = 1  # Default to Iron
+    if reached_rank is None:
+        reached_rank = 1  # Default to Iron
+    if current_division is None:
+        current_division = 1  # Default to IV
+    if reached_division is None:
+        reached_division = 1  # Default to IV
+    if current_marks is None:
+        current_marks = 0  # Default to 0-20
+    if reached_marks is None:
+        reached_marks = 0  # Default to 0-20
+        
     start_division = ((current_rank-1)*4) + current_division
     end_division = ((reached_rank-1)*4)+ reached_division
     marks_price = marks_data[current_rank][current_marks]

@@ -3,13 +3,15 @@ from django.contrib.auth import get_user_model
 class EmailOrUsernameModelBackend(object):
     def authenticate(self, request, username=None, password=None):
         User = get_user_model()
-        try:
-            user = User.objects.get(email=username)
-        except User.DoesNotExist:
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
-                return None
+        user = None
+        # Try by email first, but handle non-unique emails safely
+        if username and '@' in str(username):
+            user = User.objects.filter(email=username).order_by('id').first()
+        # Fallback to username
+        if not user:
+            user = User.objects.filter(username=username).order_by('id').first()
+        if not user:
+            return None
         if user.check_password(password):
             return user
         return None

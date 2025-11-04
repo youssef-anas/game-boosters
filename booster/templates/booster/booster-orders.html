@@ -363,10 +363,14 @@
                         </div>
                       </div>
 
+                      {% if order.order.order.id %}
                       <form action="{% url 'alert.customer' order_id=order.order.order.id %}" method="POST" class="alert-customer-form no-disabled-form">
                         {% csrf_token %}
                         <button type="submit" class="btn alert-customer-btn">Alert Customer</button>
                       </form>
+                      {% else %}
+                      <button type="button" class="btn alert-customer-btn" disabled title="Order ID is missing">Alert Customer</button>
+                      {% endif %}
 
                       <p class="text-center mt-3 mb-0" style="color: #FFFFFF80; font-weight: 300; font-size: 9px">
                         <i class="fa-solid fa-circle-info me-1"></i> Notify the player if there are something wrong with the information
@@ -1018,7 +1022,9 @@
 
                         <div class="steps-conatiner">
                           <div class="step">0%</div>
+                          <div class="step">25%</div>
                           <div class="step">50%</div>
+                          <div class="step">75%</div>
                           <div class="step">100%</div>
                         </div>
                       </div>
@@ -1032,8 +1038,10 @@
 
                         <div class="steps-conatiner">
                           <div class="step">$0</div>
-                          <div class="step">${{ order.half_price }}</div>
-                          <div class="step">${{order.order.order.actual_price}}</div>
+                          <div class="step">${{ order.quarter_price|default:0|floatformat:2 }}</div>
+                          <div class="step">${{ order.half_price|default:0|floatformat:2 }}</div>
+                          <div class="step">${{ order.three_quarter_price|default:0|floatformat:2 }}</div>
+                          <div class="step">${{order.order.order.actual_price|floatformat:2}}</div>
                         </div>
                       </div>
 

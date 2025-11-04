@@ -97,8 +97,21 @@
         FB.init({
           appId      : '1103754014333574',
           xfbml      : true,
-          version    : 'v20.0'
+          version    : 'v20.0',
+          status     : true,
+          cookie     : true
         });
+        
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            console.log('User is logged in and authenticated');
+          } else if (response.status === 'not_authorized') {
+            console.log('User is logged in but not authorized');
+          } else {
+            console.log('User is not logged in');
+          }
+        });
+        
         FB.AppEvents.logPageView();
       };
     

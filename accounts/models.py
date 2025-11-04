@@ -11,7 +11,15 @@ from games.models import Game
 from django.db.models import Avg
 from datetime import date, timedelta
 from django.core.exceptions import ValidationError
-from allauth.socialaccount.signals import social_account_added
+
+# Allauth (optional)
+try:
+    from allauth.socialaccount.signals import social_account_added
+    ALLAUTH_AVAILABLE = True
+except ImportError:
+    social_account_added = None
+    ALLAUTH_AVAILABLE = False
+
 # from simple_history.models import HistoricalRecords
 
 
@@ -98,17 +106,19 @@ def create_wallet(sender, instance, created, **kwargs):
         Wallet.objects.create(user=instance)
 
 
-@receiver(social_account_added)
-def update_user_email(sender, **kwargs):
-    sociallogin = kwargs['sociallogin']
-    if sociallogin.account.provider in ['facebook', 'google']:
-        extra_data = sociallogin.account.extra_data
-        if 'email' in extra_data:
-            user = sociallogin.user
-            user.is_customer = True
-            if not user.email:
-                user.email = extra_data['email']
-                user.save()
+# Only register signal if allauth is available
+if ALLAUTH_AVAILABLE and social_account_added:
+    @receiver(social_account_added)
+    def update_user_email(sender, **kwargs):
+        sociallogin = kwargs['sociallogin']
+        if sociallogin.account.provider in ['facebook', 'google']:
+            extra_data = sociallogin.account.extra_data
+            if 'email' in extra_data:
+                user = sociallogin.user
+                user.is_customer = True
+                if not user.email:
+                    user.email = extra_data['email']
+                    user.save()
 
     
 class Wallet(models.Model):
@@ -309,20 +319,39 @@ class BaseOrder(models.Model):
         super().save(*args, **kwargs)
 
     def update_booster_wallet(self):
+        # Helper function to get progress percentage
+        def get_progress_percentage():
+            """Get the current progress percentage from the game-specific order"""
+            try:
+                content_type = self.content_type
+                if content_type:
+                    game_order = content_type.model_class().objects.get(order=self)
+                    if hasattr(game_order, 'get_order_price'):
+                        price_result = game_order.get_order_price()
+                        if price_result and 'percent_for_view' in price_result:
+                            return price_result['percent_for_view']
+            except Exception:
+                pass
+            # Default to 100% if order is done, 0% otherwise
+            return 100.0 if self.is_done else 0.0
+        
         if self.is_done and self.game_type in ['R', 'RB', 'DU', 'DB']:
+            progress_at_payment = get_progress_percentage()
             Transaction.objects.create (
                     user=self.booster,
                     amount=round(self.actual_price, 2),
                     order=self,
                     status='Done',  
                     type='DEPOSIT',
-                    notice=f'{self.details} - {self.game.name}'
+                    notice=f'{self.details} - {self.game.name}',
+                    progress_at_payment=progress_at_payment
                 )
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.actual_price
             return booster_wallet.save()
         
         if (self.is_done or self.is_drop) and not self.is_extended and self.booster and self.money_owed != 0:
+            progress_at_payment = get_progress_percentage()
             booster_wallet = self.booster.wallet
             booster_wallet.money += self.money_owed
             booster_wallet.save()
@@ -333,7 +362,8 @@ class BaseOrder(models.Model):
                     order=self,
                     status='Drop',  
                     type='DEPOSIT',
-                    notice=f'{self.details} - {self.game.name}'
+                    notice=f'{self.details} - {self.game.name}',
+                    progress_at_payment=progress_at_payment
                 )
             else :
                 Transaction.objects.create (
@@ -342,7 +372,8 @@ class BaseOrder(models.Model):
                     order=self,
                     status='Done',  
                     type='DEPOSIT',
-                    notice=f'{self.details} - {self.game.name}'
+                    notice=f'{self.details} - {self.game.name}',
+                    progress_at_payment=progress_at_payment
                 )
 
     def customer_wallet(self):        
@@ -392,7 +423,8 @@ class Transaction(models.Model):
     status = models.CharField(max_length=100,choices=STATUS_CHOICES, default='New')
     date = models.DateTimeField(auto_now_add=True)
     type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
-    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.PROTECT, null=True, blank=True) 
+    tip = models.ForeignKey(Tip_data, related_name='tip', on_delete=models.PROTECT, null=True, blank=True)
+    progress_at_payment = models.FloatField(null=True, blank=True, help_text='Progress percentage at the time of payment') 
 
     def __str__(self):
         return f'{self.user.username} {self.type} {self.amount}$'

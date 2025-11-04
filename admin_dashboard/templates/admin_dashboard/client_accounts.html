@@ -1,0 +1,163 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Client Accounts</h1>
+
+    <form method="get" class="mb-3">
+        <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search by username or email" class="vTextField" />
+            <button type="submit" class="button default">Search</button>
+        </div>
+    </form>
+
+    <table class="table" style="width:100%;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.is_active|yesno:"Yes,No" }}</td>
+                <td>
+                    <button type="button" class="button" onclick="viewClientDetails({{ u.id }})">View</button>
+                    <button type="button" class="button delete-button" onclick="deleteClient({{ u.id }}, '{{ u.username }}')">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No clients found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="paginator">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}&search={{ request.GET.search }}">« Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&search={{ request.GET.search }}">Next »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Details Modal -->
+    <div id="client-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;">
+        <div style="background:#1e1f25;color:#fff;max-width:860px;width:90%;margin:40px auto;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #2a2c35;background:#16171d;">
+                <h3 id="client-modal-title" style="margin:0;font-weight:600;">Client Details</h3>
+                <button onclick="closeClientModal()" style="background:#2a2c35;color:#fff;border:0;padding:6px 10px;border-radius:6px;cursor:pointer;">✕</button>
+            </div>
+            <div id="client-modal-body" style="padding:16px;max-height:70vh;overflow:auto;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function closeClientModal(){
+        const m = document.getElementById('client-modal');
+        if(m) m.style.display = 'none';
+    }
+    function openClientModal(){
+        const m = document.getElementById('client-modal');
+        if(m) m.style.display = 'block';
+    }
+
+    async function viewClientDetails(clientId){
+        const body = document.getElementById('client-modal-body');
+        const title = document.getElementById('client-modal-title');
+        title.textContent = 'Client Details';
+        body.innerHTML = 'Loading...';
+        openClientModal();
+        try{
+            const resp = await fetch(`/admin/dashboard/api/client/${clientId}/`);
+            if(!resp.ok){
+                throw new Error('Failed to load client details');
+            }
+            const d = await resp.json();
+            title.textContent = `Client: ${d.username}`;
+            body.innerHTML = generateClientDetailsHTML(d);
+        }catch(err){
+            body.innerHTML = `<div style="color:#ff7070;">${err.message}</div>`;
+        }
+    }
+
+    function generateClientDetailsHTML(d){
+        const orders = (d.orders || []).map(o=>`
+            <tr>
+                <td>#${o.id}</td>
+                <td>${o.game || '-'}</td>
+                <td>${o.type || '-'}</td>
+                <td>${o.price ?? '-'}</td>
+                <td>${o.status}</td>
+                <td>${o.created_at || '-'}</td>
+            </tr>
+        `).join('');
+        return `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;padding:12px;">
+                <div style="opacity:.8;font-size:12px;">Total Spent</div>
+                <div style="font-size:22px;font-weight:700;">$${Number(d.total_spent||0).toFixed(2)}</div>
+            </div>
+            <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;padding:12px;">
+                <div style="opacity:.8;font-size:12px;">Orders</div>
+                <div style="font-size:14px;">Ongoing: <b>${d.ongoing_orders||0}</b> &nbsp; | &nbsp; Completed: <b>${d.completed_orders||0}</b></div>
+            </div>
+        </div>
+        <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;">
+            <div style="padding:10px 12px;border-bottom:1px solid #2a2c35;font-weight:600;">Recent Orders</div>
+            <div style="overflow:auto;">
+                <table class="table" style="width:100%;margin:0;">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Game</th><th>Type</th><th>Price</th><th>Status</th><th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>${orders || '<tr><td colspan="6">No orders</td></tr>'}</tbody>
+                </table>
+            </div>
+        </div>`;
+    }
+
+    async function deleteClient(clientId, username){
+        if(!confirm(`Delete client "${username}"? This cannot be undone.`)) return;
+        try{
+            const resp = await fetch(`/admin/dashboard/api/client/${clientId}/delete/`, {method:'DELETE'});
+            const d = await resp.json();
+            if(!resp.ok || d.success === false){
+                throw new Error(d.error || 'Delete failed');
+            }
+            location.reload();
+        }catch(err){
+            alert(err.message);
+        }
+    }
+
+    // Close modal when clicking outside
+    (function(){
+        const modal = document.getElementById('client-modal');
+        if(!modal) return;
+        modal.addEventListener('click', (e)=>{
+            if(e.target === modal){ closeClientModal(); }
+        });
+        document.addEventListener('keydown', (e)=>{
+            if(e.key === 'Escape') closeClientModal();
+        });
+    })();
+    </script>
+</div>
+{% endblock %}
+
+
+

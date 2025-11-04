@@ -1,14 +1,31 @@
 import json
+import re
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from accounts.models import BaseUser
 from chat.models import Room, Message
 from django.utils import timezone
+
+def sanitize_group_name(name):
+    """
+    Sanitize group name to only contain ASCII alphanumerics, hyphens, underscores, or periods.
+    Replace invalid characters with underscores and ensure length < 100.
+    Accounts for the 'chat_' prefix (5 chars), so max length is 94.
+    """
+    # Replace any non-ASCII alphanumeric, hyphen, underscore, or period with underscore
+    sanitized = re.sub(r'[^a-zA-Z0-9._-]', '_', name)
+    # Limit length to 94 (5 chars for 'chat_' prefix = 99 total, ensuring < 100)
+    if len(sanitized) > 94:
+        sanitized = sanitized[:94]
+    return sanitized
+
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_slug']
-        self.room_group_name = 'chat_%s' % self.room_name
+        # Sanitize the group name to ensure it's valid for Django Channels
+        sanitized_room_name = sanitize_group_name(self.room_name)
+        self.room_group_name = f'chat_{sanitized_room_name}'
         self.username = self.scope['user'].username
         
         await self.channel_layer.group_add(

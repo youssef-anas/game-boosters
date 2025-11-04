@@ -7,6 +7,7 @@ from django.conf.urls import handler400, handler403, handler404, handler500
 # from oauth2_provider import views as oauth2_views
 from django.contrib.auth import views as auth_views
 from django.views.generic import TemplateView
+from admin_dashboard.views import AdminLogoutOverrideView
 
 urlpatterns = [
     path('', index, name="homepage.index"),
@@ -16,6 +17,10 @@ urlpatterns = [
     path('social-auth-exception/', social_auth_exception_handler, name='social_auth_exception_handler'),
     path('facebook-data-deletion/', facebook_data_deletion_handler, name='facebook_data_deletion'),
     path('rmtp9o0h7ntmxakmat8fpe2zhuj9by.html', TemplateView.as_view(template_name='rmtp9o0h7ntmxakmat8fpe2zhuj9by.html'), name='html_verification'),
+    # Place admin dashboard before the Django admin catch-all so these routes resolve correctly
+    path('admin/dashboard/', include('admin_dashboard.urls')),
+    # Override admin logout to allow GET
+    path('admin/logout/', AdminLogoutOverrideView.as_view(), name='admin_logout_override'),
     path('admin/', admin.site.urls),
     path('customer/', include('customer.urls')),
     path('booster/', include('booster.urls')),
@@ -36,6 +41,8 @@ urlpatterns = [
     path('hok/', include('honorOfKings.urls')),
     path('games/', include('games.urls')),
     path('chat/', include('chat.urls')),
+    path('realtime/', include('realtime.urls')),
+    path('notifications/', include('notifications.urls')),
     # path('paypal/', include("paypal.standard.ipn.urls")),
     # path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
     # path('token/', oauth2_views.TokenView.as_view(), name="token"),

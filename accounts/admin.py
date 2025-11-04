@@ -87,6 +87,24 @@ admin.site.register(BaseOrder, BaseOrderAdmin)
 
 
 class TransactionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'order', 'get_booster_id', 'amount', 'progress_at_payment', 'type', 'status', 'date']
+    list_filter = ['type', 'status', 'date']
+    search_fields = ['user__username', 'order__name', 'order__id']
+    readonly_fields = ['date', 'get_booster_id']
+    fieldsets = (
+        ('Transaction Info', {'fields': ('user', 'order', 'amount', 'type', 'status', 'date')}),
+        ('Progress Info', {'fields': ('progress_at_payment',)}),
+        ('Additional Info', {'fields': ('notice', 'tip')}),
+    )
+    
+    def get_booster_id(self, obj):
+        """Display booster ID from order if available"""
+        if obj.order and obj.order.booster:
+            return obj.order.booster.id
+        return '-'
+    get_booster_id.short_description = 'Booster ID'
+    get_booster_id.admin_order_field = 'order__booster'
+    
     def save_model(self, request, obj, form, change):
         if not change:
             wallet, created = Wallet.objects.get_or_create(user=obj.user)

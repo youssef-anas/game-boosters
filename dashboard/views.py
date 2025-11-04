@@ -24,32 +24,33 @@ def admin_side(request, order_name):
         # boosters = get_boosters(base_order.game.pk)
         
         # Chat with admins
-        admins_chat_slug = f'roomFor-{base_order.customer}-admins-{base_order.name}'
-
-        admins_room = Room.objects.get(slug=admins_chat_slug)
-        admins_messages = Message.objects.filter(room=admins_room)
+        admins_room = Room.create_room_with_admins(base_order.customer, base_order.name)
+        admins_chat_slug = admins_room.slug if admins_room else None
+        admins_messages = Message.objects.filter(room=admins_room) if admins_room else Message.objects.none()
 
         game_order = base_order.related_order
         
-        # Chat with booster
-        specific_room = Room.get_specific_room(base_order.customer, base_order.name)
-        slug = specific_room.slug if specific_room else None
-        if slug:
-            room = Room.objects.get(slug=slug)
-            chat_messages=Message.objects.filter(room=room) 
-            context = {
-                'user':request.user,
-                "slug":slug,
-                'messages':chat_messages,
-                'room':room,
-                # 'boosters':boosters,
-                'order':game_order,
-                'admins_room':admins_room,
-                'admins_room_name':admins_room,
-                'admins_messages':admins_messages,
-                'admins_chat_slug':admins_chat_slug
-            }    
-            template_name = 'dashboard/customer_side.html'
-            return render(request, template_name, context)
-        return  HttpResponse("error on creating chat")
+        # Chat with booster - create room if it doesn't exist
+        room = Room.create_room_with_booster(
+            base_order.customer, 
+            base_order.booster, 
+            base_order.name
+        )
+        slug = room.slug if room else None
+        chat_messages = Message.objects.filter(room=room) if room else Message.objects.none()
+        
+        context = {
+            'user':request.user,
+            "slug":slug,
+            'messages':chat_messages,
+            'room':room,
+            # 'boosters':boosters,
+            'order':game_order,
+            'admins_room':admins_room,
+            'admins_room_name':admins_room,
+            'admins_messages':admins_messages,
+            'admins_chat_slug':admins_chat_slug
+        }    
+        template_name = 'dashboard/customer_side.html'
+        return render(request, template_name, context)
     return  HttpResponse("error on order")

@@ -28,9 +28,17 @@ import json
 from django.conf import settings
 from rest_framework.throttling import UserRateThrottle
 
-# paypalrestsdk
-import paypalrestsdk
-from cryptomus import Client
+# paypalrestsdk (optional)
+try:
+    import paypalrestsdk
+except ImportError:
+    paypalrestsdk = None
+
+# cryptomus (optional)
+try:
+    from cryptomus import Client
+except ImportError:
+    Client = None
 
 from gameBoosterss.permissions import IsNotBooster
 from rest_framework.response import Response
@@ -317,23 +325,33 @@ def live_orders():
     )
     all_orders_dict = []
     for order in orders:
-        if order.captcha:
-           captcha=order.captcha.image.name
+        if order.captcha and getattr(order.captcha, 'image', None):
+           try:
+               # Some rows store a path like 'static/captcha_images/xxx.png'
+               image_name = str(order.captcha.image)
+               if image_name.startswith('static/'):
+                   # Serve via STATIC_URL
+                   captcha = settings.STATIC_URL + image_name.split('static/', 1)[1]
+               else:
+                   captcha = order.captcha.image.url
+           except Exception:
+               captcha = None
         else:
             captcha=None
         if order.game.pk == 1 or order.game.pk == 2 or order.game.pk == 4:
-            champions_queryset = order.related_order.champions.all()
-            champions = []
-            for champion in champions_queryset:
-                champion_dict = {
-                    "id": champion.pk,
-                    "name": champion.name,
-                    "image": champion.get_image_url(),
-                    "game_id": champion.game_id
-                }
-                champions.append(champion_dict)
-            # champions_list = list(champions_queryset.values())
-            # champions = json.dumps(champions_list, cls=DjangoJSONEncoder)
+            if hasattr(order, 'related_order') and order.related_order and hasattr(order.related_order, 'champions'):
+                champions_queryset = order.related_order.champions.all()
+                champions = []
+                for champion in champions_queryset:
+                    champion_dict = {
+                        "id": champion.pk,
+                        "name": champion.name,
+                        "image": champion.get_image_url(),
+                        "game_id": champion.game_id
+                    }
+                    champions.append(champion_dict)
+            else:
+                champions = []
             
         else:
             champions = None
@@ -442,7 +460,11 @@ def send_refresh_msg(booster, customer, order_name):
 
 
 
-from firebase_admin import storage
+# firebase_admin (optional)
+try:
+    from firebase_admin import storage
+except ImportError:
+    storage = None
 import uuid
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import io

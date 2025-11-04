@@ -1,0 +1,17 @@
+{% extends 'layouts/base_mail.html' %}
+{% block content %}
+<div style="font-family: ui-sans-serif, system-ui;">
+  <h2 style="font-size:20px;font-weight:700;margin-bottom:8px;">{{ title }}</h2>
+  <p style="margin:0 0 12px 0;">{{ message }}</p>
+  {% if order %}
+  <div style="background:#0b1220;padding:12px;border-radius:8px;color:#cbd5e1;">
+    <div><strong>Order #</strong>{{ order.id }}</div>
+    <div><strong>Status:</strong> {{ order.status }}</div>
+    <div><strong>Customer:</strong> {{ order.customer.username }}</div>
+    <div><strong>Game:</strong> {{ order.game.name }}</div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+

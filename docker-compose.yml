@@ -1,0 +1,63 @@
+# version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: gameboosters_db01
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup.sql:/docker-entrypoint-initdb.d/backup.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build: .
+    command: >
+      bash -c "set -e;
+      while ! pg_isready -h db -U postgres -t 5; do
+        echo 'Waiting for database...';
+        sleep 2;
+      done;
+      python manage.py migrate;
+      daphne -b 0.0.0.0 -p 8000 gameBoosterss.asgi:application"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_NAME: gameboosters_db01
+      DB_USER: postgres
+      DB_PASSWORD: 123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PYTHONUNBUFFERED: 1
+
+volumes:
+  postgres_data:

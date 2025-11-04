@@ -1,0 +1,115 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: gameboosters_db
+    environment:
+      POSTGRES_DB: ${DB_NAME:-gameboosters_db01}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - gameboosters_network
+    env_file:
+      - .env
+
+  redis:
+    image: redis:7-alpine
+    container_name: gameboosters_redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - gameboosters_network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gameboosters_web
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME:-gameboosters_db01}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - USE_REDIS=True
+      - DEBUG=${DEBUG:-False}
+      - SECRET_KEY=${SECRET_KEY}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL:-${EMAIL_HOST_USER}}
+      - EMAIL_HOST=${EMAIL_HOST:-smtp.office365.com}
+      - EMAIL_PORT=${EMAIL_PORT:-587}
+      - EMAIL_USE_TLS=${EMAIL_USE_TLS:-True}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${SOCIAL_AUTH_GOOGLE_OAUTH2_KEY}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET}
+      - SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI=${SOCIAL_AUTH_GOOGLE_OAUTH2_REDIRECT_URI}
+      - PAYMENT_KEY=${PAYMENT_KEY}
+      - MERCHANT_UUID=${MERCHANT_UUID}
+      - MEDIA_URL=${MEDIA_URL:-/media/}
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - gameboosters_network
+    env_file:
+      - .env
+
+  nginx:
+    image: nginx:alpine
+    container_name: gameboosters_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - web
+    restart: unless-stopped
+    networks:
+      - gameboosters_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  static_volume:
+    driver: local
+  media_volume:
+    driver: local
+
+networks:
+  gameboosters_network:
+    driver: bridge

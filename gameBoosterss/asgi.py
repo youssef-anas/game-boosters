@@ -12,6 +12,8 @@ from channels.security.websocket import AllowedHostsOriginValidator
 from django.urls import path, re_path
 from chat.consumers import ChatConsumer
 from accounts.consumers import OrderConsumer, PriceConsumer
+from realtime.routing import websocket_urlpatterns as realtime_websocket_urlpatterns
+from notifications.routing import websocket_urlpatterns as notifications_websocket_urlpatterns
 
 websocket_urlpatterns = [
     ] 
@@ -24,6 +26,8 @@ application = ProtocolTypeRouter({
                 re_path(r'ws/chat/(?P<room_slug>[^/]+)/$', ChatConsumer.as_asgi()),
                 re_path(r'ws/order/$', OrderConsumer.as_asgi()),
                 re_path(r'ws/price/(?P<order_id>\d+)/$', PriceConsumer.as_asgi()),
+                *realtime_websocket_urlpatterns,  # Include realtime WebSocket routes
+                *notifications_websocket_urlpatterns,  # Global notifications routes
             ])
         ),
     ),

@@ -1,0 +1,87 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ block.super }} - MadBoost Admin{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/madboost-admin.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+/* Additional custom styles for admin dashboard */
+.admin-dashboard {
+    background: var(--primary-blue);
+    min-height: 100vh;
+}
+
+.dashboard-header {
+    background: var(--gradient-primary);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-header h1 {
+    color: var(--neon-green);
+    margin: 0;
+    font-weight: 800;
+    font-size: 2.5rem;
+}
+
+.dashboard-summary {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1.5rem;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--white);
+}
+
+.summary-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 1rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 2rem;
+    }
+    
+    .dashboard-summary {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    {% block dashboard_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script src="{% static 'admin/js/madboost-admin.js' %}?v=2" defer></script>
+{% endblock %}

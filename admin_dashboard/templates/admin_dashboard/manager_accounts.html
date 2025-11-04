@@ -1,0 +1,185 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Manager Accounts</h1>
+
+    <div style="margin:12px 0;padding:10px;border:1px solid #2a2c35;background:#16171d;border-radius:8px;color:#fff;">
+        <form id="add-manager-form" onsubmit="return addManager(event)" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <strong style="margin-right:6px;">Add Manager:</strong>
+            <input type="text" name="username" placeholder="Username" required class="vTextField" />
+            <input type="email" name="email" placeholder="Email" required class="vTextField" />
+            <input type="password" name="password" placeholder="Password (optional)" class="vTextField" />
+            <button type="submit" class="button default">Create</button>
+        </form>
+        <div id="add-manager-msg" style="margin-top:8px;color:#90ee90;display:none;"></div>
+    </div>
+
+    <table class="table" style="width:100%;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Staff</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in object_list %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.is_active|yesno:"Yes,No" }}</td>
+                <td>{{ u.is_staff|yesno:"Yes,No" }}</td>
+                <td>
+                    <button type="button" class="button" onclick="viewManagerDetails({{ u.id }})">View</button>
+                    <button type="button" class="button delete-button" onclick="deleteManager({{ u.id }}, '{{ u.username }}')">Delete</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No managers found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <div class="paginator">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">« Previous</a>
+        {% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next »</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Details Modal -->
+    <div id="manager-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;">
+        <div style="background:#1e1f25;color:#fff;max-width:860px;width:90%;margin:40px auto;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.5);overflow:hidden;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #2a2c35;background:#16171d;">
+                <h3 id="manager-modal-title" style="margin:0;font-weight:600;">Manager Details</h3>
+                <button onclick="closeManagerModal()" style="background:#2a2c35;color:#fff;border:0;padding:6px 10px;border-radius:6px;cursor:pointer;">✕</button>
+            </div>
+            <div id="manager-modal-body" style="padding:16px;max-height:70vh;overflow:auto;">
+                Loading...
+            </div>
+        </div>
+    </div>
+
+    <script>
+    async function addManager(e){
+        e.preventDefault();
+        const form = document.getElementById('add-manager-form');
+        const msg = document.getElementById('add-manager-msg');
+        msg.style.display = 'none';
+        const data = Object.fromEntries(new FormData(form).entries());
+        try{
+            const resp = await fetch('/admin/dashboard/api/manager/add/', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data)});
+            const text = await resp.text();
+            let d; try { d = JSON.parse(text); } catch(_) { throw new Error('Server returned HTML. Are you logged in?'); }
+            if(!resp.ok || d.success === false){ throw new Error(d.error || 'Failed to add'); }
+            msg.style.display = 'block';
+            const pwdNote = d.auto_password ? ` Temporary password: ${d.password}` : '';
+            msg.textContent = `Manager ${d.username} created.${pwdNote}`;
+            setTimeout(()=> location.reload(), 600);
+        }catch(err){
+            alert(err.message);
+        }
+        return false;
+    }
+
+    function closeManagerModal(){
+        const m = document.getElementById('manager-modal');
+        if(m) m.style.display = 'none';
+    }
+    function openManagerModal(){
+        const m = document.getElementById('manager-modal');
+        if(m) m.style.display = 'block';
+    }
+
+    async function viewManagerDetails(id){
+        const body = document.getElementById('manager-modal-body');
+        const title = document.getElementById('manager-modal-title');
+        title.textContent = 'Manager Details';
+        body.innerHTML = 'Loading...';
+        openManagerModal();
+        try{
+            const resp = await fetch(`/admin/dashboard/api/manager/${id}/`);
+            if(!resp.ok){ throw new Error('Failed to load manager'); }
+            const d = await resp.json();
+            title.textContent = `Manager: ${d.username}`;
+            body.innerHTML = generateManagerDetailsHTML(d);
+        }catch(err){
+            body.innerHTML = `<div style="color:#ff7070;">${err.message}</div>`;
+        }
+    }
+
+    function generateManagerDetailsHTML(d){
+        const msgs = (d.recent_messages||[]).map(m=>`<li><span style="opacity:.7;">${m.created_at||'-'}</span> — ${m.content||''}</li>`).join('');
+        const comments = (d.comments||[]).map(c=>`<div style="padding:8px;border-bottom:1px solid #2a2c35;"><div style="opacity:.7;">${c.created_at} by ${c.admin}</div><div>${c.comment}</div></div>`).join('');
+        return `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+            <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;padding:12px;">
+                <div style="opacity:.8;font-size:12px;">Activity (24h/7d)</div>
+                <div style="font-size:14px;">Msgs: <b>${d.messages_last_24h||0}</b> / <b>${d.messages_last_7d||0}</b></div>
+                <div style="font-size:14px;">Rooms (24h): <b>${d.rooms_last_24h||0}</b></div>
+                <div style="font-size:12px;opacity:.7;">Last Online: ${d.last_online||'-'}</div>
+            </div>
+            <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;padding:12px;">
+                <div style="opacity:.8;font-size:12px;">Recent Messages</div>
+                <ul style="margin:6px 0 0 18px;">${msgs||'<li>No messages</li>'}</ul>
+            </div>
+        </div>
+        <div style="background:#16171d;border:1px solid #2a2c35;border-radius:8px;margin-bottom:14px;">
+            <div style="padding:10px 12px;border-bottom:1px solid #2a2c35;font-weight:600;">Comments</div>
+            <div>${comments||'<div style="padding:10px;opacity:.8;">No comments</div>'}</div>
+            <div style="padding:10px;border-top:1px solid #2a2c35;display:flex;gap:8px;">
+                <input id="manager-comment-input" placeholder="Add a comment..." class="vTextField" style="flex:1;" />
+                <button class="button" onclick="addManagerComment(${d.id})">Add</button>
+            </div>
+        </div>`;
+    }
+
+    async function addManagerComment(id){
+        const input = document.getElementById('manager-comment-input');
+        const comment = (input && input.value || '').trim();
+        if(!comment) return;
+        try{
+            const resp = await fetch('/admin/dashboard/api/manager/comment/', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({manager_id:id, comment})});
+            const d = await resp.json();
+            if(!resp.ok || d.success === false){ throw new Error(d.error || 'Failed to add'); }
+            viewManagerDetails(id);
+        }catch(err){
+            alert(err.message);
+        }
+    }
+
+    async function deleteManager(id, username){
+        if(!confirm(`Delete manager "${username}"? This cannot be undone.`)) return;
+        try{
+            const resp = await fetch(`/admin/dashboard/api/manager/${id}/delete/`, {method:'DELETE'});
+            const text = await resp.text();
+            let d; try { d = JSON.parse(text); } catch(_) { throw new Error('Server returned HTML. Are you logged in?'); }
+            if(!resp.ok || d.success === false){ throw new Error(d.error || 'Delete failed'); }
+            location.reload();
+        }catch(err){
+            alert(err.message);
+        }
+    }
+
+    (function(){
+        const modal = document.getElementById('manager-modal');
+        if(!modal) return;
+        modal.addEventListener('click', (e)=>{ if(e.target === modal){ closeManagerModal(); } });
+        document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeManagerModal(); });
+    })();
+    </script>
+</div>
+{% endblock %}
+
+
+

@@ -316,10 +316,15 @@ def booster_orders(request):
     for base_order in orders:
         content_type = base_order.content_type
         game = []
+        # Initialize safe defaults so template rendering does not fail
+        update_rating_result = {
+            'booster_price': 0,
+            'percent_for_view': 0,
+        }
         if content_type:
             game = content_type.model_class().objects.get(order=base_order)
             
-            update_rating_result = game.get_order_price()
+            update_rating_result = game.get_order_price() or update_rating_result
             base_order.money_owed = update_rating_result['booster_price']
             base_order.save()
             percentage = update_rating_result['percent_for_view']
@@ -333,7 +338,9 @@ def booster_orders(request):
                 'order': game,
                 'percentage': percentage,
                 'now_price': update_rating_result['booster_price'],
+                'quarter_price': round(base_order.actual_price / 4, 2),
                 'half_price': round(base_order.actual_price / 2, 2),
+                'three_quarter_price': round(base_order.actual_price * 3 / 4, 2),
                 'user': request.user,
                 'room': current_room,
                 'messages': messages,
@@ -345,7 +352,9 @@ def booster_orders(request):
             'order': game,
             'percentage': percentage,
             'now_price': update_rating_result['booster_price'],
+            'quarter_price': round(base_order.actual_price / 4, 2),
             'half_price': round(base_order.actual_price / 2, 2),
+            'three_quarter_price': round(base_order.actual_price * 3 / 4, 2),
             'user': request.user,
             'room': None,
             'messages': None,
@@ -663,7 +672,7 @@ def work_with_us_accepted_data(request):
     # Clear session if accepted data does not exist
     if not found:
         request.session.pop('accepted_data_id', None)
-        return redirect(reverse('workwithus'))
+        return redirect(reverse('homepage.index'))
 
     # Redirect if accepted data ID is missing or invalid
     if not id:

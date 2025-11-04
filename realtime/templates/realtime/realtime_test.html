@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Order Sync Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast.info {
+            background: #2196F3;
+        }
+        .toast.success {
+            background: #4CAF50;
+        }
+        .toast.warning {
+            background: #FF9800;
+        }
+        .toast.error {
+            background: #F44336;
+        }
+        .updated {
+            animation: pulse 0.5s ease;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">🔄 Real-Time Order Sync Test</h1>
+            <p class="text-gray-600">Test WebSocket synchronization for order updates</p>
+        </div>
+
+        <!-- Connection Section -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Connection</h2>
+            
+            <div class="mb-4">
+                <label for="orderId" class="block text-sm font-medium text-gray-700 mb-2">
+                    Order ID
+                </label>
+                <div class="flex gap-2">
+                    <input 
+                        type="number" 
+                        id="orderId" 
+                        placeholder="Enter order ID (e.g., 123)"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button 
+                        onclick="connectWebSocket()"
+                        id="connectBtn"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        Connect
+                    </button>
+                    <button 
+                        onclick="disconnectWebSocket()"
+                        id="disconnectBtn"
+                        class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        disabled
+                    >
+                        Disconnect
+                    </button>
+                </div>
+            </div>
+
+            <!-- Connection Status -->
+            <div class="flex items-center gap-2">
+                <div id="statusIndicator" class="w-3 h-3 rounded-full bg-gray-400"></div>
+                <span id="statusText" class="text-sm text-gray-600">Disconnected</span>
+            </div>
+        </div>
+
+        <!-- Order Data Display -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Order Data</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Order ID -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Order ID</label>
+                    <div id="orderIdDisplay" class="text-2xl font-bold text-gray-800 mt-1">-</div>
+                </div>
+
+                <!-- Status -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Status</label>
+                    <div id="statusDisplay" class="text-2xl font-bold text-gray-800 mt-1">-</div>
+                </div>
+
+                <!-- Progress -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Progress</label>
+                    <div class="mt-2">
+                        <div class="flex justify-between items-center mb-1">
+                            <span id="progressDisplay" class="text-xl font-bold text-gray-800">-</span>
+                            <span id="progressPercent" class="text-sm text-gray-600">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-4">
+                            <div id="progressBar" class="bg-blue-600 h-4 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Booster Price</label>
+                    <div id="priceDisplay" class="text-2xl font-bold text-gray-800 mt-1">$0.00</div>
+                </div>
+
+                <!-- Booster Info -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Booster</label>
+                    <div id="boosterDisplay" class="text-lg font-semibold text-gray-800 mt-1">-</div>
+                </div>
+
+                <!-- Reached Rank (for LoL orders) -->
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <label class="text-sm font-medium text-gray-500">Reached Rank</label>
+                    <div id="rankDisplay" class="text-lg font-semibold text-gray-800 mt-1">-</div>
+                </div>
+            </div>
+
+            <!-- Timestamp -->
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <label class="text-sm font-medium text-gray-500">Last Updated</label>
+                <div id="timestampDisplay" class="text-sm text-gray-600 mt-1">-</div>
+            </div>
+        </div>
+
+        <!-- Console Logs -->
+        <div class="bg-gray-900 rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-white">Console Logs</h2>
+                <button 
+                    onclick="clearLogs()"
+                    class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 text-sm"
+                >
+                    Clear
+                </button>
+            </div>
+            <div id="consoleLogs" class="bg-black rounded p-4 h-64 overflow-y-auto font-mono text-sm text-green-400">
+                <div class="text-gray-500">Waiting for logs...</div>
+            </div>
+        </div>
+
+        <!-- Test Actions -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Test Actions</h2>
+            <div class="flex gap-2 flex-wrap">
+                <button 
+                    onclick="simulateUpdate()"
+                    class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                    🎮 Simulate Update
+                </button>
+                <a 
+                    href="/admin/accounts/baseorder/"
+                    target="_blank"
+                    class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 inline-block"
+                >
+                    📝 Open Django Admin
+                </a>
+            </div>
+            <p class="text-sm text-gray-600 mt-4">
+                💡 Tip: Update an order from Django Admin or Booster Dashboard to see real-time updates here!
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        let socket = null;
+        let currentOrderId = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+
+        // Get WebSocket URL from Django template
+        const wsProtocol = '{{ ws_protocol }}';
+        const wsHost = '{{ ws_host }}';
+
+        function log(message, type = 'info') {
+            const consoleLogs = document.getElementById('consoleLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `mb-1 ${type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-blue-400'}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            consoleLogs.appendChild(logEntry);
+            consoleLogs.scrollTop = consoleLogs.scrollHeight;
+            
+            // Keep only last 100 logs
+            while (consoleLogs.children.length > 100) {
+                consoleLogs.removeChild(consoleLogs.firstChild);
+            }
+            
+            // Also log to browser console
+            console.log(`[${timestamp}] ${message}`);
+        }
+
+        function clearLogs() {
+            document.getElementById('consoleLogs').innerHTML = '<div class="text-gray-500">Logs cleared...</div>';
+        }
+
+        function showToast(message, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function updateStatus(connected) {
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            const connectBtn = document.getElementById('connectBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            
+            if (connected) {
+                indicator.className = 'w-3 h-3 rounded-full bg-green-500';
+                statusText.textContent = 'Connected';
+                connectBtn.disabled = true;
+                disconnectBtn.disabled = false;
+            } else {
+                indicator.className = 'w-3 h-3 rounded-full bg-gray-400';
+                statusText.textContent = 'Disconnected';
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            }
+        }
+
+        function updateOrderUI(data) {
+            log(`Received order update: ${JSON.stringify(data)}`, 'success');
+            
+            // Update Order ID
+            if (data.order_id) {
+                const orderIdEl = document.getElementById('orderIdDisplay');
+                orderIdEl.textContent = data.order_id;
+                orderIdEl.classList.add('updated');
+                setTimeout(() => orderIdEl.classList.remove('updated'), 1000);
+            }
+            
+            // Update Status
+            if (data.status) {
+                const statusEl = document.getElementById('statusDisplay');
+                statusEl.textContent = data.status;
+                statusEl.classList.add('updated');
+                setTimeout(() => statusEl.classList.remove('updated'), 1000);
+                showToast(`Order #${data.order_id}: Status updated to ${data.status} 🎮`, 'info');
+            }
+            
+            // Update Progress
+            if (data.progress !== undefined) {
+                const progress = Math.max(0, Math.min(100, data.progress));
+                const progressBar = document.getElementById('progressBar');
+                const progressDisplay = document.getElementById('progressDisplay');
+                const progressPercent = document.getElementById('progressPercent');
+                
+                progressBar.style.width = `${progress}%`;
+                progressDisplay.textContent = `${progress}%`;
+                progressPercent.textContent = `${progress}%`;
+                
+                progressBar.classList.add('updated');
+                setTimeout(() => progressBar.classList.remove('updated'), 1000);
+                showToast(`Order #${data.order_id}: Progress updated to ${progress}% 🎮`, 'success');
+            }
+            
+            // Update Price
+            if (data.booster_price) {
+                const priceEl = document.getElementById('priceDisplay');
+                const price = parseFloat(data.booster_price).toFixed(2);
+                priceEl.textContent = `$${price}`;
+                priceEl.classList.add('updated');
+                setTimeout(() => priceEl.classList.remove('updated'), 1000);
+            }
+            
+            // Update Booster
+            if (data.booster_username) {
+                document.getElementById('boosterDisplay').textContent = data.booster_username;
+            }
+            
+            // Update Rank
+            if (data.reached_rank) {
+                let rankText = data.reached_rank;
+                if (data.reached_division) {
+                    rankText += ` ${data.reached_division}`;
+                }
+                if (data.reached_marks !== null && data.reached_marks !== undefined) {
+                    rankText += ` (${data.reached_marks})`;
+                }
+                document.getElementById('rankDisplay').textContent = rankText;
+            }
+            
+            // Update Timestamp
+            if (data.timestamp) {
+                const timestamp = new Date(data.timestamp);
+                document.getElementById('timestampDisplay').textContent = timestamp.toLocaleString();
+            }
+        }
+
+        function connectWebSocket() {
+            const orderId = document.getElementById('orderId').value;
+            
+            if (!orderId) {
+                showToast('Please enter an order ID', 'error');
+                log('Error: Order ID is required', 'error');
+                return;
+            }
+            
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                log('Already connected. Disconnecting first...', 'warning');
+                disconnectWebSocket();
+                setTimeout(() => connectWebSocket(), 500);
+                return;
+            }
+            
+            currentOrderId = orderId;
+            const wsUrl = `${wsProtocol}://${wsHost}/ws/orders/${orderId}/`;
+            
+            log(`Connecting to: ${wsUrl}`, 'info');
+            
+            try {
+                socket = new WebSocket(wsUrl);
+                
+                socket.onopen = function(event) {
+                    log(`WebSocket connected for order ${orderId}`, 'success');
+                    updateStatus(true);
+                    showToast(`Connected to order #${orderId}`, 'success');
+                    reconnectAttempts = 0;
+                };
+                
+                socket.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        log(`Message received: ${event.data}`, 'info');
+                        
+                        if (data.type === 'order.update') {
+                            updateOrderUI(data);
+                        }
+                    } catch (error) {
+                        log(`Error parsing message: ${error.message}`, 'error');
+                    }
+                };
+                
+                socket.onerror = function(error) {
+                    log(`WebSocket error: ${error}`, 'error');
+                    showToast('WebSocket connection error', 'error');
+                };
+                
+                socket.onclose = function(event) {
+                    log(`WebSocket closed. Code: ${event.code}, Reason: ${event.reason || 'No reason provided'}`, 'warning');
+                    updateStatus(false);
+                    
+                    if (event.code !== 1000 && reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        log(`Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`, 'info');
+                        setTimeout(() => {
+                            if (currentOrderId) {
+                                connectWebSocket();
+                            }
+                        }, 3000 * reconnectAttempts);
+                    } else if (reconnectAttempts >= maxReconnectAttempts) {
+                        log('Max reconnection attempts reached', 'error');
+                        showToast('Connection failed. Please try again manually.', 'error');
+                    }
+                };
+                
+            } catch (error) {
+                log(`Error creating WebSocket: ${error.message}`, 'error');
+                showToast('Failed to create WebSocket connection', 'error');
+            }
+        }
+
+        function disconnectWebSocket() {
+            if (socket) {
+                log('Disconnecting WebSocket...', 'info');
+                socket.close(1000, 'User disconnected');
+                socket = null;
+                currentOrderId = null;
+                updateStatus(false);
+                reconnectAttempts = 0;
+                showToast('Disconnected', 'info');
+            }
+        }
+
+        function simulateUpdate() {
+            if (!socket || socket.readyState !== WebSocket.OPEN) {
+                showToast('Please connect to a WebSocket first', 'warning');
+                return;
+            }
+            
+            log('Simulating update (this is a client-side test only)', 'info');
+            showToast('Simulated update sent (server will not process this)', 'warning');
+            
+            // Note: The actual update needs to come from the Django backend
+            // This is just for UI testing
+            const fakeData = {
+                type: 'order.update',
+                order_id: currentOrderId,
+                status: 'Continue',
+                progress: Math.floor(Math.random() * 100),
+                booster_price: (Math.random() * 100).toFixed(2),
+                timestamp: new Date().toISOString()
+            };
+            
+            updateOrderUI(fakeData);
+        }
+
+        // Auto-connect on page load if URL has order_id parameter
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order_id');
+            if (orderId) {
+                document.getElementById('orderId').value = orderId;
+                setTimeout(() => connectWebSocket(), 500);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

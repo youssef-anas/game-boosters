@@ -1,0 +1,83 @@
+{
+  "before_update": {
+    "admin": {
+      "status": "success",
+      "prices": {
+        "1": {
+          "price": 15.03,
+          "name": "Service 1",
+          "description": ""
+        }
+      },
+      "count": 1
+    },
+    "client": {
+      "status": "success",
+      "price": 203.58,
+      "path": "Iron 1 \u2192 Silver 4"
+    },
+    "booster": {
+      "status": "success",
+      "price": 0.0,
+      "percent_for_view": 0,
+      "actual_price": 44.79
+    },
+    "manager": {
+      "status": "success",
+      "price": 203.58,
+      "actual_price": 44.79,
+      "real_order_price": 203.58
+    }
+  },
+  "after_update": {
+    "admin": {
+      "status": "success",
+      "prices": {
+        "1": {
+          "price": 15.03,
+          "name": "Service 1",
+          "description": ""
+        }
+      },
+      "count": 1
+    },
+    "client": {
+      "status": "success",
+      "price": 213.45,
+      "path": "Iron 1 \u2192 Silver 4"
+    },
+    "booster": {
+      "status": "success",
+      "price": 0.0,
+      "percent_for_view": 0,
+      "actual_price": 44.79
+    },
+    "manager": {
+      "status": "success",
+      "price": 203.58,
+      "actual_price": 44.79,
+      "real_order_price": 203.58
+    }
+  },
+  "comparison": {
+    "client": {
+      "percent_change": 4.848216917182422,
+      "status": "\u274c",
+      "expected": 25.0,
+      "actual": 4.848216917182422
+    },
+    "booster": {
+      "percent_change": 0,
+      "status": "\u274c",
+      "expected": "> 0",
+      "actual": 0
+    },
+    "manager": {
+      "percent_change": 0.0,
+      "status": "\u274c",
+      "expected": 25.0,
+      "actual": 0.0
+    }
+  },
+  "overall_status": "failed"
+}
