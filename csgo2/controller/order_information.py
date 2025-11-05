@@ -87,13 +87,16 @@ def get_division_order_result_by_rank(data):
 
     # Read data from utils file
     division_price = get_division_prices()
-    flattened_data = [item for sublist in division_price for item in sublist]
-    flattened_data.insert(0,0)
+    if division_price and isinstance(division_price, (list, tuple)):
+        flattened_data = [item for sublist in division_price for item in sublist if isinstance(sublist, (list, tuple))]
+    else:
+        flattened_data = []
+    flattened_data.insert(0, 0)
     ##
     start_division = ((current_rank-1)*1) + 1
     end_division = ((desired_rank-1)*1)+ 1
     sublist = flattened_data[start_division:end_division ]
-    total_sum = sum(sublist)
+    total_sum = sum(sublist) if sublist else 0
     price = total_sum 
     price += (price * total_percent)
     price -= price * (promo_code_amount/100)
@@ -362,7 +365,11 @@ from gameBoosterss.order_info.levelup import LevelupGameOrderInfo
 
 class Csgo2_DOI(BaseOrderInfo, DivisionGameOrderInfo, ExtendOrder):
     division_prices_data = get_division_prices()
-    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices = (
+        [item for sublist in division_prices_data for item in sublist if isinstance(sublist, (list, tuple))]
+        if division_prices_data and isinstance(division_prices_data, (list, tuple))
+        else []
+    )
     division_prices.insert(0, 0)
     marks_data = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]
     division_number = 1

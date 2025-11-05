@@ -2,6 +2,9 @@ from .models import Csgo2Tier, Csgo2PremierPrice, CsgoFaceitPrice
 
 def get_division_prices():
     divisions = Csgo2Tier.objects.all().order_by('id')
+    if not divisions.exists():
+        # Return empty list of lists structure if no data
+        return []
     divisions_data = [
         [division.from_I_to_I_next]
         for division in divisions
@@ -10,6 +13,9 @@ def get_division_prices():
 
 def get_premier_prices():
     premier_row = Csgo2PremierPrice.objects.all().first()
+    if not premier_row:
+        # Return list of zeros to prevent IndexError
+        return [0, 0, 0, 0, 0, 0, 0]
     premier_prices = [
         premier_row.price_0_4999, premier_row.price_5000_7999, premier_row.price_8000_11999, 
         premier_row.price_12000_18999, premier_row.price_19000_20999, premier_row.price_21000_24999, 
@@ -19,6 +25,9 @@ def get_premier_prices():
 
 def get_faceit_prices():
     faceit_prices = CsgoFaceitPrice.objects.all().first()
+    if not faceit_prices:
+        # Return list of zeros to prevent AttributeError
+        return [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     faceit_data = [
         0, faceit_prices.from_1_to_2, faceit_prices.from_2_to_3, faceit_prices.from_3_to_4, 
         faceit_prices.from_4_to_5, faceit_prices.from_5_to_6, faceit_prices.from_6_to_7, 
