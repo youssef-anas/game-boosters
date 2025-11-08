@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'booster.apps.BoosterConfig',
     'customer.apps.CustomerConfig',
     'dashboard.apps.DashboardConfig',
+    'admin_dashboard.apps.AdminDashboardConfig',
     'wildRift.apps.WildriftConfig',
     'valorant.apps.ValorantConfig',
     'pubg.apps.PubgConfig',
@@ -92,7 +93,7 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount',
     # 'allauth.socialaccount.providers.google',
     # 'allauth.socialaccount.providers.facebook',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
 ]
 
 SITE_ID = 1
