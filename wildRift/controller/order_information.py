@@ -120,9 +120,14 @@ from gameBoosterss.order_info.division import DivisionGameOrderInfo
 
 class WildRiftDivisionOrderInfo(BaseOrderInfo, ChampionOrder, ExtendOrder, DivisionGameOrderInfo):
     division_prices_data = get_wildrift_divisions_data()
-    division_prices = [item for sublist in division_prices_data for item in sublist]
+    division_prices = (
+        [item for sublist in division_prices_data for item in sublist if isinstance(sublist, (list, tuple))]
+        if division_prices_data and isinstance(division_prices_data, (list, tuple))
+        else []
+    )
     division_prices.insert(0, 0)
     marks_data = get_wildrift_marks_data()
+    marks_data = marks_data if marks_data and isinstance(marks_data, (list, tuple)) else []
     marks_data.insert(0, [0, 0, 0, 0, 0, 0, 0])
     division_number = 4
 
