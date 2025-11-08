@@ -235,18 +235,35 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 
+# Get domain from environment or use defaults
+DOMAIN_NAME = os.getenv('DOMAIN_NAME', 'madboost.gg')
+VPS_IP = '46.202.131.43'  # Your VPS IP address
+
 ALLOWED_HOSTS = [
-    '8881-197-32-66-233.ngrok-free.app'
-    'https://www.madboost.gg',
-    'https://madboost.gg',
+    '8881-197-32-66-233.ngrok-free.app',
     'localhost',
     '127.0.0.1',
+    VPS_IP,  # VPS IP address
+    DOMAIN_NAME,
+    f'www.{DOMAIN_NAME}',
     'www.madboost.gg',
     'madboost.gg',
     'gameboost-test-f25426e2eac4.herokuapp.com',
     'www.gameboost-test-f25426e2eac4.herokuapp.com',
-    '*' # remove in deplay mode
-    ]
+    '*'  # Remove in production mode
+]
+
+# CSRF Trusted Origins - must include scheme (http:// or https://)
+CSRF_TRUSTED_ORIGINS = [
+    f'http://{VPS_IP}',
+    f'https://{VPS_IP}',
+    f'http://{DOMAIN_NAME}',
+    f'https://{DOMAIN_NAME}',
+    f'http://www.{DOMAIN_NAME}',
+    f'https://www.{DOMAIN_NAME}',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 
 # PAYPAL_EMAIL='sb-blcbf28542348@business.example.com'
