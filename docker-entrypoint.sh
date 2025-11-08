@@ -14,7 +14,8 @@ echo "Database is up!"
 # Wait for Redis
 if [ "$USE_REDIS" = "True" ]; then
   echo "Waiting for Redis..."
-  while ! redis-cli -h "$REDIS_HOST" ping > /dev/null 2>&1; do
+  REDIS_PORT=${REDIS_PORT:-6379}
+  while ! timeout 1 bash -c "echo > /dev/tcp/$REDIS_HOST/$REDIS_PORT" 2>/dev/null; do
     echo "Redis is unavailable - sleeping"
     sleep 2
   done
